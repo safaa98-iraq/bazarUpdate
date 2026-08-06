@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="StoreBuilder — افتح متجرك الإلكتروني في 5 دقائق. أول منصة عراقية تدعم الدفع المحلي والشحن داخل العراق.">
+  <title>StoreBuilder — افتح متجرك الإلكتروني في 5 دقائق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════
+       VARIABLES & RESET
+    ═══════════════════════════════ */
+    :root {
+      --primary:   #432E54;
+      --secondary: #4B4376;
+      --accent:    #AE445A;
+      --soft:      #E8BCB9;
+      --bg:        #FFFFFF;
+      --text:      #1A1A1A;
+      --gray-50:   #F9FAFB;
+      --gray-100:  #F3F4F6;
+      --gray-200:  #E5E7EB;
+      --gray-400:  #9CA3AF;
+      --gray-500:  #6B7280;
+      --gray-700:  #374151;
+      --green:     #22C55E;
+      --red:       #EF4444;
+      --yellow:    #F59E0B;
+      --radius-sm: 8px;
+      --radius:    14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 2px 10px rgba(0,0,0,.06);
+      --shadow:    0 8px 30px rgba(0,0,0,.10);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,.14);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 400;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden;
+      direction: rtl;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; }
+
+    /* ═══════════════════════════════
+       SCROLL PROGRESS BAR
+    ═══════════════════════════════ */
+    #scroll-bar {
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      height: 3px;
+      background: transparent;
+      z-index: 9999;
+    }
+    #scroll-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width .1s linear;
+    }
+
+    /* ═══════════════════════════════
+       UTILITIES
+    ═══════════════════════════════ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(174,68,90,.10);
+      border: 1px solid rgba(174,68,90,.20);
+      padding: 5px 14px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--gray-500);
+      line-height: 1.75;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: var(--radius-sm);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover { transform: scale(1.02); }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(174,68,90,.35);
+    }
+    .btn-accent:hover { box-shadow: 0 6px 24px rgba(174,68,90,.45); }
+
+    .btn-ghost {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,.45);
+    }
+    .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+
+    .btn-dark {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(67,46,84,.3);
+    }
+
+    /* ═══════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════ */
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-12px); }
+    }
+
+    @keyframes badge-pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(174,68,90,.30); }
+      60%      { box-shadow: 0 0 0 9px rgba(174,68,90,.00); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal.d1 { transition-delay: .10s; }
+    .reveal.d2 { transition-delay: .20s; }
+    .reveal.d3 { transition-delay: .30s; }
+    .reveal.d4 { transition-delay: .40s; }
+    .reveal.d5 { transition-delay: .50s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+
+    /* ═══════════════════════════════
+       SECTION 1 — HEADER
+    ═══════════════════════════════ */
+    #header {
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 1000;
+      padding: 18px 0;
+      transition: background .35s ease, box-shadow .35s ease, padding .35s ease;
+    }
+    #header.solid {
+      background: var(--primary);
+      box-shadow: 0 2px 24px rgba(0,0,0,.22);
+      padding: 12px 0;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .logo-mark {
+      width: 40px; height: 40px;
+      background: var(--accent);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .logo-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+    .logo-name em {
+      font-style: normal;
+      color: var(--soft);
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .header-nav a {
+      color: rgba(255,255,255,.75);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: color .2s, background .2s;
+    }
+    .header-nav a:hover { color: #fff; background: rgba(255,255,255,.10); }
+
+    .header-cta { padding: 10px 22px; font-size: 14px; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: #fff; border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      padding: 12px 0 4px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      margin-top: 12px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      color: rgba(255,255,255,.8);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 10px 4px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    @media (max-width: 768px) {
+      .header-nav { display: none; }
+      .hamburger { display: flex; }
+      #header { background: var(--primary) !important; }
+    }
+
+    /* ═══════════════════════════════
+       SECTION 2 — HERO
+    ═══════════════════════════════ */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding-top: 80px;
+    }
+
+    /* geometric pattern overlay */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg,  transparent, transparent 38px, rgba(255,255,255,.025) 38px, rgba(255,255,255,.025) 39px),
+        repeating-linear-gradient(-45deg, transparent, transparent 38px, rgba(255,255,255,.025) 38px, rgba(255,255,255,.025) 39px);
+      pointer-events: none;
+    }
+
+    /* radial accent glow */
+    #hero::after {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(174,68,90,.18) 0%, transparent 65%);
+      bottom: -200px; left: -150px;
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      padding: 64px 0;
+    }
+
+    /* Hero badge */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.22);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 16px;
+      border-radius: 30px;
+      margin-bottom: 22px;
+      backdrop-filter: blur(8px);
+      animation: badge-pulse 2.5s infinite;
+    }
+
+    .hero-title {
+      font-size: clamp(30px, 5vw, 58px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.18;
+      margin-bottom: 14px;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--soft);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,.72);
+      line-height: 1.75;
+      margin-bottom: 34px;
+      max-width: 520px;
+    }
+    .hero-sub strong { color: rgba(255,255,255,.95); }
+
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .hero-proof {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .avatars {
+      display: flex;
+    }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      overflow: hidden;
+      background: var(--secondary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .avatar + .avatar { margin-right: -9px; }
+    .avatar.count {
+      background: var(--accent);
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .proof-text { font-size: 13px; color: rgba(255,255,255,.65); }
+    .proof-text strong { color: #fff; }
+
+    /* ── Dashboard mockup ── */
+    .hero-mockup {
+      animation: float 3.5s ease-in-out infinite;
+    }
+
+    .mockup {
+      background: #16162A;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 32px 90px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.09);
+    }
+
+    .mockup-bar {
+      background: #1E1E33;
+      padding: 11px 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .m-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .m-dot.r { background: #FF5F57; }
+    .m-dot.y { background: #FFBD2E; }
+    .m-dot.g { background: #28CA41; }
+
+    .m-url {
+      flex: 1;
+      background: #111122;
+      border-radius: 5px;
+      padding: 3px 10px;
+      font-size: 10px;
+      color: rgba(255,255,255,.35);
+      text-align: center;
+      margin: 0 10px;
+      font-family: monospace;
+    }
+
+    .mockup-body {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      min-height: 290px;
+    }
+
+    .m-sidebar {
+      background: #1A1A2E;
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .m-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .m-icon.active { background: var(--accent); }
+
+    .m-main {
+      padding: 14px;
+      background: #16162A;
+    }
+
+    .m-stats {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .m-stat {
+      background: #1E1E33;
+      border-radius: 9px;
+      padding: 9px 10px;
+    }
+    .m-stat-lbl { font-size: 8px; color: rgba(255,255,255,.38); margin-bottom: 3px; }
+    .m-stat-val { font-size: 16px; font-weight: 800; color: #fff; }
+    .m-stat-val.g { color: #22C55E; }
+    .m-stat-val.a { color: var(--soft); }
+
+    .m-rows-lbl {
+      font-size: 9px;
+      font-weight: 700;
+      color: rgba(255,255,255,.3);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .m-row {
+      background: #1E1E33;
+      border-radius: 7px;
+      padding: 7px 9px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 5px;
+    }
+
+    .m-thumb {
+      width: 26px; height: 26px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .m-info { flex: 1; }
+    .m-name { height: 6px; width: 65%; background: rgba(255,255,255,.18); border-radius: 3px; margin-bottom: 4px; }
+    .m-price { height: 5px; width: 40%; background: rgba(255,255,255,.09); border-radius: 3px; }
+
+    .m-badge {
+      font-size: 8px; font-weight: 700;
+      padding: 2px 7px; border-radius: 12px;
+    }
+    .m-badge.on  { background: rgba(34,197,94,.18); color: #22C55E; }
+    .m-badge.hot { background: rgba(174,68,90,.22); color: var(--soft); }
+
+    /* Hero responsive */
+    @media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 44px;
+      }
+      .hero-sub, .hero-btns, .hero-proof { justify-content: center; }
+      .hero-sub { margin: 0 auto 34px; }
+      .hero-mockup { max-width: 420px; margin: 0 auto; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-btns { flex-direction: column; align-items: stretch; }
+      .hero-btns .btn { justify-content: center; }
+    }
+
+    /* ═══════════════════════════════
+       SECTION 3 — PAIN POINTS
+    ═══════════════════════════════ */
+    #pain {
+      padding: 100px 0;
+      background: var(--gray-50);
+    }
+
+    .pain-header { text-align: center; margin-bottom: 56px; }
+    .pain-header .section-sub { margin: 0 auto; max-width: 540px; }
+
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 20px;
+    }
+
+    .pain-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px;
+      border-right: 4px solid var(--accent);
+      box-shadow: var(--shadow-sm);
+      transition: transform .3s ease, box-shadow .3s ease;
+      cursor: default;
+    }
+    .pain-card:hover {
+      transform: translateY(-7px);
+      box-shadow: var(--shadow);
+    }
+
+    .pain-emoji { font-size: 34px; display: block; margin-bottom: 12px; }
+
+    .pain-problem {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .pain-arrow {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .pain-solution {
+      font-size: 13px;
+      font-weight: 700;
+      color: #166534;
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      line-height: 1.55;
+    }
+
+    /* ═══════════════════════════════
+       SECTION 4 — STEPS
+    ═══════════════════════════════ */
+    #steps {
+      padding: 100px 0;
+      background: #fff;
+    }
+
+    .steps-header { text-align: center; margin-bottom: 64px; }
+    .steps-header .section-sub { margin: 0 auto; max-width: 480px; }
+
+    .steps-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* vertical line track */
+    .steps-track {
+      position: absolute;
+      right: 30px;
+      top: 16px;
+      bottom: 40px;
+      width: 2px;
+      background: var(--gray-200);
+      border-radius: 2px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .steps-fill {
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(to bottom, var(--accent), var(--primary));
+      border-radius: 2px;
+      transition: height .5s ease;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 62px 1fr;
+      gap: 22px;
+      padding-bottom: 42px;
+      position: relative;
+      z-index: 1;
+    }
+    .step:last-child { padding-bottom: 0; }
+
+    .step-num {
+      width: 62px; height: 62px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 2px var(--gray-200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gray-400);
+      flex-shrink: 0;
+      transition: background .4s, color .4s, box-shadow .4s;
+    }
+
+    .step.lit .step-num {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 0 5px rgba(67,46,84,.14);
+    }
+
+    .step-body { padding-top: 10px; }
+    .step-ico  { font-size: 26px; margin-bottom: 5px; }
+    .step-title { font-size: 17px; font-weight: 800; color: var(--primary); margin-bottom: 3px; }
+    .step-desc  { font-size: 13px; color: var(--gray-500); line-height: 1.6; }
+
+    /* ═══════════════════════════════
+       SECTION 5 — FEATURES
+    ═══════════════════════════════ */
+    #features {
+      padding: 100px 0;
+      background: var(--gray-50);
+    }
+
+    .features-header { text-align: center; margin-bottom: 64px; }
+    .features-header .section-sub { margin: 0 auto; max-width: 540px; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .feat-list { display: flex; flex-direction: column; gap: 3px; }
+
+    .feat-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 16px 18px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      border-right: 3px solid transparent;
+      transition: background .2s, border-color .2s, box-shadow .2s;
+    }
+    .feat-item:hover, .feat-item.on {
+      background: #fff;
+      border-right-color: var(--accent);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .feat-ico {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--gray-100);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      transition: background .25s;
+    }
+    .feat-item.on .feat-ico { background: var(--primary); }
+
+    .feat-title { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+    .feat-desc  { font-size: 12px; color: var(--gray-500); line-height: 1.6; }
+
+    /* Panel */
+    .feat-panel { position: relative; height: 420px; }
+
+    .feat-screen {
+      position: absolute; inset: 0;
+      opacity: 0;
+      transform: translateX(18px);
+      transition: opacity .4s ease, transform .4s ease;
+      pointer-events: none;
+    }
+    .feat-screen.on {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .screen-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      height: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sc-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .sc-ico {
+      width: 42px; height: 42px;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .sc-title { font-size: 15px; font-weight: 800; color: var(--primary); }
+    .sc-sub   { font-size: 11px; color: var(--gray-400); }
+
+    /* mini bar chart */
+    .mini-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 72px;
+      background: var(--gray-50);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px 0;
+      margin-bottom: 14px;
+    }
+    .mini-bar {
+      flex: 1;
+      background: var(--primary);
+      border-radius: 3px 3px 0 0;
+      opacity: .55;
+    }
+    .mini-bar.hi { opacity: 1; background: var(--accent); }
+
+    /* stat row for panels */
+    .sc-stats {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 9px;
+    }
+    .sc-stat {
+      background: var(--gray-50);
+      border-radius: 11px;
+      padding: 12px;
+      text-align: center;
+    }
+    .sc-stat-v {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .sc-stat-l { font-size: 10px; color: var(--gray-400); margin-top: 2px; }
+
+    /* chat bubbles */
+    .bubble-wrap { display: flex; flex-direction: column; gap: 8px; flex: 1; justify-content: center; }
+    .bubble {
+      padding: 9px 13px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      max-width: 85%;
+    }
+    .bubble.in  { background: var(--primary); color: #fff; align-self: flex-start; border-radius: 12px 12px 12px 3px; }
+    .bubble.out { background: var(--gray-100); color: var(--text); align-self: flex-end; border-radius: 12px 12px 3px 12px; }
+
+    @media (max-width: 960px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .feat-panel { height: 360px; }
+    }
+
+    /* ═══════════════════════════════
+       SECTION 6 — PATRIOTIC
+    ═══════════════════════════════ */
+    #patriotic {
+      padding: 96px 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    #patriotic::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,.06) 0%, transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .patriotic-inner { position: relative; z-index: 1; }
+
+    .p-quote {
+      font-size: clamp(22px, 3.5vw, 36px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.5;
+      max-width: 680px;
+      margin: 0 auto 56px;
+    }
+    .p-quote::before {
+      content: '"';
+      display: block;
+      font-size: 72px;
+      color: rgba(255,255,255,.15);
+      line-height: .5;
+      margin-bottom: 18px;
+    }
+
+    .counters {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 48px;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .counter-block { flex: 1; text-align: center; padding: 0 24px; }
+    .counter-block + .counter-block {
+      border-right: 1px solid rgba(255,255,255,.2);
+    }
+
+    .counter-num {
+      display: block;
+      font-size: clamp(38px, 6vw, 54px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .counter-lbl { font-size: 15px; color: rgba(255,255,255,.65); }
+
+    .p-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,.75);
+    }
+
+    @media (max-width: 560px) {
+      .counters { flex-direction: column; gap: 30px; }
+      .counter-block + .counter-block { border-right: none; border-top: 1px solid rgba(255,255,255,.2); padding-top: 30px; }
+    }
+
+    /* ═══════════════════════════════
+       SECTION 7 — PRICING
+    ═══════════════════════════════ */
+    #pricing {
+      padding: 100px 0;
+      background: #fff;
+    }
+
+    .pricing-header { text-align: center; margin-bottom: 60px; }
+    .pricing-header .section-sub { margin: 0 auto; max-width: 480px; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 24px;
+      align-items: center;
+    }
+
+    .pc {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      border: 2px solid var(--gray-200);
+      position: relative;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .pc:hover {
+      transform: translateY(-7px);
+      box-shadow: var(--shadow);
+    }
+
+    .pc.hot {
+      border-color: var(--accent);
+      transform: scale(1.05);
+      box-shadow: 0 20px 60px rgba(174,68,90,.22);
+      z-index: 1;
+    }
+    .pc.hot:hover { transform: scale(1.05) translateY(-5px); }
+
+    .pc-badge {
+      position: absolute;
+      top: -13px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .pc-name { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 2px; }
+    .pc-tagline { font-size: 12px; color: var(--gray-400); margin-bottom: 18px; }
+
+    .pc-price { margin-bottom: 22px; }
+    .pc-amount { font-size: 38px; font-weight: 800; color: var(--primary); }
+    .pc-cur { font-size: 15px; color: var(--gray-500); }
+    .pc-period { font-size: 13px; color: var(--gray-400); }
+
+    .pc-hr { height: 1px; background: var(--gray-200); margin-bottom: 20px; }
+
+    .pc-features {
+      list-style: none;
+      margin-bottom: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pc-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--gray-700);
+      line-height: 1.45;
+    }
+    .pc-features li::before {
+      content: '✓';
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #F0FDF4;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pc-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      border-radius: var(--radius-sm);
+    }
+    .pc:not(.hot) .pc-btn { background: var(--primary); color: #fff; }
+    .pc.hot .pc-btn { background: var(--accent); color: #fff; box-shadow: 0 4px 16px rgba(174,68,90,.35); }
+
+    @media (max-width: 900px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+      .pc.hot { transform: scale(1); }
+      .pc.hot:hover { transform: translateY(-7px); }
+    }
+
+    /* ═══════════════════════════════
+       SECTION 8 — COMPARISON
+    ═══════════════════════════════ */
+    #comparison {
+      padding: 100px 0;
+      background: var(--gray-50);
+    }
+
+    .comparison-header { text-align: center; margin-bottom: 52px; }
+    .comparison-header .section-sub { margin: 0 auto; max-width: 480px; }
+
+    .table-wrap { overflow-x: auto; }
+
+    .cmp-table {
+      width: 100%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: #fff;
+    }
+
+    .cmp-table table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 560px;
+    }
+
+    .cmp-table thead th {
+      padding: 18px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .cmp-table thead th:first-child {
+      text-align: right;
+      background: #fff;
+      color: var(--gray-500);
+      font-weight: 600;
+    }
+    .cmp-table thead th:nth-child(2) {
+      background: var(--primary);
+      color: #fff;
+    }
+    .cmp-table thead th:last-child {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    .cmp-table tbody td {
+      padding: 14px 22px;
+      font-size: 13px;
+      border-top: 1px solid var(--gray-100);
+    }
+    .cmp-table tbody td:first-child {
+      color: var(--gray-700);
+      font-weight: 500;
+      text-align: right;
+    }
+    .cmp-table tbody td:nth-child(2) {
+      text-align: center;
+      background: rgba(67,46,84,.025);
+    }
+    .cmp-table tbody td:last-child {
+      text-align: center;
+      background: var(--gray-50);
+    }
+
+    .cmp-table tbody tr:nth-child(even) td:first-child   { background: var(--gray-50); }
+    .cmp-table tbody tr:nth-child(even) td:nth-child(2)  { background: rgba(67,46,84,.04); }
+    .cmp-table tbody tr:nth-child(even) td:last-child     { background: var(--gray-100); }
+    .cmp-table tbody tr:hover td { background: rgba(67,46,84,.045) !important; }
+
+    .cyes { color: var(--green); font-weight: 700; font-size: 14px; }
+    .cno  { color: var(--red);   font-size: 14px; }
+    .cwrn { color: var(--yellow); font-size: 14px; }
+
+    .cmp-note {
+      text-align: center;
+      font-size: 11px;
+      color: var(--gray-400);
+      margin-top: 14px;
+    }
+
+    /* ═══════════════════════════════
+       SECTION 9 — FINAL CTA
+    ═══════════════════════════════ */
+    #cta {
+      padding: 100px 0;
+      background: var(--primary);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, transparent, transparent 38px, rgba(255,255,255,.022) 38px, rgba(255,255,255,.022) 39px),
+        repeating-linear-gradient(-45deg, transparent, transparent 38px, rgba(255,255,255,.022) 38px, rgba(255,255,255,.022) 39px);
+      pointer-events: none;
+    }
+
+    .cta-inner { position: relative; z-index: 1; }
+
+    .cta-title {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .cta-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,.65);
+      margin-bottom: 40px;
+    }
+
+    .cta-btn {
+      padding: 17px 44px;
+      font-size: 17px;
+      border-radius: 12px;
+      margin-bottom: 32px;
+    }
+
+    .trust-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: rgba(255,255,255,.6);
+    }
+    .trust-item span:first-child { font-size: 18px; }
+
+    /* ═══════════════════════════════
+       SECTION 10 — FOOTER
+    ═══════════════════════════════ */
+    footer {
+      background: #111118;
+      padding: 64px 0 30px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 60px;
+      margin-bottom: 48px;
+    }
+
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,.35); margin-top: 12px; line-height: 1.6; }
+
+    .footer-cols {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 24px;
+    }
+
+    .fc-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,.4);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 16px;
+    }
+
+    .fc-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .fc-links a {
+      color: rgba(255,255,255,.45);
+      font-size: 14px;
+      transition: color .2s;
+    }
+    .fc-links a:hover { color: rgba(255,255,255,.9); }
+
+    .footer-hr { height: 1px; background: rgba(255,255,255,.07); margin-bottom: 24px; }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,.3); }
+
+    .socials { display: flex; gap: 10px; }
+    .social {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.07);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.45);
+      font-size: 15px;
+      transition: background .2s, color .2s;
+      font-style: normal;
+    }
+    .social:hover { background: var(--accent); color: #fff; }
+
+    @media (max-width: 768px) {
+      .footer-top { grid-template-columns: 1fr; gap: 36px; }
+      .footer-cols { grid-template-columns: 1fr 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .footer-cols { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ░░ SCROLL BAR ░░ -->
+<div id="scroll-bar"><div id="scroll-bar-fill"></div></div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 — HEADER
+══════════════════════════════════════════ -->
+<header id="header">
+  <div class="container">
+    <div class="header-inner">
+
+      <a href="#" class="logo">
+        <div class="logo-mark">🛍</div>
+        <div class="logo-name">Store<em>Builder</em></div>
+      </a>
+
+      <nav class="header-nav">
+        <a href="#pain">المزايا</a>
+        <a href="#pricing">الأسعار</a>
+        <a href="#comparison">قارن</a>
+        <a href="#cta" class="btn btn-accent header-cta">ابدأ مجاناً</a>
+      </nav>
+
+      <button class="hamburger" id="ham" aria-label="القائمة">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <nav class="mobile-nav" id="mob-nav">
+      <a href="#pain">المزايا</a>
+      <a href="#pricing">الأسعار</a>
+      <a href="#comparison">قارن</a>
+      <a href="#cta">ابدأ مجاناً ←</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 — HERO
+══════════════════════════════════════════ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+
+      <!-- Content -->
+      <div class="hero-content">
+        <div class="hero-badge">🇮🇶 صُنع للتاجر العراقي</div>
+
+        <h1 class="hero-title">
+          افتح متجرك<br>
+          الإلكتروني في<br>
+          <em>5 دقائق</em>
+        </h1>
+
+        <p class="hero-sub">
+          بدون خبرة تقنية · بدون مبرمج · بدون ما تكلف الكثير<br>
+          <strong>أول منصة عراقية</strong> تدعم الدفع المحلي، الشحن داخل العراق، والعملة بالدينار والدولار
+        </p>
+
+        <div class="hero-btns">
+          <a href="#" class="btn btn-accent">ابدأ مجاناً الآن</a>
+          <a href="#steps" class="btn btn-ghost">▶ شاهد كيف يعمل</a>
+        </div>
+
+        <div class="hero-proof">
+          <div class="avatars">
+            <div class="avatar">🧑</div>
+            <div class="avatar">👩</div>
+            <div class="avatar">🧔</div>
+            <div class="avatar count">+2K</div>
+          </div>
+          <p class="proof-text">انضم لـ <strong>+2,400 تاجر عراقي</strong> يبيعون الآن</p>
+        </div>
+      </div>
+
+      <!-- Dashboard Mockup -->
+      <div class="hero-mockup">
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="m-dot r"></div>
+            <div class="m-dot y"></div>
+            <div class="m-dot g"></div>
+            <div class="m-url">متجري.storebuilder.iq</div>
+          </div>
+          <div class="mockup-body">
+            <div class="m-sidebar">
+              <div class="m-icon active">🏠</div>
+              <div class="m-icon">📦</div>
+              <div class="m-icon">🛒</div>
+              <div class="m-icon">📊</div>
+              <div class="m-icon">⚙️</div>
+            </div>
+            <div class="m-main">
+              <div class="m-stats">
+                <div class="m-stat">
+                  <div class="m-stat-lbl">الطلبات</div>
+                  <div class="m-stat-val g">+24</div>
+                </div>
+                <div class="m-stat">
+                  <div class="m-stat-lbl">الإيرادات</div>
+                  <div class="m-stat-val a">240K</div>
+                </div>
+                <div class="m-stat">
+                  <div class="m-stat-lbl">المنتجات</div>
+                  <div class="m-stat-val">18</div>
+                </div>
+              </div>
+              <div class="m-rows-lbl">المنتجات الأخيرة</div>
+              <div class="m-row">
+                <div class="m-thumb" style="background:linear-gradient(135deg,#432E54,#AE445A)"></div>
+                <div class="m-info"><div class="m-name"></div><div class="m-price"></div></div>
+                <div class="m-badge on">نشط</div>
+              </div>
+              <div class="m-row">
+                <div class="m-thumb" style="background:linear-gradient(135deg,#4B4376,#E8BCB9)"></div>
+                <div class="m-info"><div class="m-name"></div><div class="m-price"></div></div>
+                <div class="m-badge hot">مميز</div>
+              </div>
+              <div class="m-row">
+                <div class="m-thumb" style="background:linear-gradient(135deg,#AE445A,#4B4376)"></div>
+                <div class="m-info"><div class="m-name"></div><div class="m-price"></div></div>
+                <div class="m-badge on">نشط</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — PAIN POINTS
+══════════════════════════════════════════ -->
+<section id="pain">
+  <div class="container">
+    <div class="pain-header">
+      <div class="tag">المشكلة الحقيقية</div>
+      <h2 class="section-title">تعبت من هذا؟</h2>
+      <p class="section-sub">نفهم كل مشكلة يواجهها التاجر العراقي — وعندنا الحل لكل واحدة منها</p>
+    </div>
+
+    <div class="pain-grid">
+
+      <div class="pain-card reveal">
+        <span class="pain-emoji">😤</span>
+        <p class="pain-problem">محتاج مبرمج لكل تعديل صغير</p>
+        <div class="pain-arrow">↓ الحل:</div>
+        <p class="pain-solution">في StoreBuilder تعدل كل شيء بنفسك بضغطة — بدون كود</p>
+      </div>
+
+      <div class="pain-card reveal d1">
+        <span class="pain-emoji">💸</span>
+        <p class="pain-problem">Shopify يأخذ عمولة بالدولار وما يدعم الدفع العراقي</p>
+        <div class="pain-arrow">↓ الحل:</div>
+        <p class="pain-solution">ندعم الدفع المحلي، بالدينار والدولار، بدون عمولة خارجية</p>
+      </div>
+
+      <div class="pain-card reveal d2">
+        <span class="pain-emoji">🚚</span>
+        <p class="pain-problem">شركات الشحن ما تتكامل مع المتجر</p>
+        <div class="pain-arrow">↓ الحل:</div>
+        <p class="pain-solution">تكامل مباشر وتلقائي مع شركات الشحن داخل العراق</p>
+      </div>
+
+      <div class="pain-card reveal d3">
+        <span class="pain-emoji">🌐</span>
+        <p class="pain-problem">المنصات الأجنبية ما تفهم السوق العراقي</p>
+        <div class="pain-arrow">↓ الحل:</div>
+        <p class="pain-solution">المنصة مبنية على فهم عميق لاحتياجات التاجر المحلي</p>
+      </div>
+
+      <div class="pain-card reveal d4">
+        <span class="pain-emoji">📊</span>
+        <p class="pain-problem">ما أعرف شو يصير بمتجري — ما في تقارير واضحة</p>
+        <div class="pain-arrow">↓ الحل:</div>
+        <p class="pain-solution">لوحة تحليلات بالعربي تخبرك بكل شيء كل يوم</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 4 — STEPS
+══════════════════════════════════════════ -->
+<section id="steps">
+  <div class="container">
+    <div class="steps-header">
+      <div class="tag">البداية سهلة</div>
+      <h2 class="section-title">كيف تبني متجرك في 5 خطوات؟</h2>
+      <p class="section-sub">من التسجيل إلى أول بيعة — كل شيء واضح ومرتب</p>
+    </div>
+
+    <div class="steps-wrap">
+      <div class="steps-track">
+        <div class="steps-fill" id="steps-fill"></div>
+      </div>
+
+      <div class="step" data-idx="0">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-ico">🔐</div>
+          <h3 class="step-title">سجّل حسابك</h3>
+          <p class="step-desc">30 ثانية وخلاص — بريد إلكتروني وكلمة سر فقط، بدون بطاقة ائتمان</p>
+        </div>
+      </div>
+
+      <div class="step" data-idx="1">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-ico">🎨</div>
+          <h3 class="step-title">اختار تصميم متجرك</h3>
+          <p class="step-desc">قوالب جاهزة ومصممة باحترافية — عدّل اللون والشعار بنفسك</p>
+        </div>
+      </div>
+
+      <div class="step" data-idx="2">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-ico">📦</div>
+          <h3 class="step-title">أضف منتجاتك</h3>
+          <p class="step-desc">الذكاء الاصطناعي يكتب الوصف والعنوان عنك بالعربي في ثوانٍ</p>
+        </div>
+      </div>
+
+      <div class="step" data-idx="3">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-ico">💳</div>
+          <h3 class="step-title">فعّل الدفع</h3>
+          <p class="step-desc">ZainCash، بطاقات، كاش عند الاستلام — كل خيارات الدفع العراقية</p>
+        </div>
+      </div>
+
+      <div class="step" data-idx="4">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-ico">🚀</div>
+          <h3 class="step-title">انشر وابدأ البيع</h3>
+          <p class="step-desc">متجرك مباشر على الإنترنت — شارك الرابط وابدأ التسويق</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 5 — FEATURES
+══════════════════════════════════════════ -->
+<section id="features">
+  <div class="container">
+    <div class="features-header">
+      <div class="tag">المزايا</div>
+      <h2 class="section-title">كل شيء تحتاجه في مكان واحد</h2>
+      <p class="section-sub">بنينا المنصة بناءً على ما يطلبه التاجر العراقي فعلاً</p>
+    </div>
+
+    <div class="features-grid">
+
+      <!-- List -->
+      <div class="feat-list">
+
+        <div class="feat-item on" data-fi="0">
+          <div class="feat-ico">🏪</div>
+          <div>
+            <h3 class="feat-title">متجر احترافي جاهز في دقائق</h3>
+            <p class="feat-desc">قوالب مصممة بعناية، جاهزة للنشر بدون أي خبرة تقنية</p>
+          </div>
+        </div>
+
+        <div class="feat-item" data-fi="1">
+          <div class="feat-ico">🤖</div>
+          <div>
+            <h3 class="feat-title">ذكاء اصطناعي يكتب أوصاف منتجاتك</h3>
+            <p class="feat-desc">وفّر وقتك — اكتب اسم المنتج والذكاء يتولى الباقي بالعربي</p>
+          </div>
+        </div>
+
+        <div class="feat-item" data-fi="2">
+          <div class="feat-ico">📊</div>
+          <div>
+            <h3 class="feat-title">لوحة تحكم بالعربي — بسيطة وقوية</h3>
+            <p class="feat-desc">كل شيء في مكان واحد بلغة تفهمها، بدون تعقيد</p>
+          </div>
+        </div>
+
+        <div class="feat-item" data-fi="3">
+          <div class="feat-ico">📈</div>
+          <div>
+            <h3 class="feat-title">تقارير مبيعات يومية واضحة</h3>
+            <p class="feat-desc">اعرف وين راح فلوسك وأي منتج يبيع أكثر، يومياً</p>
+          </div>
+        </div>
+
+        <div class="feat-item" data-fi="4">
+          <div class="feat-ico">🚚</div>
+          <div>
+            <h3 class="feat-title">تكامل مع شركات الشحن العراقية</h3>
+            <p class="feat-desc">طلبات الشحن تنطلق تلقائياً بدون مجهود منك</p>
+          </div>
+        </div>
+
+        <div class="feat-item" data-fi="5">
+          <div class="feat-ico">🎧</div>
+          <div>
+            <h3 class="feat-title">دعم فني بالعربي على مدار الساعة</h3>
+            <p class="feat-desc">فريق متخصص مستعد يساعدك في أي وقت — بلغتك</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panels -->
+      <div class="feat-panel">
+
+        <!-- Panel 0: Store -->
+        <div class="feat-screen on" data-fp="0">
+          <div class="screen-card">
+            <div class="sc-head">
+              <div class="sc-ico" style="background:#F3F0F9">🏪</div>
+              <div>
+                <div class="sc-title">متجرك الاحترافي</div>
+                <div class="sc-sub">جاهز للنشر في دقائق</div>
+              </div>
+            </div>
+            <div class="sc-stats" style="margin-bottom:16px">
+              <div class="sc-stat"><div class="sc-stat-v" style="color:var(--green)">+18%</div><div class="sc-stat-l">نمو المبيعات</div></div>
+              <div class="sc-stat"><div class="sc-stat-v">245K</div><div class="sc-stat-l">د.ع هذا الشهر</div></div>
+              <div class="sc-stat"><div class="sc-stat-v" style="color:var(--accent)">24</div><div class="sc-stat-l">طلب جديد</div></div>
+            </div>
+            <div class="mini-bars" style="flex:1;align-items:flex-end">
+              <div class="mini-bar" style="height:42%"></div>
+              <div class="mini-bar" style="height:58%"></div>
+              <div class="mini-bar" style="height:38%"></div>
+              <div class="mini-bar" style="height:72%"></div>
+              <div class="mini-bar hi" style="height:100%"></div>
+              <div class="mini-bar" style="height:64%"></div>
+              <div class="mini-bar" style="height:80%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 1: AI -->
+        <div class="feat-screen" data-fp="1">
+          <div class="screen-card">
+            <div class="sc-head">
+              <div class="sc-ico" style="background:#EFF6FF">🤖</div>
+              <div>
+                <div class="sc-title">الذكاء الاصطناعي</div>
+                <div class="sc-sub">يكتب الأوصاف بالعربي</div>
+              </div>
+            </div>
+            <div style="background:var(--gray-50);border-radius:10px;padding:13px;margin-bottom:12px">
+              <div style="font-size:11px;color:var(--gray-400);margin-bottom:5px">اسم المنتج</div>
+              <div style="font-size:14px;font-weight:700;color:var(--primary)">هدفون لاسلكي سامسونج</div>
+            </div>
+            <div style="background:#F0FDF4;border-radius:10px;padding:13px;border:1px solid #BBF7D0;margin-bottom:12px">
+              <div style="font-size:10px;color:var(--green);font-weight:700;margin-bottom:7px">✨ تم الإنشاء بالذكاء الاصطناعي</div>
+              <p style="font-size:12px;color:var(--gray-700);line-height:1.65">هدفون لاسلكي عالي الجودة من سامسونج، يوفر تجربة صوتية استثنائية مع تقنية إلغاء الضوضاء النشطة. بطارية تدوم 30 ساعة متواصلة ومقاومة للماء.</p>
+            </div>
+            <div style="display:flex;gap:9px">
+              <div style="flex:1;background:var(--gray-50);border-radius:9px;padding:9px;text-align:center"><div style="font-size:18px">⚡</div><div style="font-size:10px;color:var(--gray-400);margin-top:3px">5 ثوانٍ</div></div>
+              <div style="flex:1;background:var(--gray-50);border-radius:9px;padding:9px;text-align:center"><div style="font-size:18px">🌍</div><div style="font-size:10px;color:var(--gray-400);margin-top:3px">بالعربي</div></div>
+              <div style="flex:1;background:var(--gray-50);border-radius:9px;padding:9px;text-align:center"><div style="font-size:18px">♾️</div><div style="font-size:10px;color:var(--gray-400);margin-top:3px">غير محدود</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Dashboard -->
+        <div class="feat-screen" data-fp="2">
+          <div class="screen-card">
+            <div class="sc-head">
+              <div class="sc-ico" style="background:#FEF3C7">📊</div>
+              <div>
+                <div class="sc-title">لوحة التحكم</div>
+                <div class="sc-sub">كل شيء بالعربي والدينار</div>
+              </div>
+            </div>
+            <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="background:var(--primary);border-radius:12px;padding:14px;color:#fff">
+                <div style="font-size:10px;opacity:.65;margin-bottom:3px">الطلبات اليوم</div>
+                <div style="font-size:28px;font-weight:800">12</div>
+                <div style="font-size:10px;color:#22C55E;margin-top:2px">↑ +33% من أمس</div>
+              </div>
+              <div style="background:var(--accent);border-radius:12px;padding:14px;color:#fff">
+                <div style="font-size:10px;opacity:.65;margin-bottom:3px">الإيرادات</div>
+                <div style="font-size:24px;font-weight:800">145K</div>
+                <div style="font-size:10px;opacity:.75;margin-top:2px">دينار عراقي</div>
+              </div>
+              <div style="background:var(--gray-50);border-radius:12px;padding:14px">
+                <div style="font-size:10px;color:var(--gray-400);margin-bottom:3px">المنتجات النشطة</div>
+                <div style="font-size:28px;font-weight:800;color:var(--primary)">28</div>
+              </div>
+              <div style="background:var(--gray-50);border-radius:12px;padding:14px">
+                <div style="font-size:10px;color:var(--gray-400);margin-bottom:3px">العملاء الجدد</div>
+                <div style="font-size:28px;font-weight:800;color:var(--primary)">8</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Reports -->
+        <div class="feat-screen" data-fp="3">
+          <div class="screen-card">
+            <div class="sc-head">
+              <div class="sc-ico" style="background:#F0FDF4">📈</div>
+              <div>
+                <div class="sc-title">تقارير المبيعات</div>
+                <div class="sc-sub">إحصائيات يومية دقيقة</div>
+              </div>
+            </div>
+            <div style="background:var(--gray-50);border-radius:10px;padding:12px;margin-bottom:10px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                <span style="font-size:11px;color:var(--gray-400)">المبيعات الأسبوعية</span>
+                <span style="font-size:11px;font-weight:700;color:var(--green)">↑ 18%</span>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:5px;height:56px">
+                <div style="flex:1;background:var(--primary);opacity:.35;border-radius:3px;height:50%"></div>
+                <div style="flex:1;background:var(--primary);opacity:.5;border-radius:3px;height:65%"></div>
+                <div style="flex:1;background:var(--primary);opacity:.45;border-radius:3px;height:40%"></div>
+                <div style="flex:1;background:var(--primary);opacity:.6;border-radius:3px;height:80%"></div>
+                <div style="flex:1;background:var(--accent);border-radius:3px;height:100%"></div>
+                <div style="flex:1;background:var(--primary);opacity:.5;border-radius:3px;height:70%"></div>
+                <div style="flex:1;background:var(--primary);opacity:.55;border-radius:3px;height:75%"></div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;flex:1">
+              <div style="background:#FEF3C7;border-radius:10px;padding:12px">
+                <div style="font-size:10px;color:#92400E;margin-bottom:4px">أكثر منتج يبيع</div>
+                <div style="font-size:13px;font-weight:700;color:#78350F">هدفون سامسونج</div>
+              </div>
+              <div style="background:#EDE9FE;border-radius:10px;padding:12px">
+                <div style="font-size:10px;color:#5B21B6;margin-bottom:4px">متوسط الطلب</div>
+                <div style="font-size:13px;font-weight:700;color:#4C1D95">12,400 د.ع</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 4: Shipping -->
+        <div class="feat-screen" data-fp="4">
+          <div class="screen-card">
+            <div class="sc-head">
+              <div class="sc-ico" style="background:#FFF7ED">🚚</div>
+              <div>
+                <div class="sc-title">الشحن التلقائي</div>
+                <div class="sc-sub">تكامل مع شركات العراق</div>
+              </div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+              <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px">الطلبات النشطة</div>
+              <div style="display:flex;align-items:center;gap:9px;background:var(--gray-50);border-radius:9px;padding:9px 11px">
+                <span style="font-size:16px">📍</span>
+                <div style="flex:1"><div style="font-size:12px;font-weight:600">طلب #2847</div><div style="font-size:10px;color:var(--gray-400)">بغداد — المنصور</div></div>
+                <span style="font-size:10px;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:12px;font-weight:600">في الطريق</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:9px;background:var(--gray-50);border-radius:9px;padding:9px 11px">
+                <span style="font-size:16px">✅</span>
+                <div style="flex:1"><div style="font-size:12px;font-weight:600">طلب #2846</div><div style="font-size:10px;color:var(--gray-400)">بصرة — العشار</div></div>
+                <span style="font-size:10px;background:#F0FDF4;color:#166534;padding:2px 8px;border-radius:12px;font-weight:600">تم التوصيل</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:9px;background:var(--gray-50);border-radius:9px;padding:9px 11px">
+                <span style="font-size:16px">⏳</span>
+                <div style="flex:1"><div style="font-size:12px;font-weight:600">طلب #2848</div><div style="font-size:10px;color:var(--gray-400)">أربيل — المركز</div></div>
+                <span style="font-size:10px;background:#EDE9FE;color:#5B21B6;padding:2px 8px;border-radius:12px;font-weight:600">قيد التجهيز</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 5: Support -->
+        <div class="feat-screen" data-fp="5">
+          <div class="screen-card">
+            <div class="sc-head">
+              <div class="sc-ico" style="background:#FDF2F8">🎧</div>
+              <div>
+                <div class="sc-title">دعم فني بالعربي</div>
+                <div class="sc-sub">24/7 — نحن هنا دائماً</div>
+              </div>
+            </div>
+            <div class="bubble-wrap">
+              <div class="bubble in">مرحباً! كيف أقدر أساعدك اليوم؟ 😊</div>
+              <div class="bubble out">كيف أضيف طريقة دفع جديدة؟</div>
+              <div class="bubble in">بكل سهولة! من لوحة التحكم ← الإعدادات ← الدفع، وتقدر تضيف ZainCash أو الدفع عند الاستلام 👍</div>
+              <div class="bubble out">شكراً، وين أضيف منطقة شحن جديدة؟</div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <div style="flex:1;background:var(--gray-50);border-radius:8px;padding:8px;text-align:center"><span style="font-size:16px">⚡</span><div style="font-size:10px;color:var(--gray-400);margin-top:2px">رد فوري</div></div>
+              <div style="flex:1;background:var(--gray-50);border-radius:8px;padding:8px;text-align:center"><span style="font-size:16px">🌙</span><div style="font-size:10px;color:var(--gray-400);margin-top:2px">24/7</div></div>
+              <div style="flex:1;background:var(--gray-50);border-radius:8px;padding:8px;text-align:center"><span style="font-size:16px">🇮🇶</span><div style="font-size:10px;color:var(--gray-400);margin-top:2px">بالعربي</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 6 — PATRIOTIC
+══════════════════════════════════════════ -->
+<section id="patriotic">
+  <div class="container">
+    <div class="patriotic-inner">
+
+      <p class="p-quote reveal">
+        التاجر العراقي قادر ينافس العالم<br>
+        كل ما يحتاجه الأداة الصح
+      </p>
+
+      <div class="counters">
+        <div class="counter-block reveal d1">
+          <span class="counter-num" data-to="2400" data-prefix="+">0</span>
+          <span class="counter-lbl">تاجر عراقي نشط</span>
+        </div>
+        <div class="counter-block reveal d2">
+          <span class="counter-num" data-to="18000" data-prefix="+">0</span>
+          <span class="counter-lbl">طلب تم توصيله</span>
+        </div>
+        <div class="counter-block reveal d3">
+          <span class="counter-num" data-to="98" data-suffix="%">0</span>
+          <span class="counter-lbl">نسبة رضا التجار</span>
+        </div>
+      </div>
+
+      <p class="p-sub reveal d4">نحن عراقيون مثلك — فهمنا المشكلة وبنينا الحل 🇮🇶</p>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 7 — PRICING
+══════════════════════════════════════════ -->
+<section id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <div class="tag">الباقات والأسعار</div>
+      <h2 class="section-title">اختار الباقة المناسبة لك</h2>
+      <p class="section-sub">ابدأ مجاناً — ما في كرت ائتمان مطلوب</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- Free -->
+      <div class="pc reveal">
+        <div class="pc-name">مجاني</div>
+        <div class="pc-tagline">لتجربة المنصة والانطلاق</div>
+        <div class="pc-price">
+          <span class="pc-amount">0</span>
+          <span class="pc-cur"> دينار</span>
+          <span class="pc-period"> / شهر</span>
+        </div>
+        <div class="pc-hr"></div>
+        <ul class="pc-features">
+          <li>10 منتجات</li>
+          <li>3 تصنيفات</li>
+          <li>متجر عام</li>
+          <li>دعم أساسي</li>
+        </ul>
+        <a href="#" class="btn pc-btn">ابدأ مجاناً</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="pc hot reveal d1">
+        <div class="pc-badge">⭐ الأكثر طلباً</div>
+        <div class="pc-name">احترافي</div>
+        <div class="pc-tagline">للتاجر الجاد الذي يريد النمو</div>
+        <div class="pc-price">
+          <span class="pc-amount">60,000</span>
+          <span class="pc-cur"> دينار</span>
+          <span class="pc-period"> / شهر</span>
+        </div>
+        <div style="font-size:12px;color:var(--green);font-weight:700;margin-top:6px">بعد الخصم: 49,200 د.ع للسنة الأولى</div>
+        <div class="pc-hr"></div>
+        <ul class="pc-features">
+          <li>منتجات غير محدودة</li>
+          <li>20 تصنيف</li>
+          <li>نطاق مخصص</li>
+          <li>تحليلات متقدمة</li>
+          <li>دعم أولوية</li>
+          <li>رمز QR للمتجر</li>
+          <li>برنامج الولاء</li>
+          <li>كوبونات غير محدودة</li>
+        </ul>
+        <a href="#" class="btn pc-btn">جرّب 14 يوم مجاناً</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pc reveal d2">
+        <div class="pc-name">الأعمال</div>
+        <div class="pc-tagline">للأعمال الكبيرة والمتاجر الراسخة</div>
+        <div class="pc-price">
+          <span class="pc-amount">100,000</span>
+          <span class="pc-cur"> دينار</span>
+          <span class="pc-period"> / شهر</span>
+        </div>
+        <div style="font-size:12px;color:var(--green);font-weight:700;margin-top:6px">بعد الخصم: 75,000 د.ع للسنة الأولى</div>
+        <div class="pc-hr"></div>
+        <ul class="pc-features">
+          <li>كل مزايا الاحترافي</li>
+          <li>تقارير Excel تلقائية</li>
+          <li> أضافة كل انواع  المنتجات  </li> 
+   <li> رصيد ذكاء اصطناعي اكثر بزيادة 5X   </li> 
+        </ul>
+        <a href="#" class="btn pc-btn">تواصل معنا</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 8 — COMPARISON
+══════════════════════════════════════════ -->
+<section id="comparison">
+  <div class="container">
+    <div class="comparison-header">
+      <div class="tag">المقارنة</div>
+      <h2 class="section-title">ليش StoreBuilder ومو Shopify؟</h2>
+      <p class="section-sub">مقارنة صريحة — أنت قرر</p>
+    </div>
+
+    <div class="table-wrap reveal">
+      <div class="cmp-table">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:right;width:42%">الميزة</th>
+              <th>🏆 StoreBuilder</th>
+              <th>Shopify</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>دعم الدفع العراقي (ZainCash، بطاقات محلية)</td>
+              <td><span class="cyes">✅ مدمج</span></td>
+              <td><span class="cno">❌ يحتاج إضافة مدفوعة</span></td>
+            </tr>
+            <tr>
+              <td>اللغة العربية الكاملة</td>
+              <td><span class="cyes">✅ كاملة</span></td>
+              <td><span class="cwrn">⚠️ جزئي</span></td>
+            </tr>
+            <tr>
+              <td>العملة بالدينار العراقي</td>
+              <td><span class="cyes">✅ دينار + دولار</span></td>
+              <td><span class="cno">❌ غير مدعوم</span></td>
+            </tr>
+            <tr>
+              <td>تكامل شحن داخل العراق</td>
+              <td><span class="cyes">✅ تلقائي</span></td>
+              <td><span class="cno">❌ غير متوفر</span></td>
+            </tr>
+            <tr>
+              <td>الدعم الفني بالعربي</td>
+              <td><span class="cyes">✅ 24/7 بالعربي</span></td>
+              <td><span class="cno">❌ بالإنجليزي فقط</span></td>
+            </tr>
+            <tr>
+              <td>السعر الشهري</td>
+              <td><span class="cyes">✅ من 0 دينار</span></td>
+              <td><span class="cno">❌ ~$29 (~38,000 د.ع)</span></td>
+            </tr>
+            <tr>
+              <td>فهم السوق المحلي</td>
+              <td><span class="cyes">✅ مبني للعراق</span></td>
+              <td><span class="cno">❌ منصة عالمية</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cmp-note">* بيانات موثقة من المواقع الرسمية</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 9 — FINAL CTA
+══════════════════════════════════════════ -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <h2 class="cta-title">جاهز تبني متجرك؟</h2>
+      <p class="cta-sub">انضم لآلاف التجار العراقيين الذين يبيعون الآن على الإنترنت 🇮🇶</p>
+      <div>
+        <a href="#" class="btn btn-accent cta-btn">ابدأ مجاناً — بدون كرت ائتمان</a>
+      </div>
+      <div class="trust-row">
+        <div class="trust-item"><span>🔒</span><span>آمن 100%</span></div>
+        <div class="trust-item"><span>⚡</span><span>إعداد في 5 دقائق</span></div>
+        <div class="trust-item"><span>🎯</span><span>دعم بالعربي</span></div>
+        <div class="trust-item"><span>🔄</span><span>إلغاء في أي وقت</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 10 — FOOTER
+══════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+
+      <div>
+        <a href="#" class="logo">
+          <div class="logo-mark">🛍</div>
+          <div class="logo-name">Store<em>Builder</em></div>
+        </a>
+        <p class="footer-tagline">المنصة العراقية للتجارة الإلكترونية<br>ابنِ متجرك، بِع أكثر، انمو بسرعة.</p>
+      </div>
+
+      <div class="footer-cols">
+        <div>
+          <p class="fc-title">المنتج</p>
+          <ul class="fc-links">
+            <li><a href="#pain">المزايا</a></li>
+            <li><a href="#pricing">الأسعار</a></li>
+            <li><a href="#steps">كيف يعمل</a></li>
+            <li><a href="#comparison">قارن</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="fc-title">الشركة</p>
+          <ul class="fc-links">
+            <li><a href="#">من نحن</a></li>
+            <li><a href="#">المدونة</a></li>
+            <li><a href="#">وظائف</a></li>
+            <li><a href="#">تواصل معنا</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="fc-title">القانوني</p>
+          <ul class="fc-links">
+            <li><a href="#">سياسة الخصوصية</a></li>
+            <li><a href="#">شروط الاستخدام</a></li>
+            <li><a href="#">سياسة الاسترداد</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-hr"></div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 StoreBuilder — صُنع بـ ❤️ في العراق 🇮🇶</p>
+      <div class="socials">
+        <a href="#" class="social" aria-label="Facebook"><em>f</em></a>
+        <a href="#" class="social" aria-label="Instagram"><em>📸</em></a>
+        <a href="#" class="social" aria-label="X"><em>𝕏</em></a>
+        <a href="#" class="social" aria-label="Telegram"><em>✈</em></a>
+        <a href="#" class="social" aria-label="TikTok"><em>♪</em></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Scroll progress bar ── */
+  const fill = document.getElementById('scroll-bar-fill');
+  function updateProgress() {
+    const max = document.body.scrollHeight - window.innerHeight;
+    if (max <= 0) return;
+    fill.style.width = (window.scrollY / max * 100) + '%';
+  }
+
+  /* ── Header becomes solid on scroll ── */
+  const header = document.getElementById('header');
+  function updateHeader() {
+    header.classList.toggle('solid', window.scrollY > 56);
+  }
+
+  /* ── Hamburger ── */
+  const ham    = document.getElementById('ham');
+  const mobNav = document.getElementById('mob-nav');
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    mobNav.classList.toggle('open');
+  });
+  mobNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      ham.classList.remove('open');
+      mobNav.classList.remove('open');
+    });
+  });
+
+  /* ── Intersection Observer — general reveal ── */
+  const revealIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.14 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
+
+  /* ── Steps scroll animation ── */
+  const stepsSection = document.getElementById('steps');
+  const stepsFill    = document.getElementById('steps-fill');
+  const stepEls      = document.querySelectorAll('.step');
+
+  function updateSteps() {
+    if (!stepsSection) return;
+    const rect = stepsSection.getBoundingClientRect();
+    const vh   = window.innerHeight;
+    const sh   = stepsSection.offsetHeight;
+    // 0 when section enters viewport, 1 when it has scrolled through
+    const raw  = (vh - rect.top) / (vh + sh * 0.55);
+    const pct  = Math.max(0, Math.min(1, raw));
+
+    stepsFill.style.height = (pct * 100) + '%';
+
+    stepEls.forEach((el, i) => {
+      const threshold = (i + 0.6) / stepEls.length;
+      el.classList.toggle('lit', pct >= threshold);
+    });
+  }
+
+  /* ── Counter animation ── */
+  function animateCount(el) {
+    const target   = +el.dataset.to;
+    const prefix   = el.dataset.prefix || '';
+    const suffix   = el.dataset.suffix || '';
+    const dur      = 2200;
+    const start    = performance.now();
+
+    function tick(now) {
+      const elapsed  = now - start;
+      const progress = Math.min(elapsed / dur, 1);
+      // ease-out-cubic
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      const val      = Math.round(eased * target);
+      el.textContent = prefix + val.toLocaleString('ar-IQ') + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const counterIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCount(e.target);
+        counterIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.6 });
+
+  document.querySelectorAll('[data-to]').forEach(el => counterIO.observe(el));
+
+  /* ── Features tabs ── */
+  const featItems   = document.querySelectorAll('.feat-item');
+  const featScreens = document.querySelectorAll('.feat-screen');
+  let   activeFeat  = 0;
+  let   featTimer   = null;
+
+  function switchFeat(idx) {
+    activeFeat = idx;
+    featItems.forEach((el, i)   => el.classList.toggle('on', i === idx));
+    featScreens.forEach((el, i) => el.classList.toggle('on', i === idx));
+  }
+
+  featItems.forEach((item, i) => {
+    item.addEventListener('click',       () => { clearInterval(featTimer); switchFeat(i); });
+    item.addEventListener('mouseenter',  () => switchFeat(i));
+  });
+
+  function startFeatRotation() {
+    featTimer = setInterval(() => {
+      switchFeat((activeFeat + 1) % featItems.length);
+    }, 3600);
+  }
+
+  const featSection = document.querySelector('.features-grid');
+  if (featSection) {
+    featSection.addEventListener('mouseenter', () => clearInterval(featTimer));
+    featSection.addEventListener('mouseleave', startFeatRotation);
+  }
+  startFeatRotation();
+
+  /* ── Scroll listener (throttled) ── */
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateProgress();
+        updateHeader();
+        updateSteps();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // Initial calls
+  updateProgress();
+  updateHeader();
+  updateSteps();
+
+})();
+</script>
+
+</body>
+</html>

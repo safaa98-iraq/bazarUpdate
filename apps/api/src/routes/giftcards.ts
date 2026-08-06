@@ -1,0 +1,40 @@
+import { Router, Request, Response, NextFunction } from 'express';
+import { verifyToken, requireRole, resolveStoreId } from '../middleware/auth';
+import { giftCardService } from '../services/giftcard.service';
+
+const router = Router();
+const merchant = [verifyToken, requireRole('MERCHANT')];
+
+router.get('/', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const storeId = await resolveStoreId(req);
+    const cards = await giftCardService.list(storeId);
+    res.json({ success: true, data: cards });
+  } catch (err) { next(err); }
+});
+
+router.post('/', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const storeId = await resolveStoreId(req);
+    const card = await giftCardService.create(storeId, req.body);
+    res.status(201).json({ success: true, data: card });
+  } catch (err) { next(err); }
+});
+
+router.patch('/:id', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const storeId = await resolveStoreId(req);
+    const card = await giftCardService.setActive(storeId, req.params.id, !!req.body.isActive);
+    res.json({ success: true, data: card });
+  } catch (err) { next(err); }
+});
+
+router.delete('/:id', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const storeId = await resolveStoreId(req);
+    await giftCardService.delete(storeId, req.params.id);
+    res.json({ success: true, message: 'تم حذف البطاقة' });
+  } catch (err) { next(err); }
+});
+
+export default router;
