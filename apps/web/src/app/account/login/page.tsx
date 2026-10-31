@@ -13,7 +13,7 @@ import { AuthResponse } from '@storebuilder/types';
 import { Loader2, Eye, EyeOff, ShoppingBag, Lock, Mail } from 'lucide-react';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
-const C = { bg: '#F1ECE2', p: '#0A0A0A', a: '#2342FF', blue: '#2342FF', blueHover: '#1A30CC', border: '#0A0A0A', text: '#0A0A0A', muted: '#5C574F' };
+const C = { bg: '#F2F2F7', p: '#1C1C1E', a: '#007AFF', blue: '#007AFF', blueHover: '#0062CC', border: '#E5F1FF', text: '#1C1C1E', muted: '#8E8E93' };
 
 const schema = z.object({
   email: z.string().email('بريد إلكتروني غير صالح'),
@@ -68,23 +68,23 @@ function CustomerLoginForm() {
               <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 6 }}>البريد الإلكتروني</label>
               <div style={{ position: 'relative' }}>
                 <input {...register('email')} type="email" dir="ltr" placeholder="you@example.com"
-                  style={{ width: '100%', padding: '12px 16px 12px 40px', background: C.bg, border: `1.5px solid ${errors.email ? '#FF5A4A' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none', textAlign: 'left' }} />
+                  style={{ width: '100%', padding: '12px 16px 12px 40px', background: C.bg, border: `1.5px solid ${errors.email ? '#FF6961' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none', textAlign: 'left' }} />
                 <Mail size={16} color={C.muted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
               </div>
-              {errors.email && <p style={{ color: '#FF2E1F', fontSize: 12, marginTop: 4 }}>{errors.email.message}</p>}
+              {errors.email && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 4 }}>{errors.email.message}</p>}
             </div>
 
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 6 }}>كلمة المرور</label>
               <div style={{ position: 'relative' }}>
                 <input {...register('password')} type={showPw ? 'text' : 'password'} placeholder="••••••••"
-                  style={{ width: '100%', padding: '12px 40px', background: C.bg, border: `1.5px solid ${errors.password ? '#FF5A4A' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none' }} />
+                  style={{ width: '100%', padding: '12px 40px', background: C.bg, border: `1.5px solid ${errors.password ? '#FF6961' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none' }} />
                 <Lock size={16} color={C.muted} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }} />
                 <button type="button" onClick={() => setShowPw(p => !p)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: C.muted }}>
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-              {errors.password && <p style={{ color: '#FF2E1F', fontSize: 12, marginTop: 4 }}>{errors.password.message}</p>}
+              {errors.password && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 4 }}>{errors.password.message}</p>}
             </div>
 
             <button type="submit" disabled={loading}

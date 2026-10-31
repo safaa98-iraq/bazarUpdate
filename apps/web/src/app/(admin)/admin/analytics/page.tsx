@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 import { DollarSign, Users, Store, TrendingUp } from 'lucide-react';
 
-const B = { p: '#0A0A0A', s: '#1A1A1A', a: '#2342FF', soft: '#FFF06B' };
+const B = { p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF', soft: '#E5F1FF' };
 
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
@@ -29,7 +29,7 @@ export default function AdminAnalyticsPage() {
   if (loading) {
     return (
       <div style={{ padding: 32 }}>
-        <div style={{ height: 32, background: '#D9D1C0', borderRadius: 10, width: 200 }} />
+        <div style={{ height: 32, background: '#E5E5EA', borderRadius: 10, width: 200 }} />
       </div>
     );
   }
@@ -38,24 +38,24 @@ export default function AdminAnalyticsPage() {
     <div style={{ padding: 32 }}>
       <div style={{ marginBottom: 28 }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>التحليلات</h1>
-        <p style={{ fontSize: 13, color: '#4A463F', margin: '4px 0 0' }}>نظرة عامة على أداء المنصة</p>
+        <p style={{ fontSize: 13, color: '#6C6C70', margin: '4px 0 0' }}>نظرة عامة على أداء المنصة</p>
       </div>
 
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 28 }}>
-        <KpiCard title="إجمالي الإيرادات" value={formatCurrency(data?.totalRevenue ?? 0)} icon={<DollarSign size={20} color="#00A651" />} bg="#BFF2CF" />
-        <KpiCard title="إجمالي التجار" value={String(data?.totalMerchants ?? 0)} icon={<Users size={20} color={B.s} />} bg="#E8E1D3" />
-        <KpiCard title="المتاجر النشطة" value={String(data?.activeStores ?? 0)} icon={<Store size={20} color="#2342FF" />} bg="#FFF06B" />
-        <KpiCard title="تجار جدد" value={`+${data?.newMerchantsThisMonth ?? 0}`} icon={<TrendingUp size={20} color={B.a} />} bg="#FFF06B" sub="هذا الشهر" />
+        <KpiCard title="إجمالي الإيرادات" value={formatCurrency(data?.totalRevenue ?? 0)} icon={<DollarSign size={20} color="#34C759" />} bg="#E3F9E8" />
+        <KpiCard title="إجمالي التجار" value={String(data?.totalMerchants ?? 0)} icon={<Users size={20} color={B.s} />} bg="#EFEFF4" />
+        <KpiCard title="المتاجر النشطة" value={String(data?.activeStores ?? 0)} icon={<Store size={20} color="#007AFF" />} bg="#E5F1FF" />
+        <KpiCard title="تجار جدد" value={`+${data?.newMerchantsThisMonth ?? 0}`} icon={<TrendingUp size={20} color={B.a} />} bg="#E5F1FF" sub="هذا الشهر" />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
         {/* Revenue by month */}
-        <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #0A0A0A' }}>
+        <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #E5E5EA' }}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 16 }}>الإيرادات الشهرية</h2>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={data?.revenueByMonth ?? []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1ECE2" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#F2F2F7" />
               <XAxis dataKey="month" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}`} />
               <Tooltip formatter={(v: number) => formatCurrency(v)} />
@@ -65,7 +65,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Top stores bar */}
-        <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #0A0A0A' }}>
+        <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #E5E5EA' }}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 16 }}>أفضل 5 متاجر بالإيرادات</h2>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={data?.topStores ?? []} layout="vertical">
@@ -79,13 +79,13 @@ export default function AdminAnalyticsPage() {
       </div>
 
       {/* Top stores table */}
-      <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #0A0A0A', overflow: 'hidden' }}>
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid #0A0A0A' }}>
+      <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E5E5EA', overflow: 'hidden' }}>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid #E5E5EA' }}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, margin: 0 }}>أفضل المتاجر أداءً</h2>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
-            <tr style={{ background: '#F1ECE2' }}>
+            <tr style={{ background: '#F2F2F7' }}>
               <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>#</th>
               <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>المتجر</th>
               <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>الطلبات</th>
@@ -94,13 +94,13 @@ export default function AdminAnalyticsPage() {
           </thead>
           <tbody>
             {data?.topStores?.map((s, i) => (
-              <tr key={s.storeId} style={{ borderTop: '1px solid #F1ECE2' }}>
-                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#8A8478' }}>{i + 1}</td>
+              <tr key={s.storeId} style={{ borderTop: '1px solid #F2F2F7' }}>
+                <td style={{ padding: '12px 16px', fontWeight: 700, color: '#AEAEB2' }}>{i + 1}</td>
                 <td style={{ padding: '12px 16px' }}>
                   <p style={{ fontWeight: 600, color: B.p, margin: 0 }}>{s.storeName}</p>
-                  <p style={{ fontSize: 11, color: '#8A8478', margin: 0 }}>/store/{s.slug}</p>
+                  <p style={{ fontSize: 11, color: '#AEAEB2', margin: 0 }}>/store/{s.slug}</p>
                 </td>
-                <td style={{ padding: '12px 16px', color: '#4A463F' }}>{s.totalOrders}</td>
+                <td style={{ padding: '12px 16px', color: '#6C6C70' }}>{s.totalOrders}</td>
                 <td style={{ padding: '12px 16px', fontWeight: 700, color: B.p }}>{formatCurrency(s.totalRevenue ?? 0)}</td>
               </tr>
             ))}
@@ -113,12 +113,12 @@ export default function AdminAnalyticsPage() {
 
 function KpiCard({ title, value, icon, bg, sub }: { title: string; value: string; icon: React.ReactNode; bg: string; sub?: string }) {
   return (
-    <div style={{ background: '#fff', borderRadius: 10, padding: 20, border: '1px solid #0A0A0A' }}>
+    <div style={{ background: '#fff', borderRadius: 10, padding: 20, border: '1px solid #E5E5EA' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <p style={{ fontSize: 12, color: '#4A463F', margin: 0 }}>{title}</p>
+          <p style={{ fontSize: 12, color: '#6C6C70', margin: 0 }}>{title}</p>
           <p style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: '4px 0 0' }}>{value}</p>
-          {sub && <p style={{ fontSize: 11, color: '#8A8478', margin: '2px 0 0' }}>{sub}</p>}
+          {sub && <p style={{ fontSize: 11, color: '#AEAEB2', margin: '2px 0 0' }}>{sub}</p>}
         </div>
         <div style={{ padding: 12, borderRadius: 10, background: bg }}>{icon}</div>
       </div>

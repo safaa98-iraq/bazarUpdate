@@ -94,7 +94,7 @@ export default function MarketplacePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero */}
-      <div className="rounded-2xl p-8 mb-8 text-center text-white" style={{ background: 'linear-gradient(#2342FF, #2342FF)' }}>
+      <div className="rounded-2xl p-8 mb-8 text-center text-white" style={{ background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)' }}>
         <h1 className="text-3xl font-bold mb-2">سوق المتاجر</h1>
         <p className="text-white/70 mb-6">تسوق من أفضل المتاجر في مكان واحد</p>
         <form onSubmit={handleSearch} className="max-w-xl mx-auto flex gap-2">
@@ -104,7 +104,7 @@ export default function MarketplacePage() {
             placeholder="ابحث عن منتج..."
             className="flex-1 px-4 py-2.5 rounded-xl text-gray-800 text-sm outline-none"
           />
-          <button type="submit" className="px-5 py-2.5 rounded-xl font-semibold text-sm transition" style={{ background: '#2342FF', color: 'white' }}>
+          <button type="submit" className="px-5 py-2.5 rounded-xl font-semibold text-sm transition" style={{ background: '#007AFF', color: 'white' }}>
             <Search className="h-4 w-4" />
           </button>
         </form>
@@ -115,7 +115,7 @@ export default function MarketplacePage() {
         <section className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-              <Star className="h-5 w-5" style={{ color: '#2342FF' }} />
+              <Star className="h-5 w-5" style={{ color: '#007AFF' }} />
               منتجات مميزة
             </h2>
           </div>
@@ -136,7 +136,7 @@ export default function MarketplacePage() {
             {SORT_OPTIONS.map(o => (
               <button key={o.value} onClick={() => { setSort(o.value); setPage(1); }}
                 className={`w-full text-right text-sm px-2 py-1.5 rounded-lg mb-0.5 transition ${sort === o.value ? 'font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
-                style={sort === o.value ? { color: '#2342FF', background: '#FFF6B8' } : {}}>
+                style={sort === o.value ? { color: '#007AFF', background: '#F2F8FF' } : {}}>
                 {o.label}
               </button>
             ))}
@@ -148,13 +148,13 @@ export default function MarketplacePage() {
               <p className="text-sm font-semibold text-gray-700 mb-3">الفئات</p>
               <button onClick={() => { setSelectedCategory(''); setPage(1); }}
                 className={`w-full text-right text-sm px-2 py-1.5 rounded-lg mb-0.5 transition ${!selectedCategory ? 'font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
-                style={!selectedCategory ? { color: '#2342FF', background: '#FFF6B8' } : {}}>
+                style={!selectedCategory ? { color: '#007AFF', background: '#F2F8FF' } : {}}>
                 الكل
               </button>
               {categories.map(c => (
                 <button key={c.tag} onClick={() => { setSelectedCategory(c.tag); setPage(1); }}
                   className={`w-full text-right text-sm px-2 py-1.5 rounded-lg mb-0.5 transition flex justify-between items-center ${selectedCategory === c.tag ? 'font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
-                  style={selectedCategory === c.tag ? { color: '#2342FF', background: '#FFF6B8' } : {}}>
+                  style={selectedCategory === c.tag ? { color: '#007AFF', background: '#F2F8FF' } : {}}>
                   <span>{c.tag}</span>
                   <span className="text-xs text-gray-400">{c.count}</span>
                 </button>
@@ -168,16 +168,16 @@ export default function MarketplacePage() {
               <p className="text-sm font-semibold text-gray-700 mb-3">المتاجر</p>
               <button onClick={() => { setSelectedStore(''); setPage(1); }}
                 className={`w-full text-right text-sm px-2 py-1.5 rounded-lg mb-0.5 flex items-center gap-2 transition ${!selectedStore ? 'font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
-                style={!selectedStore ? { color: '#2342FF', background: '#FFF6B8' } : {}}>
+                style={!selectedStore ? { color: '#007AFF', background: '#F2F8FF' } : {}}>
                 <Store className="h-3.5 w-3.5" /> الكل
               </button>
               {stores.slice(0, 8).map(s => (
                 <button key={s.id} onClick={() => { setSelectedStore(s.id); setPage(1); }}
                   className={`w-full text-right text-sm px-2 py-1.5 rounded-lg mb-0.5 flex items-center gap-2 transition ${selectedStore === s.id ? 'font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
-                  style={selectedStore === s.id ? { color: '#2342FF', background: '#FFF6B8' } : {}}>
+                  style={selectedStore === s.id ? { color: '#007AFF', background: '#F2F8FF' } : {}}>
                   {s.logo
                     ? <img src={s.logo} className="h-4 w-4 rounded object-cover" alt="" />
-                    : <div className="h-4 w-4 rounded" style={{ background: '#0A0A0A' }} />
+                    : <div className="h-4 w-4 rounded" style={{ background: '#1C1C1E' }} />
                   }
                   <span className="truncate">{s.name}</span>
                 </button>
@@ -257,7 +257,7 @@ function ProductCard({ listing, onAdd, added }: { listing: Listing; onAdd: () =>
               </div>
           }
           {listing.isFeatured && (
-            <span className="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full text-white" style={{ background: '#2342FF' }}>
+            <span className="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full text-white" style={{ background: '#007AFF' }}>
               مميز
             </span>
           )}
@@ -267,7 +267,7 @@ function ProductCard({ listing, onAdd, added }: { listing: Listing; onAdd: () =>
             <Store className="h-3 w-3" /> {listing.storeName}
           </p>
           <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-tight mb-2">{listing.name}</h3>
-          <p className="text-sm font-bold" style={{ color: '#2342FF' }}>{formatCurrency(listing.price)}</p>
+          <p className="text-sm font-bold" style={{ color: '#007AFF' }}>{formatCurrency(listing.price)}</p>
         </div>
       </Link>
       <div className="px-3 pb-3">
@@ -275,7 +275,7 @@ function ProductCard({ listing, onAdd, added }: { listing: Listing; onAdd: () =>
           onClick={onAdd}
           disabled={listing.stock <= 0}
           className="w-full py-1.5 rounded-lg text-xs font-semibold transition"
-          style={added ? { background: '#00A651', color: 'white' } : listing.stock > 0 ? { background: '#0A0A0A', color: 'white' } : { background: '#D9D1C0', color: '#8A8478' }}
+          style={added ? { background: '#34C759', color: 'white' } : listing.stock > 0 ? { background: '#1C1C1E', color: 'white' } : { background: '#E5E5EA', color: '#AEAEB2' }}
         >
           {added ? '✓ تمت الإضافة' : listing.stock <= 0 ? 'نفذ المخزون' : 'أضف للسلة'}
         </button>

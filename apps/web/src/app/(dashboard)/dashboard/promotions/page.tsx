@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import type { PromotionPublic } from '@storebuilder/types';
 
-const BRAND = { primary: '#0A0A0A', accent: '#2342FF', border: '#0A0A0A', bg: '#F1ECE2' };
+const BRAND = { primary: '#1C1C1E', accent: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7' };
 
 interface FormState {
   type: 'BOGO' | 'TIERED';
@@ -91,12 +91,12 @@ export default function PromotionsPage() {
     <div className="p-6 max-w-4xl" dir="rtl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: BRAND.primary }}>عروض تلقائية</h1>
+          <h1 className="ios-large-title text-gray-900">عروض تلقائية</h1>
           <p className="text-sm text-gray-500 mt-0.5">اشترِ واحصل على آخر، أو خصم متدرج حسب الكمية — يُطبّق تلقائياً على كل السلة دون كود</p>
         </div>
         <button onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
-          style={{ background: `linear-gradient(#2342FF, #2342FF)` }}>
+          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
           <Plus className="h-4 w-4" /> عرض جديد
         </button>
       </div>
@@ -121,7 +121,7 @@ export default function PromotionsPage() {
                   <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: BRAND.bg, color: BRAND.primary }}>
                     {p.type === 'BOGO' ? 'اشترِ واحصل' : 'خصم متدرج'}
                   </span>
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: p.isActive ? '#BFF2CF' : '#F1ECE2', color: p.isActive ? '#006B32' : '#8A8478' }}>
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: p.isActive ? '#E3F9E8' : '#F2F2F7', color: p.isActive ? '#248A3D' : '#AEAEB2' }}>
                     {p.isActive ? 'نشط' : 'موقوف'}
                   </span>
                 </div>
@@ -129,7 +129,7 @@ export default function PromotionsPage() {
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
                 <button onClick={() => toggleActive(p)} className="p-2 rounded-lg hover:bg-white transition">
-                  {p.isActive ? <Eye className="h-4 w-4" style={{ color: '#00A651' }} /> : <EyeOff className="h-4 w-4 text-gray-400" />}
+                  {p.isActive ? <Eye className="h-4 w-4" style={{ color: '#34C759' }} /> : <EyeOff className="h-4 w-4 text-gray-400" />}
                 </button>
                 <button onClick={() => deletePromo(p.id)} className="p-2 rounded-lg hover:bg-red-50 transition">
                   <Trash2 className="h-4 w-4 text-red-400" />
@@ -160,7 +160,7 @@ export default function PromotionsPage() {
                   {(['BOGO', 'TIERED'] as const).map(t => (
                     <button key={t} type="button" onClick={() => setForm(f => ({ ...f, type: t }))}
                       className="flex-1 py-2 rounded-xl text-xs font-bold border-2 transition"
-                      style={{ borderColor: form.type === t ? BRAND.accent : BRAND.border, color: form.type === t ? BRAND.accent : '#4A463F' }}>
+                      style={{ borderColor: form.type === t ? BRAND.accent : BRAND.border, color: form.type === t ? BRAND.accent : '#6C6C70' }}>
                       {t === 'BOGO' ? 'اشترِ واحصل' : 'خصم متدرج'}
                     </button>
                   ))}
@@ -222,7 +222,7 @@ export default function PromotionsPage() {
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(#2342FF, #2342FF)` }}>
+                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />} إنشاء
                 </button>
               </div>

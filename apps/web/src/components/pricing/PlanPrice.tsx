@@ -15,18 +15,18 @@ export function PlanPrice({ plan, align = 'right', compact = false, showCurrency
   return (
     <div style={{ textAlign: align }}>
       {plan === 'FREE' ? (
-        <div style={{ fontSize: compact ? 22 : 26, fontWeight: 900, color: '#0A0A0A' }}>
+        <div style={{ fontSize: compact ? 22 : 26, fontWeight: 900, color: '#1C1C1E' }}>
           مجاناً
         </div>
       ) : (
         <>
-          <div style={{ fontSize: compact ? 18 : 22, fontWeight: 900, color: '#00A651', lineHeight: 1.2 }}>
+          <div style={{ fontSize: compact ? 18 : 22, fontWeight: 900, color: '#34C759', lineHeight: 1.2 }}>
             {discounted.toLocaleString('en')}{currency}
           </div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#00A651', marginTop: 2 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#34C759', marginTop: 2 }}>
             بعد الخصم للسنة الأولى
           </div>
-          <div style={{ fontSize: compact ? 12 : 13, color: '#5C574F', marginTop: 4 }}>
+          <div style={{ fontSize: compact ? 12 : 13, color: '#8E8E93', marginTop: 4 }}>
             <span style={{ textDecoration: 'line-through' }}>{cfg.priceIQD.toLocaleString('en')}{currency}</span>
             <span style={{ marginRight: 6 }}>السعر الأصلي</span>
           </div>

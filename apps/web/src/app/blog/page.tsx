@@ -8,7 +8,7 @@ import { Newspaper, ArrowLeft } from 'lucide-react';
 import type { ArticlePublic } from '@storebuilder/types';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
-const C = { bg: '#F1ECE2', dark: '#0A0A0A', accent: '#2342FF', text2: '#5C574F', border: '#0A0A0A' };
+const C = { bg: '#F2F2F7', dark: '#1C1C1E', accent: '#007AFF', text2: '#8E8E93', border: '#E5E5EA' };
 
 export default function BlogListPage() {
   useDocumentTitle('المدونة');
@@ -39,9 +39,9 @@ export default function BlogListPage() {
 
       {loading ? (
         <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 28px' }}>
-          <div className="rounded-2xl animate-pulse mb-10" style={{ height: 340, background: '#D9D1C0' }} />
+          <div className="rounded-2xl animate-pulse mb-10" style={{ height: 340, background: '#E5E5EA' }} />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => <div key={i} className="h-64 rounded-2xl animate-pulse" style={{ background: '#D9D1C0' }} />)}
+            {[1, 2, 3].map(i => <div key={i} className="h-64 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />)}
           </div>
         </div>
       ) : articles.length === 0 ? (
@@ -74,7 +74,7 @@ export default function BlogListPage() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {rest.map(a => (
                   <Link key={a.id} href={`/blog/${a.slug}`} className="group bg-white rounded-2xl overflow-hidden border transition hover:shadow-lg hover:-translate-y-1" style={{ borderColor: C.border }}>
-                    <div className="aspect-video overflow-hidden" style={{ background: '#F1ECE2' }}>
+                    <div className="aspect-video overflow-hidden" style={{ background: '#F2F2F7' }}>
                       {a.coverImage
                         ? <Image src={a.coverImage} alt={a.title} width={400} height={225} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                         : <div className="w-full h-full flex items-center justify-center"><Newspaper size={32} style={{ color: C.border }} /></div>}

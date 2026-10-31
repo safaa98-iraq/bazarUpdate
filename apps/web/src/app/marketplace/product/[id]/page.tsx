@@ -71,7 +71,7 @@ export default function ProductDetailPage() {
     <div className="max-w-5xl mx-auto px-4 py-20 text-center text-gray-400">
       <Package className="h-12 w-12 mx-auto mb-3 opacity-30" />
       <p>المنتج غير موجود</p>
-      <Link href="/marketplace" className="mt-4 inline-block text-sm underline" style={{ color: '#2342FF' }}>
+      <Link href="/marketplace" className="mt-4 inline-block text-sm underline" style={{ color: '#007AFF' }}>
         العودة للسوق
       </Link>
     </div>
@@ -113,7 +113,7 @@ export default function ProductDetailPage() {
         {/* Details */}
         <div>
           {listing.isFeatured && (
-            <span className="inline-block text-xs font-bold px-2.5 py-0.5 rounded-full mb-3 text-white" style={{ background: '#2342FF' }}>
+            <span className="inline-block text-xs font-bold px-2.5 py-0.5 rounded-full mb-3 text-white" style={{ background: '#007AFF' }}>
               منتج مميز
             </span>
           )}
@@ -130,7 +130,7 @@ export default function ProductDetailPage() {
           </Link>
 
           <div className="mb-6">
-            <span className="text-3xl font-bold" style={{ color: '#2342FF' }}>{formatCurrency(listing.price)}</span>
+            <span className="text-3xl font-bold" style={{ color: '#007AFF' }}>{formatCurrency(listing.price)}</span>
             {listing.originalPrice > listing.price && (
               <span className="mr-2 text-lg text-gray-400 line-through">{formatCurrency(listing.originalPrice)}</span>
             )}
@@ -171,9 +171,9 @@ export default function ProductDetailPage() {
               onClick={handleAdd}
               disabled={listing.stock <= 0}
               className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition"
-              style={added ? { background: '#00A651', color: 'white' }
-                : listing.stock > 0 ? { background: '#0A0A0A', color: 'white' }
-                : { background: '#D9D1C0', color: '#8A8478' }}
+              style={added ? { background: '#34C759', color: 'white' }
+                : listing.stock > 0 ? { background: '#1C1C1E', color: 'white' }
+                : { background: '#E5E5EA', color: '#AEAEB2' }}
             >
               <ShoppingCart className="h-4 w-4" />
               {added ? 'تمت الإضافة ✓' : 'أضف للسلة'}

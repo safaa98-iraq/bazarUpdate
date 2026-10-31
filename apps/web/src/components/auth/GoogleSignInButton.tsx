@@ -90,10 +90,10 @@ export function GoogleSignInButton({ onSuccess, label = 'المتابعة مع G
         type="button"
         disabled
         style={{
-          width: '100%', padding: '11px 0', border: '1.5px solid #0A0A0A',
+          width: '100%', padding: '11px 0', border: '1.5px solid #E5F1FF',
           borderRadius: 10, background: '#FAFAFA', cursor: 'not-allowed',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-          fontSize: 14, color: '#8A8478', fontFamily: 'inherit',
+          fontSize: 14, color: '#AEAEB2', fontFamily: 'inherit',
         }}
         title="أضف NEXT_PUBLIC_GOOGLE_CLIENT_ID في ملف .env.local"
       >

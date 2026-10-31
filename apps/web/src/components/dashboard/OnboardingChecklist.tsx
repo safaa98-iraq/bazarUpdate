@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import Link from 'next/link';
 import { CheckCircle2, Circle, ChevronDown, ChevronUp, Rocket, Store, Image as ImageIcon, Package, Tag, Lightbulb, type LucideIcon } from 'lucide-react';
 
-const B = { p: '#0A0A0A', a: '#2342FF', border: '#0A0A0A', bg: '#F1ECE2', soft: '#F1ECE2' };
+const B = { p: '#1C1C1E', a: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7', soft: '#F2F2F7' };
 
 interface OnboardingStatus {
   store: boolean;
@@ -113,9 +113,9 @@ export function OnboardingChecklist() {
               {pct}%
             </span>
           </div>
-          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#D9D1C0' }}>
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#E5E5EA' }}>
             <div className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${pct}%`, background: `linear-gradient(#2342FF, #2342FF)` }} />
+              style={{ width: `${pct}%`, background: `linear-gradient(90deg, #0A84FF, #5E5CE6)` }} />
           </div>
         </div>
         {collapsed ? <ChevronDown className="h-4 w-4 flex-shrink-0" style={{ color: B.p }} />
@@ -135,8 +135,8 @@ export function OnboardingChecklist() {
                 {/* Icon */}
                 <div className="flex-shrink-0 mt-0.5">
                   {done
-                    ? <CheckCircle2 className="h-5 w-5" style={{ color: '#00A651' }} />
-                    : <Circle className="h-5 w-5" style={{ color: isNext ? B.a : '#BDB4A3' }} />}
+                    ? <CheckCircle2 className="h-5 w-5" style={{ color: '#34C759' }} />
+                    : <Circle className="h-5 w-5" style={{ color: isNext ? B.a : '#D1D1D6' }} />}
                 </div>
 
                 {/* Content */}
@@ -156,7 +156,7 @@ export function OnboardingChecklist() {
                     <p className="text-xs text-gray-500 mt-0.5">{step.desc}</p>
                   )}
                   {isNext && (
-                    <p className="text-xs mt-1 flex items-center gap-1" style={{ color: '#4A463F' }}>
+                    <p className="text-xs mt-1 flex items-center gap-1" style={{ color: '#6C6C70' }}>
                       <Lightbulb className="h-3 w-3" /> {step.tip}
                     </p>
                   )}
@@ -167,7 +167,7 @@ export function OnboardingChecklist() {
                   <Link href={step.href}
                     className="flex-shrink-0 text-xs font-bold px-3 py-1.5 rounded-xl transition hover:opacity-80"
                     style={isNext
-                      ? { background: `linear-gradient(#2342FF, #2342FF)`, color: '#fff' }
+                      ? { background: `linear-gradient(135deg, #0A84FF, #5E5CE6)`, color: '#fff' }
                       : { background: B.soft, color: B.p, border: `1px solid ${B.border}` }}>
                     {step.cta}
                   </Link>

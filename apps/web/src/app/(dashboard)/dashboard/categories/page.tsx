@@ -9,7 +9,7 @@ import { Plan, getFeatureLimit } from '@/lib/plan-features';
 import Link from 'next/link';
 import { trackPage, track } from '@/lib/track';
 
-const B = { p: '#0A0A0A', a: '#2342FF', border: '#0A0A0A', bg: '#F1ECE2', soft: '#F1ECE2' };
+const B = { p: '#1C1C1E', a: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7', soft: '#F2F2F7' };
 
 interface Category { id: string; name: string; slug: string; }
 
@@ -109,7 +109,7 @@ export default function CategoriesPage() {
 
   if (loading) return (
     <div className="p-8 space-y-4">
-      {[1, 2, 3].map(i => <div key={i} className="h-14 rounded-2xl animate-pulse" style={{ background: '#D9D1C0' }} />)}
+      {[1, 2, 3].map(i => <div key={i} className="h-14 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />)}
     </div>
   );
 
@@ -124,7 +124,7 @@ export default function CategoriesPage() {
           <Tag className="h-5 w-5" style={{ color: B.a }} />
         </div>
         <div>
-          <h1 className="text-xl font-bold" style={{ color: B.p }}>التصنيفات</h1>
+          <h1 className="ios-large-title text-gray-900">التصنيفات</h1>
           <p className="text-sm text-gray-500">تظهر في رأس متجرك وتُستخدم لتصنيف منتجاتك</p>
         </div>
         <div className="mr-auto flex items-center gap-2">
@@ -133,7 +133,7 @@ export default function CategoriesPage() {
           </span>
           {plan === 'FREE' && (
             <Link href="/dashboard/upgrade" className="text-xs font-bold px-3 py-1.5 rounded-xl text-white transition hover:opacity-90"
-              style={{ background: `linear-gradient(135deg, #9B3DFF, ${B.a})` }}>
+              style={{ background: `linear-gradient(135deg, #AF52DE, ${B.a})` }}>
               زيادة الحد
             </Link>
           )}
@@ -164,7 +164,7 @@ export default function CategoriesPage() {
             style={{
               flex: 1, padding: '11px 14px', borderRadius: 10, border: `1.5px solid ${B.border}`,
               fontSize: 14, outline: 'none', fontFamily: 'inherit', background: atLimit ? '#fafafa' : '#fff',
-              color: '#0A0A0A', transition: 'border-color .2s',
+              color: '#1C1C1E', transition: 'border-color .2s',
             }}
             onFocus={e => { e.target.style.borderColor = B.a; }}
             onBlur={e => { e.target.style.borderColor = B.border; }}
@@ -175,8 +175,8 @@ export default function CategoriesPage() {
             style={{
               display: 'flex', alignItems: 'center', gap: 6, padding: '11px 18px',
               borderRadius: 10, border: 'none', cursor: !newName.trim() || atLimit || adding ? 'not-allowed' : 'pointer',
-              background: !newName.trim() || atLimit || adding ? '#D9D1C0' : `linear-gradient(#2342FF, #2342FF)`,
-              color: !newName.trim() || atLimit || adding ? '#8A8478' : '#fff',
+              background: !newName.trim() || atLimit || adding ? '#E5E5EA' : `linear-gradient(135deg, #0A84FF, #5E5CE6)`,
+              color: !newName.trim() || atLimit || adding ? '#AEAEB2' : '#fff',
               fontSize: 14, fontWeight: 700, fontFamily: 'inherit', transition: 'all .2s',
             }}
           >
@@ -234,12 +234,12 @@ export default function CategoriesPage() {
                   />
                   <button onClick={() => handleSave(cat.id)} disabled={savingId === cat.id}
                     className="w-8 h-8 rounded-xl flex items-center justify-center transition hover:opacity-80"
-                    style={{ background: '#00A651', color: '#fff', border: 'none', cursor: 'pointer', flexShrink: 0 }}>
+                    style={{ background: '#34C759', color: '#fff', border: 'none', cursor: 'pointer', flexShrink: 0 }}>
                     {savingId === cat.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
                   </button>
                   <button onClick={cancelEdit}
                     className="w-8 h-8 rounded-xl flex items-center justify-center transition hover:opacity-80"
-                    style={{ background: '#D9D1C0', color: '#4A463F', border: 'none', cursor: 'pointer', flexShrink: 0 }}>
+                    style={{ background: '#E5E5EA', color: '#6C6C70', border: 'none', cursor: 'pointer', flexShrink: 0 }}>
                     <X className="h-3.5 w-3.5" />
                   </button>
                 </div>
@@ -263,7 +263,7 @@ export default function CategoriesPage() {
                       onClick={() => handleDelete(cat)}
                       disabled={deletingId === cat.id}
                       className="w-8 h-8 rounded-xl flex items-center justify-center transition hover:bg-red-50"
-                      style={{ border: '1px solid #FF8A7A', background: 'transparent', cursor: deletingId === cat.id ? 'not-allowed' : 'pointer', flexShrink: 0 }}
+                      style={{ border: '1px solid #FFA59F', background: 'transparent', cursor: deletingId === cat.id ? 'not-allowed' : 'pointer', flexShrink: 0 }}
                       title="حذف">
                       {deletingId === cat.id
                         ? <Loader2 className="h-3.5 w-3.5 animate-spin text-red-400" />

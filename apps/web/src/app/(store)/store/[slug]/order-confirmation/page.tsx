@@ -23,14 +23,14 @@ export default function OrderConfirmationPage() {
     if (store?.name) document.title = `تم تأكيد الطلب — ${store.name}`;
   }, [store?.name]);
 
-  const theme = store?.theme ?? '#0A0A0A';
+  const theme = store?.theme ?? '#1C1C1E';
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" dir="rtl" style={{ background: '#F1ECE2' }}>
+    <div className="min-h-screen flex items-center justify-center px-4" dir="rtl" style={{ background: '#F2F2F7' }}>
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 text-center">
         {/* Check icon */}
         <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
-          style={{ background: 'linear-gradient(135deg, #00A651, #00A651)', boxShadow: '0 12px 40px rgba(5,150,105,.25)' }}>
+          style={{ background: 'linear-gradient(135deg, #34C759, #34C759)', boxShadow: '0 12px 40px rgba(5,150,105,.25)' }}>
           <CheckCircle2 className="h-10 w-10 text-white" />
         </div>
 
@@ -41,7 +41,7 @@ export default function OrderConfirmationPage() {
         </p>
 
         {/* Order info */}
-        <div className="rounded-2xl p-5 mb-6 text-right" style={{ background: '#F1ECE2', border: '1px solid #0A0A0A' }}>
+        <div className="rounded-2xl p-5 mb-6 text-right" style={{ background: '#F2F2F7', border: '1px solid #E5F1FF' }}>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-sm font-bold" style={{ color: theme }}>تفاصيل الطلب</span>
           </div>
@@ -62,7 +62,7 @@ export default function OrderConfirmationPage() {
         </div>
 
         {/* Steps */}
-        <div className="rounded-2xl p-4 mb-6 text-right" style={{ background: '#DDF8E5', border: '1px solid #A8EDBE' }}>
+        <div className="rounded-2xl p-4 mb-6 text-right" style={{ background: '#F1FCF3', border: '1px solid #C9F2D3' }}>
           <p className="text-sm font-bold text-emerald-800 mb-3 flex items-center gap-1.5"><Smartphone size={14} /> الخطوات التالية</p>
           {[
             'سيتصل بك المتجر لتأكيد طلبك',
@@ -78,7 +78,7 @@ export default function OrderConfirmationPage() {
 
         <Link href={`/store/${slug}`}
           className="block w-full py-3.5 font-bold text-white rounded-2xl transition hover:opacity-90"
-          style={{ background: `linear-gradient(135deg, ${theme}, #2342FF)` }}>
+          style={{ background: `linear-gradient(135deg, ${theme}, #007AFF)` }}>
           مواصلة التسوق
         </Link>
       </div>

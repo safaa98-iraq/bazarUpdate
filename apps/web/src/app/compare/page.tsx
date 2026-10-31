@@ -6,9 +6,9 @@ import { PlanPrice } from '@/components/pricing/PlanPrice';
 export const metadata = { title: 'بازار مقابل شوبيفاي — قارن بنفسك', description: 'لماذا يختار التجار العرب بازار بدلاً من شوبيفاي؟ مقارنة شاملة بالأسعار والميزات.' };
 
 const C = {
-  p: '#0A0A0A', s: '#1A1A1A', a: '#2342FF',
-  text: '#0A0A0A', muted: '#5C574F', border: '#0A0A0A',
-  bg: '#F1ECE2', bgAlt: '#FFFFFF',
+  p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF',
+  text: '#1C1C1E', muted: '#8E8E93', border: '#E5F1FF',
+  bg: '#F2F2F7', bgAlt: '#FFFFFF',
 };
 
 interface CompRow {
@@ -38,9 +38,9 @@ const rows: CompRow[] = [
 ];
 
 function BoolCell({ value, isBazar }: { value: string | boolean; isBazar: boolean }) {
-  const good = isBazar ? '#00A651' : '#FF2E1F';
+  const good = isBazar ? '#34C759' : '#FF3B30';
   const neutral = C.muted;
-  const color = value === true ? good : value === false ? '#FF2E1F' : isBazar ? C.s : neutral;
+  const color = value === true ? good : value === false ? '#FF3B30' : isBazar ? C.s : neutral;
 
   if (value === true) return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -52,7 +52,7 @@ function BoolCell({ value, isBazar }: { value: string | boolean; isBazar: boolea
   if (value === false) return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#EF444415', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <X size={13} color="#FF2E1F" strokeWidth={3} />
+        <X size={13} color="#FF3B30" strokeWidth={3} />
       </div>
     </div>
   );
@@ -99,8 +99,8 @@ export default function ComparePage() {
         {/* Score cards */}
         <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
           {[
-            { label: 'متجر', value: '0 كلفة', sub: 'للبدء', color: '#00A651', bg: '#DDF8E5', border: '#A8EDBE' },
-            { label: 'عمولة', value: '0%', sub: 'على مبيعاتك', color: C.s, bg: '#E4D4FF', border: '#A89E8C' },
+            { label: 'متجر', value: '0 كلفة', sub: 'للبدء', color: '#34C759', bg: '#F1FCF3', border: '#C9F2D3' },
+            { label: 'عمولة', value: '0%', sub: 'على مبيعاتك', color: C.s, bg: '#F5EAFB', border: '#C7C7CC' },
             { label: 'دعم', value: '< ساعة', sub: 'استجابة واتساب', color: C.a, bg: '#FFF1F2', border: '#FECDD3' },
           ].map(({ label, value, sub, color, bg, border }) => (
             <div key={label} style={{ background: bg, border: `1.5px solid ${border}`, borderRadius: 10, padding: '20px 28px', minWidth: 140 }}>
@@ -124,7 +124,7 @@ export default function ComparePage() {
 
             {/* Bazar */}
             <div style={{ padding: '16px 12px', textAlign: 'center', background: `${C.p}08`, borderRight: `1px solid ${C.border}` }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: `linear-gradient(#2342FF, #2342FF)`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: `linear-gradient(135deg, #0A84FF, #5E5CE6)`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                 <Globe size={18} color="#fff" />
               </div>
               <div style={{ fontWeight: 900, fontSize: 15, color: C.p }}>بازار</div>
@@ -139,8 +139,8 @@ export default function ComparePage() {
               <div style={{ width: 40, height: 40, borderRadius: 10, background: '#95BF47', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                 <Shield size={18} color="#fff" />
               </div>
-              <div style={{ fontWeight: 800, fontSize: 15, color: '#1A1A1A' }}>Shopify</div>
-              <div style={{ fontSize: 11, color: '#8A8478' }}>عالمي</div>
+              <div style={{ fontWeight: 800, fontSize: 15, color: '#3A3A3C' }}>Shopify</div>
+              <div style={{ fontSize: 11, color: '#AEAEB2' }}>عالمي</div>
             </div>
           </div>
 
@@ -177,7 +177,7 @@ export default function ComparePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
             {[
               {
-                icon: MessageCircle, color: '#00A651',
+                icon: MessageCircle, color: '#34C759',
                 title: 'دعم عربي فوري',
                 body: 'فريق الدعم يتحدث العربية ويرد عبر واتساب خلال أقل من ساعة — لا بوتات ولا ردود إنجليزية آلية.',
               },
@@ -192,7 +192,7 @@ export default function ComparePage() {
                 body: 'منتجاتك تظهر كإعلانات في المتاجر الأخرى — وصول أوسع دون إنفاق على الإعلانات.',
               },
               {
-                icon: Crown, color: '#FF6B00',
+                icon: Crown, color: '#FF9500',
                 title: 'بدون عمولة أبداً',
                 body: 'كل دينار تبيعه يصل إليك — بازار لا يأخذ نسبة من مبيعاتك مهما كانت.',
               },
@@ -209,7 +209,7 @@ export default function ComparePage() {
         </div>
 
         {/* CTA */}
-        <div style={{ marginTop: 48, background: `linear-gradient(#2342FF, #2342FF)`, borderRadius: 10, padding: '40px 32px', textAlign: 'center' }}>
+        <div style={{ marginTop: 48, background: `linear-gradient(135deg, #0A84FF, #5E5CE6)`, borderRadius: 10, padding: '40px 32px', textAlign: 'center' }}>
           <h2 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 900, fontSize: 'clamp(18px,3vw,24px)', color: '#fff', margin: '0 0 10px' }}>
             ابدأ متجرك اليوم — مجاناً
           </h2>

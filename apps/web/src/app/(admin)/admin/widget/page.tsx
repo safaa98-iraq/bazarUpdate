@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { WidgetStat } from '@storebuilder/types';
 
-const B = { p: '#0A0A0A', s: '#1A1A1A', a: '#2342FF', soft: '#FFF06B' };
+const B = { p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF', soft: '#E5F1FF' };
 
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
@@ -52,27 +52,27 @@ export default function AdminWidgetPage() {
   return (
     <div style={{ padding: 32, maxWidth: 1100, margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-        <div style={{ width: 44, height: 44, borderRadius: 10, background: '#E8E1D3', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 44, height: 44, borderRadius: 10, background: '#EFEFF4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Code2 size={22} color={B.s} />
         </div>
         <div>
           <h1 style={{ fontSize: 20, fontWeight: 800, color: B.p, margin: 0 }}>إعدادات الويدجت</h1>
-          <p style={{ fontSize: 13, color: '#4A463F', margin: 0 }}>إدارة ويدجتات التجارة المدمجة عبر جميع المتاجر</p>
+          <p style={{ fontSize: 13, color: '#6C6C70', margin: 0 }}>إدارة ويدجتات التجارة المدمجة عبر جميع المتاجر</p>
         </div>
       </div>
 
       {/* Summary cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 24 }}>
         {[
-          { label: 'ويدجتات نشطة', value: totals.enabled, icon: <Code2 size={20} color={B.s} />, bg: '#E8E1D3' },
-          { label: 'المشاهدات', value: totals.impressions.toLocaleString('en'), icon: <Eye size={20} color="#2342FF" />, bg: '#FFF06B' },
-          { label: 'النقرات', value: totals.clicks.toLocaleString('en'), icon: <MousePointerClick size={20} color="#FF6B00" />, bg: '#FFD9A8' },
-          { label: 'التحويلات', value: totals.conversions.toLocaleString('en'), icon: <ShoppingBag size={20} color="#00A651" />, bg: '#BFF2CF' },
+          { label: 'ويدجتات نشطة', value: totals.enabled, icon: <Code2 size={20} color={B.s} />, bg: '#EFEFF4' },
+          { label: 'المشاهدات', value: totals.impressions.toLocaleString('en'), icon: <Eye size={20} color="#007AFF" />, bg: '#E5F1FF' },
+          { label: 'النقرات', value: totals.clicks.toLocaleString('en'), icon: <MousePointerClick size={20} color="#FF9500" />, bg: '#FFF4E0' },
+          { label: 'التحويلات', value: totals.conversions.toLocaleString('en'), icon: <ShoppingBag size={20} color="#34C759" />, bg: '#E3F9E8' },
         ].map(({ label, value, icon, bg }) => (
-          <div key={label} style={{ background: '#fff', borderRadius: 10, border: '1px solid #0A0A0A', padding: '16px 20px' }}>
+          <div key={label} style={{ background: '#fff', borderRadius: 10, border: '1px solid #E5E5EA', padding: '16px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <p style={{ fontSize: 12, color: '#4A463F', margin: 0 }}>{label}</p>
+                <p style={{ fontSize: 12, color: '#6C6C70', margin: 0 }}>{label}</p>
                 <p style={{ fontSize: 20, fontWeight: 800, color: B.p, margin: '4px 0 0' }}>{String(value)}</p>
               </div>
               <div style={{ padding: 10, borderRadius: 10, background: bg }}>{icon}</div>
@@ -83,19 +83,19 @@ export default function AdminWidgetPage() {
 
       {/* Conversion rate banner */}
       {totals.clicks > 0 && (
-        <div style={{ marginBottom: 24, background: 'linear-gradient(90deg,#E8E1D3,#FFF06B)', border: '1px solid #0A0A0A', borderRadius: 10, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ marginBottom: 24, background: 'linear-gradient(90deg,#EFEFF4,#E5F1FF)', border: '1px solid #E5E5EA', borderRadius: 10, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ fontSize: 30, fontWeight: 800, color: B.a }}>
             {((totals.conversions / totals.clicks) * 100).toFixed(1)}%
           </div>
           <div>
             <p style={{ fontWeight: 700, color: B.p, margin: 0 }}>متوسط معدل التحويل</p>
-            <p style={{ fontSize: 13, color: '#4A463F', margin: 0 }}>{totals.conversions} طلب من {totals.clicks} نقرة عبر جميع الويدجتات</p>
+            <p style={{ fontSize: 13, color: '#6C6C70', margin: 0 }}>{totals.conversions} طلب من {totals.clicks} نقرة عبر جميع الويدجتات</p>
           </div>
         </div>
       )}
 
       {/* Store table */}
-      <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #0A0A0A', overflow: 'hidden' }}>
+      <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E5E5EA', overflow: 'hidden' }}>
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 160 }}>
             <Loader2 size={24} color={B.s} style={{ animation: 'spin 1s linear infinite' }} />
@@ -103,7 +103,7 @@ export default function AdminWidgetPage() {
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
-              <tr style={{ background: '#F1ECE2', borderBottom: '1px solid #0A0A0A' }}>
+              <tr style={{ background: '#F2F2F7', borderBottom: '1px solid #E5E5EA' }}>
                 {['المتجر', 'الرابط', 'المشاهدات', 'النقرات', 'التحويلات', 'معدل CVR', 'الويدجت'].map(h => (
                   <th key={h} style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{h}</th>
                 ))}
@@ -111,33 +111,33 @@ export default function AdminWidgetPage() {
             </thead>
             <tbody>
               {stats.length === 0 ? (
-                <tr><td colSpan={7} style={{ padding: '40px 16px', textAlign: 'center', color: '#8A8478' }}>لا يوجد متاجر</td></tr>
+                <tr><td colSpan={7} style={{ padding: '40px 16px', textAlign: 'center', color: '#AEAEB2' }}>لا يوجد متاجر</td></tr>
               ) : stats.map((s, idx) => {
                 const cvr = s.clicks > 0 ? ((s.conversions / s.clicks) * 100).toFixed(1) : '—';
                 return (
-                  <tr key={s.storeId} style={{ borderTop: '1px solid #F1ECE2', background: idx % 2 === 0 ? '#fff' : '#FFFFFF' }}>
+                  <tr key={s.storeId} style={{ borderTop: '1px solid #F2F2F7', background: idx % 2 === 0 ? '#fff' : '#FFFFFF' }}>
                     <td style={{ padding: '12px 16px', fontWeight: 600, color: B.p }}>{s.storeName}</td>
-                    <td style={{ padding: '12px 16px', color: '#8A8478', fontFamily: 'monospace', fontSize: 11 }}>{s.slug}</td>
+                    <td style={{ padding: '12px 16px', color: '#AEAEB2', fontFamily: 'monospace', fontSize: 11 }}>{s.slug}</td>
                     <td style={{ padding: '12px 16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Eye size={13} color="#8A8478" />
-                        <span style={{ color: '#4A463F' }}>{s.impressions.toLocaleString('en')}</span>
+                        <Eye size={13} color="#AEAEB2" />
+                        <span style={{ color: '#6C6C70' }}>{s.impressions.toLocaleString('en')}</span>
                       </div>
                     </td>
                     <td style={{ padding: '12px 16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <MousePointerClick size={13} color="#FF6B00" />
-                        <span style={{ color: '#4A463F' }}>{s.clicks.toLocaleString('en')}</span>
+                        <MousePointerClick size={13} color="#FF9500" />
+                        <span style={{ color: '#6C6C70' }}>{s.clicks.toLocaleString('en')}</span>
                       </div>
                     </td>
                     <td style={{ padding: '12px 16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <ShoppingBag size={13} color="#00A651" />
-                        <span style={{ color: '#4A463F' }}>{s.conversions.toLocaleString('en')}</span>
+                        <ShoppingBag size={13} color="#34C759" />
+                        <span style={{ color: '#6C6C70' }}>{s.conversions.toLocaleString('en')}</span>
                       </div>
                     </td>
                     <td style={{ padding: '12px 16px' }}>
-                      <span style={{ fontWeight: 600, color: cvr !== '—' && parseFloat(cvr) > 5 ? '#00A651' : '#4A463F' }}>
+                      <span style={{ fontWeight: 600, color: cvr !== '—' && parseFloat(cvr) > 5 ? '#34C759' : '#6C6C70' }}>
                         {cvr}{cvr !== '—' ? '%' : ''}
                       </span>
                     </td>
@@ -148,13 +148,13 @@ export default function AdminWidgetPage() {
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
                       >
                         {toggling[s.storeId] ? (
-                          <Loader2 size={20} color="#8A8478" style={{ animation: 'spin 1s linear infinite' }} />
+                          <Loader2 size={20} color="#AEAEB2" style={{ animation: 'spin 1s linear infinite' }} />
                         ) : s.widgetEnabled ? (
                           <ToggleRight size={24} color={B.a} />
                         ) : (
-                          <ToggleLeft size={24} color="#8A8478" />
+                          <ToggleLeft size={24} color="#AEAEB2" />
                         )}
-                        <span style={{ fontSize: 12, fontWeight: 600, color: s.widgetEnabled ? B.a : '#8A8478' }}>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: s.widgetEnabled ? B.a : '#AEAEB2' }}>
                           {s.widgetEnabled ? 'مفعّل' : 'موقوف'}
                         </span>
                       </button>

@@ -12,7 +12,7 @@ import { PlanGate } from '@/components/ui/PlanGate';
 import { trackPage, track } from '@/lib/track';
 import type { BrandPublic } from '@storebuilder/types';
 
-const B = { p: '#0A0A0A', a: '#2342FF', border: '#0A0A0A', bg: '#F1ECE2', soft: '#F1ECE2' };
+const B = { p: '#1C1C1E', a: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7', soft: '#F2F2F7' };
 
 function BrandsPageContent() {
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
@@ -82,7 +82,7 @@ function BrandsPageContent() {
 
   if (loading) return (
     <div className="p-8 space-y-4">
-      {[1, 2, 3].map(i => <div key={i} className="h-14 rounded-2xl animate-pulse" style={{ background: '#D9D1C0' }} />)}
+      {[1, 2, 3].map(i => <div key={i} className="h-14 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />)}
     </div>
   );
 
@@ -93,7 +93,7 @@ function BrandsPageContent() {
           <BadgeCheck className="h-5 w-5" style={{ color: B.a }} />
         </div>
         <div>
-          <h1 className="text-xl font-bold" style={{ color: B.p }}>الماركات التجارية</h1>
+          <h1 className="ios-large-title text-gray-900">الماركات التجارية</h1>
           <p className="text-sm text-gray-500">نظّم منتجاتك حسب الماركة، ويستطيع الزبون تصفّح منتجات كل ماركة</p>
         </div>
         <div className="mr-auto">
@@ -134,7 +134,7 @@ function BrandsPageContent() {
               style={{
                 width: '100%', padding: '11px 14px', borderRadius: 10, border: `1.5px solid ${B.border}`,
                 fontSize: 14, outline: 'none', fontFamily: 'inherit', background: atLimit ? '#fafafa' : '#fff',
-                color: '#0A0A0A',
+                color: '#1C1C1E',
               }}
             />
             <p className="text-xs text-gray-400 mt-1">شعار الماركة اختياري — 400×400 بكسل يعطي أفضل نتيجة</p>
@@ -146,8 +146,8 @@ function BrandsPageContent() {
           className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-bold transition"
           style={{
             border: 'none', cursor: !name.trim() || atLimit || adding ? 'not-allowed' : 'pointer',
-            background: !name.trim() || atLimit || adding ? '#D9D1C0' : `linear-gradient(#2342FF, #2342FF)`,
-            color: !name.trim() || atLimit || adding ? '#8A8478' : '#fff',
+            background: !name.trim() || atLimit || adding ? '#E5E5EA' : `linear-gradient(135deg, #0A84FF, #5E5CE6)`,
+            color: !name.trim() || atLimit || adding ? '#AEAEB2' : '#fff',
           }}>
           {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
           إضافة الماركة
@@ -185,7 +185,7 @@ function BrandsPageContent() {
                 onClick={() => handleDelete(brand)}
                 disabled={deletingId === brand.id}
                 className="w-8 h-8 rounded-xl flex items-center justify-center transition hover:bg-red-50"
-                style={{ border: '1px solid #FF8A7A', background: 'transparent', cursor: deletingId === brand.id ? 'not-allowed' : 'pointer', flexShrink: 0 }}
+                style={{ border: '1px solid #FFA59F', background: 'transparent', cursor: deletingId === brand.id ? 'not-allowed' : 'pointer', flexShrink: 0 }}
                 title="حذف">
                 {deletingId === brand.id
                   ? <Loader2 className="h-3.5 w-3.5 animate-spin text-red-400" />

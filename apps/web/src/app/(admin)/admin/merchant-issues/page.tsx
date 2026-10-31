@@ -6,14 +6,14 @@ import { apiFetch } from '@/lib/api';
 import { AlertTriangle, Store, Package, TrendingDown, Ban, Clock, MessageCircle } from 'lucide-react';
 import type { MerchantIssue, MerchantIssueType } from '@storebuilder/types';
 
-const B = { p: '#0A0A0A', a: '#2342FF', border: '#0A0A0A', bg: '#F1ECE2' };
+const B = { p: '#1C1C1E', a: '#007AFF', border: '#E5E5EA', bg: '#F2F2F7' };
 
 const ISSUE_META: Record<MerchantIssueType, { label: string; icon: typeof Store; bg: string; color: string }> = {
-  NO_STORE: { label: 'بلا متجر', icon: Store, bg: '#FFD9A8', color: '#A33E00' },
-  NO_PRODUCTS: { label: 'بلا منتجات', icon: Package, bg: '#FFD9A8', color: '#A33E00' },
-  NO_SALES: { label: 'بلا مبيعات', icon: TrendingDown, bg: '#FFC4BC', color: '#B80F00' },
-  SUSPENDED: { label: 'موقوف', icon: Ban, bg: '#FFC4BC', color: '#B80F00' },
-  PAYMENT_PENDING: { label: 'دفع بانتظار المراجعة', icon: Clock, bg: '#FFF06B', color: '#1A30CC' },
+  NO_STORE: { label: 'بلا متجر', icon: Store, bg: '#FFF4E0', color: '#C93400' },
+  NO_PRODUCTS: { label: 'بلا منتجات', icon: Package, bg: '#FFF4E0', color: '#C93400' },
+  NO_SALES: { label: 'بلا مبيعات', icon: TrendingDown, bg: '#FFE9E7', color: '#D70015' },
+  SUSPENDED: { label: 'موقوف', icon: Ban, bg: '#FFE9E7', color: '#D70015' },
+  PAYMENT_PENDING: { label: 'دفع بانتظار المراجعة', icon: Clock, bg: '#E5F1FF', color: '#0040DD' },
 };
 
 const FILTERS: { value: MerchantIssueType | 'ALL'; label: string }[] = [
@@ -48,18 +48,18 @@ export default function MerchantIssuesPage() {
 
   if (loading) return (
     <div className="p-8 space-y-4">
-      {[1, 2, 3, 4].map(i => <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: '#D9D1C0' }} />)}
+      {[1, 2, 3, 4].map(i => <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />)}
     </div>
   );
 
   return (
     <div className="p-6 max-w-4xl mx-auto" dir="rtl">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: '#FFD9A8' }}>
-          <AlertTriangle className="h-5 w-5" style={{ color: '#A33E00' }} />
+        <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: '#FFF4E0' }}>
+          <AlertTriangle className="h-5 w-5" style={{ color: '#C93400' }} />
         </div>
         <div>
-          <h1 className="text-xl font-bold" style={{ color: B.p }}>تجار بحاجة متابعة</h1>
+          <h1 className="ios-large-title text-gray-900">تجار بحاجة متابعة</h1>
           <p className="text-sm text-gray-500">إشارات تلقائية على تجار قد يحتاجون دعماً — لا مبيعات، بلا منتجات، دفع معلّق، أو متجر موقوف</p>
         </div>
       </div>

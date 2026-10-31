@@ -10,7 +10,7 @@ import {
 import { GitCompare, TrendingUp, TrendingDown, Minus, Search, ArrowUpDown, Store as StoreIcon } from 'lucide-react';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
-const B = { p: '#0A0A0A', s: '#1A1A1A', a: '#2342FF', soft: '#F1ECE2', border: '#0A0A0A' };
+const B = { p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF', soft: '#F2F2F7', border: '#E5F1FF' };
 
 type SortKey = 'totalRevenue' | 'totalOrders' | 'avgOrderValue' | 'productCount' | 'growthPercent' | 'createdAt';
 
@@ -37,7 +37,7 @@ function GrowthBadge({ pct }: { pct: number | null }) {
   const flat = pct === 0;
   return (
     <span className="text-xs font-bold flex items-center gap-1"
-      style={{ color: flat ? '#8A8478' : positive ? '#00A651' : '#FF2E1F' }}>
+      style={{ color: flat ? '#AEAEB2' : positive ? '#34C759' : '#FF3B30' }}>
       {flat ? <Minus className="h-3 w-3" /> : positive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
       {positive && !flat ? '+' : ''}{pct}%
     </span>
@@ -100,7 +100,7 @@ export default function StoreComparisonPage() {
 
   if (loading) return (
     <div className="p-6 space-y-4" dir="rtl">
-      {[1, 2, 3].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: '#D9D1C0' }} />)}
+      {[1, 2, 3].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />)}
     </div>
   );
 
@@ -115,9 +115,9 @@ export default function StoreComparisonPage() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard title="إجمالي المتاجر" value={totals.stores} icon={<StoreIcon className="h-5 w-5" style={{ color: B.s }} />} />
-        <KpiCard title="إجمالي الإيرادات" value={formatCurrency(totals.revenue)} icon={<TrendingUp className="h-5 w-5" style={{ color: '#00A651' }} />} />
-        <KpiCard title="متاجر في نمو" value={totals.growing} sub="مقارنة بالشهر الماضي" icon={<TrendingUp className="h-5 w-5" style={{ color: '#00A651' }} />} />
-        <KpiCard title="متاجر في تراجع" value={totals.declining} sub="مقارنة بالشهر الماضي" icon={<TrendingDown className="h-5 w-5" style={{ color: '#FF2E1F' }} />} />
+        <KpiCard title="إجمالي الإيرادات" value={formatCurrency(totals.revenue)} icon={<TrendingUp className="h-5 w-5" style={{ color: '#34C759' }} />} />
+        <KpiCard title="متاجر في نمو" value={totals.growing} sub="مقارنة بالشهر الماضي" icon={<TrendingUp className="h-5 w-5" style={{ color: '#34C759' }} />} />
+        <KpiCard title="متاجر في تراجع" value={totals.declining} sub="مقارنة بالشهر الماضي" icon={<TrendingDown className="h-5 w-5" style={{ color: '#FF3B30' }} />} />
       </div>
 
       {topByRevenue.length > 0 && (
@@ -126,8 +126,8 @@ export default function StoreComparisonPage() {
           <p className="text-xs text-gray-400 mb-5">أفضل 8 متاجر حسب إجمالي الإيرادات</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={topByRevenue} margin={{ top: 5, right: 5, bottom: 20, left: -10 }}>
-              <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#8A8478' }} angle={-20} textAnchor="end" />
-              <YAxis tick={{ fontSize: 10, fill: '#8A8478' }} />
+              <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#AEAEB2' }} angle={-20} textAnchor="end" />
+              <YAxis tick={{ fontSize: 10, fill: '#AEAEB2' }} />
               <Tooltip formatter={(v: number) => [formatCurrency(v), 'الإيراد']} contentStyle={{ borderRadius: 10, border: `1px solid ${B.border}`, fontSize: 12 }} />
               <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
                 {topByRevenue.map((_, i) => <Cell key={i} fill={i === 0 ? B.a : i < 3 ? B.p : B.s} />)}
@@ -142,7 +142,7 @@ export default function StoreComparisonPage() {
           <div className="relative flex-1 max-w-xs">
             <Search className="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ابحث باسم المتجر أو التاجر…"
-              className="w-full pr-9 pl-3 py-2 rounded-xl border text-sm focus:outline-none transition" style={{ borderColor: '#0A0A0A' }} />
+              className="w-full pr-9 pl-3 py-2 rounded-xl border text-sm focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} />
           </div>
           <span className="text-xs text-gray-400 mr-auto">{filtered.length} من {rows.length} متجر</span>
         </div>
@@ -167,7 +167,7 @@ export default function StoreComparisonPage() {
               </thead>
               <tbody>
                 {filtered.map(r => (
-                  <tr key={r.storeId} className="border-b hover:bg-gray-50 transition" style={{ borderColor: '#F1ECE2' }}>
+                  <tr key={r.storeId} className="border-b hover:bg-gray-50 transition" style={{ borderColor: '#F2F2F7' }}>
                     <td className="px-3 py-3">
                       <p className="font-semibold" style={{ color: B.p }}>{r.storeName}</p>
                       <p className="text-xs text-gray-400">{r.merchantName} · {r.plan}</p>
@@ -181,7 +181,7 @@ export default function StoreComparisonPage() {
                     <td className="px-3 py-3 text-center text-xs text-gray-400">{formatDate(r.createdAt)}</td>
                     <td className="px-3 py-3 text-center">
                       <span className="text-xs px-2.5 py-1 rounded-full font-semibold"
-                        style={{ background: r.isActive ? '#BFF2CF' : '#FFC4BC', color: r.isActive ? '#006B32' : '#B80F00' }}>
+                        style={{ background: r.isActive ? '#E3F9E8' : '#FFE9E7', color: r.isActive ? '#248A3D' : '#D70015' }}>
                         {r.isActive ? 'نشط' : 'موقوف'}
                       </span>
                     </td>
