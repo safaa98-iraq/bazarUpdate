@@ -36,8 +36,8 @@ export function RecentlyViewed({ slug, theme, excludeId }: { slug: string; theme
         {products.slice(0, 8).map(p => (
           <Link key={p.id} href={`/store/${slug}/product/${p.id}`}
             className="group bg-white border rounded-2xl overflow-hidden hover:shadow-md transition"
-            style={{ borderColor: '#E5E5EA' }}>
-            <div className="aspect-square overflow-hidden" style={{ background: '#F2F2F7' }}>
+            style={{ borderColor: '#0A0A0A' }}>
+            <div className="aspect-square overflow-hidden" style={{ background: '#F1ECE2' }}>
               {p.images?.[0]
                 ? <Image src={p.images[0]} alt={p.name} width={300} height={300} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                 : <div className="w-full h-full flex items-center justify-center text-gray-200"><Package size={36} /></div>}

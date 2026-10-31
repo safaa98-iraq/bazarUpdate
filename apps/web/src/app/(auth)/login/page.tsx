@@ -15,15 +15,15 @@ import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 const C = {
-  bg:     '#F2F2F7',
-  p:      '#1C1C1E',
-  a:      '#007AFF',
-  blue:      '#007AFF',
-  blueHover: '#0062CC',
-  soft:   '#E5F1FF',
-  text:   '#1C1C1E',
-  muted:  '#8E8E93',
-  border: '#E5F1FF',
+  bg:     '#F1ECE2',
+  p:      '#0A0A0A',
+  a:      '#2342FF',
+  blue:      '#2342FF',
+  blueHover: '#1A30CC',
+  soft:   '#FFF06B',
+  text:   '#0A0A0A',
+  muted:  '#5C574F',
+  border: '#0A0A0A',
 };
 
 const schema = z.object({
@@ -103,7 +103,7 @@ export default function LoginPage() {
             {/* Divider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0 16px' }}>
               <div style={{ flex: 1, height: 1, background: C.border }} />
-              <span style={{ fontSize: 12, color: '#8E8E93', whiteSpace: 'nowrap' }}>أو بالبريد الإلكتروني</span>
+              <span style={{ fontSize: 12, color: '#5C574F', whiteSpace: 'nowrap' }}>أو بالبريد الإلكتروني</span>
               <div style={{ flex: 1, height: 1, background: C.border }} />
             </div>
 
@@ -124,7 +124,7 @@ export default function LoginPage() {
                   />
                   <Mail size={16} color={C.muted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 </div>
-                {errors.email && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 6 }}>{errors.email.message}</p>}
+                {errors.email && <p style={{ color: '#FF2E1F', fontSize: 12, marginTop: 6 }}>{errors.email.message}</p>}
               </div>
 
               {/* Password */}
@@ -144,7 +144,7 @@ export default function LoginPage() {
                     {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                {errors.password && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 6 }}>{errors.password.message}</p>}
+                {errors.password && <p style={{ color: '#FF2E1F', fontSize: 12, marginTop: 6 }}>{errors.password.message}</p>}
               </div>
 
               {/* Remember Me */}

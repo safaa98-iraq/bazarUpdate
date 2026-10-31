@@ -1,21 +1,19 @@
 // Railway deploy marker: pricing and retired-feature cleanup.
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { Tajawal } from 'next/font/google';
+import { Space_Grotesk, Space_Mono, IBM_Plex_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { FreePlanTextNormalizer } from '@/components/FreePlanTextNormalizer';
 
-const tajawal = Tajawal({
-  subsets: ['arabic', 'latin'],
-  weight: ['300', '400', '500', '700', '800'],
-  // Fallback only: globals.css builds --font-tajawal / --font-cairo as the Apple
-  // system stack (SF Pro + SF Arabic) and falls back to Tajawal off Apple devices.
-  variable: '--font-arabic-fallback',
-  display: 'swap',
-});
+// Raw/brutalist type: Space Grotesk (latin) + Space Mono (labels, numbers) +
+// IBM Plex Sans Arabic. globals.css composes these into --font-tajawal /
+// --font-cairo (legacy names still referenced across pages) and --font-mono.
+const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '700'], variable: '--font-grotesk', display: 'swap' });
+const mono = Space_Mono({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-mono-src', display: 'swap' });
+const arabic = IBM_Plex_Sans_Arabic({ subsets: ['arabic'], weight: ['400', '500', '700'], variable: '--font-arabic', display: 'swap' });
 
-export const viewport: Viewport = { themeColor: '#F2F2F7', viewportFit: 'cover' };
+export const viewport: Viewport = { themeColor: '#F1ECE2', viewportFit: 'cover' };
 
 export const metadata: Metadata = {
   title: {
@@ -151,13 +149,13 @@ const cleanupScript = `
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${tajawal.variable} font-[family-name:var(--font-tajawal)]`}>
+      <body className={`${grotesk.variable} ${mono.variable} ${arabic.variable} font-[family-name:var(--font-tajawal)]`}>
         <Script id="remove-retired-feature-copy" strategy="beforeInteractive">
           {cleanupScript}
         </Script>
         {children}
         <FreePlanTextNormalizer />
-        <Toaster position="top-center" toastOptions={{ style: { borderRadius: 14, background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)', border: '0.5px solid rgba(0,0,0,0.06)', boxShadow: '0 10px 30px rgba(0,0,0,0.12)' } }} />
+        <Toaster position="bottom-left" toastOptions={{ style: { borderRadius: 0, background: '#FFD400', color: '#0A0A0A', border: '2px solid #0A0A0A', boxShadow: '4px 4px 0 #0A0A0A', fontWeight: 700 } }} />
       </body>
     </html>
   );

@@ -9,18 +9,18 @@ import { OrderPublic, OrderStatusType, StorePublic, ProductSpecPublic } from '@s
 import { ChevronDown, ChevronLeft, ShoppingBag, Loader2, MapPin, Package, Printer, Truck, User, Mail, Phone, CreditCard } from 'lucide-react';
 import { trackPage, track } from '@/lib/track';
 
-const BRAND = { primary: '#1C1C1E', secondary: '#3A3A3C', accent: '#007AFF', light: '#E5F1FF' };
+const BRAND = { primary: '#0A0A0A', secondary: '#1A1A1A', accent: '#2342FF', light: '#FFF06B' };
 
 const STATUS_AR: Record<string, string> = {
   DRAFT: 'مسودة', PENDING: 'معلّق', PAID: 'مدفوع', SHIPPED: 'شُحن', DELIVERED: 'مُستلم', CANCELLED: 'ملغي',
 };
 const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
-  DRAFT:     { bg: '#F2F2F7', color: '#6B21A8' },
-  PENDING:   { bg: '#FFF4E0', color: '#C93400' },
-  PAID:      { bg: '#E3F9E8', color: '#248A3D' },
-  SHIPPED:   { bg: '#E5F1FF', color: '#0040DD' },
-  DELIVERED: { bg: '#E3F9E8', color: '#248A3D' },
-  CANCELLED: { bg: '#FFE9E7', color: '#D70015' },
+  DRAFT:     { bg: '#F1ECE2', color: '#6B21A8' },
+  PENDING:   { bg: '#FFD9A8', color: '#A33E00' },
+  PAID:      { bg: '#BFF2CF', color: '#006B32' },
+  SHIPPED:   { bg: '#FFF06B', color: '#1A30CC' },
+  DELIVERED: { bg: '#BFF2CF', color: '#006B32' },
+  CANCELLED: { bg: '#FFC4BC', color: '#B80F00' },
 };
 const STATUS_TRANSITIONS: Record<string, OrderStatusType[]> = {
   PENDING: ['PAID', 'CANCELLED'],
@@ -249,8 +249,8 @@ export default function OrdersPage() {
           <button key={f.value} onClick={() => setStatusFilter(f.value)}
             className="px-4 py-1.5 rounded-full text-sm font-medium transition"
             style={{
-              background: statusFilter === f.value ? BRAND.primary : '#F2F2F7',
-              color: statusFilter === f.value ? 'white' : '#6C6C70',
+              background: statusFilter === f.value ? BRAND.primary : '#F1ECE2',
+              color: statusFilter === f.value ? 'white' : '#4A463F',
             }}>
             {f.label}
             {f.value !== 'ALL' && (
@@ -268,7 +268,7 @@ export default function OrdersPage() {
           <Loader2 className="h-6 w-6 animate-spin" style={{ color: BRAND.accent }} />
         </div>
       ) : orders.length === 0 ? (
-        <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: '#E5E5EA' }}>
+        <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: '#0A0A0A' }}>
           <ShoppingBag className="h-12 w-12 mx-auto mb-4 text-gray-200" />
           <p className="font-medium text-gray-400 mb-1">لا توجد طلبات بعد</p>
           <p className="text-sm text-gray-400">ستظهر هنا طلبات عملائك فور ورودها</p>
@@ -278,11 +278,11 @@ export default function OrdersPage() {
           {orders.map(order => {
             const isExpanded = expandedId === order.id;
             const nextStatuses = STATUS_TRANSITIONS[order.status] ?? [];
-            const style = STATUS_STYLES[order.status] ?? { bg: '#F2F2F7', color: '#6C6C70' };
+            const style = STATUS_STYLES[order.status] ?? { bg: '#F1ECE2', color: '#4A463F' };
 
             return (
               <div key={order.id} className="bg-white rounded-2xl border overflow-hidden transition hover:shadow-sm"
-                style={{ borderColor: order.id === highlightId ? BRAND.accent : '#E5E5EA', boxShadow: order.id === highlightId ? `0 0 0 3px ${BRAND.light}` : undefined }}>
+                style={{ borderColor: order.id === highlightId ? BRAND.accent : '#D9D1C0', boxShadow: order.id === highlightId ? `0 0 0 3px ${BRAND.light}` : undefined }}>
                 {/* Row */}
                 <button
                   className="w-full px-5 py-4 flex items-center gap-4 text-right hover:bg-gray-50/50 transition"
@@ -322,7 +322,7 @@ export default function OrdersPage() {
 
                 {/* Expanded details */}
                 {isExpanded && (
-                  <div className="px-5 pb-5 border-t border-[#F2F2F7]">
+                  <div className="px-5 pb-5 border-t border-[#F1ECE2]">
                     <div className="flex items-center justify-between mt-4 mb-1">
                       <p className="text-xs font-bold" style={{ color: BRAND.secondary }}>تفاصيل الطلب</p>
                       <div className="flex items-center gap-2">
@@ -346,7 +346,7 @@ export default function OrdersPage() {
                         <div className="space-y-2">
                           {order.items.map(item => (
                             <div key={item.id} className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0" style={{ background: '#F2F2F7' }}>
+                              <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0" style={{ background: '#F1ECE2' }}>
                                 {item.product?.images?.[0]
                                   ? <img src={item.product.images[0]} alt="" className="w-full h-full object-cover" />
                                   : <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={14} /></div>}
@@ -361,7 +361,7 @@ export default function OrdersPage() {
                               </span>
                             </div>
                           ))}
-                          <div className="pt-2 border-t border-[#F2F2F7] flex justify-between font-bold text-sm">
+                          <div className="pt-2 border-t border-[#F1ECE2] flex justify-between font-bold text-sm">
                             <span style={{ color: BRAND.primary }}>الإجمالي</span>
                             <span style={{ color: BRAND.accent }}>{formatCurrency(order.total)}</span>
                           </div>
@@ -371,7 +371,7 @@ export default function OrdersPage() {
                       {/* Customer + shipping + actions */}
                       <div>
                         <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>بيانات الزبون</p>
-                        <div className="space-y-1.5 mb-4 p-3 rounded-xl text-sm" style={{ background: '#F2F2F7' }}>
+                        <div className="space-y-1.5 mb-4 p-3 rounded-xl text-sm" style={{ background: '#F1ECE2' }}>
                           <div className="flex items-center gap-2 text-gray-700">
                             <User className="h-3.5 w-3.5 flex-shrink-0" style={{ color: BRAND.accent }} />
                             {order.customerName}
@@ -393,7 +393,7 @@ export default function OrdersPage() {
                         </div>
 
                         <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>عنوان الشحن</p>
-                        <div className="flex items-start gap-2 mb-5 p-3 rounded-xl" style={{ background: '#F2F2F7' }}>
+                        <div className="flex items-start gap-2 mb-5 p-3 rounded-xl" style={{ background: '#F1ECE2' }}>
                           <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: BRAND.accent }} />
                           <p className="text-sm text-gray-600 leading-relaxed">
                             <AddressBlock shippingAddress={order.shippingAddress} />
@@ -410,8 +410,8 @@ export default function OrdersPage() {
                                   disabled={updatingId === order.id}
                                   className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl transition disabled:opacity-50 hover:opacity-90"
                                   style={{
-                                    background: s === 'CANCELLED' ? '#FFE9E7' : `linear-gradient(135deg, #0A84FF, #5E5CE6)`,
-                                    color: s === 'CANCELLED' ? '#D70015' : 'white',
+                                    background: s === 'CANCELLED' ? '#FFC4BC' : `linear-gradient(#2342FF, #2342FF)`,
+                                    color: s === 'CANCELLED' ? '#B80F00' : 'white',
                                   }}>
                                   {updatingId === order.id ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
                                   {NEXT_STATUS_LABEL[s] ?? s}
@@ -422,9 +422,9 @@ export default function OrdersPage() {
                         )}
 
                         {order.status === 'DELIVERED' && (
-                          <div className="flex items-center gap-2 mt-3 px-3 py-2 rounded-xl" style={{ background: '#E3F9E8' }}>
-                            <ChevronLeft className="h-4 w-4" style={{ color: '#248A3D' }} />
-                            <span className="text-xs font-medium" style={{ color: '#248A3D' }}>تم تسليم هذا الطلب بنجاح</span>
+                          <div className="flex items-center gap-2 mt-3 px-3 py-2 rounded-xl" style={{ background: '#BFF2CF' }}>
+                            <ChevronLeft className="h-4 w-4" style={{ color: '#006B32' }} />
+                            <span className="text-xs font-medium" style={{ color: '#006B32' }}>تم تسليم هذا الطلب بنجاح</span>
                           </div>
                         )}
                       </div>

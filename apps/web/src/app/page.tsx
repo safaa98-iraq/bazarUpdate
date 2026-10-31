@@ -17,28 +17,28 @@ import {
 
 /* ─── Design tokens ─── */
 const C = {
-  bg:        '#F2F2F7',
-  white:     '#ffffff',
-  dark:      '#1C1C1E',
-  text2:     '#8E8E93',
-  border:    '#E5E5EA',
-  accent:    '#007AFF',
+  bg:        '#F1ECE2',
+  white:     '#FFFFFF',
+  dark:      '#0A0A0A',
+  text2:     '#5C574F',
+  border:    '#0A0A0A',
+  accent:    '#2342FF',
   accentDark:'#B54D74',
-  soft:      '#E5F1FF',
-  blue:      '#007AFF',
-  blueHover: '#0062CC',
-  blueLight: '#E5F1FF',
-  blueMid:   '#5AC8FA',
-  green:     '#34C759',
-  greenDark: '#248A3D',
-  greenLight:'#E3F9E8',
-  butter:    '#FFF4E0',
+  soft:      '#FFF06B',
+  blue:      '#2342FF',
+  blueHover: '#1A30CC',
+  blueLight: '#FFF06B',
+  blueMid:   '#7F95FF',
+  green:     '#00A651',
+  greenDark: '#006B32',
+  greenLight:'#BFF2CF',
+  butter:    '#FFD9A8',
   gold:      '#C99937',
-  lavender:  '#E5E5EA',
-  palePink:  '#FFF9DB',
+  lavender:  '#D9D1C0',
+  palePink:  '#FFF1A8',
   cyan:      '#C7F2FF',
-  success:   '#34C759',
-  note:      '#8E8E93',
+  success:   '#00A651',
+  note:      '#5C574F',
 };
 
 /* ─── Shared styles ─── */
@@ -622,10 +622,10 @@ function ComparisonIllustration() {
       <rect x="46" y="170" width="88" height="26" rx="10" fill={C.blue} />
       <text x="90" y="188" textAnchor="middle" fontFamily="Tajawal,sans-serif" fontSize="12" fontWeight="700" fill="#fff">د.ع</text>
       <rect x="180" y="60" width="140" height="150" rx="10" fill={C.butter} />
-      <path d="M180 76 L250 30 L320 76" fill="#C7C7CC" />
+      <path d="M180 76 L250 30 L320 76" fill="#A89E8C" />
       <rect x="206" y="106" width="88" height="24" rx="10" fill="#fff" />
-      <rect x="206" y="140" width="88" height="10" rx="10" fill="#C7C7CC" />
-      <rect x="206" y="156" width="60" height="8" rx="10" fill="#C7C7CC" opacity="0.5" />
+      <rect x="206" y="140" width="88" height="10" rx="10" fill="#A89E8C" />
+      <rect x="206" y="156" width="60" height="8" rx="10" fill="#A89E8C" opacity="0.5" />
       <rect x="206" y="170" width="88" height="26" rx="10" fill="#9494AC" />
       <text x="250" y="188" textAnchor="middle" fontFamily="Tajawal,sans-serif" fontSize="11" fontWeight="700" fill="#fff">USD</text>
       <circle cx="170" cy="26" r="18" fill="#F5CE6A" />
@@ -647,7 +647,7 @@ function ShopifyCompareCell({ value }: { value: CompareCellVal }) {
   if (value === false) return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'rgba(220,38,38,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <X size={13} color="#FF3B30" strokeWidth={3} />
+        <X size={13} color="#FF2E1F" strokeWidth={3} />
       </div>
     </div>
   );
@@ -744,7 +744,7 @@ function SnapchatGlyph({ size = 24, color = '#000' }: { size?: number; color?: s
 function LPIntegrations() {
   const [ref, visible] = useScrollReveal(0.1);
   const apps: { label: string; bg: string; render: () => React.ReactNode }[] = [
-    { label: 'إنستغرام', bg: 'linear-gradient(135deg, #833AB4, #007AFF, #F5A623)', render: () => <Instagram size={24} color="#fff" strokeWidth={1.8} /> },
+    { label: 'إنستغرام', bg: 'linear-gradient(135deg, #833AB4, #2342FF, #F5A623)', render: () => <Instagram size={24} color="#fff" strokeWidth={1.8} /> },
     { label: 'واتساب', bg: '#25D366', render: () => <WhatsAppGlyph size={24} /> },
     { label: 'فيسبوك', bg: '#1877F2', render: () => <Facebook size={22} color="#fff" strokeWidth={2} /> },
     { label: 'سناب شات', bg: '#FFFC00', render: () => <SnapchatGlyph size={24} /> },
@@ -817,7 +817,7 @@ function LPBlog() {
                 opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)',
                 transition: 'all .4s', transitionDelay: `${i * 80}ms`,
               }}>
-              <div style={{ aspectRatio: '16 / 9', background: '#F2F2F7', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ aspectRatio: '16 / 9', background: '#F1ECE2', position: 'relative', overflow: 'hidden' }}>
                 {a.coverImage
                   ? <Image src={a.coverImage} alt={a.title} fill sizes="(max-width: 768px) 100vw, 380px" className="object-cover" />
                   : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Newspaper size={28} color={C.border} /></div>}
@@ -938,8 +938,8 @@ function CompareCell({ value, colColor }: { value: CompareCellValue; colColor: s
       </div>
     </div>
   );
-  if (value === false) return <div style={{ display: 'flex', justifyContent: 'center' }}><Minus size={14} color="#D1D1D6" /></div>;
-  if (value === null) return <div style={{ display: 'flex', justifyContent: 'center' }}><X size={14} color="#FF3B30" /></div>;
+  if (value === false) return <div style={{ display: 'flex', justifyContent: 'center' }}><Minus size={14} color="#BDB4A3" /></div>;
+  if (value === null) return <div style={{ display: 'flex', justifyContent: 'center' }}><X size={14} color="#FF2E1F" /></div>;
   return <div style={{ textAlign: 'center', fontSize: 12, fontWeight: 600, color: colColor }}>{value}</div>;
 }
 

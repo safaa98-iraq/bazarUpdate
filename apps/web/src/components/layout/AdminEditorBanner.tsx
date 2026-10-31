@@ -9,7 +9,7 @@ export function AdminEditorBanner() {
   if (!isEditorMode || !editingStore) return null;
 
   return (
-    <div style={{ width: '100%', background: 'linear-gradient(90deg, #0A84FF, #5E5CE6)', color: '#fff', padding: '8px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13, fontWeight: 500, zIndex: 50 }}>
+    <div style={{ width: '100%', background: 'linear-gradient(#2342FF, #2342FF)', color: '#fff', padding: '8px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13, fontWeight: 500, zIndex: 50 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <PenSquare size={15} />
         <span>

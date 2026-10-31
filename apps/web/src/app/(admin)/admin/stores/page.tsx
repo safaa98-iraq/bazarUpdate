@@ -8,7 +8,7 @@ import { formatDate } from '@/lib/utils';
 import { useEditorStore } from '@/lib/stores/editor.store';
 import { Search, ToggleLeft, ToggleRight, ExternalLink, PenSquare, ChevronLeft, ShieldOff, ShieldCheck, X } from 'lucide-react';
 
-const B = { p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF', soft: '#E5F1FF' };
+const B = { p: '#0A0A0A', s: '#1A1A1A', a: '#2342FF', soft: '#FFF06B' };
 
 interface StoreItem {
   id: string; name: string; slug: string;
@@ -113,64 +113,64 @@ export default function AdminStoresPage() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>المتاجر</h1>
-          <p style={{ fontSize: 13, color: '#6C6C70', margin: '4px 0 0' }}>{total} متجر إجمالاً</p>
+          <p style={{ fontSize: 13, color: '#4A463F', margin: '4px 0 0' }}>{total} متجر إجمالاً</p>
         </div>
       </div>
 
       <div style={{ position: 'relative', marginBottom: 20 }}>
-        <Search size={15} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#AEAEB2' }} />
+        <Search size={15} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#8A8478' }} />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="ابحث عن متجر..."
-          style={{ width: '100%', padding: '9px 36px 9px 12px', border: '1.5px solid #E5E5EA', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none' }}
+          style={{ width: '100%', padding: '9px 36px 9px 12px', border: '1.5px solid #0A0A0A', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none' }}
         />
       </div>
 
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: '#E5E5EA', borderRadius: 12 }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: '#D9D1C0', borderRadius: 12 }} />)}
         </div>
       ) : stores.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '64px 0', color: '#AEAEB2', fontSize: 14 }}>لا يوجد متاجر</div>
+        <div style={{ textAlign: 'center', padding: '64px 0', color: '#8A8478', fontSize: 14 }}>لا يوجد متاجر</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {stores.map((store) => {
             const isSuspended = !store.isActive && !!store.suspendedAt;
             return (
-              <div key={store.id} style={{ background: '#fff', borderRadius: 10, padding: '14px 18px', border: '1px solid #E5E5EA', display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: '#EFEFF4', color: B.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, flexShrink: 0 }}>
+              <div key={store.id} style={{ background: '#fff', borderRadius: 10, padding: '14px 18px', border: '1px solid #0A0A0A', display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: '#E8E1D3', color: B.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, flexShrink: 0 }}>
                   {store.name.charAt(0).toUpperCase()}
                 </div>
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                     <p style={{ fontWeight: 700, color: B.p, margin: 0, fontSize: 14 }}>{store.name}</p>
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 10, background: isSuspended ? '#FFE9E7' : store.isActive ? '#E3F9E8' : '#F2F2F7', color: isSuspended ? '#FF3B30' : store.isActive ? '#34C759' : '#6C6C70' }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 10, background: isSuspended ? '#FFC4BC' : store.isActive ? '#BFF2CF' : '#F1ECE2', color: isSuspended ? '#FF2E1F' : store.isActive ? '#00A651' : '#4A463F' }}>
                       {isSuspended ? 'موقوف' : store.isActive ? 'نشط' : 'معطّل'}
                     </span>
-                    {store.isPublished && <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 10, background: '#EFEFF4', color: B.s }}>منشور</span>}
+                    {store.isPublished && <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 10, background: '#E8E1D3', color: B.s }}>منشور</span>}
                   </div>
-                  <p style={{ fontSize: 12, color: '#6C6C70', margin: '3px 0 0' }}>
+                  <p style={{ fontSize: 12, color: '#4A463F', margin: '3px 0 0' }}>
                     /store/{store.slug} · {store._count.products} منتج · {store._count.orders} طلب
                   </p>
-                  <p style={{ fontSize: 11, color: '#AEAEB2', margin: '2px 0 0' }}>
+                  <p style={{ fontSize: 11, color: '#8A8478', margin: '2px 0 0' }}>
                     المالك: {store.merchant.name} ({store.merchant.plan}) · {formatDate(store.createdAt)}
                   </p>
                   {isSuspended && store.suspendReason && (
-                    <p style={{ fontSize: 11, color: '#FF3B30', margin: '2px 0 0' }}>السبب: {store.suspendReason}</p>
+                    <p style={{ fontSize: 11, color: '#FF2E1F', margin: '2px 0 0' }}>السبب: {store.suspendReason}</p>
                   )}
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   {isSuspended ? (
                     <button onClick={() => handleUnsuspend(store.id)}
-                      style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: '#34C759', background: '#E3F9E8', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: '#00A651', background: '#BFF2CF', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit' }}>
                       <ShieldCheck size={13} /> رفع الإيقاف
                     </button>
                   ) : (
                     <button onClick={() => { setSuspendModal(store); setSuspendReason(''); }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: '#FF3B30', background: '#FFE9E7', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: '#FF2E1F', background: '#FFC4BC', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit' }}>
                       <ShieldOff size={13} /> إيقاف
                     </button>
                   )}
@@ -180,23 +180,23 @@ export default function AdminStoresPage() {
                       onClick={() => toggleStore(store.id, !store.isActive)}
                       disabled={togglingId === store.id}
                       title={store.isActive ? 'تعطيل المتجر' : 'تفعيل المتجر'}
-                      style={{ padding: 6, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 10, color: store.isActive ? '#34C759' : '#AEAEB2', opacity: togglingId === store.id ? 0.5 : 1 }}
+                      style={{ padding: 6, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 10, color: store.isActive ? '#00A651' : '#8A8478', opacity: togglingId === store.id ? 0.5 : 1 }}
                     >
                       {store.isActive ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
                     </button>
                   )}
 
                   <button onClick={() => handleEnterEditor(store)}
-                    style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: B.s, background: '#EFEFF4', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit' }}>
+                    style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: B.s, background: '#E8E1D3', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit' }}>
                     <PenSquare size={13} /> تحرير
                   </button>
 
                   <a href={`/store/${store.slug}`} target="_blank" rel="noopener noreferrer"
-                    style={{ padding: 6, background: 'transparent', borderRadius: 10, color: '#AEAEB2', display: 'flex', alignItems: 'center' }}>
+                    style={{ padding: 6, background: 'transparent', borderRadius: 10, color: '#8A8478', display: 'flex', alignItems: 'center' }}>
                     <ExternalLink size={15} />
                   </a>
 
-                  <Link href={`/admin/stores/${store.id}`} style={{ padding: 6, background: 'transparent', borderRadius: 10, color: '#AEAEB2', display: 'flex', alignItems: 'center' }}>
+                  <Link href={`/admin/stores/${store.id}`} style={{ padding: 6, background: 'transparent', borderRadius: 10, color: '#8A8478', display: 'flex', alignItems: 'center' }}>
                     <ChevronLeft size={15} />
                   </Link>
                 </div>
@@ -212,11 +212,11 @@ export default function AdminStoresPage() {
           <div style={{ background: '#fff', borderRadius: 10, padding: 28, width: '100%', maxWidth: 400, margin: '0 16px', boxShadow: '0 20px 60px rgba(0,0,0,.25)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <h3 style={{ fontWeight: 800, color: B.p, margin: 0, fontSize: 16 }}>إيقاف المتجر</h3>
-              <button onClick={() => setSuspendModal(null)} style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 10, color: '#AEAEB2' }}>
+              <button onClick={() => setSuspendModal(null)} style={{ padding: 4, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 10, color: '#8A8478' }}>
                 <X size={16} />
               </button>
             </div>
-            <p style={{ fontSize: 13, color: '#6C6C70', marginBottom: 16 }}>
+            <p style={{ fontSize: 13, color: '#4A463F', marginBottom: 16 }}>
               إيقاف <strong>{suspendModal.name}</strong> سيجعله غير متاح للعملاء فوراً.
             </p>
             <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: B.p, marginBottom: 6 }}>سبب الإيقاف</label>
@@ -225,15 +225,15 @@ export default function AdminStoresPage() {
               onChange={e => setSuspendReason(e.target.value)}
               placeholder="أدخل سبب الإيقاف (سيظهر لصاحب المتجر)..."
               rows={3}
-              style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #FFA59F', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', resize: 'none', outline: 'none' }}
+              style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #FF8A7A', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', resize: 'none', outline: 'none' }}
             />
             <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
               <button onClick={() => setSuspendModal(null)}
-                style={{ flex: 1, padding: '10px 0', fontSize: 13, fontWeight: 600, color: '#6C6C70', background: '#F2F2F7', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit' }}>
+                style={{ flex: 1, padding: '10px 0', fontSize: 13, fontWeight: 600, color: '#4A463F', background: '#F1ECE2', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit' }}>
                 إلغاء
               </button>
               <button onClick={handleSuspend} disabled={suspending}
-                style={{ flex: 1, padding: '10px 0', fontSize: 13, fontWeight: 700, color: '#fff', background: '#FF3B30', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', opacity: suspending ? 0.7 : 1 }}>
+                style={{ flex: 1, padding: '10px 0', fontSize: 13, fontWeight: 700, color: '#fff', background: '#FF2E1F', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', opacity: suspending ? 0.7 : 1 }}>
                 {suspending ? 'جارٍ الإيقاف...' : 'إيقاف المتجر'}
               </button>
             </div>

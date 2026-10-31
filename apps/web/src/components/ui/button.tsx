@@ -4,22 +4,22 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl text-[15px] font-semibold transition-all duration-200 ease-[cubic-bezier(.32,.72,0,1)] active:scale-[0.97] active:opacity-80 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ios-blue/20 disabled:pointer-events-none disabled:opacity-40',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap border-2 border-b-ink text-sm font-bold shadow-brut transition-[transform,box-shadow] duration-75 hover:-translate-x-px hover:-translate-y-px hover:shadow-[5px_5px_0_#0A0A0A] active:translate-x-1 active:translate-y-1 active:shadow-none focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-[4px_4px_0_#2342FF] disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none',
   {
     variants: {
       variant: {
-        default: 'bg-ios-blue text-white hover:brightness-110',
-        destructive: 'bg-ios-red/10 text-ios-red hover:bg-ios-red/15',
-        outline: 'bg-white text-ios-blue shadow-[0_0_0_0.5px_rgba(60,60,67,0.2)] hover:bg-gray-50',
-        secondary: 'bg-ios-blue/10 text-ios-blue hover:bg-ios-blue/15',
-        ghost: 'text-ios-blue hover:bg-ios-fill',
-        link: 'text-ios-blue underline-offset-4 hover:underline',
+        default: 'bg-b-yellow text-b-ink',
+        destructive: 'bg-b-red text-white',
+        outline: 'bg-white text-b-ink',
+        secondary: 'bg-b-ink text-white',
+        ghost: 'border-transparent shadow-none bg-transparent text-b-ink hover:bg-b-yellow hover:shadow-none hover:translate-x-0 hover:translate-y-0',
+        link: 'border-transparent shadow-none bg-transparent text-b-blue underline decoration-2 underline-offset-4 hover:shadow-none',
       },
       size: {
         default: 'h-11 px-5',
-        sm: 'h-8 rounded-full px-3.5 text-[13px]',
-        lg: 'h-[50px] rounded-[14px] px-8 text-[17px]',
-        icon: 'h-10 w-10 rounded-full',
+        sm: 'h-9 px-3 text-xs',
+        lg: 'h-14 px-8 text-base',
+        icon: 'h-11 w-11',
       },
     },
     defaultVariants: {

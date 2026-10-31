@@ -15,15 +15,15 @@ import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 const C = {
-  bg:     '#F2F2F7',
-  p:      '#1C1C1E',
-  s:      '#3A3A3C',
-  a:      '#007AFF',
-  blue:      '#007AFF',
-  blueHover: '#0062CC',
-  text:   '#1C1C1E',
-  muted:  '#8E8E93',
-  border: '#E5F1FF',
+  bg:     '#F1ECE2',
+  p:      '#0A0A0A',
+  s:      '#1A1A1A',
+  a:      '#2342FF',
+  blue:      '#2342FF',
+  blueHover: '#1A30CC',
+  text:   '#0A0A0A',
+  muted:  '#5C574F',
+  border: '#0A0A0A',
 };
 
 const schema = z.object({
@@ -71,11 +71,11 @@ function RegisterForm() {
     'fashion-men':{ name: 'متجر الأزياء الرجالية',        icon: Shirt,          color: '#1F2A44', accent: '#3B5BA5', tagline: 'أناقة رجالية بلا حدود' },
     jewelry:      { name: 'متجر المجوهرات',                icon: Gem,            color: '#8A6D1F', accent: '#C9A227', tagline: 'بريق يليق بك' },
     perfume:      { name: 'متجر العطور',                    icon: Flower2,        color: '#5B3A29', accent: '#C08552', tagline: 'عطرك الذي يعبّر عنك' },
-    beauty:       { name: 'متجر البشرة والمكياج',          icon: Sparkles,       color: '#9B3A6B', accent: '#FF2D55', tagline: 'الجمال الحقيقي يبدأ من هنا' },
-    electronics:  { name: 'متجر الألعاب والإلكترونيات',   icon: Gamepad2,       color: '#1A0A2E', accent: '#AF52DE', tagline: 'عالم التقنية والترفيه' },
+    beauty:       { name: 'متجر البشرة والمكياج',          icon: Sparkles,       color: '#9B3A6B', accent: '#FF3D8B', tagline: 'الجمال الحقيقي يبدأ من هنا' },
+    electronics:  { name: 'متجر الألعاب والإلكترونيات',   icon: Gamepad2,       color: '#1A0A2E', accent: '#9B3DFF', tagline: 'عالم التقنية والترفيه' },
     books:        { name: 'متجر الكتب والقرطاسية',         icon: BookOpen,       color: '#2E4A3D', accent: '#4E8368', tagline: 'اكتشف عالماً من القراءة' },
     food:         { name: 'متجر الأطعمة',                   icon: UtensilsCrossed, color: '#8C3A2B', accent: '#E07A45', tagline: 'نكهة تستحق التجربة' },
-    general:      { name: 'متجر عام',                       icon: LayoutGrid,     color: '#1C1C1E', accent: '#007AFF', tagline: 'كل ما تحتاجه في مكان واحد' },
+    general:      { name: 'متجر عام',                       icon: LayoutGrid,     color: '#0A0A0A', accent: '#2342FF', tagline: 'كل ما تحتاجه في مكان واحد' },
   };
   const tplMeta = templateParam ? TEMPLATE_META[templateParam] : null;
 
@@ -216,7 +216,7 @@ function RegisterForm() {
                   />
                   <User size={16} color={C.muted} style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 </div>
-                {errors.name && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 6 }}>{errors.name.message}</p>}
+                {errors.name && <p style={{ color: '#FF2E1F', fontSize: 12, marginTop: 6 }}>{errors.name.message}</p>}
               </div>
 
               {/* Email */}
@@ -234,7 +234,7 @@ function RegisterForm() {
                   />
                   <Mail size={16} color={C.muted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 </div>
-                {errors.email && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 6 }}>{errors.email.message}</p>}
+                {errors.email && <p style={{ color: '#FF2E1F', fontSize: 12, marginTop: 6 }}>{errors.email.message}</p>}
               </div>
 
               {/* Password */}
@@ -261,14 +261,14 @@ function RegisterForm() {
                     {[{ ok: checks.length, label: '8 أحرف' }, { ok: checks.upper, label: 'حرف كبير' }, { ok: checks.num, label: 'رقم' }].map(c => (
                       <div key={c.label} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>
                         <div style={{ width: 16, height: 16, borderRadius: '50%', background: c.ok ? 'rgba(5,150,105,.1)' : C.bg, border: `1.5px solid ${c.ok ? 'rgba(5,150,105,.4)' : C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all .2s' }}>
-                          {c.ok && <Check size={8} color="#34C759" strokeWidth={3} />}
+                          {c.ok && <Check size={8} color="#00A651" strokeWidth={3} />}
                         </div>
-                        <span style={{ color: c.ok ? '#34C759' : C.muted, transition: 'color .2s' }}>{c.label}</span>
+                        <span style={{ color: c.ok ? '#00A651' : C.muted, transition: 'color .2s' }}>{c.label}</span>
                       </div>
                     ))}
                   </div>
                 )}
-                {errors.password && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 6 }}>{errors.password.message}</p>}
+                {errors.password && <p style={{ color: '#FF2E1F', fontSize: 12, marginTop: 6 }}>{errors.password.message}</p>}
               </div>
 
               {/* WhatsApp */}
@@ -289,7 +289,7 @@ function RegisterForm() {
                   />
                   <Phone size={16} color="#25D366" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 </div>
-                {errors.whatsapp && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 6 }}>{errors.whatsapp.message}</p>}
+                {errors.whatsapp && <p style={{ color: '#FF2E1F', fontSize: 12, marginTop: 6 }}>{errors.whatsapp.message}</p>}
                 <p style={{ fontSize: 11, color: C.muted, marginTop: 5, display: 'flex', alignItems: 'center', gap: 5 }}>
                   <Smartphone size={12} />
                   سنرسل لك إشعار واتساب عند تفعيل خطتك
@@ -347,7 +347,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#F2F2F7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 40, height: 40, border: '3px solid #1C1C1E', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /></div>}>
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#F1ECE2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 40, height: 40, border: '3px solid #0A0A0A', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /></div>}>
       <RegisterForm />
     </Suspense>
   );

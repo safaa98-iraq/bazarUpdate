@@ -23,8 +23,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Show nothing until hydration finishes — prevents flash-redirect to /login
   if (!_hasHydrated) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F2F2F7' }}>
-      <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid rgba(60,60,67,.15)', borderTopColor: '#8E8E93', animation: 'spin 0.8s linear infinite' }} />
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F1ECE2' }}>
+      <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid rgba(60,60,67,.15)', borderTopColor: '#5C574F', animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
@@ -32,7 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user || user.role !== 'SUPER_ADMIN') return null;
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#F2F2F7' }}>
+    <div className="flex min-h-screen">
       <AdminSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminEditorBanner />

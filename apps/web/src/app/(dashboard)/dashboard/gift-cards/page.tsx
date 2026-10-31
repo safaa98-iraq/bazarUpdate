@@ -8,7 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import type { GiftCardPublic } from '@storebuilder/types';
 
-const BRAND = { primary: '#1C1C1E', accent: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7' };
+const BRAND = { primary: '#0A0A0A', accent: '#2342FF', border: '#0A0A0A', bg: '#F1ECE2' };
 
 export default function GiftCardsPage() {
   useDocumentTitle('بطاقات الهدايا');
@@ -81,7 +81,7 @@ export default function GiftCardsPage() {
         </div>
         <button onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
-          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+          style={{ background: `linear-gradient(#2342FF, #2342FF)` }}>
           <Plus className="h-4 w-4" /> إصدار بطاقة
         </button>
       </div>
@@ -106,7 +106,7 @@ export default function GiftCardsPage() {
                   <button onClick={() => copyCode(c.code, c.id)} className="p-1 rounded-md hover:bg-gray-100 text-gray-400">
                     {copiedId === c.id ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
                   </button>
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: c.isActive ? '#E3F9E8' : '#F2F2F7', color: c.isActive ? '#248A3D' : '#AEAEB2' }}>
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: c.isActive ? '#BFF2CF' : '#F1ECE2', color: c.isActive ? '#006B32' : '#8A8478' }}>
                     {c.isActive ? 'نشطة' : 'موقوفة'}
                   </span>
                 </div>
@@ -118,7 +118,7 @@ export default function GiftCardsPage() {
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
                 <button onClick={() => toggleActive(c)} className="p-2 rounded-lg hover:bg-white transition" title={c.isActive ? 'إيقاف' : 'تفعيل'}>
-                  {c.isActive ? <Eye className="h-4 w-4" style={{ color: '#34C759' }} /> : <EyeOff className="h-4 w-4 text-gray-400" />}
+                  {c.isActive ? <Eye className="h-4 w-4" style={{ color: '#00A651' }} /> : <EyeOff className="h-4 w-4 text-gray-400" />}
                 </button>
                 <button onClick={() => deleteCard(c.id)} className="p-2 rounded-lg hover:bg-red-50 transition">
                   <Trash2 className="h-4 w-4 text-red-400" />
@@ -166,7 +166,7 @@ export default function GiftCardsPage() {
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+                  style={{ background: `linear-gradient(#2342FF, #2342FF)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />} إصدار
                 </button>
               </div>
