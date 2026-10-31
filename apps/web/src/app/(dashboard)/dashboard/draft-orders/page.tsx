@@ -8,7 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import type { OrderPublic, ProductPublic } from '@storebuilder/types';
 
-const BRAND = { primary: '#2F2E4B', accent: '#DB6E93', border: '#FBE1EA', bg: '#F5EFFA' };
+const BRAND = { primary: '#1C1C1E', accent: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7' };
 
 interface DraftLine { productId: string; quantity: number }
 
@@ -100,7 +100,7 @@ export default function DraftOrdersPage() {
         </div>
         <button onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
-          style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
           <Plus className="h-4 w-4" /> طلب جديد
         </button>
       </div>
@@ -206,7 +206,7 @@ export default function DraftOrdersPage() {
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />} حفظ كمسودة
                 </button>
               </div>

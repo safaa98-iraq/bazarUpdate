@@ -8,10 +8,10 @@ import {
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/auth.store';
 
-const C = { p: '#2F2E4B', s: '#4A4767', a: '#DB6E93', text: '#2F2E4B', muted: '#6B6A83', border: '#FBE1EA', bg: '#F5EFFA' };
+const C = { p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF', text: '#1C1C1E', muted: '#8E8E93', border: '#E5F1FF', bg: '#F2F2F7' };
 
 const PLAN_ICONS: Record<string, typeof Zap> = { PRO: Zap, ENTERPRISE: Crown, FREE: Shield };
-const PLAN_COLORS: Record<string, string> = { PRO: '#2F2E4B', ENTERPRISE: '#DB6E93', FREE: '#6B6A83' };
+const PLAN_COLORS: Record<string, string> = { PRO: '#1C1C1E', ENTERPRISE: '#007AFF', FREE: '#8E8E93' };
 
 interface Notif {
   id: string;
@@ -69,14 +69,14 @@ function ApprovalModal({ notif, onClose }: ApprovalDetailProps) {
           {/* Features unlocked */}
           <div style={{ marginBottom: 28 }}>
             <div style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 15, color: C.text, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#05966915', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><Sparkles size={12} color="#059669" /></span>
+              <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#05966915', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><Sparkles size={12} color="#34C759" /></span>
               المزايا المفعّلة الآن
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {features.map(f => (
                 <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, background: C.bg, borderRadius: 10, padding: '10px 12px' }}>
                   <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#05966920', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>
-                    <Check size={10} color="#059669" strokeWidth={3} />
+                    <Check size={10} color="#34C759" strokeWidth={3} />
                   </div>
                   <span style={{ fontSize: 12, color: C.text, lineHeight: 1.5 }}>{f}</span>
                 </div>
@@ -141,18 +141,18 @@ function NotifItem({ n, onClick }: { n: Notif; onClick: (n: Notif) => void }) {
     CHAT_MESSAGE: MessageCircle,
   };
   const bgMap: Record<string, string> = {
-    PAYMENT_REQUEST: '#FEF3C7',
-    PLAN_APPROVED: '#F0FDF4',
-    PLAN_REJECTED: '#FEF2F2',
-    NEW_ORDER: '#F0E7F8',
-    CHAT_MESSAGE: '#FBE1EA',
+    PAYMENT_REQUEST: '#FFF4E0',
+    PLAN_APPROVED: '#F1FCF3',
+    PLAN_REJECTED: '#FFF3F2',
+    NEW_ORDER: '#EFEFF4',
+    CHAT_MESSAGE: '#E5F1FF',
   };
   const colorMap: Record<string, string> = {
-    PAYMENT_REQUEST: '#D97706',
-    PLAN_APPROVED: '#059669',
-    PLAN_REJECTED: '#DC2626',
-    NEW_ORDER: '#2F2E4B',
-    CHAT_MESSAGE: '#DB6E93',
+    PAYMENT_REQUEST: '#FF9500',
+    PLAN_APPROVED: '#34C759',
+    PLAN_REJECTED: '#FF3B30',
+    NEW_ORDER: '#1C1C1E',
+    CHAT_MESSAGE: '#007AFF',
   };
 
   return (
@@ -162,7 +162,7 @@ function NotifItem({ n, onClick }: { n: Notif; onClick: (n: Notif) => void }) {
       onMouseEnter={e => { e.currentTarget.style.background = '#F0EBF8'; }}
       onMouseLeave={e => { e.currentTarget.style.background = n.isRead ? 'transparent' : C.bg; }}
     >
-      <div style={{ width: 38, height: 38, borderRadius: '50%', background: bgMap[n.type] ?? '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ width: 38, height: 38, borderRadius: '50%', background: bgMap[n.type] ?? '#F2F2F7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         {(() => { const NotifIcon = iconMap[n.type] ?? Bell; return <NotifIcon size={18} color={colorMap[n.type] ?? C.muted} />; })()}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -235,7 +235,7 @@ export function NotificationBell({ variant = 'dark' }: { variant?: 'dark' | 'lig
     }
   };
 
-  const iconColor = variant === 'dark' ? 'rgba(255,255,255,.75)' : C.muted;
+  const iconColor = variant === 'dark' ? 'rgba(255,255,255,.75)' : '#007AFF';
 
   return (
     <>
@@ -245,13 +245,13 @@ export function NotificationBell({ variant = 'dark' }: { variant?: 'dark' | 'lig
         <button
           onClick={() => setOpen(o => !o)}
           style={{ position: 'relative', background: 'transparent', border: 'none', cursor: 'pointer', padding: 6, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', color: iconColor, transition: 'all .15s' }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,.12)'; e.currentTarget.style.color = variant === 'dark' ? '#fff' : C.p; }}
+          onMouseEnter={e => { e.currentTarget.style.background = variant === 'dark' ? 'rgba(255,255,255,.12)' : 'rgba(120,120,128,.12)'; e.currentTarget.style.color = variant === 'dark' ? '#fff' : C.p; }}
           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = iconColor; }}
           title="الإشعارات"
         >
           <Bell size={19} strokeWidth={1.75} />
           {unread > 0 && (
-            <span style={{ position: 'absolute', top: 2, left: 2, minWidth: 16, height: 16, borderRadius: 99, background: C.a, color: '#fff', fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px', border: '2px solid', borderColor: variant === 'dark' ? C.p : '#fff', lineHeight: 1 }}>
+            <span style={{ position: 'absolute', top: 2, left: 2, minWidth: 16, height: 16, borderRadius: 99, background: '#FF3B30', color: '#fff', fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px', border: '2px solid', borderColor: variant === 'dark' ? C.p : '#fff', lineHeight: 1 }}>
               {unread > 9 ? '9+' : unread}
             </span>
           )}

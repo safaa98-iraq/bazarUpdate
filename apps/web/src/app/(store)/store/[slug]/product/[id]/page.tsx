@@ -48,7 +48,7 @@ function SizeGuideModal({ content, onClose }: { content: string; onClose: () => 
   return (
     <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" dir="rtl">
       <div onClick={e => e.stopPropagation()} className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white" style={{ borderColor: '#ECE6F0' }}>
+        <div className="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white" style={{ borderColor: '#E5E5EA' }}>
           <h2 className="font-bold text-gray-900 flex items-center gap-2"><Ruler className="h-4 w-4" /> دليل المقاسات</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400"><X className="h-4 w-4" /></button>
         </div>
@@ -132,7 +132,7 @@ function ReviewsSection({ productId, theme, canComment }: { productId: string; t
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1.5">اسمك</label>
             <input value={name} onChange={e => setName(e.target.value)} placeholder="أحمد محمد"
-              className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: '#ECE6F0' }} />
+              className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: '#E5E5EA' }} />
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1.5">تقييمك</label>
@@ -149,7 +149,7 @@ function ReviewsSection({ productId, theme, canComment }: { productId: string; t
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">تعليقك (اختياري)</label>
               <textarea value={comment} onChange={e => setComment(e.target.value)} rows={3} maxLength={2000}
                 placeholder="شاركنا رأيك بالمنتج…"
-                className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none resize-none" style={{ borderColor: '#ECE6F0' }} />
+                className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none resize-none" style={{ borderColor: '#E5E5EA' }} />
             </div>
           ) : (
             <p className="text-xs text-gray-400 flex items-center gap-1.5">
@@ -173,7 +173,7 @@ function ReviewsSection({ productId, theme, canComment }: { productId: string; t
       {reviews.length > 0 && (
         <div className="space-y-4">
           {reviews.map(r => (
-            <div key={r.id} className="border-b pb-4" style={{ borderColor: '#ECE6F0' }}>
+            <div key={r.id} className="border-b pb-4" style={{ borderColor: '#E5E5EA' }}>
               <div className="flex items-center justify-between mb-1">
                 <span className="font-semibold text-sm text-gray-900">{r.customerName}</span>
                 <StarRow rating={r.rating} size={12} />
@@ -244,21 +244,21 @@ export default function ProductDetailPage() {
   }, [slug, id]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F5EFFA' }}>
-      <div className="animate-spin h-10 w-10 border-4 rounded-full" style={{ borderColor: '#2F2E4B', borderTopColor: 'transparent' }} />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2F2F7' }}>
+      <div className="animate-spin h-10 w-10 border-4 rounded-full" style={{ borderColor: '#1C1C1E', borderTopColor: 'transparent' }} />
     </div>
   );
 
   if (!product || !store) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F5EFFA' }}>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2F2F7' }}>
       <div className="text-center">
-        <p className="text-2xl font-bold mb-2" style={{ color: '#2F2E4B' }}>المنتج غير موجود</p>
-        <Link href={`/store/${slug}`} className="text-sm hover:underline" style={{ color: '#DB6E93' }}>العودة إلى المتجر</Link>
+        <p className="text-2xl font-bold mb-2" style={{ color: '#1C1C1E' }}>المنتج غير موجود</p>
+        <Link href={`/store/${slug}`} className="text-sm hover:underline" style={{ color: '#007AFF' }}>العودة إلى المتجر</Link>
       </div>
     </div>
   );
 
-  const theme = store.theme ?? '#2F2E4B';
+  const theme = store.theme ?? '#1C1C1E';
   const discount = product.comparePrice ? Math.round((1 - product.price / product.comparePrice) * 100) : 0;
 
   const hasVariants = !!product.hasVariants && !!product.variants?.length;
@@ -298,7 +298,7 @@ export default function ProductDetailPage() {
           </Link>
           <div className="flex items-center gap-1">
             <button onClick={() => toggleWishlist(slug, id)} className="relative p-2 rounded-xl hover:bg-gray-100 transition">
-              <Heart className="h-5 w-5" fill={wishlisted ? theme : 'none'} style={{ color: wishlisted ? theme : '#4B5563' }} />
+              <Heart className="h-5 w-5" fill={wishlisted ? theme : 'none'} style={{ color: wishlisted ? theme : '#48484A' }} />
             </button>
             <Link href={`/store/${slug}/cart`} className="relative p-2 rounded-xl hover:bg-gray-100 transition">
               <ShoppingCart className="h-5 w-5" style={{ color: theme }} />
@@ -322,7 +322,7 @@ export default function ProductDetailPage() {
         <div className="grid md:grid-cols-2 gap-10">
           {/* Images */}
           <div>
-            <div className="aspect-square rounded-2xl overflow-hidden mb-3" style={{ background: '#F5EFFA' }}>
+            <div className="aspect-square rounded-2xl overflow-hidden mb-3" style={{ background: '#F2F2F7' }}>
               {previewImage ?? product.images?.[activeImage]
                 ? <Image src={previewImage ?? product.images[activeImage]} alt={product.name} width={600} height={600} className="w-full h-full object-cover" />
                 : <div className="w-full h-full flex items-center justify-center text-gray-200"><Package size={56} /></div>}
@@ -374,7 +374,7 @@ export default function ProductDetailPage() {
               {product.comparePrice && (
                 <>
                   <span className="text-lg text-gray-400 line-through">{formatCurrency(product.comparePrice)}</span>
-                  <span className="px-2.5 py-0.5 rounded-full text-sm font-bold text-white" style={{ background: '#DB6E93' }}>
+                  <span className="px-2.5 py-0.5 rounded-full text-sm font-bold text-white" style={{ background: '#007AFF' }}>
                     خصم {discount}%
                   </span>
                 </>
@@ -422,11 +422,11 @@ export default function ProductDetailPage() {
                             }}
                             title={v.value}
                             className="rounded-xl border-2 transition overflow-hidden"
-                            style={{ borderColor: isSelected ? theme : '#ECE6F0' }}>
+                            style={{ borderColor: isSelected ? theme : '#E5E5EA' }}>
                             {v.image ? (
                               <Image src={v.image} alt={v.value} width={44} height={44} className="w-11 h-11 object-cover" />
                             ) : (
-                              <span className="px-3 py-2 text-xs font-medium block" style={{ color: isSelected ? theme : '#4B5563' }}>
+                              <span className="px-3 py-2 text-xs font-medium block" style={{ color: isSelected ? theme : '#48484A' }}>
                                 {v.value}
                               </span>
                             )}
@@ -454,7 +454,7 @@ export default function ProductDetailPage() {
                           <button key={val} type="button"
                             onClick={() => setSelectedVariantOptions(s => ({ ...s, [key]: val }))}
                             className="px-3.5 py-2 rounded-xl border-2 text-xs font-medium transition"
-                            style={{ borderColor: isSelected ? theme : '#ECE6F0', color: isSelected ? theme : '#4B5563' }}>
+                            style={{ borderColor: isSelected ? theme : '#E5E5EA', color: isSelected ? theme : '#48484A' }}>
                             {val}
                           </button>
                         );
@@ -477,7 +477,7 @@ export default function ProductDetailPage() {
                 {/* Quantity */}
                 <div className="flex items-center gap-4 mb-5">
                   <span className="text-sm font-semibold text-gray-700">الكمية</span>
-                  <div className="flex items-center border rounded-xl overflow-hidden" style={{ borderColor: '#ECE6F0' }}>
+                  <div className="flex items-center border rounded-xl overflow-hidden" style={{ borderColor: '#E5E5EA' }}>
                     <button onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       className="px-3 py-2.5 hover:bg-gray-50 transition">
                       <Minus className="h-4 w-4 text-gray-600" />
@@ -536,8 +536,8 @@ export default function ProductDetailPage() {
               {recommendations.map(rec => (
                 <Link key={rec.id} href={`/store/${slug}/product/${rec.id}`}
                   className="group bg-white border rounded-2xl overflow-hidden hover:shadow-md transition"
-                  style={{ borderColor: '#ECE6F0' }}>
-                  <div className="aspect-square overflow-hidden" style={{ background: '#F5EFFA' }}>
+                  style={{ borderColor: '#E5E5EA' }}>
+                  <div className="aspect-square overflow-hidden" style={{ background: '#F2F2F7' }}>
                     {rec.images?.[0]
                       ? <Image src={rec.images[0]} alt={rec.name} width={300} height={300} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                       : <div className="w-full h-full flex items-center justify-center text-gray-200"><Package size={36} /></div>}

@@ -9,9 +9,9 @@ export const PLAN_LABELS: Record<Plan, string> = {
 };
 
 export const PLAN_COLORS: Record<Plan, { bg: string; text: string; border: string }> = {
-  FREE:       { bg: '#F3F4F6', text: '#6B7280',  border: '#E5E7EB' },
-  PRO:        { bg: '#EDE9FE', text: '#7C3AED',  border: '#C4B5FD' },
-  ENTERPRISE: { bg: '#FEF3C7', text: '#D97706',  border: '#FCD34D' },
+  FREE:       { bg: '#F2F2F7', text: '#6C6C70',  border: '#E5E5EA' },
+  PRO:        { bg: '#F5EAFB', text: '#AF52DE',  border: '#C7C7CC' },
+  ENTERPRISE: { bg: '#FFF4E0', text: '#FF9500',  border: '#FFCC00' },
 };
 
 const DISABLED_FEATURES = new Set<string>([String.fromCharCode(97, 105)]);

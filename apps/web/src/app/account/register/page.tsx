@@ -13,7 +13,7 @@ import { AuthResponse } from '@storebuilder/types';
 import { Loader2, Eye, EyeOff, ShoppingBag, Lock, Mail, User } from 'lucide-react';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
-const C = { bg: '#FBF9F2', p: '#2F2E4B', a: '#DB6E93', blue: '#4A8AC7', blueHover: '#3671A8', border: '#FBE1EA', text: '#2F2E4B', muted: '#6B6A83' };
+const C = { bg: '#F2F2F7', p: '#1C1C1E', a: '#007AFF', blue: '#007AFF', blueHover: '#0062CC', border: '#E5F1FF', text: '#1C1C1E', muted: '#8E8E93' };
 
 const schema = z.object({
   name: z.string().min(2, 'الاسم يجب أن يكون حرفين على الأقل'),
@@ -66,33 +66,33 @@ function CustomerRegisterForm() {
               <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 6 }}>الاسم الكامل</label>
               <div style={{ position: 'relative' }}>
                 <input {...register('name')} placeholder="أحمد محمد"
-                  style={{ width: '100%', padding: '12px 40px 12px 16px', background: C.bg, border: `1.5px solid ${errors.name ? '#f87171' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none' }} />
+                  style={{ width: '100%', padding: '12px 40px 12px 16px', background: C.bg, border: `1.5px solid ${errors.name ? '#FF6961' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none' }} />
                 <User size={16} color={C.muted} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }} />
               </div>
-              {errors.name && <p style={{ color: '#DC2626', fontSize: 12, marginTop: 4 }}>{errors.name.message}</p>}
+              {errors.name && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 4 }}>{errors.name.message}</p>}
             </div>
 
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 6 }}>البريد الإلكتروني</label>
               <div style={{ position: 'relative' }}>
                 <input {...register('email')} type="email" dir="ltr" placeholder="you@example.com"
-                  style={{ width: '100%', padding: '12px 16px 12px 40px', background: C.bg, border: `1.5px solid ${errors.email ? '#f87171' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none', textAlign: 'left' }} />
+                  style={{ width: '100%', padding: '12px 16px 12px 40px', background: C.bg, border: `1.5px solid ${errors.email ? '#FF6961' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none', textAlign: 'left' }} />
                 <Mail size={16} color={C.muted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
               </div>
-              {errors.email && <p style={{ color: '#DC2626', fontSize: 12, marginTop: 4 }}>{errors.email.message}</p>}
+              {errors.email && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 4 }}>{errors.email.message}</p>}
             </div>
 
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 6 }}>كلمة المرور</label>
               <div style={{ position: 'relative' }}>
                 <input {...register('password')} type={showPw ? 'text' : 'password'} placeholder="8 أحرف على الأقل"
-                  style={{ width: '100%', padding: '12px 40px', background: C.bg, border: `1.5px solid ${errors.password ? '#f87171' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none' }} />
+                  style={{ width: '100%', padding: '12px 40px', background: C.bg, border: `1.5px solid ${errors.password ? '#FF6961' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none' }} />
                 <Lock size={16} color={C.muted} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }} />
                 <button type="button" onClick={() => setShowPw(p => !p)} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: C.muted }}>
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-              {errors.password && <p style={{ color: '#DC2626', fontSize: 12, marginTop: 4 }}>{errors.password.message}</p>}
+              {errors.password && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 4 }}>{errors.password.message}</p>}
             </div>
 
             <button type="submit" disabled={loading}

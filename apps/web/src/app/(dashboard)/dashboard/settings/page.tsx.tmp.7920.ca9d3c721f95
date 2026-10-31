@@ -436,7 +436,7 @@ export default function SettingsPage() {
         {activeTab !== 'billing' && (
         <button type="submit" disabled={saving}
           className="w-full py-3 rounded-xl font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-          style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
           {saving && <Loader2 className="h-4 w-4 animate-spin" />}
           {saving ? 'جارٍ الحفظ…' : store ? 'حفظ الإعدادات' : 'إنشاء المتجر'}
         </button>

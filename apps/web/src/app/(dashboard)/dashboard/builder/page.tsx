@@ -117,7 +117,7 @@ function ImageField({ label, value, onChange }: { label: string; value: string; 
       <div className="flex gap-2">
         <input value={value} onChange={e => onChange(e.target.value)} placeholder="https://..."
           className="flex-1 px-3 py-2 text-xs rounded-xl border focus:outline-none transition"
-          style={{ borderColor: '#ECE6F0' }} />
+          style={{ borderColor: '#E5E5EA' }} />
         <button type="button" onClick={() => inputRef.current?.click()}
           className="px-3 py-2 rounded-xl border text-xs font-medium flex items-center gap-1 hover:bg-purple-50 transition"
           style={{ borderColor: BRAND.primary, color: BRAND.primary }}>
@@ -138,15 +138,15 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
   const s = section.settings;
   if (!section.visible) return (
     <div onClick={onClick}
-      className={`relative border-2 border-dashed rounded-lg mx-2 my-1 h-12 flex items-center justify-center cursor-pointer transition-all ${isSelected ? 'border-[#DB6E93]' : 'border-gray-200'}`}
-      style={{ background: '#F5EFFA' }}>
+      className={`relative border-2 border-dashed rounded-lg mx-2 my-1 h-12 flex items-center justify-center cursor-pointer transition-all ${isSelected ? 'border-[#007AFF]' : 'border-gray-200'}`}
+      style={{ background: '#F2F2F7' }}>
       <span className="text-xs text-gray-400 flex items-center gap-1.5"><EyeOff className="h-3 w-3" /> قسم مخفي</span>
     </div>
   );
 
   const sel = isSelected
-    ? 'outline outline-2 outline-offset-2 outline-[#DB6E93]'
-    : 'outline outline-2 outline-transparent hover:outline-[#4A4767] hover:outline-offset-1';
+    ? 'outline outline-2 outline-offset-2 outline-[#007AFF]'
+    : 'outline outline-2 outline-transparent hover:outline-[#3A3A3C] hover:outline-offset-1';
 
   switch (section.type) {
     case 'hero': return (
@@ -182,7 +182,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
         <p className="font-bold text-sm text-center mb-3" style={{ color: BRAND.primary }}>{String(s.title)}</p>
         <div className="grid grid-cols-4 gap-2">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="text-center p-2 rounded-xl" style={{ background: '#F5EFFA' }}>
+            <div key={i} className="text-center p-2 rounded-xl" style={{ background: '#F2F2F7' }}>
               <div className="mb-1 flex justify-center">
                 {s[`feature${i}Icon`]
                   ? <span className="text-lg">{String(s[`feature${i}Icon`])}</span>
@@ -196,7 +196,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
     );
     case 'testimonials': return (
       <div onClick={onClick} className={`cursor-pointer transition-all rounded-lg overflow-hidden mx-2 my-1 ${sel}`}
-        style={{ background: '#F5EFFA', padding: 16 }}>
+        style={{ background: '#F2F2F7', padding: 16 }}>
         <p className="font-bold text-sm text-center mb-3" style={{ color: BRAND.primary }}>{String(s.title)}</p>
         <div className="grid grid-cols-3 gap-2">
           {[1, 2, 3].map(i => (
@@ -228,10 +228,10 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
         <p className="font-bold text-sm text-center mb-3" style={{ color: BRAND.primary }}>{String(s.title)}</p>
         <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(Number(s.columns), 4)}, 1fr)` }}>
           {Array.from({ length: Math.min(Number(s.limit), Number(s.columns) * 2) }).map((_, i) => (
-            <div key={i} className="rounded-lg overflow-hidden" style={{ background: '#F5EFFA' }}>
+            <div key={i} className="rounded-lg overflow-hidden" style={{ background: '#F2F2F7' }}>
               <div className="aspect-square" style={{ background: `linear-gradient(135deg, ${BRAND.primary}22, ${BRAND.accent}22)` }} />
               <div className="p-1.5">
-                <div className="h-2 rounded mb-1" style={{ background: '#D1C4E9', width: '80%' }} />
+                <div className="h-2 rounded mb-1" style={{ background: '#D1D1D6', width: '80%' }} />
                 <div className="h-1.5 rounded" style={{ background: BRAND.accent, width: '50%' }} />
               </div>
             </div>
@@ -245,7 +245,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
         <p className="font-bold text-sm text-center mb-3" style={{ color: BRAND.primary }}>{String(s.title)}</p>
         <div className="grid grid-cols-3 gap-2">
           {['الملابس', 'الإلكترونيات', 'المنزل'].map(c => (
-            <div key={c} className="rounded-xl p-3 text-center" style={{ background: '#F5EFFA' }}>
+            <div key={c} className="rounded-xl p-3 text-center" style={{ background: '#F2F2F7' }}>
               <div className="w-8 h-8 rounded-full mx-auto mb-1.5" style={{ background: `${BRAND.accent}30` }} />
               <p className="text-xs font-medium" style={{ color: BRAND.primary }}>{c}</p>
             </div>
@@ -259,7 +259,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
         <p className="font-bold text-sm text-center mb-3" style={{ color: BRAND.primary }}>{String(s.title)}</p>
         <div className="grid grid-cols-3 gap-2">
           {['ماركة 1', 'ماركة 2', 'ماركة 3'].map(b => (
-            <div key={b} className="rounded-xl p-3 text-center" style={{ background: '#F5EFFA' }}>
+            <div key={b} className="rounded-xl p-3 text-center" style={{ background: '#F2F2F7' }}>
               <div className="w-8 h-8 rounded-full mx-auto mb-1.5" style={{ background: `${BRAND.accent}30` }} />
               <p className="text-xs font-medium" style={{ color: BRAND.primary }}>{b}</p>
             </div>
@@ -280,7 +280,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
           {s.imagePosition === 'right' ? <>
             <div className="flex-1">
               <p className="font-bold text-sm mb-1" style={{ color: BRAND.primary }}>{String(s.title)}</p>
-              <div className="space-y-1">{[70, 90, 60].map(w => <div key={w} className="h-1.5 rounded" style={{ background: '#ECE6F0', width: `${w}%` }} />)}</div>
+              <div className="space-y-1">{[70, 90, 60].map(w => <div key={w} className="h-1.5 rounded" style={{ background: '#E5E5EA', width: `${w}%` }} />)}</div>
             </div>
             <div className="w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden" style={{ background: `${BRAND.primary}20` }}>
               {s.imageUrl && <img src={String(s.imageUrl)} alt="" className="w-full h-full object-cover" />}
@@ -291,7 +291,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
             </div>
             <div className="flex-1">
               <p className="font-bold text-sm mb-1" style={{ color: BRAND.primary }}>{String(s.title)}</p>
-              <div className="space-y-1">{[70, 90, 60].map(w => <div key={w} className="h-1.5 rounded" style={{ background: '#ECE6F0', width: `${w}%` }} />)}</div>
+              <div className="space-y-1">{[70, 90, 60].map(w => <div key={w} className="h-1.5 rounded" style={{ background: '#E5E5EA', width: `${w}%` }} />)}</div>
             </div>
           </>}
         </div>
@@ -311,7 +311,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
     case 'divider': return (
       <div onClick={onClick} className={`cursor-pointer transition-all rounded-lg mx-2 my-1 ${sel} flex items-center justify-center`}
         style={{ height: Number(s.height) || 40, background: 'transparent', padding: '0 16px' }}>
-        {s.showLine && <div className="w-full h-px" style={{ background: String(s.lineColor ?? '#ECE6F0') }} />}
+        {s.showLine && <div className="w-full h-px" style={{ background: String(s.lineColor ?? '#E5E5EA') }} />}
       </div>
     );
     case 'video': return (
@@ -344,7 +344,7 @@ function PropertiesPanel({ section, onChange, onClose }: {
       <input type={type} value={String(s[key] ?? '')} placeholder={placeholder}
         onChange={e => set(key, type === 'number' ? Number(e.target.value) : e.target.value)}
         className="w-full px-3 py-2 text-sm rounded-xl border focus:outline-none focus:ring-2 transition"
-        style={{ borderColor: '#ECE6F0' }} />
+        style={{ borderColor: '#E5E5EA' }} />
     </div>
   );
 
@@ -353,7 +353,7 @@ function PropertiesPanel({ section, onChange, onClose }: {
       <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{label}</label>
       <textarea value={String(s[key] ?? '')} onChange={e => set(key, e.target.value)} rows={rows}
         className="w-full px-3 py-2 text-sm rounded-xl border focus:outline-none resize-none transition"
-        style={{ borderColor: '#ECE6F0' }} />
+        style={{ borderColor: '#E5E5EA' }} />
     </div>
   );
 
@@ -361,8 +361,8 @@ function PropertiesPanel({ section, onChange, onClose }: {
     <div className="mb-4">
       <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{label}</label>
       <div className="flex items-center gap-2">
-        <input type="color" value={String(s[key] ?? '#2F2E4B')} onChange={e => set(key, e.target.value)}
-          className="h-9 w-16 rounded-lg border cursor-pointer" style={{ borderColor: '#ECE6F0' }} />
+        <input type="color" value={String(s[key] ?? '#1C1C1E')} onChange={e => set(key, e.target.value)}
+          className="h-9 w-16 rounded-lg border cursor-pointer" style={{ borderColor: '#E5E5EA' }} />
         <span className="text-xs font-mono text-gray-500">{String(s[key] ?? '')}</span>
         <div className="flex gap-1 mr-auto">
           {Object.values(BRAND).map(c => (
@@ -380,7 +380,7 @@ function PropertiesPanel({ section, onChange, onClose }: {
       <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{label}</label>
       <select value={String(s[key] ?? options[0].value)} onChange={e => set(key, e.target.value)}
         className="w-full px-3 py-2 text-sm rounded-xl border focus:outline-none bg-white transition"
-        style={{ borderColor: '#ECE6F0' }}>
+        style={{ borderColor: '#E5E5EA' }}>
         {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
     </div>
@@ -391,7 +391,7 @@ function PropertiesPanel({ section, onChange, onClose }: {
       <label className="text-xs font-semibold" style={{ color: BRAND.primary }}>{label}</label>
       <button type="button" onClick={() => set(key, !s[key])}
         className="relative inline-flex h-5 w-9 items-center rounded-full transition"
-        style={{ background: s[key] ? BRAND.accent : '#D1C4E9' }}>
+        style={{ background: s[key] ? BRAND.accent : '#D1D1D6' }}>
         <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition ${s[key] ? 'translate-x-1' : 'translate-x-5'}`} />
       </button>
     </div>
@@ -400,8 +400,8 @@ function PropertiesPanel({ section, onChange, onClose }: {
   const typeInfo = SECTION_TYPES.find(t => t.type === section.type)!;
 
   return (
-    <div className="h-full flex flex-col bg-white border-r border-[#ECE6F0]">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#ECE6F0]">
+    <div className="h-full flex flex-col bg-white border-r border-[#E5E5EA]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E5EA]">
         <div className="flex items-center gap-2">
           <typeInfo.icon className="h-4 w-4" style={{ color: BRAND.primary }} />
           <span className="font-bold text-sm" style={{ color: BRAND.primary }}>{typeInfo.label}</span>
@@ -445,9 +445,9 @@ function PropertiesPanel({ section, onChange, onClose }: {
           {select('columns', 'عدد الأعمدة', [
             { value: '2', label: '2' }, { value: '3', label: '3' }, { value: '4', label: '4' },
           ])}
-          <div className="border-t border-[#ECE6F0] pt-4 mt-2">
+          <div className="border-t border-[#E5E5EA] pt-4 mt-2">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="mb-4 p-3 rounded-xl" style={{ background: '#F5EFFA' }}>
+              <div key={i} className="mb-4 p-3 rounded-xl" style={{ background: '#F2F2F7' }}>
                 <p className="text-xs font-bold mb-2" style={{ color: BRAND.primary }}>الميزة {i}</p>
                 {input(`feature${i}Icon`, 'أيقونة (إيموجي) — اختياري', 'text', '')}
                 {input(`feature${i}Title`, 'العنوان', 'text', 'ميزة مميزة')}
@@ -459,9 +459,9 @@ function PropertiesPanel({ section, onChange, onClose }: {
 
         {section.type === 'testimonials' && <>
           {input('title', 'عنوان القسم', 'text', 'ماذا يقول عملاؤنا')}
-          <div className="border-t border-[#ECE6F0] pt-4 mt-2">
+          <div className="border-t border-[#E5E5EA] pt-4 mt-2">
             {[1, 2, 3].map(i => (
-              <div key={i} className="mb-4 p-3 rounded-xl" style={{ background: '#F5EFFA' }}>
+              <div key={i} className="mb-4 p-3 rounded-xl" style={{ background: '#F2F2F7' }}>
                 <p className="text-xs font-bold mb-2" style={{ color: BRAND.primary }}>تقييم {i}</p>
                 {input(`review${i}Name`, 'اسم العميل', 'text', 'أحمد محمد')}
                 {textarea(`review${i}Text`, 'نص التقييم', 2)}
@@ -479,7 +479,7 @@ function PropertiesPanel({ section, onChange, onClose }: {
           {select('columns', 'عدد الأعمدة', [
             { value: '2', label: '2' }, { value: '3', label: '3' }, { value: '4', label: '4' },
           ])}
-          <div className="border-t border-[#ECE6F0] pt-4 mt-2">
+          <div className="border-t border-[#E5E5EA] pt-4 mt-2">
             {[1, 2, 3, 4, 5, 6].map(i => (
               <ImageField key={i} label={`صورة ${i}`} value={String(s[`image${i}`] ?? '')} onChange={v => set(`image${i}`, v)} />
             ))}
@@ -569,7 +569,7 @@ function InstructionsOverlay({ onClose }: { onClose: () => void }) {
 
   const steps: { icon: LucideIcon; color: string; title: string; desc: string; tip: string | null }[] = [
     {
-      icon: Palette, color: '#7C3AED',
+      icon: Palette, color: '#AF52DE',
       title: 'مرحباً بك في مصمم المتجر',
       desc: 'هنا تتحكم في شكل متجرك بالكامل — بدون أي خبرة تقنية. فقط اضغط، وغيّر، وانشر!',
       tip: null,
@@ -581,7 +581,7 @@ function InstructionsOverlay({ onClose }: { onClose: () => void }) {
       tip: 'القالب الموصى به لنوع متجرك سيظهر أولاً',
     },
     {
-      icon: Package, color: '#059669',
+      icon: Package, color: '#34C759',
       title: 'الخطوة 2 — أضف أو رتّب الأقسام',
       desc: 'في تبويب "الأقسام"، اضغط "إضافة قسم" لإضافة بانر، منتجات، آراء العملاء وأكثر. استخدم أزرار الأسهم لترتيبها.',
       tip: 'اضغط أي قسم في القائمة لتعديل نصوصه وألوانه من اليمين',
@@ -593,7 +593,7 @@ function InstructionsOverlay({ onClose }: { onClose: () => void }) {
       tip: 'زر العين يُخفي القسم مؤقتاً دون حذفه',
     },
     {
-      icon: Rocket, color: '#0EA5E9',
+      icon: Rocket, color: '#32ADE6',
       title: 'الخطوة 4 — احفظ وانشر',
       desc: 'بعد كل تعديل اضغط "حفظ" في أعلى الشاشة. عندما تكون راضياً اضغط "نشر" لتجعل متجرك مباشراً للزوار.',
       tip: 'يمكنك معاينة المتجر في أي وقت بالضغط على زر "معاينة"',
@@ -617,7 +617,7 @@ function InstructionsOverlay({ onClose }: { onClose: () => void }) {
             <div className="flex gap-1.5">
               {steps.map((_, i) => (
                 <div key={i} className="h-1.5 rounded-full transition-all"
-                  style={{ width: i === step ? 24 : 8, background: i <= step ? BRAND.accent : '#ECE6F0' }} />
+                  style={{ width: i === step ? 24 : 8, background: i <= step ? BRAND.accent : '#E5E5EA' }} />
               ))}
             </div>
             <button onClick={handleClose} className="p-1.5 rounded-xl hover:bg-gray-100 transition">
@@ -635,7 +635,7 @@ function InstructionsOverlay({ onClose }: { onClose: () => void }) {
             </div>
             {current.tip && (
               <div className="w-full rounded-xl px-4 py-2.5 text-xs text-right flex items-center gap-2"
-                style={{ background: '#FBF9F2', border: `1px solid #FBE1EA`, color: '#7B4F3A' }}>
+                style={{ background: '#F2F2F7', border: `1px solid #E5F1FF`, color: '#7B4F3A' }}>
                 <Lightbulb className="h-3.5 w-3.5 flex-shrink-0" /> {current.tip}
               </div>
             )}
@@ -647,20 +647,20 @@ function InstructionsOverlay({ onClose }: { onClose: () => void }) {
           {step > 0 && (
             <button onClick={() => setStep(s => s - 1)}
               className="flex-1 py-2.5 rounded-2xl text-sm font-semibold border transition hover:bg-gray-50"
-              style={{ borderColor: '#ECE6F0', color: '#6B7280' }}>
+              style={{ borderColor: '#E5E5EA', color: '#6C6C70' }}>
               السابق
             </button>
           )}
           {isLast ? (
             <button onClick={handleClose}
               className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white transition hover:opacity-90 flex items-center justify-center gap-1.5"
-              style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+              style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
               ابدأ التصميم <Rocket className="h-4 w-4" />
             </button>
           ) : (
             <button onClick={() => setStep(s => s + 1)}
               className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white transition hover:opacity-90"
-              style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+              style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
               التالي ←
             </button>
           )}
@@ -853,18 +853,18 @@ function BuilderPageContent() {
   const canvasWidth = device === 'mobile' ? 390 : device === 'tablet' ? 768 : '100%';
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: '#F5EFFA' }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: '#F2F2F7' }}>
       {showInstructions && <InstructionsOverlay onClose={() => { localStorage.setItem('sb_builder_guided', '1'); setShowInstructions(false); }} />}
 
       {/* Top Bar */}
-      <header className="flex items-center justify-between px-4 py-2.5 flex-shrink-0 border-b border-[#ECE6F0] bg-white z-10">
+      <header className="flex items-center justify-between px-4 py-2.5 flex-shrink-0 border-b border-[#E5E5EA] bg-white z-10">
         <div className="flex items-center gap-3">
           <button onClick={() => window.history.back()} className="p-2 rounded-xl hover:bg-gray-100 transition">
             <ArrowRight className="h-4 w-4 text-gray-500" />
           </button>
           <div>
             <p className="text-sm font-bold" style={{ color: BRAND.primary }}>{store?.name ?? 'متجري'}</p>
-            <p className="text-xs flex items-center gap-1" style={{ color: store?.isPublished ? '#10b981' : '#f59e0b' }}>
+            <p className="text-xs flex items-center gap-1" style={{ color: store?.isPublished ? '#34C759' : '#FF9500' }}>
               {store?.isPublished ? '● مباشر' : <><AlertTriangle className="h-3 w-3" /> غير منشور</>}
             </p>
           </div>
@@ -876,11 +876,11 @@ function BuilderPageContent() {
         </div>
 
         {/* Device Toggle */}
-        <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl border border-[#ECE6F0] bg-gray-50">
+        <div className="flex items-center gap-1 px-1.5 py-1 rounded-xl border border-[#E5E5EA] bg-gray-50">
           {([['desktop', Monitor], ['tablet', Tablet], ['mobile', Smartphone]] as [Device, React.ElementType][]).map(([d, Icon]) => (
             <button key={d} onClick={() => setDevice(d)} className="p-2 rounded-lg transition"
               style={{ background: device === d ? BRAND.primary : 'transparent' }}>
-              <Icon className="h-4 w-4" style={{ color: device === d ? 'white' : '#9ca3af' }} />
+              <Icon className="h-4 w-4" style={{ color: device === d ? 'white' : '#AEAEB2' }} />
             </button>
           ))}
         </div>
@@ -889,20 +889,20 @@ function BuilderPageContent() {
           {plan === 'FREE' && store && (
             <span className="text-xs px-2 py-1 rounded-full font-medium"
               style={{
-                background: (store.builderEditCount ?? 0) >= FREE_PLAN_BUILDER_EDIT_LIMIT ? '#FEE2E2' : '#F5EFFA',
-                color: (store.builderEditCount ?? 0) >= FREE_PLAN_BUILDER_EDIT_LIMIT ? '#DC2626' : BRAND.secondary,
+                background: (store.builderEditCount ?? 0) >= FREE_PLAN_BUILDER_EDIT_LIMIT ? '#FFE9E7' : '#F2F2F7',
+                color: (store.builderEditCount ?? 0) >= FREE_PLAN_BUILDER_EDIT_LIMIT ? '#FF3B30' : BRAND.secondary,
               }}>
               {Math.max(0, FREE_PLAN_BUILDER_EDIT_LIMIT - (store.builderEditCount ?? 0))} تعديلات متبقية من أصل {FREE_PLAN_BUILDER_EDIT_LIMIT}
             </span>
           )}
           {isDirty && (
-            <span className="text-xs px-2 py-1 rounded-full" style={{ background: '#FEF3C7', color: '#92400E' }}>
+            <span className="text-xs px-2 py-1 rounded-full" style={{ background: '#FFF4E0', color: '#C93400' }}>
               تغييرات غير محفوظة
             </span>
           )}
           {store && (
             <a href={`/store/${store.slug}`} target="_blank" rel="noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl border border-[#ECE6F0] hover:bg-gray-50 transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl border border-[#E5E5EA] hover:bg-gray-50 transition"
               style={{ color: BRAND.secondary }}>
               <Eye className="h-4 w-4" /> معاينة
             </a>
@@ -914,7 +914,7 @@ function BuilderPageContent() {
           </button>
           <button onClick={publish} disabled={publishing}
             className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-bold rounded-xl text-white transition disabled:opacity-50"
-            style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+            style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
             <Rocket className="h-4 w-4" />
             {publishing ? 'جارٍ النشر…' : 'نشر'}
           </button>
@@ -923,7 +923,7 @@ function BuilderPageContent() {
 
       {/* Quick tips strip — shown until user dismisses */}
       {!store?.isPublished && sections.length < 3 && (
-        <div className="flex items-center gap-4 px-4 py-2 text-xs border-b border-[#ECE6F0] flex-shrink-0 overflow-x-auto"
+        <div className="flex items-center gap-4 px-4 py-2 text-xs border-b border-[#E5E5EA] flex-shrink-0 overflow-x-auto"
           style={{ background: '#FFF8F0' }}>
           <span className="text-amber-600 font-semibold flex-shrink-0 flex items-center gap-1"><Lightbulb className="h-3.5 w-3.5" /> نصائح سريعة:</span>
           {[
@@ -932,7 +932,7 @@ function BuilderPageContent() {
             '3. اضغط "حفظ" ثم "نشر"',
           ].map((t, i) => (
             <span key={i} className="flex-shrink-0 px-2.5 py-1 rounded-full"
-              style={{ background: '#FEF3C7', color: '#92400E' }}>{t}</span>
+              style={{ background: '#FFF4E0', color: '#C93400' }}>{t}</span>
           ))}
           <button onClick={() => setShowInstructions(true)}
             className="flex-shrink-0 mr-auto text-xs font-bold px-2.5 py-1 rounded-full transition hover:opacity-80"
@@ -946,8 +946,8 @@ function BuilderPageContent() {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Left Panel */}
-        <aside className="w-72 flex flex-col flex-shrink-0 bg-white border-l border-[#ECE6F0] overflow-hidden">
-          <div className="flex border-b border-[#ECE6F0]">
+        <aside className="w-72 flex flex-col flex-shrink-0 bg-white border-l border-[#E5E5EA] overflow-hidden">
+          <div className="flex border-b border-[#E5E5EA]">
             {([
               ['sections', Layers, 'الأقسام'],
               ['theme', Palette, 'التصميم'],
@@ -956,7 +956,7 @@ function BuilderPageContent() {
             ] as [LeftTab, React.ElementType, string][]).map(([tab, Icon, label]) => (
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className="flex-1 flex flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition border-b-2"
-                style={{ color: activeTab === tab ? BRAND.accent : '#9ca3af', borderBottomColor: activeTab === tab ? BRAND.accent : 'transparent' }}>
+                style={{ color: activeTab === tab ? BRAND.accent : '#AEAEB2', borderBottomColor: activeTab === tab ? BRAND.accent : 'transparent' }}>
                 <Icon className="h-4 w-4" />{label}
               </button>
             ))}
@@ -968,8 +968,8 @@ function BuilderPageContent() {
 
               {/* Hint: click "التصميم" first if no sections */}
               {sections.length === 0 && (
-                <div className="mx-3 mt-3 rounded-2xl overflow-hidden border" style={{ borderColor: '#FBE1EA' }}>
-                  <div className="px-3 py-2.5" style={{ background: '#FBF9F2' }}>
+                <div className="mx-3 mt-3 rounded-2xl overflow-hidden border" style={{ borderColor: '#E5F1FF' }}>
+                  <div className="px-3 py-2.5" style={{ background: '#F2F2F7' }}>
                     <p className="text-xs font-bold mb-1 flex items-center gap-1.5" style={{ color: BRAND.accent }}><Rocket className="h-3.5 w-3.5" /> ابدأ من هنا</p>
                     <p className="text-xs text-gray-600 leading-relaxed">
                       انتقل لتبويب <strong>التصميم</strong> واضغط على قالب جاهز — يملأ المتجر تلقائياً بكل الأقسام!
@@ -977,7 +977,7 @@ function BuilderPageContent() {
                   </div>
                   <button onClick={() => setActiveTab('theme')}
                     className="w-full py-2 text-xs font-bold transition hover:opacity-90"
-                    style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})`, color: '#fff' }}>
+                    style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)`, color: '#fff' }}>
                     اختر قالباً الآن ←
                   </button>
                 </div>
@@ -1008,18 +1008,18 @@ function BuilderPageContent() {
                       return (
                         <div key={st.type} className="relative">
                           <button onClick={() => addSection(st.type)}
-                            className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl border-2 text-center transition ${locked ? 'opacity-60 cursor-not-allowed' : 'hover:border-[#DB6E93] hover:shadow-sm'}`}
-                            style={{ borderColor: locked ? '#ECE6F0' : BRAND.light, background: locked ? '#F9F9F9' : '#FBF8FF' }}>
-                            <st.icon className="h-5 w-5" style={{ color: locked ? '#9CA3AF' : BRAND.accent }} />
-                            <span className="text-xs font-semibold" style={{ color: locked ? '#9CA3AF' : BRAND.primary }}>{st.label}</span>
+                            className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl border-2 text-center transition ${locked ? 'opacity-60 cursor-not-allowed' : 'hover:border-[#007AFF] hover:shadow-sm'}`}
+                            style={{ borderColor: locked ? '#E5E5EA' : BRAND.light, background: locked ? '#F9F9F9' : '#FBF8FF' }}>
+                            <st.icon className="h-5 w-5" style={{ color: locked ? '#AEAEB2' : BRAND.accent }} />
+                            <span className="text-xs font-semibold" style={{ color: locked ? '#AEAEB2' : BRAND.primary }}>{st.label}</span>
                             <span className="text-xs text-gray-400 leading-tight">{st.desc}</span>
                           </button>
                           {locked && (
                             <Link href="/dashboard/settings?tab=billing"
                               className="absolute inset-0 flex flex-col items-center justify-center gap-1 rounded-xl"
                               style={{ background: 'rgba(249,245,255,0.88)' }}>
-                              {st.minPlan === 'ENTERPRISE' ? <Crown className="h-4 w-4" style={{ color: '#DB6E93' }} /> : <Lock className="h-4 w-4" style={{ color: '#7C3AED' }} />}
-                              <span className="text-xs font-bold" style={{ color: st.minPlan === 'ENTERPRISE' ? '#DB6E93' : '#7C3AED' }}>{st.minPlan}</span>
+                              {st.minPlan === 'ENTERPRISE' ? <Crown className="h-4 w-4" style={{ color: '#007AFF' }} /> : <Lock className="h-4 w-4" style={{ color: '#AF52DE' }} />}
+                              <span className="text-xs font-bold" style={{ color: st.minPlan === 'ENTERPRISE' ? '#007AFF' : '#AF52DE' }}>{st.minPlan}</span>
                             </Link>
                           )}
                         </div>
@@ -1044,13 +1044,13 @@ function BuilderPageContent() {
                         className="flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition"
                         style={{
                           background: isSelected ? `${BRAND.primary}12` : '#FAFAFA',
-                          border: `1.5px solid ${isSelected ? BRAND.primary : '#ECE6F0'}`,
+                          border: `1.5px solid ${isSelected ? BRAND.primary : '#E5E5EA'}`,
                           boxShadow: isSelected ? `0 2px 8px ${BRAND.primary}20` : 'none',
                         }}>
                         <GripVertical className="h-3.5 w-3.5 flex-shrink-0 text-gray-300" />
-                        <typeInfo.icon className="h-4 w-4 flex-shrink-0" style={{ color: section.visible ? BRAND.primary : '#9ca3af' }} />
+                        <typeInfo.icon className="h-4 w-4 flex-shrink-0" style={{ color: section.visible ? BRAND.primary : '#AEAEB2' }} />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold truncate" style={{ color: section.visible ? BRAND.primary : '#9ca3af' }}>
+                          <p className="text-xs font-semibold truncate" style={{ color: section.visible ? BRAND.primary : '#AEAEB2' }}>
                             {typeInfo?.label}
                           </p>
                           {isSelected && (
@@ -1086,7 +1086,7 @@ function BuilderPageContent() {
                   {/* Save reminder */}
                   {isDirty && (
                     <div className="mt-3 px-3 py-2.5 rounded-xl text-xs text-center flex items-center justify-center gap-1.5"
-                      style={{ background: '#FEF3C7', border: '1px solid #FCD34D', color: '#92400E' }}>
+                      style={{ background: '#FFF4E0', border: '1px solid #FFCC00', color: '#C93400' }}>
                       <Save className="h-3.5 w-3.5 flex-shrink-0" /> لديك تغييرات غير محفوظة — اضغط <strong>حفظ</strong> أعلاه
                     </div>
                   )}
@@ -1109,7 +1109,7 @@ function BuilderPageContent() {
                       onClick={() => applyTemplate(tpl)}
                       disabled={applyingTemplate === tpl.id}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border-2 text-right transition hover:border-opacity-70 disabled:opacity-50"
-                      style={{ borderColor: isMatch ? tpl.themeColor : '#ECE6F0', background: isMatch ? `${tpl.themeColor}08` : 'white' }}>
+                      style={{ borderColor: isMatch ? tpl.themeColor : '#E5E5EA', background: isMatch ? `${tpl.themeColor}08` : 'white' }}>
                       <tpl.icon className="h-5 w-5 flex-shrink-0" style={{ color: tpl.themeColor }} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
@@ -1128,10 +1128,10 @@ function BuilderPageContent() {
                   );
                 })}
               </div>
-              <div className="h-px mb-4" style={{ background: '#ECE6F0' }} />
+              <div className="h-px mb-4" style={{ background: '#E5E5EA' }} />
               <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>لوحة الألوان</p>
               <div className="grid grid-cols-4 gap-2 mb-4">
-                {[BRAND.primary, BRAND.secondary, BRAND.accent, BRAND.light, '#1a7f5a', '#1d4ed8', '#b45309', '#0f172a'].map(c => (
+                {[BRAND.primary, BRAND.secondary, BRAND.accent, BRAND.light, '#248A3D', '#0062CC', '#C93400', '#0f172a'].map(c => (
                   <button key={c} type="button" onClick={() => {
                     setStoreTheme(c);
                     api.patch('/api/stores/my', { theme: c }).catch(() => {});
@@ -1149,13 +1149,13 @@ function BuilderPageContent() {
                   setStoreTheme(e.target.value);
                   api.patch('/api/stores/my', { theme: e.target.value }).catch(() => {});
                   markDirty();
-                }} className="h-9 w-full rounded-xl border cursor-pointer" style={{ borderColor: '#ECE6F0' }} />
+                }} className="h-9 w-full rounded-xl border cursor-pointer" style={{ borderColor: '#E5E5EA' }} />
               </div>
               <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>الخطوط</p>
               <div className="space-y-2">
                 {[{ name: 'Cairo', label: 'القاهرة (افتراضي)' }, { name: 'Tajawal', label: 'تجول' }, { name: 'Almarai', label: 'المراعي' }].map(f => (
-                  <button key={f.name} className="w-full text-right px-3 py-2.5 rounded-xl border-2 text-sm transition hover:border-[#DB6E93]"
-                    style={{ borderColor: '#ECE6F0', fontFamily: f.name }}>
+                  <button key={f.name} className="w-full text-right px-3 py-2.5 rounded-xl border-2 text-sm transition hover:border-[#007AFF]"
+                    style={{ borderColor: '#E5E5EA', fontFamily: f.name }}>
                     {f.label}
                   </button>
                 ))}
@@ -1178,10 +1178,10 @@ function BuilderPageContent() {
               {(Object.entries(PAGE_LABELS) as [PageKey, typeof PAGE_LABELS[PageKey]][]).map(([key, page]) => (
                 <button key={key} onClick={() => { setCurrentPage(key); setActiveTab('sections'); setSelectedId(null); }}
                   className="w-full flex items-start gap-3 px-3 py-3 rounded-xl mb-2 text-right transition"
-                  style={{ background: currentPage === key ? `${BRAND.primary}12` : 'transparent', border: `1.5px solid ${currentPage === key ? BRAND.primary : '#ECE6F0'}` }}>
-                  <page.icon className="h-5 w-5 mt-0.5" style={{ color: currentPage === key ? BRAND.primary : '#9ca3af' }} />
+                  style={{ background: currentPage === key ? `${BRAND.primary}12` : 'transparent', border: `1.5px solid ${currentPage === key ? BRAND.primary : '#E5E5EA'}` }}>
+                  <page.icon className="h-5 w-5 mt-0.5" style={{ color: currentPage === key ? BRAND.primary : '#AEAEB2' }} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold" style={{ color: currentPage === key ? BRAND.primary : '#6b7280' }}>{page.label}</p>
+                    <p className="text-xs font-bold" style={{ color: currentPage === key ? BRAND.primary : '#6C6C70' }}>{page.label}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{page.desc}</p>
                     <p className="text-xs mt-1" style={{ color: BRAND.accent }}>
                       {pagesConfig[key].length} قسم
@@ -1216,14 +1216,14 @@ function BuilderPageContent() {
                     setShowBannerForm(v => !v);
                   }}
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-white transition hover:opacity-90"
-                  style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
                   <Plus className="h-3 w-3" /> إضافة
                 </button>
               </div>
 
               {/* Banner form */}
               {showBannerForm && (
-                <div className="mb-4 p-3 rounded-xl border border-[#ECE6F0] bg-white space-y-2.5">
+                <div className="mb-4 p-3 rounded-xl border border-[#E5E5EA] bg-white space-y-2.5">
                   <p className="text-xs font-bold" style={{ color: BRAND.primary }}>
                     {editingBannerId ? 'تعديل البانر' : 'بانر جديد'}
                   </p>
@@ -1233,7 +1233,7 @@ function BuilderPageContent() {
                       value={bannerForm.title}
                       onChange={e => setBannerForm(f => ({ ...f, title: e.target.value }))}
                       placeholder="مثال: خصم 20% على كل المنتجات"
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-[#ECE6F0] focus:outline-none focus:border-[#DB6E93]"
+                      className="w-full text-xs px-3 py-2 rounded-xl border border-[#E5E5EA] focus:outline-none focus:border-[#007AFF]"
                     />
                   </div>
                   <div>
@@ -1242,7 +1242,7 @@ function BuilderPageContent() {
                       value={bannerForm.subtitle}
                       onChange={e => setBannerForm(f => ({ ...f, subtitle: e.target.value }))}
                       placeholder="مثال: استخدم الكود SAVE20"
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-[#ECE6F0] focus:outline-none focus:border-[#DB6E93]"
+                      className="w-full text-xs px-3 py-2 rounded-xl border border-[#E5E5EA] focus:outline-none focus:border-[#007AFF]"
                     />
                   </div>
                   <div>
@@ -1251,7 +1251,7 @@ function BuilderPageContent() {
                       value={bannerForm.link}
                       onChange={e => setBannerForm(f => ({ ...f, link: e.target.value }))}
                       placeholder="https://..."
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-[#ECE6F0] focus:outline-none focus:border-[#DB6E93]"
+                      className="w-full text-xs px-3 py-2 rounded-xl border border-[#E5E5EA] focus:outline-none focus:border-[#007AFF]"
                     />
                   </div>
                   <div className="flex gap-3">
@@ -1259,13 +1259,13 @@ function BuilderPageContent() {
                       <label className="block text-xs text-gray-500 mb-1">لون الخلفية</label>
                       <input type="color" value={bannerForm.bgColor}
                         onChange={e => setBannerForm(f => ({ ...f, bgColor: e.target.value }))}
-                        className="h-9 w-full rounded-xl border border-[#ECE6F0] cursor-pointer" />
+                        className="h-9 w-full rounded-xl border border-[#E5E5EA] cursor-pointer" />
                     </div>
                     <div className="flex-1">
                       <label className="block text-xs text-gray-500 mb-1">لون النص</label>
                       <input type="color" value={bannerForm.textColor}
                         onChange={e => setBannerForm(f => ({ ...f, textColor: e.target.value }))}
-                        className="h-9 w-full rounded-xl border border-[#ECE6F0] cursor-pointer" />
+                        className="h-9 w-full rounded-xl border border-[#E5E5EA] cursor-pointer" />
                     </div>
                   </div>
                   {/* Preview */}
@@ -1296,7 +1296,7 @@ function BuilderPageContent() {
                     </button>
                     <button
                       onClick={() => { setShowBannerForm(false); setEditingBannerId(null); }}
-                      className="px-3 py-2 rounded-xl text-xs font-medium border border-[#ECE6F0] hover:bg-gray-50 transition">
+                      className="px-3 py-2 rounded-xl text-xs font-medium border border-[#E5E5EA] hover:bg-gray-50 transition">
                       إلغاء
                     </button>
                   </div>
@@ -1313,7 +1313,7 @@ function BuilderPageContent() {
               ) : (
                 <div className="space-y-2">
                   {banners.map(b => (
-                    <div key={b.id} className="rounded-xl border border-[#ECE6F0] overflow-hidden">
+                    <div key={b.id} className="rounded-xl border border-[#E5E5EA] overflow-hidden">
                       {/* Color preview strip */}
                       <div className="px-3 py-2 text-center" style={{ background: b.bgColor, opacity: b.active ? 1 : 0.4 }}>
                         <p className="text-xs font-bold truncate" style={{ color: b.textColor }}>{b.title}</p>
@@ -1324,7 +1324,7 @@ function BuilderPageContent() {
                         <button
                           onClick={() => { setBanners(bs => bs.map(x => x.id === b.id ? { ...x, active: !x.active } : x)); markDirty(); }}
                           className="flex-1 flex items-center gap-1.5 text-xs font-medium transition"
-                          style={{ color: b.active ? '#10b981' : '#9ca3af' }}>
+                          style={{ color: b.active ? '#34C759' : '#AEAEB2' }}>
                           {b.active ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
                           {b.active ? 'ظاهر' : 'مخفي'}
                         </button>
@@ -1367,15 +1367,15 @@ function BuilderPageContent() {
                 <span className="font-bold text-sm" style={{ color: BRAND.primary }}>{store?.name ?? 'متجري'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-5 w-24 rounded-lg" style={{ background: '#F5EFFA' }} />
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#F5EFFA' }}>
+                <div className="h-5 w-24 rounded-lg" style={{ background: '#F2F2F7' }} />
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#F2F2F7' }}>
                   <div className="w-3 h-3 rounded-full" style={{ background: '#ccc' }} />
                 </div>
               </div>
             </div>
 
             {/* Page label in canvas */}
-            <div className="px-4 py-2 flex items-center gap-2 border-b" style={{ background: `${BRAND.primary}06`, borderColor: '#ECE6F0' }}>
+            <div className="px-4 py-2 flex items-center gap-2 border-b" style={{ background: `${BRAND.primary}06`, borderColor: '#E5E5EA' }}>
               <CurrentPageIcon className="h-3.5 w-3.5" style={{ color: BRAND.secondary }} />
               <span className="text-xs font-semibold" style={{ color: BRAND.secondary }}>{PAGE_LABELS[currentPage].label}</span>
               {currentPage !== 'home' && (
@@ -1411,7 +1411,7 @@ function BuilderPageContent() {
         </main>
 
         {/* Right Properties Panel */}
-        <div className={`transition-all duration-300 flex-shrink-0 overflow-hidden border-r border-[#ECE6F0] ${selectedSection ? 'w-80' : 'w-0'}`}>
+        <div className={`transition-all duration-300 flex-shrink-0 overflow-hidden border-r border-[#E5E5EA] ${selectedSection ? 'w-80' : 'w-0'}`}>
           {selectedSection && (
             <PropertiesPanel
               section={selectedSection}

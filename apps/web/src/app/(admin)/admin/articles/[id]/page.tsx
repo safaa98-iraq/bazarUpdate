@@ -22,8 +22,8 @@ export default function EditArticlePage() {
 
   if (loading) return (
     <div className="p-8 max-w-4xl mx-auto space-y-4">
-      <div className="h-10 rounded-xl animate-pulse" style={{ background: '#ECE6F0' }} />
-      <div className="h-96 rounded-2xl animate-pulse" style={{ background: '#ECE6F0' }} />
+      <div className="h-10 rounded-xl animate-pulse" style={{ background: '#E5E5EA' }} />
+      <div className="h-96 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />
     </div>
   );
 

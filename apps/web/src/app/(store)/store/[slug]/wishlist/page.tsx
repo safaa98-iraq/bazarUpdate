@@ -40,7 +40,7 @@ export default function WishlistPage() {
     if (store?.name) document.title = `المفضلة — ${store.name}`;
   }, [store?.name]);
 
-  const theme = store?.theme ?? '#2F2E4B';
+  const theme = store?.theme ?? '#1C1C1E';
   const items = products.filter(p => wishlistIds.includes(p.id));
 
   const handleAddToCart = (product: ProductPublic) => {
@@ -49,13 +49,13 @@ export default function WishlistPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" dir="rtl" style={{ background: '#F5EFFA' }}>
-      <div className="w-8 h-8 border-3 rounded-full animate-spin" style={{ borderColor: '#FBE1EA', borderTopColor: '#2F2E4B' }} />
+    <div className="min-h-screen flex items-center justify-center" dir="rtl" style={{ background: '#F2F2F7' }}>
+      <div className="w-8 h-8 border-3 rounded-full animate-spin" style={{ borderColor: '#E5F1FF', borderTopColor: '#1C1C1E' }} />
     </div>
   );
 
   if (items.length === 0) return (
-    <div className="min-h-screen flex items-center justify-center" dir="rtl" style={{ background: '#F5EFFA' }}>
+    <div className="min-h-screen flex items-center justify-center" dir="rtl" style={{ background: '#F2F2F7' }}>
       <div className="text-center px-6">
         <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: `${theme}15` }}>
           <Heart className="h-10 w-10" style={{ color: theme }} />
@@ -72,7 +72,7 @@ export default function WishlistPage() {
   );
 
   return (
-    <div className="min-h-screen" dir="rtl" style={{ background: '#F7F5FC' }}>
+    <div className="min-h-screen" dir="rtl" style={{ background: '#F2F2F7' }}>
       <nav className="bg-white border-b shadow-sm sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <Link href={`/store/${slug}`} className="flex items-center gap-1.5 text-sm font-semibold hover:opacity-70 transition" style={{ color: theme }}>
@@ -92,7 +92,7 @@ export default function WishlistPage() {
           {items.map(product => (
             <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
               <Link href={`/store/${slug}/product/${product.id}`} className="block relative">
-                <div className="aspect-square" style={{ background: '#F5EFFA' }}>
+                <div className="aspect-square" style={{ background: '#F2F2F7' }}>
                   {product.images?.[0]
                     ? <Image src={product.images[0]} alt={product.name} width={300} height={300} className="w-full h-full object-cover" />
                     : <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={32} /></div>}
@@ -111,7 +111,7 @@ export default function WishlistPage() {
                   </button>
                   <button onClick={() => toggleWishlist(slug, product.id)}
                     className="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center border transition hover:bg-red-50"
-                    style={{ borderColor: '#fca5a5' }} title="إزالة من المفضلة">
+                    style={{ borderColor: '#FFA59F' }} title="إزالة من المفضلة">
                     <Trash2 className="h-3.5 w-3.5 text-red-400" />
                   </button>
                 </div>

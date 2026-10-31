@@ -14,7 +14,7 @@ import { useAuthStore } from '@/lib/stores/auth.store';
 import { canUseFeature, getFeatureLimit, Plan, PLAN_LABELS } from '@/lib/plan-features';
 import { PlanGate } from '@/components/ui/PlanGate';
 
-const BRAND = { primary: '#2F2E4B', secondary: '#4A4767', accent: '#DB6E93', border: '#FBE1EA', bg: '#F5EFFA' };
+const BRAND = { primary: '#1C1C1E', secondary: '#3A3A3C', accent: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7' };
 
 type TabKey = 'coupons' | 'affiliates';
 
@@ -91,15 +91,15 @@ function CouponsTab() {
     <div>
       {couponLimit !== null && couponLimit !== undefined && (
         <div className="flex items-center gap-3 px-4 py-3 rounded-2xl mb-4 border"
-          style={{ background: atLimit ? '#FEF2F2' : '#FEF3C7', borderColor: atLimit ? '#FECACA' : '#FCD34D' }}>
-          <Zap className="h-4 w-4 flex-shrink-0" style={{ color: atLimit ? '#DC2626' : '#D97706' }} />
-          <p className="text-sm flex-1" style={{ color: atLimit ? '#991B1B' : '#92400E' }}>
+          style={{ background: atLimit ? '#FFF3F2' : '#FFF4E0', borderColor: atLimit ? '#FFD1CD' : '#FFCC00' }}>
+          <Zap className="h-4 w-4 flex-shrink-0" style={{ color: atLimit ? '#FF3B30' : '#FF9500' }} />
+          <p className="text-sm flex-1" style={{ color: atLimit ? '#D70015' : '#C93400' }}>
             {couponLimit === 0
               ? 'أكواد الخصم غير متاحة في الخطة المجانية'
               : `خطة ${PLAN_LABELS[plan]}: ${coupons.length} / ${couponLimit} كوبون`}
             {atLimit && ' — ارفع خطتك للمزيد'}
           </p>
-          {atLimit && <a href="/dashboard/upgrade" className="text-xs font-bold px-3 py-1.5 rounded-xl text-white" style={{ background: '#DB6E93' }}>ارفع الآن</a>}
+          {atLimit && <a href="/dashboard/upgrade" className="text-xs font-bold px-3 py-1.5 rounded-xl text-white" style={{ background: '#007AFF' }}>ارفع الآن</a>}
         </div>
       )}
 
@@ -107,7 +107,7 @@ function CouponsTab() {
         <p className="text-sm text-gray-500">{coupons.length} كوبون • {totalSavings} استخدام إجمالي</p>
         <button onClick={() => { setForm(emptyCouponForm); setShowModal(true); }} disabled={atLimit}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
           <Plus className="h-4 w-4" /> إنشاء كوبون
         </button>
       </div>
@@ -115,7 +115,7 @@ function CouponsTab() {
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
           { label: 'إجمالي الكوبونات', value: coupons.length, color: BRAND.primary },
-          { label: 'كوبونات نشطة', value: coupons.filter(c => c.isActive).length, color: '#10b981' },
+          { label: 'كوبونات نشطة', value: coupons.filter(c => c.isActive).length, color: '#34C759' },
           { label: 'إجمالي الاستخدامات', value: totalSavings, color: BRAND.accent },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl border p-4" style={{ borderColor: BRAND.border }}>
@@ -133,17 +133,17 @@ function CouponsTab() {
           <p className="font-medium text-gray-400 mb-1">لا توجد كوبونات بعد</p>
           <p className="text-sm text-gray-400 mb-6">أنشئ كوبون خصم لتشجيع العملاء على الشراء</p>
           <button onClick={() => setShowModal(true)} className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
-            style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>إنشاء أول كوبون</button>
+            style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>إنشاء أول كوبون</button>
         </div>
       ) : (
         <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: BRAND.border }}>
           <table className="w-full text-sm">
-            <thead className="border-b" style={{ background: '#F5EFFA' }}>
+            <thead className="border-b" style={{ background: '#F2F2F7' }}>
               <tr>{['الكود', 'الخصم', 'الحد الأدنى', 'الاستخدام', 'الانتهاء', 'الحالة', 'إجراءات'].map(h => (
                 <th key={h} className="px-4 py-3 text-right font-semibold" style={{ color: BRAND.primary }}>{h}</th>
               ))}</tr>
             </thead>
-            <tbody className="divide-y divide-[#F5EFFA]">
+            <tbody className="divide-y divide-[#F2F2F7]">
               {coupons.map(c => {
                 const isExpired = c.expiresAt && new Date(c.expiresAt) < new Date();
                 const isExhausted = c.maxUses && c.usedCount >= c.maxUses;
@@ -157,12 +157,12 @@ function CouponsTab() {
                     </td>
                     <td className="px-4 py-3"><span className="font-bold" style={{ color: BRAND.accent }}>{c.discountType === 'percent' ? `${c.discountValue}%` : `${c.discountValue} د.ع`}</span></td>
                     <td className="px-4 py-3 text-gray-500">{c.minOrderAmount ? `${c.minOrderAmount} د.ع` : '—'}</td>
-                    <td className="px-4 py-3"><span style={{ color: isExhausted ? '#ef4444' : 'inherit' }}>{c.usedCount}{c.maxUses ? ` / ${c.maxUses}` : ''}</span></td>
+                    <td className="px-4 py-3"><span style={{ color: isExhausted ? '#FF3B30' : 'inherit' }}>{c.usedCount}{c.maxUses ? ` / ${c.maxUses}` : ''}</span></td>
                     <td className="px-4 py-3 text-gray-500">
-                      {c.expiresAt ? <span style={{ color: isExpired ? '#ef4444' : 'inherit' }}>{isExpired ? 'منتهي' : formatDate(c.expiresAt)}</span> : '—'}
+                      {c.expiresAt ? <span style={{ color: isExpired ? '#FF3B30' : 'inherit' }}>{isExpired ? 'منتهي' : formatDate(c.expiresAt)}</span> : '—'}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: c.isActive && !isExpired && !isExhausted ? '#d1fae5' : '#F5EFFA', color: c.isActive && !isExpired && !isExhausted ? '#065f46' : '#6b7280' }}>
+                      <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: c.isActive && !isExpired && !isExhausted ? '#E3F9E8' : '#F2F2F7', color: c.isActive && !isExpired && !isExhausted ? '#248A3D' : '#6C6C70' }}>
                         {isExpired ? 'منتهي' : isExhausted ? 'مستنفد' : c.isActive ? 'نشط' : 'موقوف'}
                       </span>
                     </td>
@@ -202,7 +202,7 @@ function CouponsTab() {
                   {(['percent', 'fixed'] as const).map(t => (
                     <button key={t} type="button" onClick={() => setForm(f => ({ ...f, discountType: t }))}
                       className="p-3 rounded-xl border-2 text-sm font-medium transition"
-                      style={{ borderColor: form.discountType === t ? BRAND.accent : BRAND.border, background: form.discountType === t ? `${BRAND.accent}10` : 'white', color: form.discountType === t ? BRAND.accent : '#374151' }}>
+                      style={{ borderColor: form.discountType === t ? BRAND.accent : BRAND.border, background: form.discountType === t ? `${BRAND.accent}10` : 'white', color: form.discountType === t ? BRAND.accent : '#3A3A3C' }}>
                       {t === 'percent' ? 'نسبة مئوية %' : 'مبلغ ثابت د.ع'}
                     </button>
                   ))}
@@ -236,7 +236,7 @@ function CouponsTab() {
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 text-gray-600" style={{ borderColor: BRAND.border }}>إلغاء</button>
                 <button type="submit" disabled={saving} className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />}{saving ? 'جارٍ الحفظ…' : 'إنشاء الكوبون'}
                 </button>
               </div>
@@ -256,7 +256,7 @@ const PLATFORMS = [
   { value: 'youtube',   label: 'YouTube',   icon: Youtube,    color: '#FF0000' },
   { value: 'twitter',   label: 'Twitter/X', icon: Twitter,    color: '#1DA1F2' },
   { value: 'snapchat',  label: 'Snapchat',  icon: Link2,      color: '#FFFC00' },
-  { value: 'other',     label: 'أخرى',      icon: Link2,      color: '#6b7280' },
+  { value: 'other',     label: 'أخرى',      icon: Link2,      color: '#6C6C70' },
 ];
 
 interface AffiliateForm {
@@ -362,7 +362,7 @@ function AffiliatesTab() {
       <div className="flex items-center justify-between mb-6">
         <p className="text-sm text-gray-500">{affiliates.filter(a => a.isActive).length} مؤثر نشط</p>
         <button onClick={openNew} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:opacity-90 transition"
-          style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
           <Plus className="h-4 w-4" /> إضافة مؤثر
         </button>
       </div>
@@ -371,7 +371,7 @@ function AffiliatesTab() {
         {[
           { label: 'إجمالي المؤثرين', value: affiliates.length, icon: TrendingUp, color: BRAND.secondary },
           { label: 'طلبات من المؤثرين', value: `${totalOrders} طلب`, icon: ShoppingBag, color: BRAND.accent },
-          { label: 'عمولات مستحقة', value: formatCurrency(totalEarned), icon: DollarSign, color: '#059669' },
+          { label: 'عمولات مستحقة', value: formatCurrency(totalEarned), icon: DollarSign, color: '#34C759' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl p-4 border" style={{ borderColor: BRAND.border }}>
             <div className="flex items-center gap-2 mb-2">
@@ -400,7 +400,7 @@ function AffiliatesTab() {
               <div className="flex items-center gap-4 p-4">
                 <div className="relative flex-shrink-0">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg font-bold"
-                    style={{ background: aff.isActive ? `linear-gradient(135deg,${BRAND.primary},${BRAND.accent})` : '#9ca3af' }}>
+                    style={{ background: aff.isActive ? `linear-gradient(135deg, #0A84FF, #5E5CE6)` : '#AEAEB2' }}>
                     {aff.name.charAt(0)}
                   </div>
                   <div className="absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-white flex items-center justify-center shadow">
@@ -419,7 +419,7 @@ function AffiliatesTab() {
                     {aff.couponCode && <span className="flex items-center gap-1" style={{ color: BRAND.secondary }}><Tag className="h-3 w-3" />{aff.couponCode}</span>}
                   </div>
                 </div>
-                <div className="text-center px-3 py-2 rounded-xl flex-shrink-0" style={{ background: '#F5EFFA' }}>
+                <div className="text-center px-3 py-2 rounded-xl flex-shrink-0" style={{ background: '#F2F2F7' }}>
                   <p className="text-lg font-bold" style={{ color: BRAND.accent }}>
                     {aff.commissionType === 'percent' ? `${aff.commissionRate}%` : formatCurrency(aff.commissionRate)}
                   </p>
@@ -453,7 +453,7 @@ function AffiliatesTab() {
                 </div>
               </div>
               {expandedId === aff.id && aff.notes && (
-                <div className="px-4 pb-4"><div className="rounded-xl p-3 text-xs text-gray-600" style={{ background: '#F5EFFA' }}>
+                <div className="px-4 pb-4"><div className="rounded-xl p-3 text-xs text-gray-600" style={{ background: '#F2F2F7' }}>
                   <p className="font-semibold mb-1" style={{ color: BRAND.secondary }}>ملاحظات</p><p>{aff.notes}</p>
                 </div></div>
               )}
@@ -516,7 +516,7 @@ function AffiliatesTab() {
                     <button key={t} type="button" onClick={() => setForm(f => ({ ...f, commissionType: t }))}
                       className="p-3 rounded-xl border-2 transition"
                       style={{ borderColor: form.commissionType === t ? BRAND.accent : BRAND.border, background: form.commissionType === t ? `${BRAND.accent}10` : 'white' }}>
-                      <p className="text-sm font-bold" style={{ color: form.commissionType === t ? BRAND.accent : '#374151' }}>{t === 'percent' ? 'نسبة مئوية %' : 'مبلغ ثابت د.ع'}</p>
+                      <p className="text-sm font-bold" style={{ color: form.commissionType === t ? BRAND.accent : '#3A3A3C' }}>{t === 'percent' ? 'نسبة مئوية %' : 'مبلغ ثابت د.ع'}</p>
                     </button>
                   ))}
                 </div>
@@ -534,7 +534,7 @@ function AffiliatesTab() {
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 text-gray-600" style={{ borderColor: BRAND.border }}>إلغاء</button>
                 <button type="submit" disabled={saving} className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />}{saving ? 'جارٍ الحفظ…' : editingId ? 'حفظ التغييرات' : 'إضافة المؤثر'}
                 </button>
               </div>
@@ -574,7 +574,7 @@ function AffiliatesTab() {
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowCouponModal(null)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium text-gray-600" style={{ borderColor: BRAND.border }}>إلغاء</button>
                 <button type="submit" disabled={savingCoupon} className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
                   {savingCoupon && <Loader2 className="h-4 w-4 animate-spin" />}{savingCoupon ? 'جارٍ الإنشاء…' : 'إنشاء الكود'}
                 </button>
               </div>
@@ -611,7 +611,7 @@ export default function MarketingPage() {
         {TABS.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition -mb-px"
-            style={{ borderBottomColor: tab === t.key ? BRAND.accent : 'transparent', color: tab === t.key ? BRAND.accent : '#9ca3af' }}>
+            style={{ borderBottomColor: tab === t.key ? BRAND.accent : 'transparent', color: tab === t.key ? BRAND.accent : '#AEAEB2' }}>
             <t.icon size={16} />{t.label}
           </button>
         ))}

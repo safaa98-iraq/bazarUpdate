@@ -12,7 +12,7 @@ import { getFeatureLimit, Plan } from '@/lib/plan-features';
 import Image from 'next/image';
 import { trackPage, track } from '@/lib/track';
 
-const BRAND = { primary: '#2F2E4B', secondary: '#4A4767', accent: '#DB6E93', light: '#FBE1EA' };
+const BRAND = { primary: '#1C1C1E', secondary: '#3A3A3C', accent: '#007AFF', light: '#E5F1FF' };
 
 interface SpecValue { value: string; image?: string }
 interface ProductSpec { name: string; values: SpecValue[] }
@@ -59,7 +59,7 @@ function SpecValueImage({ sv, onUpload, onRemove }: {
 
   return (
     <label className="relative w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 border cursor-pointer flex items-center justify-center"
-      style={{ borderColor: '#ECE6F0', background: '#F5EFFA' }}>
+      style={{ borderColor: '#E5E5EA', background: '#F2F2F7' }}>
       {uploading ? (
         <Loader2 className="h-3.5 w-3.5 animate-spin" style={{ color: BRAND.accent }} />
       ) : sv.image ? (
@@ -134,7 +134,7 @@ function SpecsEditor({ specs, attributes, onChange }: {
 
       <div className="space-y-3">
         {specs.map((spec, i) => (
-          <div key={i} className="p-3 rounded-xl border" style={{ borderColor: '#ECE6F0' }}>
+          <div key={i} className="p-3 rounded-xl border" style={{ borderColor: '#E5E5EA' }}>
             <div className="flex items-center gap-2 mb-2">
               <input
                 value={spec.name}
@@ -142,7 +142,7 @@ function SpecsEditor({ specs, attributes, onChange }: {
                 list="spec-attr-names"
                 placeholder="اسم المواصفة (مثال: اللون)"
                 className="flex-1 min-w-0 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 transition"
-                style={{ borderColor: '#ECE6F0' }}
+                style={{ borderColor: '#E5E5EA' }}
               />
               <button type="button" onClick={() => removeSpec(i)}
                 className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 transition flex-shrink-0">
@@ -153,7 +153,7 @@ function SpecsEditor({ specs, attributes, onChange }: {
             {spec.values.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-2">
                 {spec.values.map((v, vi) => (
-                  <div key={vi} className="flex items-center gap-1.5 pl-2 rounded-lg border" style={{ borderColor: '#ECE6F0' }}>
+                  <div key={vi} className="flex items-center gap-1.5 pl-2 rounded-lg border" style={{ borderColor: '#E5E5EA' }}>
                     <SpecValueImage
                       sv={v}
                       onUpload={file => uploadValueImage(i, vi, file)}
@@ -175,7 +175,7 @@ function SpecsEditor({ specs, attributes, onChange }: {
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addValue(i); } }}
               placeholder="اكتب قيمة فرعية واضغط Enter (مثال: أحمر)"
               className="w-full px-3 py-1.5 rounded-lg border text-xs focus:outline-none focus:ring-2 transition"
-              style={{ borderColor: '#ECE6F0' }}
+              style={{ borderColor: '#E5E5EA' }}
             />
           </div>
         ))}
@@ -205,7 +205,7 @@ function ImageUploader({ images, onChange }: { images: string[]; onChange: (imgs
       <label className="block text-xs font-semibold mb-2" style={{ color: BRAND.primary }}>صور المنتج</label>
       <div className="grid grid-cols-3 gap-2 mb-2">
         {images.map((url, i) => (
-          <div key={i} className="relative aspect-square rounded-xl overflow-hidden border" style={{ borderColor: '#ECE6F0' }}>
+          <div key={i} className="relative aspect-square rounded-xl overflow-hidden border" style={{ borderColor: '#E5E5EA' }}>
             <Image src={url} alt="" fill className="object-cover" />
             <button type="button" onClick={() => onChange(images.filter((_, j) => j !== i))}
               className="absolute top-1 left-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition">
@@ -228,15 +228,15 @@ function ImageUploader({ images, onChange }: { images: string[]; onChange: (imgs
       </div>
       {images.length === 0 && (
         <div className="flex items-center gap-2 mt-1">
-          <div className="flex-1 h-px" style={{ background: '#ECE6F0' }} />
+          <div className="flex-1 h-px" style={{ background: '#E5E5EA' }} />
           <span className="text-xs text-gray-400">أو أدخل رابط صورة</span>
-          <div className="flex-1 h-px" style={{ background: '#ECE6F0' }} />
+          <div className="flex-1 h-px" style={{ background: '#E5E5EA' }} />
         </div>
       )}
       <input
         placeholder="https://example.com/image.jpg"
         className="mt-2 w-full px-3 py-2 text-xs rounded-xl border focus:outline-none focus:ring-2 transition"
-        style={{ borderColor: '#ECE6F0' }}
+        style={{ borderColor: '#E5E5EA' }}
         onKeyDown={e => {
           if (e.key === 'Enter') {
             e.preventDefault();
@@ -341,7 +341,7 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
         ) : (
           <div className="space-y-2 mb-4">
             {variants.map(v => (
-              <div key={v.id} className="flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ borderColor: '#ECE6F0' }}>
+              <div key={v.id} className="flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ borderColor: '#E5E5EA' }}>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate" style={{ color: BRAND.primary }}>
                     {Object.entries(v.options).map(([k, val]) => `${k}: ${val}`).join('، ')}
@@ -351,7 +351,7 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
                   </p>
                 </div>
                 <button type="button" onClick={() => toggleActive(v)} title={v.isActive ? 'إخفاء' : 'إظهار'}
-                  className="p-1.5 rounded-lg hover:bg-gray-50 transition flex-shrink-0" style={{ color: v.isActive ? BRAND.accent : '#9ca3af' }}>
+                  className="p-1.5 rounded-lg hover:bg-gray-50 transition flex-shrink-0" style={{ color: v.isActive ? BRAND.accent : '#AEAEB2' }}>
                   {v.isActive ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 </button>
                 <button type="button" onClick={() => startEdit(v)} className="p-1.5 rounded-lg hover:bg-gray-50 transition flex-shrink-0 text-gray-400">
@@ -366,14 +366,14 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
         )}
       </div>
 
-      <div className="rounded-xl border p-4 space-y-3" style={{ borderColor: '#ECE6F0', background: '#F5EFFA' }}>
+      <div className="rounded-xl border p-4 space-y-3" style={{ borderColor: '#E5E5EA', background: '#F2F2F7' }}>
         <p className="text-xs font-bold" style={{ color: BRAND.primary }}>{editingVariantId ? 'تعديل المتغير' : 'متغير جديد'}</p>
         {draft.options.map((o, i) => (
           <div key={i} className="flex gap-2">
             <input value={o.key} onChange={e => updateOption(i, { key: e.target.value })} placeholder="الخاصية (مثال: اللون)"
-              className="w-1/3 px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#ECE6F0' }} />
+              className="w-1/3 px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} />
             <input value={o.value} onChange={e => updateOption(i, { value: e.target.value })} placeholder="القيمة (مثال: أحمر)"
-              className="flex-1 px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#ECE6F0' }} />
+              className="flex-1 px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} />
             {draft.options.length > 1 && (
               <button type="button" onClick={() => removeOptionRow(i)} className="p-2 text-gray-400 hover:text-red-500 transition flex-shrink-0">
                 <X className="h-4 w-4" />
@@ -385,23 +385,23 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
 
         <div className="grid grid-cols-3 gap-2">
           <input value={draft.sku} onChange={e => setDraft(d => ({ ...d, sku: e.target.value }))} placeholder="SKU (اختياري)"
-            className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#ECE6F0' }} />
+            className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} />
           <input type="number" min="0" step="0.01" value={draft.price} onChange={e => setDraft(d => ({ ...d, price: e.target.value }))} placeholder="سعر مختلف (اختياري)"
-            className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#ECE6F0' }} />
+            className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} />
           <input type="number" min="0" value={draft.stock} onChange={e => setDraft(d => ({ ...d, stock: e.target.value }))} placeholder="المخزون"
-            className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#ECE6F0' }} />
+            className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} />
         </div>
 
         <div className="flex gap-2 pt-1">
           {editingVariantId && (
             <button type="button" onClick={resetDraft}
-              className="px-4 py-2 rounded-lg text-xs font-bold border bg-white hover:bg-gray-50 transition" style={{ borderColor: '#ECE6F0', color: '#6b7280' }}>
+              className="px-4 py-2 rounded-lg text-xs font-bold border bg-white hover:bg-gray-50 transition" style={{ borderColor: '#E5E5EA', color: '#6C6C70' }}>
               إلغاء
             </button>
           )}
           <button type="button" onClick={submitDraft} disabled={saving}
             className="flex-1 py-2 rounded-lg text-xs font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-            style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+            style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
             {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             {editingVariantId ? 'حفظ التعديل' : 'إضافة المتغير'}
           </button>
@@ -618,21 +618,21 @@ export default function ProductsPage() {
     <div className="p-6 max-w-6xl" dir="rtl">
       {!canAddMore && (
         <div className="mb-4 px-4 py-3 rounded-2xl border flex items-center gap-3"
-          style={{ background: atProductLimit ? '#FEF2F2' : '#FEF3C7', borderColor: atProductLimit ? '#FECACA' : '#FCD34D' }}>
+          style={{ background: atProductLimit ? '#FFF3F2' : '#FFF4E0', borderColor: atProductLimit ? '#FFD1CD' : '#FFCC00' }}>
           <div className="flex-1">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-semibold" style={{ color: atProductLimit ? '#991B1B' : '#92400E' }}>
+              <span className="text-xs font-semibold" style={{ color: atProductLimit ? '#D70015' : '#C93400' }}>
                 {plan === 'FREE' ? 'منتجات الخطة المجانية' : 'حد المنتجات في خطتك الحالية'}: {products.length} / {productLimit}
               </span>
               <a href="/dashboard/settings?tab=billing"
                 className="text-xs font-bold px-2.5 py-1 rounded-lg text-white flex items-center gap-1"
-                style={{ background: '#DB6E93' }}>
+                style={{ background: '#007AFF' }}>
                 <Sparkles className="h-3 w-3" /> ارفع للـ PRO
               </a>
             </div>
-            <div className="h-1.5 rounded-full" style={{ background: '#E5E7EB' }}>
+            <div className="h-1.5 rounded-full" style={{ background: '#E5E5EA' }}>
               <div className="h-full rounded-full transition-all"
-                style={{ width: `${Math.min(100, (products.length / (productLimit ?? 1)) * 100)}%`, background: atProductLimit ? '#EF4444' : '#F59E0B' }} />
+                style={{ width: `${Math.min(100, (products.length / (productLimit ?? 1)) * 100)}%`, background: atProductLimit ? '#FF3B30' : '#FF9500' }} />
             </div>
           </div>
         </div>
@@ -648,17 +648,17 @@ export default function ProductsPage() {
             onChange={e => handleImportFile(e.target.files)} />
           <button onClick={() => importInputRef.current?.click()} disabled={importing}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-bold border transition hover:bg-gray-50 disabled:opacity-50"
-            style={{ borderColor: '#ECE6F0', color: BRAND.primary }}>
+            style={{ borderColor: '#E5E5EA', color: BRAND.primary }}>
             {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />} استيراد Excel
           </button>
           <button onClick={handleExport} disabled={exporting || products.length === 0}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-bold border transition hover:bg-gray-50 disabled:opacity-50"
-            style={{ borderColor: '#ECE6F0', color: BRAND.primary }}>
+            style={{ borderColor: '#E5E5EA', color: BRAND.primary }}>
             {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />} تصدير
           </button>
           <button onClick={openNew} disabled={atProductLimit}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+            style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
             <Plus className="h-4 w-4" /> إضافة منتج
           </button>
         </div>
@@ -668,7 +668,7 @@ export default function ProductsPage() {
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ابحث بالاسم أو رقم الموديل…"
           className="w-full pr-10 pl-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 bg-white"
-          style={{ borderColor: '#ECE6F0' }} />
+          style={{ borderColor: '#E5E5EA' }} />
       </div>
 
       {loading ? (
@@ -676,20 +676,20 @@ export default function ProductsPage() {
           <Loader2 className="h-6 w-6 animate-spin" style={{ color: BRAND.accent }} />
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#ECE6F0' }}>
+        <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#E5E5EA' }}>
           <table className="w-full text-sm">
-            <thead className="border-b" style={{ background: '#F5EFFA' }}>
+            <thead className="border-b" style={{ background: '#F2F2F7' }}>
               <tr>
                 {['المنتج', 'التصنيف', 'السعر', 'المخزون', 'الحالة', 'الإجراءات'].map(h => (
                   <th key={h} className="px-4 py-3 font-semibold text-right" style={{ color: BRAND.primary }}>{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F5EFFA]">
+            <tbody className="divide-y divide-[#F2F2F7]">
               {products.length === 0 ? (
                 <tr><td colSpan={6} className="px-4 py-16 text-center">
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: '#F5EFFA' }}>
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: '#F2F2F7' }}>
                       <ImageIcon className="h-7 w-7 text-gray-300" />
                     </div>
                     <p className="text-gray-400">لا توجد منتجات بعد</p>
@@ -700,7 +700,7 @@ export default function ProductsPage() {
                 <tr key={p.id} className="hover:bg-gray-50/50 transition">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0" style={{ background: '#F5EFFA' }}>
+                      <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0" style={{ background: '#F2F2F7' }}>
                         {p.images?.[0]
                           ? <Image src={p.images[0]} alt={p.name} width={40} height={40} className="w-full h-full object-cover" />
                           : <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={18} /></div>}
@@ -729,7 +729,7 @@ export default function ProductsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${p.isActive ? 'text-emerald-700' : 'text-gray-500'}`}
-                      style={{ background: p.isActive ? '#d1fae5' : '#F5EFFA' }}>
+                      style={{ background: p.isActive ? '#E3F9E8' : '#F2F2F7' }}>
                       {p.isActive ? 'نشط' : 'مخفي'}
                     </span>
                   </td>
@@ -756,7 +756,7 @@ export default function ProductsPage() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white px-6 py-4 border-b border-[#ECE6F0] flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-white px-6 py-4 border-b border-[#E5E5EA] flex items-center justify-between z-10">
               <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>
                 {editingId ? 'تعديل المنتج' : 'إضافة منتج جديد'}
               </h2>
@@ -765,12 +765,12 @@ export default function ProductsPage() {
               </button>
             </div>
 
-            <div className="flex border-b border-[#ECE6F0] px-6">
+            <div className="flex border-b border-[#E5E5EA] px-6">
               {([['basic', 'المعلومات الأساسية'], ...(editingId ? [['variants', 'المتغيرات']] : []), ['seo', 'SEO والبحث']] as [string, string][]).map(([tab, label]) => (
                 <button key={tab} onClick={() => setActiveTab(tab as 'basic' | 'variants' | 'seo')}
                   className="px-4 py-3 text-sm font-medium border-b-2 transition"
                   style={{
-                    color: activeTab === tab ? BRAND.accent : '#9ca3af',
+                    color: activeTab === tab ? BRAND.accent : '#AEAEB2',
                     borderBottomColor: activeTab === tab ? BRAND.accent : 'transparent',
                   }}>{label}</button>
               ))}
@@ -784,7 +784,7 @@ export default function ProductsPage() {
                   <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>اسم المنتج *</label>
                   <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
-                    style={{ borderColor: '#ECE6F0' }} placeholder="مثال: حذاء رياضي مريح" />
+                    style={{ borderColor: '#E5E5EA' }} placeholder="مثال: حذاء رياضي مريح" />
                 </div>
 
                 <div>
@@ -792,7 +792,7 @@ export default function ProductsPage() {
                   <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
                     rows={4} placeholder="وصف تفصيلي للمنتج…"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 resize-none transition"
-                    style={{ borderColor: '#ECE6F0' }} />
+                    style={{ borderColor: '#E5E5EA' }} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -801,14 +801,14 @@ export default function ProductsPage() {
                     <input type="number" min="0" step="0.01" value={form.price} required
                       onChange={e => setForm({ ...form, price: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
-                      style={{ borderColor: '#ECE6F0' }} placeholder="0.00" />
+                      style={{ borderColor: '#E5E5EA' }} placeholder="0.00" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>سعر المقارنة (شطب)</label>
                     <input type="number" min="0" step="0.01" value={form.comparePrice}
                       onChange={e => setForm({ ...form, comparePrice: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
-                      style={{ borderColor: '#ECE6F0' }} placeholder="السعر قبل الخصم" />
+                      style={{ borderColor: '#E5E5EA' }} placeholder="السعر قبل الخصم" />
                   </div>
                 </div>
 
@@ -819,10 +819,10 @@ export default function ProductsPage() {
                       <input type="number" min="0" value={form.stock}
                         onChange={e => setForm({ ...form, stock: e.target.value })}
                         className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
-                        style={{ borderColor: '#ECE6F0' }} placeholder="0" />
+                        style={{ borderColor: '#E5E5EA' }} placeholder="0" />
                       <select value={form.unit} onChange={e => setForm({ ...form, unit: e.target.value })}
                         className="px-2 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 bg-white transition"
-                        style={{ borderColor: '#ECE6F0' }}>
+                        style={{ borderColor: '#E5E5EA' }}>
                         {getStoreType(storeType).unitOptions.map(u => (
                           <option key={u.value} value={u.value}>{u.label}</option>
                         ))}
@@ -833,7 +833,7 @@ export default function ProductsPage() {
                     <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>التصنيف</label>
                     <select value={form.categoryId} onChange={e => setForm({ ...form, categoryId: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 bg-white transition"
-                      style={{ borderColor: '#ECE6F0' }}>
+                      style={{ borderColor: '#E5E5EA' }}>
                       <option value="">بدون تصنيف</option>
                       {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
@@ -846,13 +846,13 @@ export default function ProductsPage() {
                     {brandsList.length > 0 ? (
                       <select value={form.brandId} onChange={e => setForm({ ...form, brandId: e.target.value })}
                         className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 bg-white transition"
-                        style={{ borderColor: '#ECE6F0' }}>
+                        style={{ borderColor: '#E5E5EA' }}>
                         <option value="">بدون ماركة</option>
                         {brandsList.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                       </select>
                     ) : (
                       <a href="/dashboard/brands" className="block px-3 py-2.5 rounded-xl border text-xs text-gray-400 hover:text-gray-600 transition"
-                        style={{ borderColor: '#ECE6F0' }}>
+                        style={{ borderColor: '#E5E5EA' }}>
                         أضف ماركات من هنا أولاً
                       </a>
                     )}
@@ -860,7 +860,7 @@ export default function ProductsPage() {
                   {editingModelNumber && (
                     <div>
                       <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>رقم الموديل</label>
-                      <div className="px-3 py-2.5 rounded-xl border text-sm bg-gray-50 text-gray-500 font-mono" style={{ borderColor: '#ECE6F0', direction: 'ltr', textAlign: 'right' }}>
+                      <div className="px-3 py-2.5 rounded-xl border text-sm bg-gray-50 text-gray-500 font-mono" style={{ borderColor: '#E5E5EA', direction: 'ltr', textAlign: 'right' }}>
                         {editingModelNumber}
                       </div>
                     </div>
@@ -875,7 +875,7 @@ export default function ProductsPage() {
                     <input type="datetime-local" value={form.saleEndsAt}
                       onChange={e => setForm({ ...form, saleEndsAt: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
-                      style={{ borderColor: '#ECE6F0' }} />
+                      style={{ borderColor: '#E5E5EA' }} />
                     <p className="text-xs text-gray-400 mt-1">يظهر عدّاد تنازلي بصفحة المنتج حتى هذا الموعد</p>
                   </div>
                 </div>
@@ -887,7 +887,7 @@ export default function ProductsPage() {
                   <textarea value={form.sizeGuide} onChange={e => setForm({ ...form, sizeGuide: e.target.value })}
                     rows={4} placeholder="مثال: S: 36-38 / M: 40-42 / L: 44-46 ..."
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition resize-none"
-                    style={{ borderColor: '#ECE6F0' }} />
+                    style={{ borderColor: '#E5E5EA' }} />
                   <p className="text-xs text-gray-400 mt-1">إذا تركته فارغاً سيُستخدم دليل المقاسات العام للمتجر (من الإعدادات) إن وُجد</p>
                 </div>
 
@@ -904,17 +904,17 @@ export default function ProductsPage() {
                   <div>
                     <div className="flex justify-between mb-1"><label className="text-xs text-gray-500">عنوان SEO</label><span className="text-xs text-gray-400">{form.seoTitle.length}/60</span></div>
                     <input value={form.seoTitle} onChange={e => setForm({ ...form, seoTitle: e.target.value })} maxLength={60}
-                      className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none transition" style={{ borderColor: '#ECE6F0' }} />
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} />
                   </div>
                   <div>
                     <div className="flex justify-between mb-1"><label className="text-xs text-gray-500">وصف SEO</label><span className="text-xs text-gray-400">{form.seoDescription.length}/160</span></div>
                     <textarea value={form.seoDescription} onChange={e => setForm({ ...form, seoDescription: e.target.value })} maxLength={160} rows={3}
-                      className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none resize-none transition" style={{ borderColor: '#ECE6F0' }} />
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none resize-none transition" style={{ borderColor: '#E5E5EA' }} />
                   </div>
                   <div>
                     <label className="text-xs text-gray-500 block mb-1">رابط URL</label>
                     <input value={form.seoSlug} onChange={e => setForm({ ...form, seoSlug: e.target.value })}
-                      className="w-full px-3 py-2.5 rounded-xl border text-sm font-mono focus:outline-none transition" style={{ borderColor: '#ECE6F0' }} placeholder="product-url-slug" />
+                      className="w-full px-3 py-2.5 rounded-xl border text-sm font-mono focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} placeholder="product-url-slug" />
                   </div>
                 </div>
               )}
@@ -922,12 +922,12 @@ export default function ProductsPage() {
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
                   className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 transition text-gray-600"
-                  style={{ borderColor: '#ECE6F0' }}>
+                  style={{ borderColor: '#E5E5EA' }}>
                   إلغاء
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, ${BRAND.primary}, ${BRAND.accent})` }}>
+                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                   {saving ? 'جارٍ الحفظ…' : editingId ? 'حفظ التغييرات' : 'إنشاء المنتج'}
                 </button>

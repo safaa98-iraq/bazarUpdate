@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Plus, Pencil, Trash2, Newspaper, Eye, EyeOff, Loader2 } from 'lucide-react';
 import type { ArticlePublic } from '@storebuilder/types';
 
-const B = { p: '#2F2E4B', a: '#DB6E93', border: '#ECE6F0', bg: '#F5EFFA' };
+const B = { p: '#1C1C1E', a: '#007AFF', border: '#E5E5EA', bg: '#F2F2F7' };
 
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
@@ -39,7 +39,7 @@ export default function AdminArticlesPage() {
 
   if (loading) return (
     <div className="p-8 space-y-4">
-      {[1, 2, 3].map(i => <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: '#ECE6F0' }} />)}
+      {[1, 2, 3].map(i => <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />)}
     </div>
   );
 
@@ -70,7 +70,7 @@ export default function AdminArticlesPage() {
           {articles.map((a, i) => (
             <div key={a.id} className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: i < articles.length - 1 ? `1px solid ${B.border}` : 'none' }}>
               <span className="flex items-center justify-center w-7 h-7 rounded-lg flex-shrink-0"
-                style={{ background: a.isPublished ? '#DCEEDA' : '#FFF3C7', color: a.isPublished ? '#3D7C56' : '#92400E' }} title={a.isPublished ? 'منشور' : 'مسودة'}>
+                style={{ background: a.isPublished ? '#E3F9E8' : '#FFF4E0', color: a.isPublished ? '#248A3D' : '#C93400' }} title={a.isPublished ? 'منشور' : 'مسودة'}>
                 {a.isPublished ? <Eye size={13} /> : <EyeOff size={13} />}
               </span>
               <div className="flex-1 min-w-0">
@@ -81,7 +81,7 @@ export default function AdminArticlesPage() {
                 <Pencil className="h-3.5 w-3.5" style={{ color: B.p }} />
               </Link>
               <button onClick={() => handleDelete(a)} disabled={deletingId === a.id}
-                className="w-8 h-8 rounded-xl flex items-center justify-center border transition hover:bg-red-50" style={{ borderColor: '#fca5a5' }}>
+                className="w-8 h-8 rounded-xl flex items-center justify-center border transition hover:bg-red-50" style={{ borderColor: '#FFA59F' }}>
                 {deletingId === a.id ? <Loader2 className="h-3.5 w-3.5 animate-spin text-red-400" /> : <Trash2 className="h-3.5 w-3.5 text-red-400" />}
               </button>
             </div>

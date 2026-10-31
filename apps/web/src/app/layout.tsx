@@ -1,7 +1,7 @@
 // Railway deploy marker: pricing and retired-feature cleanup.
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { Tajawal, Baloo_Bhaijaan_2 } from 'next/font/google';
+import { Tajawal } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { FreePlanTextNormalizer } from '@/components/FreePlanTextNormalizer';
@@ -9,19 +9,13 @@ import { FreePlanTextNormalizer } from '@/components/FreePlanTextNormalizer';
 const tajawal = Tajawal({
   subsets: ['arabic', 'latin'],
   weight: ['300', '400', '500', '700', '800'],
-  variable: '--font-tajawal',
+  // Fallback only: globals.css builds --font-tajawal / --font-cairo as the Apple
+  // system stack (SF Pro + SF Arabic) and falls back to Tajawal off Apple devices.
+  variable: '--font-arabic-fallback',
   display: 'swap',
 });
 
-// Kept on the historical --font-cairo variable name — dozens of pages already
-// reference var(--font-cairo) for headings, so swapping the font family here
-// re-skins every heading in the app without touching each call site.
-const balooBhaijaan2 = Baloo_Bhaijaan_2({
-  subsets: ['arabic', 'latin'],
-  weight: ['500', '600', '700', '800'],
-  variable: '--font-cairo',
-  display: 'swap',
-});
+export const viewport: Viewport = { themeColor: '#F2F2F7', viewportFit: 'cover' };
 
 export const metadata: Metadata = {
   title: {
@@ -157,13 +151,13 @@ const cleanupScript = `
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${tajawal.variable} ${balooBhaijaan2.variable} font-[family-name:var(--font-tajawal)]`}>
+      <body className={`${tajawal.variable} font-[family-name:var(--font-tajawal)]`}>
         <Script id="remove-retired-feature-copy" strategy="beforeInteractive">
           {cleanupScript}
         </Script>
         {children}
         <FreePlanTextNormalizer />
-        <Toaster richColors position="top-left" />
+        <Toaster position="top-center" toastOptions={{ style: { borderRadius: 14, background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)', border: '0.5px solid rgba(0,0,0,0.06)', boxShadow: '0 10px 30px rgba(0,0,0,0.12)' } }} />
       </body>
     </html>
   );

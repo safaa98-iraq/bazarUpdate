@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
-const BRAND = { primary: '#2F2E4B', accent: '#DB6E93', border: '#FBE1EA', bg: '#F5EFFA' };
+const BRAND = { primary: '#1C1C1E', accent: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7' };
 
 interface AbandonedCart {
   id: string;
