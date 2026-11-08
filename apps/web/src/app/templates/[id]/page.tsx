@@ -7,7 +7,7 @@ import { getStoreType } from '@/lib/store-types';
 import { STORE_TEMPLATES, type BuilderSection } from '@/lib/store-templates';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
-const C = { bg: '#F2F2F7', dark: '#1C1C1E', accent: '#007AFF', text2: '#8E8E93', border: '#E5E5EA', white: '#ffffff' };
+const C = { bg: '#F6F8FA', dark: '#0B3550', accent: '#20A9F4', text2: '#7A8A99', border: '#E6ECF1', white: '#ffffff' };
 
 function PreviewSection({ section, themeColor }: { section: BuilderSection; themeColor: string }) {
   const s = section.settings;
@@ -35,7 +35,7 @@ function PreviewSection({ section, themeColor }: { section: BuilderSection; them
           <h3 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 20, color: C.dark, textAlign: 'center', margin: '0 0 20px' }}>{String(s.title)}</h3>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
             {['الكل', 'وصل حديثاً', 'الأكثر مبيعاً', 'عروض'].map((c, i) => (
-              <span key={i} style={{ padding: '9px 20px', borderRadius: 99, background: i === 0 ? themeColor : '#F2F2F7', color: i === 0 ? '#fff' : C.dark, fontSize: 13, fontWeight: 700 }}>{c}</span>
+              <span key={i} style={{ padding: '9px 20px', borderRadius: 99, background: i === 0 ? themeColor : '#F6F8FA', color: i === 0 ? '#fff' : C.dark, fontSize: 13, fontWeight: 700 }}>{c}</span>
             ))}
           </div>
         </div>

@@ -39,7 +39,7 @@ interface PromoBanner {
 }
 
 const DEFAULT_SECTIONS: BuilderSection[] = [
-  { id: 'hero-default', type: 'hero', visible: true, settings: { title: 'مرحباً بك في متجرنا', subtitle: 'اكتشف أفضل المنتجات', buttonText: 'تسوق الآن', backgroundColor: '#1C1C1E', height: 'large', textAlign: 'center' } },
+  { id: 'hero-default', type: 'hero', visible: true, settings: { title: 'مرحباً بك في متجرنا', subtitle: 'اكتشف أفضل المنتجات', buttonText: 'تسوق الآن', backgroundColor: '#0B3550', height: 'large', textAlign: 'center' } },
   { id: 'products-default', type: 'products', visible: true, settings: { title: 'منتجاتنا المميزة', columns: 4, limit: 8, showComparePrice: true } },
 ];
 
@@ -146,7 +146,7 @@ function PromoBannerCarousel({ banners }: { banners: PromoBanner[] }) {
   const b = active[idx];
 
   const content = (
-    <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 5', minHeight: 140, borderRadius: 16, overflow: 'hidden', background: '#F2F2F7' }}>
+    <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 5', minHeight: 140, borderRadius: 16, overflow: 'hidden', background: '#F6F8FA' }}>
       <Image src={b.imageUrl as string} alt={b.title} fill className="object-cover" sizes="100vw" />
       {(b.title || b.subtitle) && (
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 55%)', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 28px' }}>
@@ -165,7 +165,7 @@ function PromoBannerCarousel({ banners }: { banners: PromoBanner[] }) {
       {active.length > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 4, marginTop: 8 }}>
           {active.map((_, i) => (
-            <div key={i} onClick={() => setIdx(i)} style={{ width: i === idx ? 18 : 6, height: 4, borderRadius: 99, background: i === idx ? '#1C1C1E' : '#DDD8E8', cursor: 'pointer', transition: 'width .3s' }} />
+            <div key={i} onClick={() => setIdx(i)} style={{ width: i === idx ? 18 : 6, height: 4, borderRadius: 99, background: i === idx ? '#0B3550' : '#DDD8E8', cursor: 'pointer', transition: 'width .3s' }} />
           ))}
         </div>
       )}
@@ -215,10 +215,10 @@ function ProductCard({ product, slug, theme, showCompare, showAddToCart, onAddTo
   const toggleWishlist = useWishlistStore(s => s.toggle);
 
   return (
-    <div className="group rounded-2xl border overflow-hidden transition hover:shadow-lg hover:-translate-y-1 bg-white" style={{ borderColor: '#E5E5EA' }}>
+    <div className="group rounded-2xl border overflow-hidden transition hover:shadow-lg hover:-translate-y-1 bg-white" style={{ borderColor: '#E6ECF1' }}>
       <div className="relative">
         <Link href={`/store/${slug}/product/${product.id}`} className="block">
-          <div className="aspect-square overflow-hidden" style={{ background: '#F2F2F7' }}>
+          <div className="aspect-square overflow-hidden" style={{ background: '#F6F8FA' }}>
             {product.images?.[0]
               ? <Image src={product.images[0]} alt={product.name} width={300} height={300} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
               : <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={36} /></div>}
@@ -238,7 +238,7 @@ function ProductCard({ product, slug, theme, showCompare, showAddToCart, onAddTo
           onClick={(e) => { e.preventDefault(); toggleWishlist(slug, product.id); }}
           className="absolute top-2 left-2 w-8 h-8 rounded-full flex items-center justify-center bg-white/90 backdrop-blur transition hover:scale-110"
           aria-label="أضف للمفضلة">
-          <Heart className="h-4 w-4" fill={wishlisted ? theme : 'none'} style={{ color: wishlisted ? theme : '#AEAEB2' }} />
+          <Heart className="h-4 w-4" fill={wishlisted ? theme : 'none'} style={{ color: wishlisted ? theme : '#A3B0BC' }} />
         </button>
       </div>
       <div className="p-4">
@@ -261,7 +261,7 @@ function ProductCard({ product, slug, theme, showCompare, showAddToCart, onAddTo
         {showAddToCart !== false && (
           <button onClick={onAddToCart} disabled={product.stock === 0}
             className="w-full py-2.5 text-sm font-bold rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
-            style={{ background: product.stock > 0 ? theme : '#AEAEB2', color: 'white' }}>
+            style={{ background: product.stock > 0 ? theme : '#A3B0BC', color: 'white' }}>
             {product.stock === 0 ? 'نفد المخزون' : 'أضف للسلة'}
           </button>
         )}
@@ -339,10 +339,10 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
         toast.success(`تم نسخ الكود: ${s.couponCode}`);
       };
       return (
-        <section className="py-14 px-6" style={{ background: String(s.backgroundColor ?? '#1C1C1E') }}>
+        <section className="py-14 px-6" style={{ background: String(s.backgroundColor ?? '#0B3550') }}>
           <div className="max-w-2xl mx-auto text-center">
             <span className="inline-block px-4 py-1.5 rounded-full text-sm font-bold mb-4"
-              style={{ background: String(s.badgeColor ?? '#007AFF'), color: 'white' }}>
+              style={{ background: String(s.badgeColor ?? '#20A9F4'), color: 'white' }}>
               {String(s.discountLabel ?? 'عرض خاص')}
             </span>
             <h2 className="text-3xl font-extrabold text-white mb-2">{String(s.title)}</h2>
@@ -363,10 +363,10 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
     case 'features':
       return (
         <section className="py-14 px-6 max-w-6xl mx-auto">
-          {s.title && <h2 className="text-2xl font-bold text-center mb-10" style={{ color: '#1C1C1E' }}>{String(s.title)}</h2>}
+          {s.title && <h2 className="text-2xl font-bold text-center mb-10" style={{ color: '#0B3550' }}>{String(s.title)}</h2>}
           <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${Math.min(Number(s.columns ?? 4), 4)}, minmax(0,1fr))` }}>
             {[1, 2, 3, 4].map(i => s[`feature${i}Title`] ? (
-              <div key={i} className="text-center p-6 rounded-2xl border hover:shadow-md transition" style={{ borderColor: '#E5E5EA' }}>
+              <div key={i} className="text-center p-6 rounded-2xl border hover:shadow-md transition" style={{ borderColor: '#E6ECF1' }}>
                 {s[`feature${i}Icon`]
                   ? <div className="text-4xl mb-4">{String(s[`feature${i}Icon`])}</div>
                   : <div className="mb-4 flex justify-center"><Star size={36} className="text-gray-400" /></div>}
@@ -380,19 +380,19 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
 
     case 'testimonials':
       return (
-        <section className="py-14 px-6" style={{ background: '#F2F2F7' }}>
+        <section className="py-14 px-6" style={{ background: '#F6F8FA' }}>
           <div className="max-w-5xl mx-auto">
-            {s.title && <h2 className="text-2xl font-bold text-center mb-10" style={{ color: '#1C1C1E' }}>{String(s.title)}</h2>}
+            {s.title && <h2 className="text-2xl font-bold text-center mb-10" style={{ color: '#0B3550' }}>{String(s.title)}</h2>}
             <div className="grid md:grid-cols-3 gap-6">
               {[1, 2, 3].map(i => s[`review${i}Name`] ? (
-                <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border" style={{ borderColor: '#E5E5EA' }}>
+                <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border" style={{ borderColor: '#E6ECF1' }}>
                   <div className="flex gap-0.5 mb-3">
                     {Array.from({ length: Number(s[`review${i}Stars`] ?? 5) }).map((_, j) => (
                       <Star key={j} className="h-4 w-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                   <p className="text-gray-600 text-sm leading-relaxed mb-4">&ldquo;{String(s[`review${i}Text`] ?? '')}&rdquo;</p>
-                  <p className="font-bold text-sm" style={{ color: '#1C1C1E' }}>{String(s[`review${i}Name`])}</p>
+                  <p className="font-bold text-sm" style={{ color: '#0B3550' }}>{String(s[`review${i}Name`])}</p>
                 </div>
               ) : null)}
             </div>
@@ -406,7 +406,7 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
       if (!imgs.length) return null;
       return (
         <section className="py-12 px-6 max-w-6xl mx-auto">
-          {s.title && <h2 className="text-2xl font-bold mb-6" style={{ color: '#1C1C1E' }}>{String(s.title)}</h2>}
+          {s.title && <h2 className="text-2xl font-bold mb-6" style={{ color: '#0B3550' }}>{String(s.title)}</h2>}
           <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0,1fr))` }}>
             {imgs.map((src, i) => (
               <div key={i} className="aspect-square rounded-2xl overflow-hidden">
@@ -421,7 +421,7 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
     case 'categories':
       return (
         <section className="py-12 px-6 max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6" style={{ color: '#1C1C1E' }}>{String(s.title)}</h2>
+          <h2 className="text-2xl font-bold mb-6" style={{ color: '#0B3550' }}>{String(s.title)}</h2>
           <div className="flex gap-3 flex-wrap">
             {Array.from(new Set(products.map(p => p.category?.name).filter(Boolean))).map(cat => (
               <button key={cat} onClick={() => setSearch(cat!)}
@@ -438,19 +438,19 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
       if (brands.length === 0) return null;
       return (
         <section className="py-12 px-6 max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6" style={{ color: '#1C1C1E' }}>{String(s.title)}</h2>
+          <h2 className="text-2xl font-bold mb-6" style={{ color: '#0B3550' }}>{String(s.title)}</h2>
           <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(120px, 1fr))` }}>
             {brands.slice(0, Number(s.limit ?? 6)).map(brand => (
               <button key={brand.id}
                 onClick={() => { setActiveBrand(activeBrand === brand.id ? 'all' : brand.id); document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }}
                 className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition hover:-translate-y-0.5"
-                style={{ borderColor: activeBrand === brand.id ? theme : '#E5E5EA', background: activeBrand === brand.id ? `${theme}0d` : '#fff' }}>
-                <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center" style={{ background: '#F2F2F7' }}>
+                style={{ borderColor: activeBrand === brand.id ? theme : '#E6ECF1', background: activeBrand === brand.id ? `${theme}0d` : '#fff' }}>
+                <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center" style={{ background: '#F6F8FA' }}>
                   {brand.image
                     ? <Image src={brand.image} alt={brand.name} width={56} height={56} className="w-full h-full object-contain" />
                     : <span className="font-bold text-lg" style={{ color: theme }}>{brand.name.charAt(0)}</span>}
                 </div>
-                <span className="text-xs font-semibold text-center line-clamp-1" style={{ color: '#1C1C1E' }}>{brand.name}</span>
+                <span className="text-xs font-semibold text-center line-clamp-1" style={{ color: '#0B3550' }}>{brand.name}</span>
               </button>
             ))}
           </div>
@@ -460,7 +460,7 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
     case 'products':
       return (
         <section id="products" className="py-12 px-6 max-w-6xl mx-auto">
-          {s.title && <h2 className="text-2xl font-bold mb-2" style={{ color: '#1C1C1E' }}>{String(s.title)}</h2>}
+          {s.title && <h2 className="text-2xl font-bold mb-2" style={{ color: '#0B3550' }}>{String(s.title)}</h2>}
           {s.subtitle && <p className="text-gray-500 mb-8">{String(s.subtitle)}</p>}
           {filtered.length === 0
             ? <div className="text-center py-16 text-gray-400"><p className="text-lg">لا توجد منتجات مطابقة</p></div>
@@ -485,7 +485,7 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
               </div>
             )}
             <div className="flex-1">
-              <h2 className="text-3xl font-bold mb-4" style={{ color: '#1C1C1E' }}>{String(s.title)}</h2>
+              <h2 className="text-3xl font-bold mb-4" style={{ color: '#0B3550' }}>{String(s.title)}</h2>
               <p className="text-gray-600 leading-relaxed text-lg">{String(s.content)}</p>
             </div>
           </div>
@@ -494,7 +494,7 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
 
     case 'newsletter':
       return (
-        <section className="py-16 px-6 text-center" style={{ background: String(s.backgroundColor ?? '#3A3A3C') }}>
+        <section className="py-16 px-6 text-center" style={{ background: String(s.backgroundColor ?? '#32506A') }}>
           <h2 className="text-2xl font-bold text-white mb-2">{String(s.title)}</h2>
           {s.subtitle && <p className="mb-8" style={{ color: 'rgba(255,255,255,0.7)' }}>{String(s.subtitle)}</p>}
           <form onSubmit={e => { e.preventDefault(); toast.success('شكراً لاشتراكك!'); }}
@@ -503,7 +503,7 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
               className="flex-1 px-4 py-3 rounded-2xl text-sm focus:outline-none"
               style={{ background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }} />
             <button type="submit" className="px-6 py-3 rounded-2xl font-bold text-sm transition hover:opacity-90"
-              style={{ background: '#007AFF', color: 'white' }}>
+              style={{ background: '#20A9F4', color: 'white' }}>
               {String(s.buttonText ?? 'اشترك')}
             </button>
           </form>
@@ -513,7 +513,7 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
     case 'divider':
       return (
         <div style={{ height: Number(s.height ?? 40), display: 'flex', alignItems: 'center', padding: '0 48px' }}>
-          {s.showLine && <div style={{ width: '100%', height: 1, background: String(s.lineColor ?? '#E5E5EA') }} />}
+          {s.showLine && <div style={{ width: '100%', height: 1, background: String(s.lineColor ?? '#E6ECF1') }} />}
         </div>
       );
 
@@ -524,7 +524,7 @@ function RenderSection({ section, products, slug, theme, search, setSearch, addI
       const embedUrl = toEmbedUrl(url);
       return (
         <section style={{ padding: '48px 24px', maxWidth: 900, margin: '0 auto' }}>
-          {s.title && <h2 style={{ fontFamily: 'inherit', fontWeight: 800, fontSize: 24, textAlign: 'center', margin: '0 0 20px', color: '#1C1C1E' }}>{String(s.title)}</h2>}
+          {s.title && <h2 style={{ fontFamily: 'inherit', fontWeight: 800, fontSize: 24, textAlign: 'center', margin: '0 0 20px', color: '#0B3550' }}>{String(s.title)}</h2>}
           <div style={{ position: 'relative', width: '100%', aspectRatio: ratio, borderRadius: 16, overflow: 'hidden', background: '#000' }}>
             {embedUrl
               ? <iframe src={embedUrl} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen
@@ -609,33 +609,33 @@ function StorefrontPageContent() {
   }, [slug, setStoreId]);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2F2F7' }}>
-      <div className="animate-spin h-10 w-10 border-4 rounded-full" style={{ borderColor: '#1C1C1E', borderTopColor: 'transparent' }} />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F6F8FA' }}>
+      <div className="animate-spin h-10 w-10 border-4 rounded-full" style={{ borderColor: '#0B3550', borderTopColor: 'transparent' }} />
     </div>
   );
 
   if (suspendReason) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2F2F7' }}>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F6F8FA' }}>
       <div className="text-center max-w-sm px-6">
-        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#FFE9E7' }}>
-          <Lock size={28} style={{ color: '#FF3B30' }} />
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#FDECEC' }}>
+          <Lock size={28} style={{ color: '#F04F4F' }} />
         </div>
-        <p className="text-xl font-bold mb-2" style={{ color: '#1C1C1E' }}>المتجر موقوف مؤقتاً</p>
+        <p className="text-xl font-bold mb-2" style={{ color: '#0B3550' }}>المتجر موقوف مؤقتاً</p>
         <p className="text-sm text-gray-500 leading-relaxed">{suspendReason}</p>
       </div>
     </div>
   );
 
   if (!storeInfo) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2F2F7' }}>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#F6F8FA' }}>
       <div className="text-center">
-        <p className="text-2xl font-bold mb-2" style={{ color: '#1C1C1E' }}>المتجر غير موجود</p>
+        <p className="text-2xl font-bold mb-2" style={{ color: '#0B3550' }}>المتجر غير موجود</p>
         <p className="text-gray-500">هذا المتجر غير متاح حالياً</p>
       </div>
     </div>
   );
 
-  const theme = storeInfo.theme ?? '#1C1C1E';
+  const theme = storeInfo.theme ?? '#0B3550';
   const merchantPlan = (storeInfo as typeof storeInfo & { merchantPlan?: string }).merchantPlan ?? 'FREE';
   const priceMinNum = priceMin ? Number(priceMin) : null;
   const priceMaxNum = priceMax ? Number(priceMax) : null;
@@ -693,13 +693,13 @@ function StorefrontPageContent() {
           <Link
             href={`/store/${slug}`}
             onClick={() => setActiveCat('all')}
-            style={{ flexShrink: 0, padding: '8px 20px', borderRadius: 99, fontFamily: 'inherit', fontWeight: 700, fontSize: 13, cursor: 'pointer', border: 'none', background: activeCat === 'all' ? theme : '#F2F2F7', color: activeCat === 'all' ? '#fff' : '#1C1C1E', transition: 'all .2s', textDecoration: 'none' }}>
+            style={{ flexShrink: 0, padding: '8px 20px', borderRadius: 99, fontFamily: 'inherit', fontWeight: 700, fontSize: 13, cursor: 'pointer', border: 'none', background: activeCat === 'all' ? theme : '#F6F8FA', color: activeCat === 'all' ? '#fff' : '#0B3550', transition: 'all .2s', textDecoration: 'none' }}>
             الكل
           </Link>
           {categories.map(cat => (
             <Link key={cat.id} href={`/store/${slug}?category=${cat.id}`}
               onClick={() => setActiveCat(cat.id)}
-              style={{ flexShrink: 0, padding: '8px 20px', borderRadius: 99, fontFamily: 'inherit', fontWeight: 700, fontSize: 13, cursor: 'pointer', border: 'none', background: activeCat === cat.id ? theme : '#F2F2F7', color: activeCat === cat.id ? '#fff' : '#1C1C1E', transition: 'all .2s', textDecoration: 'none' }}>
+              style={{ flexShrink: 0, padding: '8px 20px', borderRadius: 99, fontFamily: 'inherit', fontWeight: 700, fontSize: 13, cursor: 'pointer', border: 'none', background: activeCat === cat.id ? theme : '#F6F8FA', color: activeCat === cat.id ? '#fff' : '#0B3550', transition: 'all .2s', textDecoration: 'none' }}>
               {cat.name}
             </Link>
           ))}
@@ -710,7 +710,7 @@ function StorefrontPageContent() {
       <div className="max-w-6xl mx-auto px-6 pt-2">
         <button onClick={() => setShowFilters(v => !v)}
           className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition"
-          style={{ color: filtersActive ? theme : '#6C6C70', background: filtersActive ? `${theme}12` : 'transparent' }}>
+          style={{ color: filtersActive ? theme : '#5B6B7B', background: filtersActive ? `${theme}12` : 'transparent' }}>
           <SlidersHorizontal size={13} /> فلاتر {filtersActive ? '(مفعّلة)' : ''}
         </button>
         {showFilters && (
@@ -718,12 +718,12 @@ function StorefrontPageContent() {
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">السعر من</label>
               <input type="number" min={0} value={priceMin} onChange={e => setPriceMin(e.target.value)}
-                placeholder="0" className="w-24 px-2.5 py-1.5 rounded-lg border text-xs focus:outline-none" style={{ borderColor: '#E5E5EA' }} />
+                placeholder="0" className="w-24 px-2.5 py-1.5 rounded-lg border text-xs focus:outline-none" style={{ borderColor: '#E6ECF1' }} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">إلى</label>
               <input type="number" min={0} value={priceMax} onChange={e => setPriceMax(e.target.value)}
-                placeholder="أي سعر" className="w-24 px-2.5 py-1.5 rounded-lg border text-xs focus:outline-none" style={{ borderColor: '#E5E5EA' }} />
+                placeholder="أي سعر" className="w-24 px-2.5 py-1.5 rounded-lg border text-xs focus:outline-none" style={{ borderColor: '#E6ECF1' }} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">التقييم</label>
@@ -731,7 +731,7 @@ function StorefrontPageContent() {
                 {[0, 3, 4, 5].map(r => (
                   <button key={r} onClick={() => setMinRating(r)}
                     className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition"
-                    style={{ borderColor: minRating === r ? theme : '#E5E5EA', background: minRating === r ? `${theme}12` : '#fff', color: minRating === r ? theme : '#6C6C70' }}>
+                    style={{ borderColor: minRating === r ? theme : '#E6ECF1', background: minRating === r ? `${theme}12` : '#fff', color: minRating === r ? theme : '#5B6B7B' }}>
                     {r === 0 ? 'الكل' : <>{r}<Star size={11} className="fill-amber-400 text-amber-400" />+</>}
                   </button>
                 ))}
@@ -774,7 +774,7 @@ function StorefrontPageContent() {
         <StoreSocialBar links={storeInfo.socialLinks} />
         <div className="pt-2">
           <Mail className="h-4 w-4 inline ml-1" />
-          مدعوم بـ <span className="font-semibold" style={{ color: '#007AFF' }}>بناء المتجر</span>
+          مدعوم بـ <span className="font-semibold" style={{ color: '#20A9F4' }}>بناء المتجر</span>
         </div>
       </footer>
 
@@ -793,8 +793,8 @@ function StorefrontPageContent() {
 export default function StorefrontPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2F2F7' }}>
-        <div className="animate-spin h-10 w-10 border-4 rounded-full" style={{ borderColor: '#1C1C1E', borderTopColor: 'transparent' }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#F6F8FA' }}>
+        <div className="animate-spin h-10 w-10 border-4 rounded-full" style={{ borderColor: '#0B3550', borderTopColor: 'transparent' }} />
       </div>
     }>
       <StorefrontPageContent />

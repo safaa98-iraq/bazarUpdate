@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import { Users, TrendingDown, Activity, AlertTriangle, ChevronRight } from 'lucide-react';
 
-const B = { p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF', soft: '#F2F2F7', border: '#E5F1FF' };
+const B = { p: '#0B3550', s: '#32506A', a: '#20A9F4', soft: '#F6F8FA', border: '#E3F5FE' };
 
 interface FunnelStep { step: string; count: number; }
 interface FeatureRow  { event: string; uses: number; merchants: number; }
@@ -86,7 +86,7 @@ export default function MerchantAnalyticsPage() {
 
   if (loading) return (
     <div className="p-8 space-y-4">
-      {[1,2,3,4].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />)}
+      {[1,2,3,4].map(i => <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: '#E6ECF1' }} />)}
     </div>
   );
 
@@ -112,7 +112,7 @@ export default function MerchantAnalyticsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="ios-large-title text-gray-900">تحليلات سلوك التجار</h1>
+        <h1 className="bz-large-title text-gray-900">تحليلات سلوك التجار</h1>
         <p className="text-sm text-gray-500 mt-1">تتبع كيف يبنون متاجرهم وأين يتوقفون</p>
       </div>
 
@@ -122,28 +122,28 @@ export default function MerchantAnalyticsPage() {
           title="إجمالي التجار"
           value={data.funnel[0]?.count ?? 0}
           icon={<Users className="h-5 w-5" style={{ color: B.s }} />}
-          bg="#EFEFF4"
+          bg="#EEF2F6"
         />
         <KpiCard
           title="أكملوا الإعداد"
           value={`${data.funnel[data.funnel.length - 1]?.count ?? 0}`}
           sub={`${funnelWithPct[funnelWithPct.length-1]?.pct ?? 0}% من المسجلين`}
-          icon={<Activity className="h-5 w-5" style={{ color: '#34C759' }} />}
-          bg="#E3F9E8"
+          icon={<Activity className="h-5 w-5" style={{ color: '#22B07D' }} />}
+          bg="#E2F7EE"
         />
         <KpiCard
           title="خاملون +7 أيام"
           value={data.staleMerchants}
           sub="لديهم متجر، لم يدخلوا"
           icon={<TrendingDown className="h-5 w-5" style={{ color: B.a }} />}
-          bg="#E5F1FF"
+          bg="#E3F5FE"
         />
         <KpiCard
           title="نشاط أمس"
           value={data.dailyActive.at(-1)?.merchants ?? 0}
           sub="تاجر نشط"
-          icon={<Activity className="h-5 w-5" style={{ color: '#007AFF' }} />}
-          bg="#E5F1FF"
+          icon={<Activity className="h-5 w-5" style={{ color: '#20A9F4' }} />}
+          bg="#E3F5FE"
         />
       </div>
 
@@ -157,7 +157,7 @@ export default function MerchantAnalyticsPage() {
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center text-white"
-                    style={{ background: i === 0 ? B.p : step.pct > 60 ? '#34C759' : step.pct > 30 ? '#FF9500' : '#FF3B30' }}>
+                    style={{ background: i === 0 ? B.p : step.pct > 60 ? '#22B07D' : step.pct > 30 ? '#F59E0B' : '#F04F4F' }}>
                     {i + 1}
                   </span>
                   <span className="text-sm font-medium" style={{ color: B.p }}>{step.step}</span>
@@ -171,18 +171,18 @@ export default function MerchantAnalyticsPage() {
                   <span className="text-sm font-bold" style={{ color: B.p }}>{step.count.toLocaleString('ar')}</span>
                   <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                     style={{
-                      background: step.pct > 60 ? '#E3F9E8' : step.pct > 30 ? '#FFF4E0' : '#FFE9E7',
-                      color: step.pct > 60 ? '#248A3D' : step.pct > 30 ? '#C93400' : '#D70015',
+                      background: step.pct > 60 ? '#E2F7EE' : step.pct > 30 ? '#FEF3E2' : '#FDECEC',
+                      color: step.pct > 60 ? '#17845C' : step.pct > 30 ? '#B45309' : '#C93636',
                     }}>
                     {step.pct}%
                   </span>
                 </div>
               </div>
-              <div className="h-2.5 rounded-full overflow-hidden" style={{ background: '#F2F2F7' }}>
+              <div className="h-2.5 rounded-full overflow-hidden" style={{ background: '#F6F8FA' }}>
                 <div className="h-full rounded-full transition-all"
                   style={{
                     width: `${step.pct}%`,
-                    background: step.pct > 60 ? '#34C759' : step.pct > 30 ? '#FF9500' : '#FF3B30',
+                    background: step.pct > 60 ? '#22B07D' : step.pct > 30 ? '#F59E0B' : '#F04F4F',
                   }} />
               </div>
             </div>
@@ -201,7 +201,7 @@ export default function MerchantAnalyticsPage() {
               <div key={row.label} className="flex items-center gap-3 p-3 rounded-xl"
                 style={{ background: B.soft }}>
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#FFE9E7' }}>
+                  style={{ background: '#FDECEC' }}>
                   <AlertTriangle className="h-4 w-4 text-red-500" />
                 </div>
                 <div className="flex-1">
@@ -220,10 +220,10 @@ export default function MerchantAnalyticsPage() {
           {data.dailyActive.length > 0 ? (
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={data.dailyActive} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F2F2F7" />
-                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#AEAEB2' }}
+                <CartesianGrid strokeDasharray="3 3" stroke="#F6F8FA" />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#A3B0BC' }}
                   tickFormatter={d => d.slice(5)} />
-                <YAxis tick={{ fontSize: 10, fill: '#AEAEB2' }} allowDecimals={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#A3B0BC' }} allowDecimals={false} />
                 <Tooltip
                   formatter={(v: number) => [v, 'تاجر']}
                   labelFormatter={l => `يوم ${l}`}
@@ -262,9 +262,9 @@ export default function MerchantAnalyticsPage() {
                         <span className="text-xs font-bold" style={{ color: B.a }}>{row.uses.toLocaleString('ar')}</span>
                       </div>
                     </div>
-                    <div className="h-1.5 rounded-full" style={{ background: '#F2F2F7' }}>
+                    <div className="h-1.5 rounded-full" style={{ background: '#F6F8FA' }}>
                       <div className="h-full rounded-full"
-                        style={{ width: `${pct}%`, background: `linear-gradient(90deg, #0A84FF, #5E5CE6)` }} />
+                        style={{ width: `${pct}%`, background: `linear-gradient(90deg, #20A9F4, #0E8AD6)` }} />
                     </div>
                   </div>
                 </div>
@@ -288,9 +288,9 @@ export default function MerchantAnalyticsPage() {
               data={data.topPages.map(r => ({ ...r, name: PAGE_LABELS[r.page] ?? r.page }))}
               margin={{ top: 5, right: 5, bottom: 20, left: -20 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#F2F2F7" />
-              <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#AEAEB2' }} angle={-20} textAnchor="end" />
-              <YAxis tick={{ fontSize: 10, fill: '#AEAEB2' }} allowDecimals={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#F6F8FA" />
+              <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#A3B0BC' }} angle={-20} textAnchor="end" />
+              <YAxis tick={{ fontSize: 10, fill: '#A3B0BC' }} allowDecimals={false} />
               <Tooltip
                 formatter={(v: number) => [v, 'زيارة']}
                 contentStyle={{ borderRadius: 10, border: `1px solid ${B.border}`, fontSize: 12 }}

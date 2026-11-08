@@ -117,7 +117,7 @@ export function ChatWidget({ slug }: { slug: string }) {
   return (
     <div className="fixed bottom-5 left-5 z-40" dir="rtl">
       {open ? (
-        <div className="w-80 max-w-[calc(100vw-40px)] h-[420px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border" style={{ borderColor: '#E5E5EA' }}>
+        <div className="w-80 max-w-[calc(100vw-40px)] h-[420px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border" style={{ borderColor: '#E6ECF1' }}>
           <div className="flex items-center justify-between px-4 py-3 text-white flex-shrink-0" style={{ background: theme }}>
             <span className="font-semibold text-sm flex items-center gap-2"><MessageCircle size={16} /> تواصل معنا</span>
             <button onClick={() => setOpen(false)}><X size={18} /></button>
@@ -127,7 +127,7 @@ export function ChatWidget({ slug }: { slug: string }) {
             <form onSubmit={handleStart} className="flex-1 flex flex-col items-center justify-center gap-3 p-6">
               <p className="text-sm text-gray-500 text-center">اكتب اسمك لتبدأ المحادثة مع المتجر</p>
               <input value={name} onChange={e => setName(e.target.value)} placeholder="اسمك"
-                className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: '#E5E5EA' }} />
+                className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: '#E6ECF1' }} />
               <button type="submit" disabled={!name.trim()}
                 className="w-full py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-40 transition"
                 style={{ background: theme }}>
@@ -144,7 +144,7 @@ export function ChatWidget({ slug }: { slug: string }) {
                   <div key={m.id} className={`flex ${m.senderType === 'customer' ? 'justify-start' : 'justify-end'}`}>
                     <div className="max-w-[75%] px-3 py-2 rounded-2xl text-sm"
                       style={m.senderType === 'customer'
-                        ? { background: '#fff', border: '1px solid #E5E5EA', color: '#1C1C1E' }
+                        ? { background: '#fff', border: '1px solid #E6ECF1', color: '#0B3550' }
                         : { background: theme, color: '#fff' }}>
                       {m.body}
                     </div>
@@ -152,9 +152,9 @@ export function ChatWidget({ slug }: { slug: string }) {
                 ))}
                 <div ref={bottomRef} />
               </div>
-              <form onSubmit={handleSend} className="flex items-center gap-2 p-3 border-t flex-shrink-0" style={{ borderColor: '#E5E5EA' }}>
+              <form onSubmit={handleSend} className="flex items-center gap-2 p-3 border-t flex-shrink-0" style={{ borderColor: '#E6ECF1' }}>
                 <input value={text} onChange={e => setText(e.target.value)} placeholder="اكتب رسالتك…"
-                  className="flex-1 px-3 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: '#E5E5EA' }} />
+                  className="flex-1 px-3 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: '#E6ECF1' }} />
                 <button type="submit" disabled={!text.trim() || sending}
                   className="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center text-white disabled:opacity-40 transition"
                   style={{ background: theme }}>

@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
-const BRAND = { primary: '#1C1C1E', accent: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7' };
+const BRAND = { primary: '#0B3550', accent: '#20A9F4', border: '#E3F5FE', bg: '#F6F8FA' };
 
 interface AbandonedCart {
   id: string;
@@ -42,7 +42,7 @@ export default function AbandonedCartsPage() {
           <ShoppingCart className="h-5 w-5" style={{ color: BRAND.accent }} />
         </div>
         <div>
-          <h1 className="ios-large-title text-gray-900">السلال المتروكة</h1>
+          <h1 className="bz-large-title text-gray-900">السلال المتروكة</h1>
           <p className="text-sm text-gray-500 mt-0.5">سلال فيها منتجات ولم تتحرك منذ 3 ساعات على الأقل — إشارة تقريبية وليست مؤكدة</p>
         </div>
       </div>

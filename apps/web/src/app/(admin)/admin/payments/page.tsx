@@ -8,14 +8,14 @@ import Image from 'next/image';
 import { PlanPrice } from '@/components/pricing/PlanPrice';
 
 const C = {
-  bg: '#F2F2F7', bgAlt: '#FFFFFF', p: '#1C1C1E', s: '#3A3A3C',
-  a: '#007AFF', text: '#1C1C1E', muted: '#8E8E93', border: '#E5F1FF',
+  bg: '#F6F8FA', bgAlt: '#FFFFFF', p: '#0B3550', s: '#32506A',
+  a: '#20A9F4', text: '#0B3550', muted: '#7A8A99', border: '#E3F5FE',
 };
 
 const STATUS_META: Record<string, { label: string; bg: string; color: string; Icon: typeof Clock }> = {
-  PENDING:  { label: 'قيد المراجعة', bg: '#FFF4E0', color: '#FF9500', Icon: Clock },
-  APPROVED: { label: 'مقبول',        bg: '#F1FCF3', color: '#34C759', Icon: CheckCircle2 },
-  REJECTED: { label: 'مرفوض',        bg: '#FFF3F2', color: '#FF3B30', Icon: XCircle },
+  PENDING:  { label: 'قيد المراجعة', bg: '#FEF3E2', color: '#F59E0B', Icon: Clock },
+  APPROVED: { label: 'مقبول',        bg: '#F0FBF6', color: '#22B07D', Icon: CheckCircle2 },
+  REJECTED: { label: 'مرفوض',        bg: '#FEF5F5', color: '#F04F4F', Icon: XCircle },
 };
 
 const planMeta = (plan: string) => PLAN_CONFIGS[plan as keyof typeof PLAN_CONFIGS];
@@ -73,7 +73,7 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
                   <a
                     href={`https://wa.me/${req.user.whatsapp.replace(/\D/g, '')}`}
                     target="_blank" rel="noreferrer"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 6, color: '#25D366', fontSize: 12, fontWeight: 700, textDecoration: 'none', background: '#F1FCF3', padding: '3px 10px', borderRadius: 99, border: '1px solid #C9F2D3' }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 6, color: '#25D366', fontSize: 12, fontWeight: 700, textDecoration: 'none', background: '#F0FBF6', padding: '3px 10px', borderRadius: 99, border: '1px solid #BDEFD9' }}
                   >
                     <MessageCircle size={14} />
                     تواصل واتساب: {req.user.whatsapp}
@@ -114,7 +114,7 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
           )}
 
           {!proofSrc && (
-            <div style={{ marginBottom: 16, background: '#FFF9DB', border: '1px solid #FDE047', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#713F12', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ marginBottom: 16, background: '#FEF9E3', border: '1px solid #FDE047', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#713F12', display: 'flex', alignItems: 'center', gap: 6 }}>
               <AlertTriangle size={14} />
               المستخدم لم يرفع صورة إيصال — تحقق يدوياً من حسابك البنكي
             </div>
@@ -135,12 +135,12 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
           {/* Actions */}
           <div style={{ display: 'flex', gap: 12 }}>
             <button onClick={() => act('APPROVE')} disabled={!!loading}
-              style={{ flex: 1, padding: '13px 0', background: loading === 'approve' ? 'rgba(5,150,105,.4)' : '#34C759', color: '#fff', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
+              style={{ flex: 1, padding: '13px 0', background: loading === 'approve' ? 'rgba(5,150,105,.4)' : '#22B07D', color: '#fff', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
               {loading === 'approve' ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Check size={16} />}
               موافقة وترقية
             </button>
             <button onClick={() => act('REJECT')} disabled={!!loading}
-              style={{ flex: 1, padding: '13px 0', background: loading === 'reject' ? 'rgba(220,38,38,.35)' : '#FF3B30', color: '#fff', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
+              style={{ flex: 1, padding: '13px 0', background: loading === 'reject' ? 'rgba(220,38,38,.35)' : '#F04F4F', color: '#fff', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
               {loading === 'reject' ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <X size={16} />}
               رفض
             </button>
@@ -284,7 +284,7 @@ export default function AdminPaymentsPage() {
       )}
 
       {/* Instructions for admin */}
-      <div style={{ marginTop: 28, background: '#FFF9DB', border: '1px solid #FDE047', borderRadius: 10, padding: '16px 20px', fontSize: 13, color: '#713F12', lineHeight: 1.8 }}>
+      <div style={{ marginTop: 28, background: '#FEF9E3', border: '1px solid #FDE047', borderRadius: 10, padding: '16px 20px', fontSize: 13, color: '#713F12', lineHeight: 1.8 }}>
         <div style={{ fontWeight: 700, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}><Lightbulb size={14} /> كيف تتحقق من الدفع؟</div>
         <ol style={{ margin: 0, paddingRight: 20, lineHeight: 2 }}>
           <li>افتح تطبيق بنكك وتحقق من وجود حوالة بالمبلغ المطلوب</li>

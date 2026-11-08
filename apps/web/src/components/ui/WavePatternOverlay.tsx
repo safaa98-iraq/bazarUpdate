@@ -5,7 +5,7 @@ type Props = {
   color?: string;
 };
 
-export function WavePatternOverlay({ opacity = 0.04, color = '#1C1C1E' }: Props) {
+export function WavePatternOverlay({ opacity = 0.04, color = '#0B3550' }: Props) {
   return (
     <div
       aria-hidden="true"

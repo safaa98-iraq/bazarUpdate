@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import type { ArticlePublic } from '@storebuilder/types';
 
-const B = { p: '#1C1C1E', a: '#007AFF', border: '#E5E5EA', bg: '#F2F2F7' };
+const B = { p: '#0B3550', a: '#20A9F4', border: '#E6ECF1', bg: '#F6F8FA' };
 
 const CATEGORIES = ['نصائح التجارة', 'دليل المتجر', 'التسويق', 'قصص نجاح', 'تحديثات المنصة', 'عام'];
 

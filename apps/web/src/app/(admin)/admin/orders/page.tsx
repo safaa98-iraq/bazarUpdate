@@ -6,7 +6,7 @@ import { api } from '@/lib/api';
 import { formatCurrency, formatDateTime } from '@/lib/utils';
 import { Search, Download } from 'lucide-react';
 
-const B = { p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF', soft: '#E5F1FF' };
+const B = { p: '#0B3550', s: '#32506A', a: '#20A9F4', soft: '#E3F5FE' };
 
 interface AdminOrder {
   id: string;
@@ -19,11 +19,11 @@ interface AdminOrder {
 }
 
 const STATUS_STYLES: Record<string, { bg: string; color: string; label: string }> = {
-  PENDING:   { bg: '#FFF9DB', color: '#A05A00', label: 'قيد الانتظار' },
-  PAID:      { bg: '#E3F9E8', color: '#248A3D', label: 'مدفوع' },
-  SHIPPED:   { bg: '#E5F1FF', color: '#0040DD', label: 'تم الشحن' },
-  DELIVERED: { bg: '#E3F9E8', color: '#248A3D', label: 'تم التسليم' },
-  CANCELLED: { bg: '#FFE9E7', color: '#D70015', label: 'ملغي' },
+  PENDING:   { bg: '#FEF9E3', color: '#92400E', label: 'قيد الانتظار' },
+  PAID:      { bg: '#E2F7EE', color: '#17845C', label: 'مدفوع' },
+  SHIPPED:   { bg: '#E3F5FE', color: '#0E8AD6', label: 'تم الشحن' },
+  DELIVERED: { bg: '#E2F7EE', color: '#17845C', label: 'تم التسليم' },
+  CANCELLED: { bg: '#FDECEC', color: '#C93636', label: 'ملغي' },
 };
 
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
@@ -92,12 +92,12 @@ export default function AdminOrdersPage() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>جميع الطلبات</h1>
-          <p style={{ fontSize: 13, color: '#6C6C70', margin: '4px 0 0' }}>{total} طلب في جميع المتاجر</p>
+          <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{total} طلب في جميع المتاجر</p>
         </div>
         <button
           onClick={exportCsv}
           disabled={downloading}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 16px', background: '#fff', border: `1.5px solid #E5E5EA`, borderRadius: 10, fontSize: 13, fontWeight: 600, color: B.p, cursor: 'pointer', fontFamily: 'inherit', opacity: downloading ? 0.7 : 1 }}
+          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 16px', background: '#fff', border: `1.5px solid #E6ECF1`, borderRadius: 10, fontSize: 13, fontWeight: 600, color: B.p, cursor: 'pointer', fontFamily: 'inherit', opacity: downloading ? 0.7 : 1 }}
         >
           <Download size={15} />
           {downloading ? 'جارٍ التصدير...' : 'تصدير CSV'}
@@ -106,18 +106,18 @@ export default function AdminOrdersPage() {
 
       <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
         <div style={{ position: 'relative', flex: 1 }}>
-          <Search size={15} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#AEAEB2' }} />
+          <Search size={15} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#A3B0BC' }} />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="ابحث عن طلب..."
-            style={{ width: '100%', padding: '9px 36px 9px 12px', border: '1.5px solid #E5E5EA', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none' }}
+            style={{ width: '100%', padding: '9px 36px 9px 12px', border: '1.5px solid #E6ECF1', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none' }}
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          style={{ padding: '9px 14px', border: '1.5px solid #E5E5EA', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', background: '#fff', color: B.p }}
+          style={{ padding: '9px 14px', border: '1.5px solid #E6ECF1', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', background: '#fff', color: B.p }}
         >
           <option value="ALL">كل الحالات</option>
           <option value="PENDING">قيد الانتظار</option>
@@ -130,15 +130,15 @@ export default function AdminOrdersPage() {
 
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {[1,2,3].map(i => <div key={i} style={{ height: 56, background: '#E5E5EA', borderRadius: 10 }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ height: 56, background: '#E6ECF1', borderRadius: 10 }} />)}
         </div>
       ) : filteredOrders.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '64px 0', color: '#AEAEB2', fontSize: 14 }}>لا يوجد طلبات</div>
+        <div style={{ textAlign: 'center', padding: '64px 0', color: '#A3B0BC', fontSize: 14 }}>لا يوجد طلبات</div>
       ) : (
-        <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E5E5EA', overflow: 'hidden' }}>
+        <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E6ECF1', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid #E5E5EA', background: '#F2F2F7' }}>
+              <tr style={{ borderBottom: '1px solid #E6ECF1', background: '#F6F8FA' }}>
                 <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>رقم الطلب</th>
                 <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>العميل</th>
                 <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>المتجر</th>
@@ -149,22 +149,22 @@ export default function AdminOrdersPage() {
             </thead>
             <tbody>
               {filteredOrders.map((order, idx) => {
-                const st = STATUS_STYLES[order.status] ?? { bg: '#F2F2F7', color: '#6C6C70', label: order.status };
+                const st = STATUS_STYLES[order.status] ?? { bg: '#F6F8FA', color: '#5B6B7B', label: order.status };
                 return (
-                  <tr key={order.id} style={{ borderBottom: '1px solid #F2F2F7', background: idx % 2 === 0 ? '#fff' : '#FFFFFF' }}>
-                    <td style={{ padding: '12px 16px', fontFamily: 'monospace', fontSize: 11, color: '#AEAEB2' }}>
+                  <tr key={order.id} style={{ borderBottom: '1px solid #F6F8FA', background: idx % 2 === 0 ? '#fff' : '#FFFFFF' }}>
+                    <td style={{ padding: '12px 16px', fontFamily: 'monospace', fontSize: 11, color: '#A3B0BC' }}>
                       #{order.id.slice(-8).toUpperCase()}
                     </td>
                     <td style={{ padding: '12px 16px' }}>
                       <p style={{ fontWeight: 600, color: B.p, margin: 0 }}>{order.customerName}</p>
-                      <p style={{ fontSize: 11, color: '#AEAEB2', margin: 0 }}>{order.customerEmail}</p>
+                      <p style={{ fontSize: 11, color: '#A3B0BC', margin: 0 }}>{order.customerEmail}</p>
                     </td>
-                    <td style={{ padding: '12px 16px', color: '#6C6C70' }}>{order.store.name}</td>
+                    <td style={{ padding: '12px 16px', color: '#5B6B7B' }}>{order.store.name}</td>
                     <td style={{ padding: '12px 16px', fontWeight: 700, color: B.p }}>{formatCurrency(order.total)}</td>
                     <td style={{ padding: '12px 16px' }}>
                       <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 10, background: st.bg, color: st.color }}>{st.label}</span>
                     </td>
-                    <td style={{ padding: '12px 16px', color: '#AEAEB2', fontSize: 11 }}>{formatDateTime(order.createdAt)}</td>
+                    <td style={{ padding: '12px 16px', color: '#A3B0BC', fontSize: 11 }}>{formatDateTime(order.createdAt)}</td>
                   </tr>
                 );
               })}

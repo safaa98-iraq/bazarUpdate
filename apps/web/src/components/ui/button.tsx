@@ -4,22 +4,22 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl text-[15px] font-semibold transition-all duration-200 ease-[cubic-bezier(.32,.72,0,1)] active:scale-[0.97] active:opacity-80 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ios-blue/20 disabled:pointer-events-none disabled:opacity-40',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-bold transition-all duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bz-brand/20 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-ios-blue text-white hover:brightness-110',
-        destructive: 'bg-ios-red/10 text-ios-red hover:bg-ios-red/15',
-        outline: 'bg-white text-ios-blue shadow-[0_0_0_0.5px_rgba(60,60,67,0.2)] hover:bg-gray-50',
-        secondary: 'bg-ios-blue/10 text-ios-blue hover:bg-ios-blue/15',
-        ghost: 'text-ios-blue hover:bg-ios-fill',
-        link: 'text-ios-blue underline-offset-4 hover:underline',
+        default: 'bg-bz-brand text-white shadow-[0_6px_16px_rgba(32,169,244,0.25)] hover:bg-bz-brand-600',
+        destructive: 'bg-[#FDECEC] text-bz-red hover:bg-[#FAD0D0]',
+        outline: 'border border-bz-line bg-white text-bz-ink hover:border-bz-brand-300 hover:text-bz-brand-600',
+        secondary: 'bg-bz-brand-100 text-bz-brand-600 hover:bg-[#CDEDFD]',
+        ghost: 'text-bz-ink-2 hover:bg-bz-bg hover:text-bz-ink',
+        link: 'text-bz-brand-600 underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-11 px-5',
-        sm: 'h-8 rounded-full px-3.5 text-[13px]',
-        lg: 'h-[50px] rounded-[14px] px-8 text-[17px]',
-        icon: 'h-10 w-10 rounded-full',
+        sm: 'h-9 px-3.5 text-[13px]',
+        lg: 'h-12 rounded-full px-8 text-base',
+        icon: 'h-10 w-10',
       },
     },
     defaultVariants: {

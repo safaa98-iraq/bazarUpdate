@@ -13,7 +13,7 @@ import {
   LinkIcon, ImageIcon, Loader2,
 } from 'lucide-react';
 
-const B = { p: '#1C1C1E', a: '#007AFF', border: '#E5E5EA' };
+const B = { p: '#0B3550', a: '#20A9F4', border: '#E6ECF1' };
 
 function ToolbarButton({ onClick, active, disabled, children, title }: {
   onClick: () => void; active?: boolean; disabled?: boolean; children: React.ReactNode; title: string;
@@ -22,7 +22,7 @@ function ToolbarButton({ onClick, active, disabled, children, title }: {
     <button type="button" onClick={onClick} disabled={disabled} title={title}
       className="w-8 h-8 rounded-lg flex items-center justify-center transition disabled:opacity-30"
       style={{ background: active ? B.a : 'transparent', color: active ? '#fff' : B.p }}
-      onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#F2F2F7'; }}
+      onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#F6F8FA'; }}
       onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
       {children}
     </button>
@@ -71,7 +71,7 @@ export function RichTextEditor({ value, onChange, placeholder }: {
 
   return (
     <div className="rounded-xl border overflow-hidden" style={{ borderColor: B.border }}>
-      <div className="flex items-center gap-0.5 p-1.5 border-b flex-wrap" style={{ borderColor: B.border, background: '#F2F2F7' }}>
+      <div className="flex items-center gap-0.5 p-1.5 border-b flex-wrap" style={{ borderColor: B.border, background: '#F6F8FA' }}>
         <ToolbarButton title="عريض" active={editor.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()}><Bold size={15} /></ToolbarButton>
         <ToolbarButton title="مائل" active={editor.isActive('italic')} onClick={() => editor.chain().focus().toggleItalic().run()}><Italic size={15} /></ToolbarButton>
         <ToolbarButton title="عنوان كبير" active={editor.isActive('heading', { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}><Heading2 size={15} /></ToolbarButton>

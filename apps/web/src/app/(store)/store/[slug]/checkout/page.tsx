@@ -48,7 +48,7 @@ export default function CheckoutPage() {
     if (store?.name) document.title = `إتمام الطلب — ${store.name}`;
   }, [store?.name]);
 
-  const theme = store?.theme ?? '#1C1C1E';
+  const theme = store?.theme ?? '#0B3550';
   const zones = store?.deliveryZones ?? [];
   const deliverableGovernorates = zones.length > 0 ? zones.map(z => z.governorate) : IRAQI_GOVERNORATES;
   const shippingFee = zones.find(z => z.governorate === form.governorate)?.price ?? 0;
@@ -77,7 +77,7 @@ export default function CheckoutPage() {
   const displayTotal = preview?.total ?? grandTotal;
 
   if (items.length === 0) return (
-    <div className="min-h-screen flex items-center justify-center" dir="rtl" style={{ background: '#F2F2F7' }}>
+    <div className="min-h-screen flex items-center justify-center" dir="rtl" style={{ background: '#F6F8FA' }}>
       <div className="text-center">
         <ShoppingBag className="h-12 w-12 mx-auto mb-3 text-gray-300" />
         <p className="text-gray-500">سلتك فارغة</p>
@@ -124,10 +124,10 @@ export default function CheckoutPage() {
   };
 
   const inputClass = (field: keyof typeof form) =>
-    `w-full px-4 py-3 rounded-xl border text-sm focus:outline-none transition ${errors[field] ? 'border-red-400 bg-red-50' : 'border-[#E5E5EA] focus:border-[#007AFF]'}`;
+    `w-full px-4 py-3 rounded-xl border text-sm focus:outline-none transition ${errors[field] ? 'border-red-400 bg-red-50' : 'border-[#E6ECF1] focus:border-[#20A9F4]'}`;
 
   return (
-    <div className="min-h-screen" dir="rtl" style={{ background: '#F2F2F7' }}>
+    <div className="min-h-screen" dir="rtl" style={{ background: '#F6F8FA' }}>
       {/* Navbar */}
       <nav className="bg-white border-b shadow-sm sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between">
@@ -210,7 +210,7 @@ export default function CheckoutPage() {
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">ملاحظات (اختياري)</label>
                   <textarea value={form.notes} onChange={set('notes')} rows={2}
                     placeholder="أي تعليمات خاصة للتوصيل…"
-                    className="w-full px-4 py-3 rounded-xl border border-[#E5E5EA] text-sm focus:outline-none focus:border-[#007AFF] transition resize-none" />
+                    className="w-full px-4 py-3 rounded-xl border border-[#E6ECF1] text-sm focus:outline-none focus:border-[#20A9F4] transition resize-none" />
                 </div>
               </div>
 
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
               <div className="space-y-3 mb-4">
                 {items.map(item => (
                   <div key={item.id} className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0" style={{ background: '#F2F2F7' }}>
+                    <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0" style={{ background: '#F6F8FA' }}>
                       {item.product.images?.[0]
                         ? <Image src={item.product.images[0]} alt={item.product.name} width={40} height={40} className="w-full h-full object-cover" />
                         : <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={16} /></div>}
@@ -254,13 +254,13 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              <div className="border-t pt-4 mb-4 space-y-2.5" style={{ borderColor: '#E5E5EA' }}>
+              <div className="border-t pt-4 mb-4 space-y-2.5" style={{ borderColor: '#E6ECF1' }}>
                 <div>
                   <div className="relative">
                     <Tag className="h-3.5 w-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input value={form.couponCode} onChange={set('couponCode')} placeholder="كود الخصم (اختياري)"
-                      className="w-full pr-8 pl-3 py-2 rounded-lg border text-xs focus:outline-none focus:border-[#007AFF] transition"
-                      style={{ borderColor: '#E5E5EA' }} />
+                      className="w-full pr-8 pl-3 py-2 rounded-lg border text-xs focus:outline-none focus:border-[#20A9F4] transition"
+                      style={{ borderColor: '#E6ECF1' }} />
                   </div>
                   {form.couponCode && preview && (
                     preview.couponError
@@ -274,8 +274,8 @@ export default function CheckoutPage() {
                   <div className="relative">
                     <Gift className="h-3.5 w-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input value={form.giftCardCode} onChange={set('giftCardCode')} placeholder="كود بطاقة الهدايا (اختياري)"
-                      className="w-full pr-8 pl-3 py-2 rounded-lg border text-xs focus:outline-none focus:border-[#007AFF] transition"
-                      style={{ borderColor: '#E5E5EA' }} dir="ltr" />
+                      className="w-full pr-8 pl-3 py-2 rounded-lg border text-xs focus:outline-none focus:border-[#20A9F4] transition"
+                      style={{ borderColor: '#E6ECF1' }} dir="ltr" />
                   </div>
                   {form.giftCardCode && preview && (
                     preview.giftCardError
@@ -287,7 +287,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="border-t pt-4 mb-5 space-y-2" style={{ borderColor: '#E5E5EA' }}>
+              <div className="border-t pt-4 mb-5 space-y-2" style={{ borderColor: '#E6ECF1' }}>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">المجموع الفرعي</span>
                   <span className="text-gray-700">{formatCurrency(preview?.subtotal ?? total())}</span>
@@ -316,7 +316,7 @@ export default function CheckoutPage() {
                     <span className="text-emerald-600">− {formatCurrency(preview.giftCardDeducted)}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-base pt-2 border-t items-center" style={{ borderColor: '#E5E5EA' }}>
+                <div className="flex justify-between font-bold text-base pt-2 border-t items-center" style={{ borderColor: '#E6ECF1' }}>
                   <span className="text-gray-700">المجموع الكلي</span>
                   <span style={{ color: theme }} className="flex items-center gap-1.5">
                     {previewLoading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
@@ -327,7 +327,7 @@ export default function CheckoutPage() {
 
               <button type="submit" disabled={submitting}
                 className="w-full py-3.5 font-bold text-white rounded-2xl transition hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2"
-                style={{ background: `linear-gradient(135deg, ${theme}, #007AFF)` }}>
+                style={{ background: `linear-gradient(135deg, ${theme}, #20A9F4)` }}>
                 {submitting
                   ? <><Loader2 className="h-4 w-4 animate-spin" /> جارٍ تأكيد الطلب…</>
                   : '✓ تأكيد الطلب'}

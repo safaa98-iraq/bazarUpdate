@@ -114,15 +114,15 @@ export default function AdminLoyaltyPage() {
   return (
     <div style={{ padding: 32 }} dir="rtl">
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1C1C1E', margin: 0 }}>برنامج الولاء</h1>
-        <p style={{ fontSize: 13, color: '#6C6C70', margin: '4px 0 0' }}>إدارة نقاط الولاء والمستويات والمكافآت</p>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#0B3550', margin: 0 }}>برنامج الولاء</h1>
+        <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>إدارة نقاط الولاء والمستويات والمكافآت</p>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 24, borderBottom: '1px solid #E5E5EA' }}>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 24, borderBottom: '1px solid #E6ECF1' }}>
         {TABS.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 16px', fontSize: 13, fontWeight: 600, border: 'none', borderBottom: tab === t.key ? '2px solid #007AFF' : '2px solid transparent', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit', marginBottom: -1, color: tab === t.key ? '#007AFF' : '#6C6C70', transition: 'all .15s' }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 16px', fontSize: 13, fontWeight: 600, border: 'none', borderBottom: tab === t.key ? '2px solid #20A9F4' : '2px solid transparent', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit', marginBottom: -1, color: tab === t.key ? '#20A9F4' : '#5B6B7B', transition: 'all .15s' }}>
             <t.icon size={15} />
             {t.label}
           </button>
@@ -187,7 +187,7 @@ export default function AdminLoyaltyPage() {
                       <td className="px-4 py-3 text-gray-500 text-xs">{r.storeName ?? 'عام'}</td>
                       <td className="px-4 py-3">
                         <button onClick={() => toggleRule(r)} className="flex items-center gap-1 text-xs font-medium transition"
-                          style={{ color: r.isActive ? '#34C759' : '#AEAEB2' }}>
+                          style={{ color: r.isActive ? '#22B07D' : '#A3B0BC' }}>
                           {r.isActive ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
                           {r.isActive ? 'مُفعّل' : 'موقوف'}
                         </button>
@@ -232,7 +232,7 @@ export default function AdminLoyaltyPage() {
                   type="number" placeholder="اختياري" className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 outline-none" />
               </div>
             </div>
-            <button onClick={createRule} className="px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: '#1C1C1E' }}>
+            <button onClick={createRule} className="px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: '#0B3550' }}>
               إضافة قاعدة
             </button>
           </div>
@@ -266,7 +266,7 @@ export default function AdminLoyaltyPage() {
                   {accounts.map(a => (
                     <tr key={a.id}>
                       <td className="px-4 py-3 font-medium">{a.customerEmail}</td>
-                      <td className="px-4 py-3 font-bold" style={{ color: '#1C1C1E' }}>{a.totalPoints.toLocaleString('en')}</td>
+                      <td className="px-4 py-3 font-bold" style={{ color: '#0B3550' }}>{a.totalPoints.toLocaleString('en')}</td>
                       <td className="px-4 py-3">
                         <span className="text-xs font-bold px-2 py-0.5 rounded-full"
                           style={{ color: TIER_COLORS[a.tier as keyof typeof TIER_COLORS], background: TIER_COLORS[a.tier as keyof typeof TIER_COLORS] + '22' }}>
@@ -288,7 +288,7 @@ export default function AdminLoyaltyPage() {
         <div className="max-w-md">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
             <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
-              <Gift className="h-4 w-4" style={{ color: '#007AFF' }} />
+              <Gift className="h-4 w-4" style={{ color: '#20A9F4' }} />
               منح نقاط مكافأة
             </h3>
             <div className="space-y-3">
@@ -317,7 +317,7 @@ export default function AdminLoyaltyPage() {
               )}
               <button onClick={giveBonus}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold text-white"
-                style={{ background: '#007AFF' }}>
+                style={{ background: '#20A9F4' }}>
                 منح النقاط
               </button>
             </div>

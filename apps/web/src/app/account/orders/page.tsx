@@ -10,15 +10,15 @@ import { useAuthStore } from '@/lib/stores/auth.store';
 import { Package, ShoppingBag, LogOut, ArrowRight } from 'lucide-react';
 import type { OrderPublic } from '@storebuilder/types';
 
-const C = { bg: '#F2F2F7', p: '#1C1C1E', a: '#007AFF', border: '#E5E5EA', muted: '#8E8E93' };
+const C = { bg: '#F6F8FA', p: '#0B3550', a: '#20A9F4', border: '#E6ECF1', muted: '#7A8A99' };
 
 const STATUS_LABELS: Record<string, string> = { PENDING: 'معلّق', PAID: 'مدفوع', SHIPPED: 'شُحن', DELIVERED: 'مُستلم', CANCELLED: 'ملغي' };
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
-  PENDING: { bg: '#FFF4E0', color: '#C93400' },
-  PAID: { bg: '#E3F9E8', color: '#248A3D' },
-  SHIPPED: { bg: '#E5F1FF', color: '#0040DD' },
-  DELIVERED: { bg: '#E3F9E8', color: '#248A3D' },
-  CANCELLED: { bg: '#FFE9E7', color: '#D70015' },
+  PENDING: { bg: '#FEF3E2', color: '#B45309' },
+  PAID: { bg: '#E2F7EE', color: '#17845C' },
+  SHIPPED: { bg: '#E3F5FE', color: '#0E8AD6' },
+  DELIVERED: { bg: '#E2F7EE', color: '#17845C' },
+  CANCELLED: { bg: '#FDECEC', color: '#C93636' },
 };
 
 import { useDocumentTitle } from '@/lib/useDocumentTitle';

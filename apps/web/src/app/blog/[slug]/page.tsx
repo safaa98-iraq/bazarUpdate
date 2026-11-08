@@ -6,7 +6,7 @@ import { ArrowLeft, Newspaper } from 'lucide-react';
 import type { ArticlePublic } from '@storebuilder/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
-const C = { bg: '#F2F2F7', dark: '#1C1C1E', accent: '#007AFF', text2: '#8E8E93', border: '#E5E5EA' };
+const C = { bg: '#F6F8FA', dark: '#0B3550', accent: '#20A9F4', text2: '#7A8A99', border: '#E6ECF1' };
 
 async function getArticle(slug: string): Promise<ArticlePublic | null> {
   try {
@@ -45,7 +45,7 @@ export default async function BlogArticlePage({ params }: { params: { slug: stri
         </Link>
 
         {article.category && (
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full mb-4" style={{ background: '#E5F1FF', color: C.accent }}>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full mb-4" style={{ background: '#E3F5FE', color: C.accent }}>
             <Newspaper size={12} /> {article.category}
           </span>
         )}
@@ -60,7 +60,7 @@ export default async function BlogArticlePage({ params }: { params: { slug: stri
         </div>
 
         {article.coverImage && (
-          <div className="rounded-2xl overflow-hidden mb-8" style={{ background: '#F2F2F7' }}>
+          <div className="rounded-2xl overflow-hidden mb-8" style={{ background: '#F6F8FA' }}>
             <Image src={article.coverImage} alt={article.title} width={760} height={420} className="w-full h-auto object-cover" priority />
           </div>
         )}

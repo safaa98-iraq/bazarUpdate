@@ -9,7 +9,7 @@ import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import { getFeatureLimit, Plan } from '@/lib/plan-features';
 
-const BRAND = { primary: '#1C1C1E', accent: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7' };
+const BRAND = { primary: '#0B3550', accent: '#20A9F4', border: '#E3F5FE', bg: '#F6F8FA' };
 
 interface Banner {
   id: string;
@@ -38,7 +38,7 @@ const emptyForm: BannerForm = {
   title: '',
   subtitle: '',
   imageUrl: '',
-  bgColor: '#1C1C1E',
+  bgColor: '#0B3550',
   textColor: '#FFFFFF',
   linkUrl: '',
   isActive: true,
@@ -168,7 +168,7 @@ export default function BannersPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="ios-large-title text-gray-900">البانرات الإعلانية</h1>
+          <h1 className="bz-large-title text-gray-900">البانرات الإعلانية</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             {banners.length} بانر{bannerLimit != null ? ` من أصل ${bannerLimit}` : ''} • {activeBanners} نشط
           </p>
@@ -183,7 +183,7 @@ export default function BannersPage() {
           <button
             onClick={openCreate}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
-            style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}
+            style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}
           >
             <Plus className="h-4 w-4" /> إضافة بانر
           </button>
@@ -194,8 +194,8 @@ export default function BannersPage() {
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
           { label: 'إجمالي البانرات', value: banners.length, color: BRAND.primary },
-          { label: 'بانرات نشطة', value: activeBanners, color: '#34C759' },
-          { label: 'بانرات مخفية', value: banners.length - activeBanners, color: '#AEAEB2' },
+          { label: 'بانرات نشطة', value: activeBanners, color: '#22B07D' },
+          { label: 'بانرات مخفية', value: banners.length - activeBanners, color: '#A3B0BC' },
         ].map(stat => (
           <div key={stat.label} className="bg-white rounded-2xl border p-4" style={{ borderColor: BRAND.border }}>
             <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
@@ -217,7 +217,7 @@ export default function BannersPage() {
           <button
             onClick={openCreate}
             className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
-            style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}
+            style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}
           >
             إضافة أول بانر
           </button>
@@ -233,7 +233,7 @@ export default function BannersPage() {
               {/* Banner Preview Strip */}
               <div
                 className="px-5 py-4 flex items-center justify-between gap-3"
-                style={{ background: b.imageUrl ? '#F2F2F7' : b.bgColor }}
+                style={{ background: b.imageUrl ? '#F6F8FA' : b.bgColor }}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   {b.imageUrl && (
@@ -268,8 +268,8 @@ export default function BannersPage() {
                   <span
                     className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium"
                     style={{
-                      background: b.isActive ? '#E3F9E8' : '#F2F2F7',
-                      color: b.isActive ? '#248A3D' : '#AEAEB2',
+                      background: b.isActive ? '#E2F7EE' : '#F6F8FA',
+                      color: b.isActive ? '#17845C' : '#A3B0BC',
                     }}
                   >
                     {b.isActive ? 'نشط' : 'مخفي'}
@@ -289,7 +289,7 @@ export default function BannersPage() {
                     title={b.isActive ? 'إخفاء البانر' : 'إظهار البانر'}
                   >
                     {b.isActive
-                      ? <Eye className="h-4 w-4" style={{ color: '#34C759' }} />
+                      ? <Eye className="h-4 w-4" style={{ color: '#22B07D' }} />
                       : <EyeOff className="h-4 w-4 text-gray-400" />}
                   </button>
                   <button
@@ -456,7 +456,7 @@ export default function BannersPage() {
                   type="button"
                   onClick={() => setForm(f => ({ ...f, isActive: !f.isActive }))}
                   className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200"
-                  style={{ background: form.isActive ? BRAND.accent : '#D1D1D6' }}
+                  style={{ background: form.isActive ? BRAND.accent : '#D3DCE4' }}
                 >
                   <span
                     className="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200"
@@ -496,7 +496,7 @@ export default function BannersPage() {
                   type="submit"
                   disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}
+                  style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}
                 >
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                   {saving ? 'جارٍ الحفظ…' : editingId ? 'حفظ التعديلات' : 'إضافة البانر'}

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { DashboardSidebar } from '@/components/layout/DashboardSidebar';
+import { DashboardSidebar, DashboardTopbar } from '@/components/layout/DashboardSidebar';
 import { useAuthStore } from '@/lib/stores/auth.store';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -22,8 +22,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   // Show nothing until hydration finishes — prevents flash-redirect to /login
   if (!_hasHydrated) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F2F2F7' }}>
-      <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid rgba(60,60,67,.15)', borderTopColor: '#8E8E93', animation: 'spin 0.8s linear infinite' }} />
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F6F8FA' }}>
+      <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid #E3F5FE', borderTopColor: '#20A9F4', animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
@@ -31,11 +31,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user || user.role !== 'MERCHANT') return null;
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#F2F2F7' }}>
+    <div className="flex min-h-screen" style={{ background: '#F6F8FA' }}>
       <div className="print:hidden contents">
         <DashboardSidebar />
       </div>
-      <main className="flex-1 min-w-0 overflow-auto pt-14 pb-24 lg:pt-0 lg:pb-0 print:pt-0 print:pb-0 print:overflow-visible">{children}</main>
+      <main className="flex-1 min-w-0 overflow-auto pt-14 pb-24 lg:pt-0 lg:pb-0 print:pt-0 print:pb-0 print:overflow-visible">
+        <DashboardTopbar />
+        {children}
+      </main>
     </div>
   );
 }

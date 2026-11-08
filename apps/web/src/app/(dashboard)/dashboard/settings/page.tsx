@@ -15,7 +15,7 @@ import { PlanGate } from '@/components/ui/PlanGate';
 import type { StoreSocialLinks, StoreDeliveryZone } from '@storebuilder/types';
 import { IRAQI_GOVERNORATES } from '@storebuilder/types';
 
-const BRAND = { primary: '#1C1C1E', secondary: '#3A3A3C', accent: '#007AFF', light: '#E5F1FF' };
+const BRAND = { primary: '#0B3550', secondary: '#32506A', accent: '#20A9F4', light: '#E3F5FE' };
 
 interface Store {
   id: string; name: string; slug: string; description: string | null;
@@ -57,9 +57,9 @@ const SOCIAL_FIELDS: { key: keyof Omit<StoreSocialLinks, 'deliveryPartners'>; la
 ];
 
 const THEMES = [
-  { color: '#1C1C1E', label: 'بنفسجي' }, { color: '#007AFF', label: 'وردي' },
-  { color: '#3A3A3C', label: 'نيلي' },   { color: '#248A3D', label: 'أخضر' },
-  { color: '#0062CC', label: 'أزرق' },   { color: '#C93400', label: 'برتقالي' },
+  { color: '#0B3550', label: 'بنفسجي' }, { color: '#20A9F4', label: 'وردي' },
+  { color: '#32506A', label: 'نيلي' },   { color: '#17845C', label: 'أخضر' },
+  { color: '#0E8AD6', label: 'أزرق' },   { color: '#B45309', label: 'برتقالي' },
 ];
 
 const CURRENCIES = [
@@ -97,7 +97,7 @@ function LogoUploader({ logo, onChange }: { logo: string | null; onChange: (url:
       <label className="block text-xs font-semibold mb-2" style={{ color: BRAND.primary }}>شعار المتجر</label>
       <div className="flex items-center gap-4">
         <div className="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center border-2 flex-shrink-0"
-          style={{ borderColor: logo ? BRAND.accent : '#E5E5EA', background: logo ? 'white' : '#F2F2F7' }}>
+          style={{ borderColor: logo ? BRAND.accent : '#E6ECF1', background: logo ? 'white' : '#F6F8FA' }}>
           {logo ? <Image src={logo} alt="logo" width={80} height={80} className="w-full h-full object-contain" />
                 : <Building2 size={30} style={{ color: BRAND.accent }} />}
         </div>
@@ -111,7 +111,7 @@ function LogoUploader({ logo, onChange }: { logo: string | null; onChange: (url:
           {logo && (
             <button type="button" onClick={() => onChange('')}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border hover:bg-red-50 text-red-500"
-              style={{ borderColor: '#FFA59F' }}>
+              style={{ borderColor: '#F5A3A3' }}>
               <X className="h-4 w-4" /> حذف
             </button>
           )}
@@ -127,7 +127,7 @@ const PLAN_DEFS = [
   {
     id: 'FREE' as Plan,
     icon: <Globe className="h-5 w-5" />,
-    color: '#6C6C70',
+    color: '#5B6B7B',
     planKey: 'FREE' as const,
     features: [
       { label: '55 منتج', ok: true },
@@ -143,7 +143,7 @@ const PLAN_DEFS = [
   {
     id: 'PRO' as Plan,
     icon: <Zap className="h-5 w-5" />,
-    color: '#AF52DE',
+    color: '#8B5CF6',
     planKey: 'PRO' as const,
     badge: 'الأكثر شعبية',
     features: [
@@ -161,7 +161,7 @@ const PLAN_DEFS = [
   {
     id: 'ENTERPRISE' as Plan,
     icon: <Building2 className="h-5 w-5" />,
-    color: '#FF9500',
+    color: '#F59E0B',
     planKey: 'ENTERPRISE' as const,
     features: [
       { label: 'منتجات غير محدودة', ok: true },
@@ -286,7 +286,7 @@ export default function SettingsPage() {
 
   if (loading) return (
     <div className="p-8 space-y-4">
-      {[1, 2, 3].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: '#EFEFF4' }} />)}
+      {[1, 2, 3].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: '#EEF2F6' }} />)}
     </div>
   );
 
@@ -296,7 +296,7 @@ export default function SettingsPage() {
     <div className="p-6 max-w-3xl" dir="rtl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="ios-large-title text-gray-900">إعدادات المتجر</h1>
+          <h1 className="bz-large-title text-gray-900">إعدادات المتجر</h1>
           <p className="text-sm text-gray-500 mt-0.5">{store ? 'إدارة إعدادات متجرك' : 'أنشئ متجرك للبدء'}</p>
         </div>
         {store && (
@@ -308,11 +308,11 @@ export default function SettingsPage() {
         )}
       </div>
 
-      <div className="flex gap-1 mb-5 p-1 rounded-2xl overflow-x-auto" style={{ background: '#F2F2F7' }}>
+      <div className="flex gap-1 mb-5 p-1 rounded-2xl overflow-x-auto" style={{ background: '#F6F8FA' }}>
         {[['basic', 'الأساسية'], ['type', 'النوع'], ['design', 'التصميم'], ['social', 'التواصل'], ['delivery', 'مناطق التوصيل'], ['domain', 'النطاق المخصص'], ['billing', 'الخطة']].map(([tab, label]) => (
           <button key={tab} onClick={() => setActiveTab(tab as 'basic' | 'type' | 'design' | 'social' | 'delivery' | 'domain' | 'billing')}
             className="flex-shrink-0 py-2 px-3 rounded-xl text-sm font-medium transition whitespace-nowrap"
-            style={{ background: activeTab === tab ? 'white' : 'transparent', color: activeTab === tab ? BRAND.primary : '#AEAEB2', boxShadow: activeTab === tab ? '0 1px 4px rgba(0,0,0,0.08)' : 'none' }}>
+            style={{ background: activeTab === tab ? 'white' : 'transparent', color: activeTab === tab ? BRAND.primary : '#A3B0BC', boxShadow: activeTab === tab ? '0 1px 4px rgba(0,0,0,0.08)' : 'none' }}>
             {label}
           </button>
         ))}
@@ -320,7 +320,7 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {activeTab === 'basic' && (
-          <div className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#E5E5EA' }}>
+          <div className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#E6ECF1' }}>
             <LogoUploader logo={form.logo} onChange={url => setForm(f => ({ ...f, logo: url }))} />
 
             <div>
@@ -333,12 +333,12 @@ export default function SettingsPage() {
                 }));
               }} required placeholder="مثال: متجر الأناقة"
                 className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
-                style={{ borderColor: '#E5E5EA' }} />
+                style={{ borderColor: '#E6ECF1' }} />
             </div>
 
             <div>
               <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>رابط المتجر</label>
-              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ borderColor: '#E5E5EA' }}>
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ borderColor: '#E6ECF1' }}>
                 <span className="text-sm text-gray-400">/store/</span>
                 <input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
                   disabled={!!store} placeholder="my-store"
@@ -352,14 +352,14 @@ export default function SettingsPage() {
               <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 rows={3} placeholder="أخبر عملاءك عن متجرك…"
                 className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none resize-none transition"
-                style={{ borderColor: '#E5E5EA' }} />
+                style={{ borderColor: '#E6ECF1' }} />
             </div>
 
             <div>
               <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>العملة</label>
               <select value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
                 className="w-full px-3 py-2.5 rounded-xl border text-sm bg-white focus:outline-none transition"
-                style={{ borderColor: '#E5E5EA' }}>
+                style={{ borderColor: '#E6ECF1' }}>
                 {CURRENCIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
             </div>
@@ -369,21 +369,21 @@ export default function SettingsPage() {
               <textarea value={form.defaultSizeGuide} onChange={e => setForm(f => ({ ...f, defaultSizeGuide: e.target.value }))}
                 rows={4} placeholder="مثال: S: 36-38 / M: 40-42 / L: 44-46 ..."
                 className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none resize-none transition"
-                style={{ borderColor: '#E5E5EA' }} />
+                style={{ borderColor: '#E6ECF1' }} />
               <p className="text-xs text-gray-400 mt-1">يظهر بصفحة أي منتج ما عنده دليل مقاسات خاص به</p>
             </div>
           </div>
         )}
 
         {activeTab === 'type' && (
-          <div className="bg-white rounded-2xl border p-6" style={{ borderColor: '#E5E5EA' }}>
+          <div className="bg-white rounded-2xl border p-6" style={{ borderColor: '#E6ECF1' }}>
             <h2 className="font-bold mb-1" style={{ color: BRAND.primary }}>نوع المتجر</h2>
             <p className="text-xs text-gray-400 mb-4">يحدد نوع المتجر وحدات قياس المنتجات والقوالب المقترحة</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {STORE_TYPES.map(type => (
                 <button key={type.id} type="button" onClick={() => setForm(f => ({ ...f, storeType: type.id, theme: type.themeColor }))}
                   className="relative flex flex-col items-center gap-2 p-4 rounded-2xl border-2 text-center transition hover:shadow-md"
-                  style={{ borderColor: form.storeType === type.id ? type.themeColor : '#E5E5EA', background: form.storeType === type.id ? `${type.themeColor}08` : 'white' }}>
+                  style={{ borderColor: form.storeType === type.id ? type.themeColor : '#E6ECF1', background: form.storeType === type.id ? `${type.themeColor}08` : 'white' }}>
                   {form.storeType === type.id && (
                     <div className="absolute top-2 left-2 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: type.themeColor }}>
                       <Check className="h-3 w-3 text-white" />
@@ -416,7 +416,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'design' && (
-          <div className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#E5E5EA' }}>
+          <div className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#E6ECF1' }}>
             <div>
               <h2 className="font-bold mb-3" style={{ color: BRAND.primary }}>لون العلامة التجارية</h2>
               <div className="grid grid-cols-6 gap-3 mb-4">
@@ -433,7 +433,7 @@ export default function SettingsPage() {
               </div>
               <div className="flex items-center gap-3">
                 <input type="color" value={form.theme} onChange={e => setForm(f => ({ ...f, theme: e.target.value }))}
-                  className="h-10 w-20 rounded-xl border cursor-pointer" style={{ borderColor: '#E5E5EA' }} />
+                  className="h-10 w-20 rounded-xl border cursor-pointer" style={{ borderColor: '#E6ECF1' }} />
                 <span className="text-sm font-mono text-gray-500">{form.theme}</span>
               </div>
             </div>
@@ -441,7 +441,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'social' && (
-          <div className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#E5E5EA' }}>
+          <div className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#E6ECF1' }}>
             <div>
               <h2 className="font-bold mb-1" style={{ color: BRAND.primary }}>حسابات التواصل الاجتماعي</h2>
               <p className="text-xs text-gray-400 mb-4">اربط حساباتك ليظهر رابط مباشر لها في متجرك — يستطيع زبائنك التواصل معك أو متابعتك بضغطة واحدة.</p>
@@ -453,7 +453,7 @@ export default function SettingsPage() {
                   <span className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: f.bg }}>{f.icon}</span>
                   {f.label}
                 </label>
-                <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ borderColor: '#E5E5EA' }}>
+                <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ borderColor: '#E6ECF1' }}>
                   {f.prefix && <span className="text-sm text-gray-400 flex-shrink-0">{f.prefix}</span>}
                   <input
                     value={form.socialLinks[f.key] ?? ''}
@@ -466,7 +466,7 @@ export default function SettingsPage() {
 
             <div>
               <label className="flex items-center gap-2 text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                <span className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#FFF4E0' }}>
+                <span className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#FEF3E2' }}>
                   <Truck size={16} color={BRAND.accent} />
                 </span>
                 شركات التوصيل
@@ -494,7 +494,7 @@ export default function SettingsPage() {
                     setNewPartner('');
                   }}
                   placeholder="مثال: زاجل" maxLength={50}
-                  className="flex-1 px-3 py-2.5 rounded-xl border text-sm focus:outline-none transition" style={{ borderColor: '#E5E5EA' }} />
+                  className="flex-1 px-3 py-2.5 rounded-xl border text-sm focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} />
                 <button type="button"
                   onClick={() => {
                     const name = newPartner.trim();
@@ -512,7 +512,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'delivery' && (
-          <div className="bg-white rounded-2xl border p-6 space-y-4" style={{ borderColor: '#E5E5EA' }}>
+          <div className="bg-white rounded-2xl border p-6 space-y-4" style={{ borderColor: '#E6ECF1' }}>
             <div>
               <h2 className="font-bold mb-1 flex items-center gap-2" style={{ color: BRAND.primary }}>
                 <MapPin size={18} /> مناطق التوصيل
@@ -522,7 +522,7 @@ export default function SettingsPage() {
               </p>
             </div>
 
-            <div className="divide-y" style={{ borderColor: '#E5E5EA' }}>
+            <div className="divide-y" style={{ borderColor: '#E6ECF1' }}>
               {IRAQI_GOVERNORATES.map(gov => {
                 const zone = form.deliveryZones.find(z => z.governorate === gov);
                 const enabled = Boolean(zone);
@@ -537,10 +537,10 @@ export default function SettingsPage() {
                       }))}
                       role="switch" aria-checked={enabled}
                       className="w-[51px] h-[31px] rounded-full flex-shrink-0 relative transition-colors duration-200"
-                      style={{ background: enabled ? '#34C759' : 'rgba(120,120,128,0.16)' }}>
+                      style={{ background: enabled ? '#22B07D' : 'rgba(120,120,128,0.16)' }}>
                       <span className="absolute top-[2px] w-[27px] h-[27px] rounded-full bg-white transition-all duration-200 shadow-[0_3px_8px_rgba(0,0,0,0.15),0_3px_1px_rgba(0,0,0,0.06)]" style={{ [enabled ? 'right' : 'left']: 2 } as React.CSSProperties} />
                     </button>
-                    <span className="flex-1 text-sm font-medium" style={{ color: enabled ? BRAND.primary : '#AEAEB2' }}>{gov}</span>
+                    <span className="flex-1 text-sm font-medium" style={{ color: enabled ? BRAND.primary : '#A3B0BC' }}>{gov}</span>
                     {enabled && (
                       <div className="flex items-center gap-1.5">
                         <input
@@ -554,7 +554,7 @@ export default function SettingsPage() {
                             }));
                           }}
                           className="w-24 px-2.5 py-1.5 rounded-lg border text-sm text-left focus:outline-none"
-                          style={{ borderColor: '#E5E5EA', direction: 'ltr' }} />
+                          style={{ borderColor: '#E6ECF1', direction: 'ltr' }} />
                         <span className="text-xs text-gray-400 flex-shrink-0">د.ع</span>
                       </div>
                     )}
@@ -573,7 +573,7 @@ export default function SettingsPage() {
 
         {activeTab === 'domain' && (
           <PlanGate feature="custom_domain">
-            <div className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#E5E5EA' }}>
+            <div className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#E6ECF1' }}>
               <div>
                 <h2 className="font-bold mb-1 flex items-center gap-2" style={{ color: BRAND.primary }}>
                   <LinkIcon size={18} /> النطاق المخصص
@@ -586,7 +586,7 @@ export default function SettingsPage() {
                 <div className="flex gap-2">
                   <input value={form.domainInput} onChange={e => setForm(f => ({ ...f, domainInput: e.target.value }))}
                     placeholder="shop.mystore.com" dir="ltr"
-                    className="flex-1 px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: '#E5E5EA', textAlign: 'left' }} />
+                    className="flex-1 px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: '#E6ECF1', textAlign: 'left' }} />
                   <button type="button" onClick={saveDomain} disabled={saving}
                     className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60"
                     style={{ background: BRAND.primary }}>
@@ -596,21 +596,21 @@ export default function SettingsPage() {
               </div>
 
               {store?.customDomain && (
-                <div className="rounded-2xl p-4" style={{ background: store.customDomainVerified ? '#E3F9E8' : '#FFF4E0' }}>
+                <div className="rounded-2xl p-4" style={{ background: store.customDomainVerified ? '#E2F7EE' : '#FEF3E2' }}>
                   {store.customDomainVerified ? (
                     <div className="flex items-center gap-2">
-                      <ShieldCheck size={18} style={{ color: '#248A3D' }} />
+                      <ShieldCheck size={18} style={{ color: '#17845C' }} />
                       <div>
-                        <p className="text-sm font-bold" style={{ color: '#248A3D' }}>النطاق متصل ويعمل</p>
-                        <a href={`https://${store.customDomain}`} target="_blank" rel="noreferrer" className="text-xs underline" style={{ color: '#248A3D' }}>
+                        <p className="text-sm font-bold" style={{ color: '#17845C' }}>النطاق متصل ويعمل</p>
+                        <a href={`https://${store.customDomain}`} target="_blank" rel="noreferrer" className="text-xs underline" style={{ color: '#17845C' }}>
                           {store.customDomain}
                         </a>
                       </div>
                     </div>
                   ) : (
                     <div>
-                      <p className="text-sm font-bold mb-2" style={{ color: '#C93400' }}>بانتظار التحقق من ملكية النطاق</p>
-                      <p className="text-xs mb-3" style={{ color: '#C93400' }}>
+                      <p className="text-sm font-bold mb-2" style={{ color: '#B45309' }}>بانتظار التحقق من ملكية النطاق</p>
+                      <p className="text-xs mb-3" style={{ color: '#B45309' }}>
                         أضف سجل DNS من نوع TXT في إعدادات نطاقك ({store.customDomain}) بالقيم التالية، ثم اضغط تحقق الآن (قد يستغرق الانتشار بعض الوقت):
                       </p>
                       <div className="bg-white rounded-xl p-3 space-y-2 text-xs font-mono" dir="ltr">
@@ -670,7 +670,7 @@ export default function SettingsPage() {
                 const isCurrent = plan === p.id;
                 return (
                   <div key={p.id} className="relative rounded-2xl border-2 overflow-hidden transition"
-                    style={{ borderColor: isCurrent ? p.color : '#E5E5EA', background: isCurrent ? `${p.color}06` : 'white' }}>
+                    style={{ borderColor: isCurrent ? p.color : '#E6ECF1', background: isCurrent ? `${p.color}06` : 'white' }}>
                     {p.badge && (
                       <div className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-xs font-bold text-white"
                         style={{ background: p.color }}>{p.badge}</div>
@@ -721,7 +721,7 @@ export default function SettingsPage() {
               })}
             </div>
 
-            <div className="rounded-2xl p-4 text-center" style={{ background: '#F2F2F7' }}>
+            <div className="rounded-2xl p-4 text-center" style={{ background: '#F6F8FA' }}>
               <p className="text-xs text-gray-500">جميع الخطط تشمل متجراً إلكترونياً كاملاً مع بوابة دفع آمنة وشهادة SSL</p>
             </div>
           </div>
@@ -730,7 +730,7 @@ export default function SettingsPage() {
         {activeTab !== 'billing' && activeTab !== 'domain' && (
         <button type="submit" disabled={saving}
           className="w-full py-3 rounded-xl font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+          style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
           {saving && <Loader2 className="h-4 w-4 animate-spin" />}
           {saving ? 'جارٍ الحفظ…' : store ? 'حفظ الإعدادات' : 'إنشاء المتجر'}
         </button>

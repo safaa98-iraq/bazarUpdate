@@ -14,7 +14,7 @@ import { useAuthStore } from '@/lib/stores/auth.store';
 import { PlanGate } from '@/components/ui/PlanGate';
 import { canUseFeature, Plan } from '@/lib/plan-features';
 
-const BRAND = { primary: '#1C1C1E', secondary: '#3A3A3C', accent: '#007AFF', light: '#E5F1FF' };
+const BRAND = { primary: '#0B3550', secondary: '#32506A', accent: '#20A9F4', light: '#E3F5FE' };
 
 const PLATFORMS = [
   { value: 'instagram', label: 'Instagram', icon: Instagram, color: '#E1306C' },
@@ -22,7 +22,7 @@ const PLATFORMS = [
   { value: 'youtube',   label: 'YouTube',   icon: Youtube,    color: '#FF0000' },
   { value: 'twitter',   label: 'Twitter/X', icon: Twitter,    color: '#1DA1F2' },
   { value: 'snapchat',  label: 'Snapchat',  icon: Link2,      color: '#FFFC00' },
-  { value: 'other',     label: 'أخرى',      icon: Link2,      color: '#6C6C70' },
+  { value: 'other',     label: 'أخرى',      icon: Link2,      color: '#5B6B7B' },
 ];
 
 interface CouponForm {
@@ -173,12 +173,12 @@ export default function AffiliatesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="ios-large-title text-gray-900">المؤثرون والتسويق بالعمولة</h1>
+          <h1 className="bz-large-title text-gray-900">المؤثرون والتسويق بالعمولة</h1>
           <p className="text-sm text-gray-500 mt-0.5">{activeCount} مؤثر نشط</p>
         </div>
         <button onClick={openNew}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:opacity-90 transition"
-          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+          style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
           <Plus className="h-4 w-4" /> إضافة مؤثر
         </button>
       </div>
@@ -188,9 +188,9 @@ export default function AffiliatesPage() {
         {[
           { label: 'إجمالي المؤثرين', value: affiliates.length, icon: TrendingUp, color: BRAND.secondary },
           { label: 'طلبات من المؤثرين', value: `${totalOrders} طلب`, icon: ShoppingBag, color: BRAND.accent },
-          { label: 'عمولات مستحقة', value: formatCurrency(totalEarned), icon: DollarSign, color: '#34C759' },
+          { label: 'عمولات مستحقة', value: formatCurrency(totalEarned), icon: DollarSign, color: '#22B07D' },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-2xl p-4 border" style={{ borderColor: '#E5E5EA' }}>
+          <div key={s.label} className="bg-white rounded-2xl p-4 border" style={{ borderColor: '#E6ECF1' }}>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: `${s.color}15` }}>
                 <s.icon className="h-4 w-4" style={{ color: s.color }} />
@@ -206,7 +206,7 @@ export default function AffiliatesPage() {
       {loading ? (
         <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin" style={{ color: BRAND.accent }} /></div>
       ) : affiliates.length === 0 ? (
-        <div className="bg-white rounded-2xl border p-12 text-center" style={{ borderColor: '#E5E5EA' }}>
+        <div className="bg-white rounded-2xl border p-12 text-center" style={{ borderColor: '#E6ECF1' }}>
           <div className="mb-3 flex justify-center"><Handshake size={48} style={{ color: BRAND.accent }} /></div>
           <p className="text-gray-400 mb-2">لا يوجد مؤثرون بعد</p>
           <button onClick={openNew} className="text-sm font-medium" style={{ color: BRAND.accent }}>
@@ -216,13 +216,13 @@ export default function AffiliatesPage() {
       ) : (
         <div className="space-y-3">
           {affiliates.map(aff => (
-            <div key={aff.id} className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#E5E5EA' }}>
+            <div key={aff.id} className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#E6ECF1' }}>
               {/* Main row */}
               <div className="flex items-center gap-4 p-4">
                 {/* Avatar + platform */}
                 <div className="relative flex-shrink-0">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg font-bold"
-                    style={{ background: aff.isActive ? `linear-gradient(135deg, #0A84FF, #5E5CE6)` : '#AEAEB2' }}>
+                    style={{ background: aff.isActive ? `linear-gradient(135deg, #20A9F4, #0E8AD6)` : '#A3B0BC' }}>
                     {aff.name.charAt(0)}
                   </div>
                   <div className="absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-white flex items-center justify-center shadow">
@@ -249,7 +249,7 @@ export default function AffiliatesPage() {
                 </div>
 
                 {/* Commission badge */}
-                <div className="text-center px-3 py-2 rounded-xl flex-shrink-0" style={{ background: '#F2F2F7' }}>
+                <div className="text-center px-3 py-2 rounded-xl flex-shrink-0" style={{ background: '#F6F8FA' }}>
                   <p className="text-lg font-bold" style={{ color: BRAND.accent }}>
                     {aff.commissionType === 'percent' ? `${aff.commissionRate}%` : formatCurrency(aff.commissionRate)}
                   </p>
@@ -296,7 +296,7 @@ export default function AffiliatesPage() {
               {/* Expanded notes */}
               {expandedId === aff.id && aff.notes && (
                 <div className="px-4 pb-4 pt-0">
-                  <div className="rounded-xl p-3 text-xs text-gray-600" style={{ background: '#F2F2F7' }}>
+                  <div className="rounded-xl p-3 text-xs text-gray-600" style={{ background: '#F6F8FA' }}>
                     <p className="font-semibold mb-1" style={{ color: BRAND.secondary }}>ملاحظات</p>
                     <p>{aff.notes}</p>
                   </div>
@@ -311,7 +311,7 @@ export default function AffiliatesPage() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: '#E5E5EA' }}>
+            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: '#E6ECF1' }}>
               <h2 className="font-bold text-lg" style={{ color: BRAND.primary }}>
                 {editingId ? 'تعديل المؤثر' : 'إضافة مؤثر جديد'}
               </h2>
@@ -327,13 +327,13 @@ export default function AffiliatesPage() {
                   <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required
                     placeholder="اسم المؤثر"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>المنصة</label>
                   <select value={form.platform} onChange={e => setForm(f => ({ ...f, platform: e.target.value }))}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none bg-white"
-                    style={{ borderColor: '#E5E5EA' }}>
+                    style={{ borderColor: '#E6ECF1' }}>
                     {PLATFORMS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
                   </select>
                 </div>
@@ -345,7 +345,7 @@ export default function AffiliatesPage() {
                   <input value={form.handle} onChange={e => setForm(f => ({ ...f, handle: e.target.value }))}
                     placeholder="@username"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>عدد المتابعين</label>
@@ -353,7 +353,7 @@ export default function AffiliatesPage() {
                     onChange={e => setForm(f => ({ ...f, followerCount: e.target.value }))}
                     placeholder="مثال: 50000"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                 </div>
               </div>
 
@@ -363,14 +363,14 @@ export default function AffiliatesPage() {
                   <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                     placeholder="influencer@email.com"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>رقم الهاتف</label>
                   <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
                     placeholder="+9647..."
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                 </div>
               </div>
 
@@ -380,14 +380,14 @@ export default function AffiliatesPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <button type="button" onClick={() => setForm(f => ({ ...f, commissionType: 'percent' }))}
                     className="p-3 rounded-xl border-2 transition"
-                    style={{ borderColor: form.commissionType === 'percent' ? BRAND.accent : '#E5E5EA', background: form.commissionType === 'percent' ? `${BRAND.accent}10` : 'white' }}>
-                    <p className="text-sm font-bold" style={{ color: form.commissionType === 'percent' ? BRAND.accent : '#3A3A3C' }}>نسبة مئوية %</p>
+                    style={{ borderColor: form.commissionType === 'percent' ? BRAND.accent : '#E6ECF1', background: form.commissionType === 'percent' ? `${BRAND.accent}10` : 'white' }}>
+                    <p className="text-sm font-bold" style={{ color: form.commissionType === 'percent' ? BRAND.accent : '#32506A' }}>نسبة مئوية %</p>
                     <p className="text-xs text-gray-400">من قيمة الطلب</p>
                   </button>
                   <button type="button" onClick={() => setForm(f => ({ ...f, commissionType: 'fixed' }))}
                     className="p-3 rounded-xl border-2 transition"
-                    style={{ borderColor: form.commissionType === 'fixed' ? BRAND.accent : '#E5E5EA', background: form.commissionType === 'fixed' ? `${BRAND.accent}10` : 'white' }}>
-                    <p className="text-sm font-bold" style={{ color: form.commissionType === 'fixed' ? BRAND.accent : '#3A3A3C' }}>مبلغ ثابت د.ع</p>
+                    style={{ borderColor: form.commissionType === 'fixed' ? BRAND.accent : '#E6ECF1', background: form.commissionType === 'fixed' ? `${BRAND.accent}10` : 'white' }}>
+                    <p className="text-sm font-bold" style={{ color: form.commissionType === 'fixed' ? BRAND.accent : '#32506A' }}>مبلغ ثابت د.ع</p>
                     <p className="text-xs text-gray-400">لكل طلب ناجح</p>
                   </button>
                 </div>
@@ -395,7 +395,7 @@ export default function AffiliatesPage() {
                   <input type="number" min="0" step="0.01" value={form.commissionRate}
                     onChange={e => setForm(f => ({ ...f, commissionRate: e.target.value }))}
                     className="flex-1 px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                   <span className="text-sm font-medium text-gray-500">
                     {form.commissionType === 'percent' ? '%' : 'د.ع'}
                   </span>
@@ -407,16 +407,16 @@ export default function AffiliatesPage() {
                 <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                   rows={2} placeholder="أي معلومات إضافية عن المؤثر…"
                   className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none resize-none"
-                  style={{ borderColor: '#E5E5EA' }} />
+                  style={{ borderColor: '#E6ECF1' }} />
               </div>
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
                   className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 text-gray-600"
-                  style={{ borderColor: '#E5E5EA' }}>إلغاء</button>
+                  style={{ borderColor: '#E6ECF1' }}>إلغاء</button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+                  style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                   {saving ? 'جارٍ الحفظ…' : editingId ? 'حفظ التغييرات' : 'إضافة المؤثر'}
                 </button>
@@ -430,7 +430,7 @@ export default function AffiliatesPage() {
       {showCouponModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: '#E5E5EA' }}>
+            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: '#E6ECF1' }}>
               <h2 className="font-bold text-lg" style={{ color: BRAND.primary }}>إنشاء كود خصم للمؤثر</h2>
               <button onClick={() => setShowCouponModal(null)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400">
                 <X className="h-5 w-5" />
@@ -444,7 +444,7 @@ export default function AffiliatesPage() {
                     onChange={e => setCouponForm(f => ({ ...f, code: e.target.value.toUpperCase() }))} required
                     placeholder="مثال: AHMED20"
                     className="flex-1 px-3 py-2.5 rounded-xl border text-sm font-bold uppercase tracking-widest focus:outline-none"
-                    style={{ borderColor: '#E5E5EA', color: BRAND.primary, fontFamily: 'monospace' }} />
+                    style={{ borderColor: '#E6ECF1', color: BRAND.primary, fontFamily: 'monospace' }} />
                   <button type="button"
                     onClick={() => {
                       const aff = affiliates.find(a => a.id === showCouponModal);
@@ -461,7 +461,7 @@ export default function AffiliatesPage() {
                 <input value={couponForm.label} onChange={e => setCouponForm(f => ({ ...f, label: e.target.value }))}
                   placeholder="مثال: كود خصم أحمد"
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                  style={{ borderColor: '#E5E5EA' }} />
+                  style={{ borderColor: '#E6ECF1' }} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -469,7 +469,7 @@ export default function AffiliatesPage() {
                   <select value={couponForm.discountType}
                     onChange={e => setCouponForm(f => ({ ...f, discountType: e.target.value as 'percent' | 'fixed' }))}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none bg-white"
-                    style={{ borderColor: '#E5E5EA' }}>
+                    style={{ borderColor: '#E6ECF1' }}>
                     <option value="percent">نسبة %</option>
                     <option value="fixed">مبلغ ثابت</option>
                   </select>
@@ -481,7 +481,7 @@ export default function AffiliatesPage() {
                   <input type="number" min="0" step="0.01" value={couponForm.discountValue}
                     onChange={e => setCouponForm(f => ({ ...f, discountValue: e.target.value }))} required
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -491,23 +491,23 @@ export default function AffiliatesPage() {
                     onChange={e => setCouponForm(f => ({ ...f, minOrderAmount: e.target.value }))}
                     placeholder="اختياري"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>تاريخ الانتهاء</label>
                   <input type="date" value={couponForm.expiresAt}
                     onChange={e => setCouponForm(f => ({ ...f, expiresAt: e.target.value }))}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none"
-                    style={{ borderColor: '#E5E5EA' }} />
+                    style={{ borderColor: '#E6ECF1' }} />
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowCouponModal(null)}
                   className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 text-gray-600"
-                  style={{ borderColor: '#E5E5EA' }}>إلغاء</button>
+                  style={{ borderColor: '#E6ECF1' }}>إلغاء</button>
                 <button type="submit" disabled={savingCoupon}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+                  style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
                   {savingCoupon && <Loader2 className="h-4 w-4 animate-spin" />}
                   {savingCoupon ? 'جارٍ الإنشاء…' : 'إنشاء الكود'}
                 </button>

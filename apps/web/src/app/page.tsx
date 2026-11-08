@@ -17,28 +17,28 @@ import {
 
 /* ─── Design tokens ─── */
 const C = {
-  bg:        '#F2F2F7',
+  bg:        '#F6F8FA',
   white:     '#ffffff',
-  dark:      '#1C1C1E',
-  text2:     '#8E8E93',
-  border:    '#E5E5EA',
-  accent:    '#007AFF',
+  dark:      '#0B3550',
+  text2:     '#7A8A99',
+  border:    '#E6ECF1',
+  accent:    '#20A9F4',
   accentDark:'#B54D74',
-  soft:      '#E5F1FF',
-  blue:      '#007AFF',
-  blueHover: '#0062CC',
-  blueLight: '#E5F1FF',
-  blueMid:   '#5AC8FA',
-  green:     '#34C759',
-  greenDark: '#248A3D',
-  greenLight:'#E3F9E8',
-  butter:    '#FFF4E0',
+  soft:      '#E3F5FE',
+  blue:      '#20A9F4',
+  blueHover: '#0E8AD6',
+  blueLight: '#E3F5FE',
+  blueMid:   '#7CCFFA',
+  green:     '#20A9F4',
+  greenDark: '#0E8AD6',
+  greenLight:'#E3F5FE',
+  butter:    '#FEF3E2',
   gold:      '#C99937',
-  lavender:  '#E5E5EA',
-  palePink:  '#FFF9DB',
+  lavender:  '#E6ECF1',
+  palePink:  '#FEF9E3',
   cyan:      '#C7F2FF',
-  success:   '#34C759',
-  note:      '#8E8E93',
+  success:   '#22B07D',
+  note:      '#7A8A99',
 };
 
 /* ─── Shared styles ─── */
@@ -68,7 +68,7 @@ function BrowserFrame({ children, accentBg = C.blue, bodyBg = C.dark, style = {}
   children: React.ReactNode; accentBg?: string; bodyBg?: string; style?: React.CSSProperties;
 }) {
   return (
-    <div style={{ borderRadius: 10, overflow: 'hidden', background: C.white, boxShadow: '0 12px 28px rgba(47,46,75,0.14)', ...style }}>
+    <div style={{ borderRadius: 10, overflow: 'hidden', background: C.white, boxShadow: '0 12px 28px rgba(11,53,80,0.14)', ...style }}>
       <div style={{ background: accentBg, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
         {['#fff9', '#fff7', '#fff5'].map((c, i) => (
           <div key={i} style={{ width: 9, height: 9, borderRadius: '50%', background: c }} />
@@ -157,9 +157,9 @@ function LPHeader() {
 /* Main hero visual: the dashboard mockup, with the 3D icons floating around it (not scattered across the whole hero) */
 function HeroVisual() {
   const orbiters: { src: string; top: string; left?: string; right?: string; size: number; dur: number; delay: number; rotate: number }[] = [
-    { src: '/images/floating/cart.png', top: '-10%', left: '-12%', size: 96, dur: 7, delay: 0, rotate: -8 },
-    { src: '/images/floating/card.png', top: '68%', left: '-14%', size: 120, dur: 8.5, delay: 1.2, rotate: 6 },
-    { src: '/images/floating/dress.png', top: '-8%', right: '-10%', size: 92, dur: 6.5, delay: 0.6, rotate: 7 },
+    { src: '/icons/clay/cart.webp', top: '-10%', left: '-12%', size: 96, dur: 7, delay: 0, rotate: -8 },
+    { src: '/icons/clay/credit-card.webp', top: '68%', left: '-14%', size: 120, dur: 8.5, delay: 1.2, rotate: 6 },
+    { src: '/icons/clay/shopping-bag.webp', top: '-8%', right: '-10%', size: 92, dur: 6.5, delay: 0.6, rotate: 7 },
   ];
 
   return (
@@ -174,9 +174,9 @@ function HeroVisual() {
         {/* Main visual: dashboard mockup */}
         <div style={{
           position: 'absolute', inset: 0, borderRadius: 18, overflow: 'hidden',
-          border: '5px solid #fff', boxShadow: '0 30px 60px rgba(47,46,75,0.28)',
+          border: '5px solid #fff', boxShadow: '0 30px 60px rgba(11,53,80,0.18)',
         }}>
-          <Image src="/images/floating/dashboard.png" alt="لوحة تحكم بازار" fill sizes="560px" style={{ objectFit: 'cover' }} priority />
+          <Image src="/images/dashboard-preview.webp" alt="لوحة تحكم بازار" fill sizes="900px" style={{ objectFit: 'cover', objectPosition: 'right top' }} priority />
         </div>
 
         {/* Orbiting icons */}
@@ -187,7 +187,7 @@ function HeroVisual() {
             animation: `lp-float ${it.dur}s ease-in-out ${it.delay}s infinite`,
             '--r': `${it.rotate}deg`,
             transform: `rotate(${it.rotate}deg)`,
-            filter: 'drop-shadow(0 14px 24px rgba(47,46,75,0.22))',
+            filter: 'drop-shadow(0 14px 24px rgba(11,53,80,0.22))',
           } as React.CSSProperties;
           return (
             <div key={i} style={style}>
@@ -260,9 +260,9 @@ function LPHero() {
 /* ─── Value props (3 cards) ─── */
 function LPValueProps() {
   const cards = [
-    { bg: C.lavender, img: '/images/floating/dashboard.png', h: 'متجر جاهز بشكلك', p: 'اختر قالبك، بدّل الألوان، والشعار، وانشر. بلا سطر برمجة واحد.', frame: true },
-    { bg: C.palePink, img: '/images/floating/card.png', h: 'دفع نقدي بالدينار', p: 'الدفع عند الاستلام بالدينار — بلا حساب خارجي ولا بطاقة ائتمانية.', frame: false },
-    { bg: C.cyan, img: '/images/floating/todo.png', h: 'طلبات وشحن مرتبة', p: 'كل طلب بحالته، معلوماته مرتبة، جاهز للتسليم داخل العراق.', frame: false },
+    { bg: C.lavender, img: '/images/dashboard-preview.webp', h: 'متجر جاهز بشكلك', p: 'اختر قالبك، بدّل الألوان، والشعار، وانشر. بلا سطر برمجة واحد.', frame: true },
+    { bg: C.palePink, img: '/icons/clay/credit-card.webp', h: 'دفع نقدي بالدينار', p: 'الدفع عند الاستلام بالدينار — بلا حساب خارجي ولا بطاقة ائتمانية.', frame: false },
+    { bg: C.cyan, img: '/icons/clay/documents.webp', h: 'طلبات وشحن مرتبة', p: 'كل طلب بحالته، معلوماته مرتبة، جاهز للتسليم داخل العراق.', frame: false },
   ];
   return (
     <section style={{ ...SEC, paddingTop: 24 }}>
@@ -271,11 +271,11 @@ function LPValueProps() {
           <div key={i} style={{ background: c.bg, borderRadius: 10, padding: '20px 26px 28px' }}>
             <div style={{ height: 210, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
               <div style={{
-                position: 'relative', width: c.frame ? '92%' : '62%', height: c.frame ? '86%' : '86%',
+                position: 'relative', width: c.frame ? '92%' : 150, height: c.frame ? '86%' : 150,
                 borderRadius: c.frame ? 12 : 0, overflow: c.frame ? 'hidden' : 'visible',
                 border: c.frame ? '4px solid #fff' : 'none',
-                boxShadow: c.frame ? '0 14px 30px rgba(47,46,75,0.22)' : 'none',
-                filter: c.frame ? undefined : 'drop-shadow(0 14px 20px rgba(47,46,75,0.16))',
+                boxShadow: c.frame ? '0 14px 30px rgba(11,53,80,0.22)' : 'none',
+                filter: c.frame ? undefined : 'drop-shadow(0 14px 20px rgba(11,53,80,0.16))',
               }}>
                 <Image src={c.img} alt={c.h} fill sizes="260px" style={{ objectFit: c.frame ? 'cover' : 'contain' }} />
               </div>
@@ -297,12 +297,12 @@ function BuilderMockup() {
       {/* Base browser frame — real product screenshot */}
       <BrowserFrame accentBg={C.accent} bodyBg={C.white}>
         <div style={{ position: 'relative', width: '100%', height: 240, borderRadius: 8, overflow: 'hidden' }}>
-          <Image src="/images/floating/dashboard.png" alt="لوحة بناء متجر بازار" fill sizes="(max-width: 768px) 100vw, 700px" style={{ objectFit: 'cover' }} />
+          <Image src="/images/dashboard-preview.webp" alt="لوحة بناء متجر بازار" fill sizes="(max-width: 768px) 100vw, 700px" style={{ objectFit: 'cover', objectPosition: 'right top' }} />
         </div>
       </BrowserFrame>
 
       {/* Floating: page-elements order panel (top-right) */}
-      <div style={{ position: 'absolute', top: -18, right: '4%', width: '46%', background: '#fff', borderRadius: 10, padding: '12px 14px', boxShadow: '0 14px 30px rgba(47,46,75,0.16)' }}>
+      <div style={{ position: 'absolute', top: -18, right: '4%', width: '46%', background: '#fff', borderRadius: 10, padding: '12px 14px', boxShadow: '0 14px 30px rgba(11,53,80,0.16)' }}>
         <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 11.5, color: C.dark }}>ترتيب الصفحة الرئيسية</span>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
           {['بانر عريض', 'منتجات مميزة', 'مميزات المتجر'].map((l, i) => (
@@ -315,7 +315,7 @@ function BuilderMockup() {
       </div>
 
       {/* Floating: color swatches (right side, lower) */}
-      <div style={{ position: 'absolute', bottom: '18%', right: '-4%', background: '#fff', borderRadius: 10, padding: 10, boxShadow: '0 14px 30px rgba(47,46,75,0.16)' }}>
+      <div style={{ position: 'absolute', bottom: '18%', right: '-4%', background: '#fff', borderRadius: 10, padding: 10, boxShadow: '0 14px 30px rgba(11,53,80,0.16)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
           {[C.gold, C.blue, C.blueMid, C.green, C.accent, C.blueLight].map((clr, i) => (
             <span key={i} style={{ width: 16, height: 16, borderRadius: '50%', background: clr, border: i === 1 ? `2px solid ${C.dark}` : 'none' }} />
@@ -324,7 +324,7 @@ function BuilderMockup() {
       </div>
 
       {/* Floating: template card (bottom-left) */}
-      <div style={{ position: 'absolute', bottom: -20, left: '2%', width: '38%', background: '#fff', borderRadius: 10, padding: 8, boxShadow: '0 14px 30px rgba(47,46,75,0.16)' }}>
+      <div style={{ position: 'absolute', bottom: -20, left: '2%', width: '38%', background: '#fff', borderRadius: 10, padding: 8, boxShadow: '0 14px 30px rgba(11,53,80,0.16)' }}>
         <div style={{ height: 46, borderRadius: 8, background: C.soft, marginBottom: 6 }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 600, fontSize: 9.5, color: C.dark }}>القالب الحالي</span>
@@ -386,12 +386,12 @@ function LPWork() {
 function LPFeatures() {
   const [ref, visible] = useScrollReveal(0.1);
   const items: { img: string; color: string; micro: string; h: string; p: string; detail: string }[] = [
-    { img: '/images/floating/settings.png', color: C.blue, micro: 'كل تعديل صغير يحتاج برمجة.', h: 'تعديل كل شيء بنفسك', p: 'الأسعار، الصور، الأسماء، الشكل — تتغيّر بضغطة وتنشر فوراً.', detail: 'لوحة تحكم عربية بسيطة، بدون الحاجة لمبرمج في أي تعديل.' },
-    { img: '/images/floating/card.png', color: C.gold, micro: 'المنصات الأجنبية تحسب بالدولار.', h: 'بالدينار، وبلا عمولة', p: 'أسعارك بالدينار العراقي، ولا نأخذ نسبة من أي بيعة تبيعها.', detail: 'ما تدفع إلا اشتراك الخطة — أرباح كل بيعة كاملة لك.' },
-    { img: '/images/floating/dashboard.png', color: C.greenDark, micro: 'الموقع يتأخر أسابيع.', h: 'متجرك يفتح اليوم', p: 'تسجّل، تختار قالبك، تضيف منتجاتك، وتنشر — بجلسة واحدة.', detail: 'قالب جاهز لكل نوع متجر، جاهز للنشر بنفس اليوم.' },
-    { img: '/images/floating/cash.png', color: C.blue, micro: 'الدفع الإلكتروني معقّد على الزبون.', h: 'الدفع عند الاستلام', p: 'عميلك يطلب ويدفع كاش عند التسليم — الطريقة اللي يثق بها معظمهم.', detail: 'تقدر تفعّل الدفع الإلكتروني لاحقاً إذا حبيت، اختياري بالكامل.' },
-    { img: '/images/floating/chart.png', color: C.blue, micro: 'لا تعرف شو يحدث في متجرك.', h: 'تقارير بالعربي', p: 'طلبات اليوم، أكثر منتج مبيعاً، ومن أين يأتي زوارك — بصفحة واحدة.', detail: 'أرقام واضحة تساعدك تقرر شنو تسوّق له أكثر.' },
-    { img: '/images/floating/pencil.png', color: C.greenDark, micro: 'كتابة وصف كل منتج ممله.', h: 'وصف جاهز بالعربي', p: 'اكتب اسم المنتج، وبازار يقترح وصفاً عربياً تعدّله كيفما تريد.', detail: 'يوفّر عليك وقت كتابة الوصف لكل منتج جديد.' },
+    { img: '/icons/clay/settings.webp', color: C.blue, micro: 'كل تعديل صغير يحتاج برمجة.', h: 'تعديل كل شيء بنفسك', p: 'الأسعار، الصور، الأسماء، الشكل — تتغيّر بضغطة وتنشر فوراً.', detail: 'لوحة تحكم عربية بسيطة، بدون الحاجة لمبرمج في أي تعديل.' },
+    { img: '/icons/clay/credit-card.webp', color: C.gold, micro: 'المنصات الأجنبية تحسب بالدولار.', h: 'بالدينار، وبلا عمولة', p: 'أسعارك بالدينار العراقي، ولا نأخذ نسبة من أي بيعة تبيعها.', detail: 'ما تدفع إلا اشتراك الخطة — أرباح كل بيعة كاملة لك.' },
+    { img: '/images/dashboard-preview.webp', color: C.greenDark, micro: 'الموقع يتأخر أسابيع.', h: 'متجرك يفتح اليوم', p: 'تسجّل، تختار قالبك، تضيف منتجاتك، وتنشر — بجلسة واحدة.', detail: 'قالب جاهز لكل نوع متجر، جاهز للنشر بنفس اليوم.' },
+    { img: '/icons/clay/wallet.webp', color: C.blue, micro: 'الدفع الإلكتروني معقّد على الزبون.', h: 'الدفع عند الاستلام', p: 'عميلك يطلب ويدفع كاش عند التسليم — الطريقة اللي يثق بها معظمهم.', detail: 'تقدر تفعّل الدفع الإلكتروني لاحقاً إذا حبيت، اختياري بالكامل.' },
+    { img: '/icons/clay/growth.webp', color: C.blue, micro: 'لا تعرف شو يحدث في متجرك.', h: 'تقارير بالعربي', p: 'طلبات اليوم، أكثر منتج مبيعاً، ومن أين يأتي زوارك — بصفحة واحدة.', detail: 'أرقام واضحة تساعدك تقرر شنو تسوّق له أكثر.' },
+    { img: '/icons/clay/pencil.webp', color: C.greenDark, micro: 'كتابة وصف كل منتج ممله.', h: 'وصف جاهز بالعربي', p: 'اكتب اسم المنتج، وبازار يقترح وصفاً عربياً تعدّله كيفما تريد.', detail: 'يوفّر عليك وقت كتابة الوصف لكل منتج جديد.' },
   ];
 
   return (
@@ -402,7 +402,7 @@ function LPFeatures() {
           {items.map((it, i) => (
             <div key={i} style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all .4s', transitionDelay: `${i * 70}ms` }}>
               <div style={{ position: 'relative', width: 72, height: 72, margin: '6px 0 10px' }}>
-                <Image src={it.img} alt={it.h} fill sizes="72px" style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 14px rgba(47,46,75,0.2))' }} />
+                <Image src={it.img} alt={it.h} fill sizes="72px" style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 14px rgba(11,53,80,0.2))' }} />
               </div>
               <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 16, lineHeight: 1.8, margin: 0, color: it.color }}>{it.micro}</p>
               <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 24, lineHeight: 1.45, margin: '4px 0 0', color: C.dark }}>{it.h}</h3>
@@ -461,11 +461,11 @@ function LPTemplates() {
 function LPMarketing() {
   const [ref, visible] = useScrollReveal(0.1);
   const items: { img: string; color: string; h: string; p: string; detail: string }[] = [
-    { img: '/images/floating/coupon.png', color: C.blue, h: 'كوبونات وأكواد خصم', p: 'أنشئ كوبوناً بنسبة أو مبلغ، أو ضع حداً أدنى للطلب، أو حصره على منتج معيّن.', detail: 'مثال: خصم 20% لأول طلب، أو توصيل مجاني فوق مبلغ معيّن.' },
-    { img: '/images/floating/message.png', color: C.greenDark, h: 'رسائل SMS للزبائن', p: 'تنبيه الشحنة، شكر بعد الاستلام، عروض المناسبات — تصل مباشرة إلى جوالاتهم.', detail: 'رسالة تلقائية فور تغيّر حالة الطلب، بلا أي إعداد يدوي.' },
-    { img: '/images/floating/share.png', color: C.blue, h: 'شارك على السوشيال', p: 'رابط منتج بضغطة إلى إنستغرام وواتساب وفيسبوك — بصورة وسعر جاهزين.', detail: 'مشاركة جاهزة بدون تصميم يدوي أو أخذ سكرين شوت.' },
-    { img: '/images/floating/gift.png', color: C.accent, h: 'برنامج إحالات', p: 'زبونك يجلب زبوناً جديداً، يربح خصماً — ومتجرك يكبر بنفسه.', detail: 'رابط إحالة خاص لكل زبون، تتبعه من لوحتك مباشرة.' },
-    { img: '/images/floating/search.png', color: C.greenDark, h: 'تحسين ظهور جوجل', p: 'عناوين ووصف تلقائي بالعربي — يظهر متجرك حين يبحث زبون عن منتجك.', detail: 'بدون أي إعداد تقني أو خبرة SEO مسبقة.' },
+    { img: '/icons/clay/coupon.webp', color: C.blue, h: 'كوبونات وأكواد خصم', p: 'أنشئ كوبوناً بنسبة أو مبلغ، أو ضع حداً أدنى للطلب، أو حصره على منتج معيّن.', detail: 'مثال: خصم 20% لأول طلب، أو توصيل مجاني فوق مبلغ معيّن.' },
+    { img: '/icons/clay/chat.webp', color: C.greenDark, h: 'رسائل SMS للزبائن', p: 'تنبيه الشحنة، شكر بعد الاستلام، عروض المناسبات — تصل مباشرة إلى جوالاتهم.', detail: 'رسالة تلقائية فور تغيّر حالة الطلب، بلا أي إعداد يدوي.' },
+    { img: '/icons/clay/share.webp', color: C.blue, h: 'شارك على السوشيال', p: 'رابط منتج بضغطة إلى إنستغرام وواتساب وفيسبوك — بصورة وسعر جاهزين.', detail: 'مشاركة جاهزة بدون تصميم يدوي أو أخذ سكرين شوت.' },
+    { img: '/icons/clay/gift.webp', color: C.accent, h: 'برنامج إحالات', p: 'زبونك يجلب زبوناً جديداً، يربح خصماً — ومتجرك يكبر بنفسه.', detail: 'رابط إحالة خاص لكل زبون، تتبعه من لوحتك مباشرة.' },
+    { img: '/icons/clay/search.webp', color: C.greenDark, h: 'تحسين ظهور جوجل', p: 'عناوين ووصف تلقائي بالعربي — يظهر متجرك حين يبحث زبون عن منتجك.', detail: 'بدون أي إعداد تقني أو خبرة SEO مسبقة.' },
   ];
 
   return (
@@ -477,7 +477,7 @@ function LPMarketing() {
           {items.map((it, i) => (
             <div key={i} style={{ background: C.white, borderRadius: 10, padding: '22px 24px 24px', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all .4s', transitionDelay: `${i * 70}ms` }}>
               <div style={{ position: 'relative', width: 64, height: 64 }}>
-                <Image src={it.img} alt={it.h} fill sizes="64px" style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 14px rgba(47,46,75,0.18))' }} />
+                <Image src={it.img} alt={it.h} fill sizes="64px" style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 14px rgba(11,53,80,0.18))' }} />
               </div>
               <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 20, lineHeight: 1.4, margin: '14px 0 0', color: C.dark }}>{it.h}</h3>
               <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 14.5, lineHeight: 1.9, margin: '6px 0 0', color: C.text2 }}>{it.p}</p>
@@ -498,17 +498,17 @@ function LPMarketing() {
 function LPWhatsNew() {
   const [ref, visible] = useScrollReveal(0.1);
   const items: { img?: string; Icon?: LucideIcon; iconBg?: string; color: string; h: string; p: string }[] = [
-    { img: '/images/floating/draftorder.png', color: C.blue, h: 'طلبات يدوية', p: 'سجّل طلباً وصلك عبر واتساب أو انستغرام مباشرة من لوحتك.' },
-    { img: '/images/floating/abandoned.png', color: C.accent, h: 'تنبيه السلال المتروكة', p: 'اعرف زبائن تركوا سلتهم قبل الدفع وتواصل معهم بضغطة.' },
-    { img: '/images/floating/printerfax.png', color: C.greenDark, h: 'طباعة فاتورة وبوليصة شحن', p: 'اطبع فاتورة الطلب أو بوليصة الشحن جاهزة من صفحة الطلبات.' },
-    { img: '/images/floating/filters.png', color: C.blue, h: 'فلاتر تصفح أقوى', p: 'زبونك يفلتر حسب السعر والتقييم ليصل لمنتجه بسرعة.' },
-    { img: '/images/floating/sizeguide.png', color: C.gold, h: 'دليل المقاسات', p: 'أضف جدول مقاسات لكل منتج أو للمتجر كله دفعة واحدة.' },
-    { img: '/images/floating/countdown.png', color: C.accent, h: 'عدّاد تنازلي للعروض', p: 'حدّد نهاية العرض ويظهر عدّاد تنازلي في صفحة المنتج.' },
-    { img: '/images/floating/recent.png', color: C.greenDark, h: 'شوهد مؤخراً', p: 'يعرض لزبونك آخر المنتجات التي تصفحها ليرجع لها بسهولة.' },
-    { img: '/images/floating/badge.png', color: C.blue, h: 'شارات تلقائية', p: '"الأكثر مبيعاً" و"وصل حديثاً" تظهر تلقائياً بلا أي إعداد.' },
-    { img: '/images/floating/loyaltystars.png', color: C.gold, h: 'نقاط ولاء للزبائن', p: 'زبونك يجمع نقاطاً مع كل عملية شراء ويستبدلها بخصومات.' },
-    { img: '/images/floating/compare.png', color: C.greenDark, h: 'مقارنة أداء المتاجر', p: 'للوحة السوبر أدمن: قارن الإيرادات والنمو بين كل المتاجر.' },
-    { img: '/images/floating/chatnotify.png', color: C.accent, h: 'إشعار فوري بالرسائل', p: 'تنبيه لحظي لك وللزبون عند وصول رسالة جديدة في المحادثة.' },
+    { img: '/icons/clay/documents.webp', color: C.blue, h: 'طلبات يدوية', p: 'سجّل طلباً وصلك عبر واتساب أو انستغرام مباشرة من لوحتك.' },
+    { img: '/icons/clay/basket.webp', color: C.accent, h: 'تنبيه السلال المتروكة', p: 'اعرف زبائن تركوا سلتهم قبل الدفع وتواصل معهم بضغطة.' },
+    { img: '/icons/clay/printer.webp', color: C.greenDark, h: 'طباعة فاتورة وبوليصة شحن', p: 'اطبع فاتورة الطلب أو بوليصة الشحن جاهزة من صفحة الطلبات.' },
+    { img: '/icons/clay/apps.webp', color: C.blue, h: 'فلاتر تصفح أقوى', p: 'زبونك يفلتر حسب السعر والتقييم ليصل لمنتجه بسرعة.' },
+    { img: '/icons/clay/tag.webp', color: C.gold, h: 'دليل المقاسات', p: 'أضف جدول مقاسات لكل منتج أو للمتجر كله دفعة واحدة.' },
+    { img: '/icons/clay/calendar.webp', color: C.accent, h: 'عدّاد تنازلي للعروض', p: 'حدّد نهاية العرض ويظهر عدّاد تنازلي في صفحة المنتج.' },
+    { img: '/icons/clay/refresh.webp', color: C.greenDark, h: 'شوهد مؤخراً', p: 'يعرض لزبونك آخر المنتجات التي تصفحها ليرجع لها بسهولة.' },
+    { img: '/icons/clay/badge-check.webp', color: C.blue, h: 'شارات تلقائية', p: '"الأكثر مبيعاً" و"وصل حديثاً" تظهر تلقائياً بلا أي إعداد.' },
+    { img: '/icons/clay/star.webp', color: C.gold, h: 'نقاط ولاء للزبائن', p: 'زبونك يجمع نقاطاً مع كل عملية شراء ويستبدلها بخصومات.' },
+    { img: '/icons/clay/pie-chart.webp', color: C.greenDark, h: 'مقارنة أداء المتاجر', p: 'للوحة السوبر أدمن: قارن الإيرادات والنمو بين كل المتاجر.' },
+    { img: '/icons/clay/bell.webp', color: C.accent, h: 'إشعار فوري بالرسائل', p: 'تنبيه لحظي لك وللزبون عند وصول رسالة جديدة في المحادثة.' },
   ];
 
   return (
@@ -525,7 +525,7 @@ function LPWhatsNew() {
             <div key={i} style={{ background: C.white, borderRadius: 10, padding: '18px 18px 20px', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all .4s', transitionDelay: `${i * 50}ms` }}>
               {it.img ? (
                 <div style={{ position: 'relative', width: 52, height: 52 }}>
-                  <Image src={it.img} alt={it.h} fill sizes="52px" style={{ objectFit: 'contain', filter: 'drop-shadow(0 6px 10px rgba(47,46,75,0.16))' }} />
+                  <Image src={it.img} alt={it.h} fill sizes="52px" style={{ objectFit: 'contain', filter: 'drop-shadow(0 6px 10px rgba(11,53,80,0.16))' }} />
                 </div>
               ) : it.Icon ? (
                 <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: 12, background: it.iconBg }}>
@@ -622,10 +622,10 @@ function ComparisonIllustration() {
       <rect x="46" y="170" width="88" height="26" rx="10" fill={C.blue} />
       <text x="90" y="188" textAnchor="middle" fontFamily="Tajawal,sans-serif" fontSize="12" fontWeight="700" fill="#fff">د.ع</text>
       <rect x="180" y="60" width="140" height="150" rx="10" fill={C.butter} />
-      <path d="M180 76 L250 30 L320 76" fill="#C7C7CC" />
+      <path d="M180 76 L250 30 L320 76" fill="#C2CDD8" />
       <rect x="206" y="106" width="88" height="24" rx="10" fill="#fff" />
-      <rect x="206" y="140" width="88" height="10" rx="10" fill="#C7C7CC" />
-      <rect x="206" y="156" width="60" height="8" rx="10" fill="#C7C7CC" opacity="0.5" />
+      <rect x="206" y="140" width="88" height="10" rx="10" fill="#C2CDD8" />
+      <rect x="206" y="156" width="60" height="8" rx="10" fill="#C2CDD8" opacity="0.5" />
       <rect x="206" y="170" width="88" height="26" rx="10" fill="#9494AC" />
       <text x="250" y="188" textAnchor="middle" fontFamily="Tajawal,sans-serif" fontSize="11" fontWeight="700" fill="#fff">USD</text>
       <circle cx="170" cy="26" r="18" fill="#F5CE6A" />
@@ -647,7 +647,7 @@ function ShopifyCompareCell({ value }: { value: CompareCellVal }) {
   if (value === false) return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'rgba(220,38,38,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <X size={13} color="#FF3B30" strokeWidth={3} />
+        <X size={13} color="#F04F4F" strokeWidth={3} />
       </div>
     </div>
   );
@@ -744,7 +744,7 @@ function SnapchatGlyph({ size = 24, color = '#000' }: { size?: number; color?: s
 function LPIntegrations() {
   const [ref, visible] = useScrollReveal(0.1);
   const apps: { label: string; bg: string; render: () => React.ReactNode }[] = [
-    { label: 'إنستغرام', bg: 'linear-gradient(135deg, #833AB4, #007AFF, #F5A623)', render: () => <Instagram size={24} color="#fff" strokeWidth={1.8} /> },
+    { label: 'إنستغرام', bg: 'linear-gradient(135deg, #833AB4, #20A9F4, #F5A623)', render: () => <Instagram size={24} color="#fff" strokeWidth={1.8} /> },
     { label: 'واتساب', bg: '#25D366', render: () => <WhatsAppGlyph size={24} /> },
     { label: 'فيسبوك', bg: '#1877F2', render: () => <Facebook size={22} color="#fff" strokeWidth={2} /> },
     { label: 'سناب شات', bg: '#FFFC00', render: () => <SnapchatGlyph size={24} /> },
@@ -817,7 +817,7 @@ function LPBlog() {
                 opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)',
                 transition: 'all .4s', transitionDelay: `${i * 80}ms`,
               }}>
-              <div style={{ aspectRatio: '16 / 9', background: '#F2F2F7', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ aspectRatio: '16 / 9', background: '#F6F8FA', position: 'relative', overflow: 'hidden' }}>
                 {a.coverImage
                   ? <Image src={a.coverImage} alt={a.title} fill sizes="(max-width: 768px) 100vw, 380px" className="object-cover" />
                   : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Newspaper size={28} color={C.border} /></div>}
@@ -938,8 +938,8 @@ function CompareCell({ value, colColor }: { value: CompareCellValue; colColor: s
       </div>
     </div>
   );
-  if (value === false) return <div style={{ display: 'flex', justifyContent: 'center' }}><Minus size={14} color="#D1D1D6" /></div>;
-  if (value === null) return <div style={{ display: 'flex', justifyContent: 'center' }}><X size={14} color="#FF3B30" /></div>;
+  if (value === false) return <div style={{ display: 'flex', justifyContent: 'center' }}><Minus size={14} color="#D3DCE4" /></div>;
+  if (value === null) return <div style={{ display: 'flex', justifyContent: 'center' }}><X size={14} color="#F04F4F" /></div>;
   return <div style={{ textAlign: 'center', fontSize: 12, fontWeight: 600, color: colColor }}>{value}</div>;
 }
 

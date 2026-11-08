@@ -93,13 +93,13 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-lg mx-auto px-4 py-16 text-center">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-          <CheckCircle className="h-14 w-14 mx-auto mb-4" style={{ color: '#34C759' }} />
+          <CheckCircle className="h-14 w-14 mx-auto mb-4" style={{ color: '#22B07D' }} />
           <h1 className="text-2xl font-bold text-gray-800 mb-2">تم تأكيد طلبك!</h1>
           <p className="text-gray-500 mb-6 text-sm">رقم الطلب: <span className="font-mono font-semibold">{result.orderId}</span></p>
           <div className="space-y-2 text-sm mb-6 bg-gray-50 rounded-xl p-4">
             <div className="flex justify-between">
               <span className="text-gray-500">المبلغ المدفوع</span>
-              <span className="font-bold" style={{ color: '#007AFF' }}>{formatCurrency(result.totalAmount)}</span>
+              <span className="font-bold" style={{ color: '#20A9F4' }}>{formatCurrency(result.totalAmount)}</span>
             </div>
             {result.discountAmount > 0 && (
               <div className="flex justify-between text-green-600">
@@ -117,7 +117,7 @@ export default function CheckoutPage() {
           <div className="flex gap-3">
             <Link href={`/marketplace/orders/${result.orderId}`}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white text-center transition"
-              style={{ background: '#1C1C1E' }}>
+              style={{ background: '#0B3550' }}>
               تتبع الطلب
             </Link>
             <Link href="/marketplace"
@@ -204,12 +204,12 @@ export default function CheckoutPage() {
             {loyaltyAccount && loyaltyAccount.totalPoints > 0 && (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <Gift className="h-4 w-4" style={{ color: '#007AFF' }} />
+                  <Gift className="h-4 w-4" style={{ color: '#20A9F4' }} />
                   <h2 className="text-sm font-bold text-gray-700">نقاط الولاء</h2>
                 </div>
                 <div className="flex items-center justify-between text-sm mb-3">
                   <span className="text-gray-500">نقاطك المتاحة</span>
-                  <span className="font-bold" style={{ color: '#1C1C1E' }}>{loyaltyAccount.totalPoints} نقطة</span>
+                  <span className="font-bold" style={{ color: '#0B3550' }}>{loyaltyAccount.totalPoints} نقطة</span>
                 </div>
                 <div className="flex items-center justify-between text-sm mb-3">
                   <span className="text-gray-500">قيمة الخصم</span>
@@ -225,7 +225,7 @@ export default function CheckoutPage() {
                     onChange={e => setPointsToRedeem(Number(e.target.value))}
                     className="flex-1"
                   />
-                  <span className="text-sm font-semibold w-20 text-left" style={{ color: '#007AFF' }}>
+                  <span className="text-sm font-semibold w-20 text-left" style={{ color: '#20A9F4' }}>
                     {pointsToRedeem} نقطة
                   </span>
                 </div>
@@ -242,7 +242,7 @@ export default function CheckoutPage() {
           <div>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-20">
               <h2 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
-                <ShoppingCart className="h-4 w-4" style={{ color: '#007AFF' }} />
+                <ShoppingCart className="h-4 w-4" style={{ color: '#20A9F4' }} />
                 ملخص الطلب
               </h2>
               <div className="space-y-2 mb-4 max-h-48 overflow-y-auto">
@@ -273,7 +273,7 @@ export default function CheckoutPage() {
                 )}
                 <div className="flex justify-between font-bold text-base pt-1">
                   <span>المبلغ النهائي</span>
-                  <span style={{ color: '#007AFF' }}>{formatCurrency(grandTotal)}</span>
+                  <span style={{ color: '#20A9F4' }}>{formatCurrency(grandTotal)}</span>
                 </div>
               </div>
 
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
 
               <button type="submit" disabled={loading}
                 className="mt-4 w-full py-3 rounded-xl font-semibold text-white text-sm transition disabled:opacity-60"
-                style={{ background: '#007AFF' }}>
+                style={{ background: '#20A9F4' }}>
                 {loading ? 'جاري المعالجة...' : 'تأكيد الطلب'}
               </button>
             </div>

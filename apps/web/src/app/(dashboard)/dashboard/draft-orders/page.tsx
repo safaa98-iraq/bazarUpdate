@@ -8,7 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 import type { OrderPublic, ProductPublic } from '@storebuilder/types';
 
-const BRAND = { primary: '#1C1C1E', accent: '#007AFF', border: '#E5F1FF', bg: '#F2F2F7' };
+const BRAND = { primary: '#0B3550', accent: '#20A9F4', border: '#E3F5FE', bg: '#F6F8FA' };
 
 interface DraftLine { productId: string; quantity: number }
 
@@ -95,12 +95,12 @@ export default function DraftOrdersPage() {
     <div className="p-6 max-w-4xl" dir="rtl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="ios-large-title text-gray-900">طلبات يدوية</h1>
+          <h1 className="bz-large-title text-gray-900">طلبات يدوية</h1>
           <p className="text-sm text-gray-500 mt-0.5">سجّل طلباً وصلك عبر واتساب أو انستغرام، وانشره لاحقاً لينقص من المخزون</p>
         </div>
         <button onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
-          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+          style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
           <Plus className="h-4 w-4" /> طلب جديد
         </button>
       </div>
@@ -206,7 +206,7 @@ export default function DraftOrdersPage() {
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-                  style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+                  style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />} حفظ كمسودة
                 </button>
               </div>

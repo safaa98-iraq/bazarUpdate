@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Plus, Pencil, Trash2, Newspaper, Eye, EyeOff, Loader2 } from 'lucide-react';
 import type { ArticlePublic } from '@storebuilder/types';
 
-const B = { p: '#1C1C1E', a: '#007AFF', border: '#E5E5EA', bg: '#F2F2F7' };
+const B = { p: '#0B3550', a: '#20A9F4', border: '#E6ECF1', bg: '#F6F8FA' };
 
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
@@ -39,7 +39,7 @@ export default function AdminArticlesPage() {
 
   if (loading) return (
     <div className="p-8 space-y-4">
-      {[1, 2, 3].map(i => <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: '#E5E5EA' }} />)}
+      {[1, 2, 3].map(i => <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: '#E6ECF1' }} />)}
     </div>
   );
 
@@ -50,7 +50,7 @@ export default function AdminArticlesPage() {
           <Newspaper className="h-5 w-5" style={{ color: B.a }} />
         </div>
         <div>
-          <h1 className="ios-large-title text-gray-900">المقالات</h1>
+          <h1 className="bz-large-title text-gray-900">المقالات</h1>
           <p className="text-sm text-gray-500">محتوى تحسين محركات البحث (SEO) يظهر على الصفحة الرئيسية</p>
         </div>
         <Link href="/admin/articles/new" className="mr-auto flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
@@ -70,7 +70,7 @@ export default function AdminArticlesPage() {
           {articles.map((a, i) => (
             <div key={a.id} className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: i < articles.length - 1 ? `1px solid ${B.border}` : 'none' }}>
               <span className="flex items-center justify-center w-7 h-7 rounded-lg flex-shrink-0"
-                style={{ background: a.isPublished ? '#E3F9E8' : '#FFF4E0', color: a.isPublished ? '#248A3D' : '#C93400' }} title={a.isPublished ? 'منشور' : 'مسودة'}>
+                style={{ background: a.isPublished ? '#E2F7EE' : '#FEF3E2', color: a.isPublished ? '#17845C' : '#B45309' }} title={a.isPublished ? 'منشور' : 'مسودة'}>
                 {a.isPublished ? <Eye size={13} /> : <EyeOff size={13} />}
               </span>
               <div className="flex-1 min-w-0">
@@ -81,7 +81,7 @@ export default function AdminArticlesPage() {
                 <Pencil className="h-3.5 w-3.5" style={{ color: B.p }} />
               </Link>
               <button onClick={() => handleDelete(a)} disabled={deletingId === a.id}
-                className="w-8 h-8 rounded-xl flex items-center justify-center border transition hover:bg-red-50" style={{ borderColor: '#FFA59F' }}>
+                className="w-8 h-8 rounded-xl flex items-center justify-center border transition hover:bg-red-50" style={{ borderColor: '#F5A3A3' }}>
                 {deletingId === a.id ? <Loader2 className="h-3.5 w-3.5 animate-spin text-red-400" /> : <Trash2 className="h-3.5 w-3.5 text-red-400" />}
               </button>
             </div>

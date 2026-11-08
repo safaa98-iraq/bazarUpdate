@@ -1,21 +1,21 @@
 // Railway deploy marker: pricing and retired-feature cleanup.
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { Tajawal } from 'next/font/google';
+import { IBM_Plex_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { FreePlanTextNormalizer } from '@/components/FreePlanTextNormalizer';
 
-const tajawal = Tajawal({
+// One family for the whole UI (headings + body). globals.css maps the legacy
+// --font-tajawal / --font-cairo variables onto --font-arabic.
+const arabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic', 'latin'],
-  weight: ['300', '400', '500', '700', '800'],
-  // Fallback only: globals.css builds --font-tajawal / --font-cairo as the Apple
-  // system stack (SF Pro + SF Arabic) and falls back to Tajawal off Apple devices.
-  variable: '--font-arabic-fallback',
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-arabic',
   display: 'swap',
 });
 
-export const viewport: Viewport = { themeColor: '#F2F2F7', viewportFit: 'cover' };
+export const viewport: Viewport = { themeColor: '#F6F8FA', viewportFit: 'cover' };
 
 export const metadata: Metadata = {
   title: {
@@ -151,13 +151,13 @@ const cleanupScript = `
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${tajawal.variable} font-[family-name:var(--font-tajawal)]`}>
+      <body className={`${arabic.variable} font-[family-name:var(--font-tajawal)]`}>
         <Script id="remove-retired-feature-copy" strategy="beforeInteractive">
           {cleanupScript}
         </Script>
         {children}
         <FreePlanTextNormalizer />
-        <Toaster position="top-center" toastOptions={{ style: { borderRadius: 14, background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)', border: '0.5px solid rgba(0,0,0,0.06)', boxShadow: '0 10px 30px rgba(0,0,0,0.12)' } }} />
+        <Toaster position="top-center" richColors toastOptions={{ style: { borderRadius: 14, fontFamily: 'var(--font-arabic)' } }} />
       </body>
     </html>
   );

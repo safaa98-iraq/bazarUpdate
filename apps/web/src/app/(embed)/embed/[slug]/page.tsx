@@ -45,7 +45,7 @@ export default function EmbedPage() {
   const accent = theme === 'dark' ? '#818cf8' : '#6366f1';
   const bg = theme === 'dark' ? '#111827' : '#ffffff';
   const text = theme === 'dark' ? '#f9fafb' : '#111827';
-  const subtle = theme === 'dark' ? '#3A3A3C' : '#F2F2F7';
+  const subtle = theme === 'dark' ? '#32506A' : '#F6F8FA';
 
   const cartTotal = cart.reduce((s, i) => s + i.product.price * i.quantity, 0);
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
@@ -125,9 +125,9 @@ export default function EmbedPage() {
   // ── SUCCESS ────────────────────────────────────────────────────────────────
   if (view === 'success') return (
     <div style={{ ...panelStyle, alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 32 }}>
-      <CheckCircle size={64} style={{ color: '#34C759', marginBottom: 20 }} />
+      <CheckCircle size={64} style={{ color: '#22B07D', marginBottom: 20 }} />
       <h2 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700 }}>تم استلام طلبك!</h2>
-      <p style={{ margin: '0 0 8px', color: theme === 'dark' ? '#AEAEB2' : '#6C6C70', fontSize: 14 }}>رقم الطلب</p>
+      <p style={{ margin: '0 0 8px', color: theme === 'dark' ? '#A3B0BC' : '#5B6B7B', fontSize: 14 }}>رقم الطلب</p>
       <p style={{ margin: '0 0 24px', fontWeight: 700, fontSize: 16, color: accent }}>{orderId}</p>
       <button style={{ ...primaryBtn, width: 'auto', padding: '10px 28px' }} onClick={close}>إغلاق</button>
     </div>
@@ -151,7 +151,7 @@ export default function EmbedPage() {
           { label: 'الرمز البريدي', key: 'postalCode', type: 'text', placeholder: '12345' },
         ].map(({ label, key, type, placeholder }) => (
           <div key={key}>
-            <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4, color: theme === 'dark' ? '#AEAEB2' : '#6C6C70' }}>{label}</label>
+            <label style={{ fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4, color: theme === 'dark' ? '#A3B0BC' : '#5B6B7B' }}>{label}</label>
             <input
               required type={type} placeholder={placeholder}
               value={form[key as keyof ShippingForm]}
@@ -160,7 +160,7 @@ export default function EmbedPage() {
             />
           </div>
         ))}
-        {error && <p style={{ color: '#FF3B30', fontSize: 13, margin: 0 }}>{error}</p>}
+        {error && <p style={{ color: '#F04F4F', fontSize: 13, margin: 0 }}>{error}</p>}
         <div style={{ marginTop: 8, padding: '12px 0', borderTop: `1px solid ${subtle}` }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 16, marginBottom: 16 }}>
             <span>الإجمالي</span><span style={{ color: accent }}>{fmt(cartTotal)}</span>
@@ -183,7 +183,7 @@ export default function EmbedPage() {
       </div>
       <div style={body}>
         {cart.length === 0 ? (
-          <div style={{ textAlign: 'center', paddingTop: 60, color: theme === 'dark' ? '#6C6C70' : '#AEAEB2' }}>
+          <div style={{ textAlign: 'center', paddingTop: 60, color: theme === 'dark' ? '#5B6B7B' : '#A3B0BC' }}>
             <ShoppingCart size={48} style={{ marginBottom: 12, opacity: 0.4 }} />
             <p>السلة فارغة</p>
             <button style={{ ...primaryBtn, marginTop: 16, width: 'auto', padding: '10px 24px' }} onClick={() => setView('products')}>تصفح المنتجات</button>
@@ -192,10 +192,10 @@ export default function EmbedPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {cart.map(item => (
               <div key={item.product.id} style={{ display: 'flex', gap: 12, padding: 12, borderRadius: 10, background: subtle }}>
-                <div style={{ width: 64, height: 64, borderRadius: 10, background: '#E5E5EA', overflow: 'hidden', flexShrink: 0 }}>
+                <div style={{ width: 64, height: 64, borderRadius: 10, background: '#E6ECF1', overflow: 'hidden', flexShrink: 0 }}>
                   {item.product.images[0]
                     ? <img src={item.product.images[0]} alt={item.product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Package size={24} color="#AEAEB2" /></div>}
+                    : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Package size={24} color="#A3B0BC" /></div>}
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ margin: '0 0 4px', fontWeight: 600, fontSize: 14 }}>{item.product.name}</p>
@@ -204,7 +204,7 @@ export default function EmbedPage() {
                     <button onClick={() => updateQty(item.product.id, -1)} style={{ ...iconBtn, width: 28, height: 28, borderRadius: 10, background: bg }}><Minus size={12} /></button>
                     <span style={{ fontWeight: 600, minWidth: 20, textAlign: 'center' }}>{item.quantity}</span>
                     <button onClick={() => updateQty(item.product.id, 1)} style={{ ...iconBtn, width: 28, height: 28, borderRadius: 10, background: bg }}><Plus size={12} /></button>
-                    <button onClick={() => removeFromCart(item.product.id)} style={{ ...iconBtn, marginRight: 'auto', color: '#FF3B30' }}><Trash2 size={14} /></button>
+                    <button onClick={() => removeFromCart(item.product.id)} style={{ ...iconBtn, marginRight: 'auto', color: '#F04F4F' }}><Trash2 size={14} /></button>
                   </div>
                 </div>
               </div>
@@ -238,19 +238,19 @@ export default function EmbedPage() {
         <div style={{ aspectRatio: '1/1', borderRadius: 10, background: subtle, overflow: 'hidden', marginBottom: 16 }}>
           {selected.images[0]
             ? <img src={selected.images[0]} alt={selected.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#AEAEB2' }}><Package size={64} /></div>}
+            : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A3B0BC' }}><Package size={64} /></div>}
         </div>
         {selected.category && <p style={{ margin: '0 0 6px', fontSize: 12, color: accent, fontWeight: 600 }}>{selected.category.name}</p>}
         <h2 style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 700 }}>{selected.name}</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
           <span style={{ fontSize: 22, fontWeight: 800, color: accent }}>{fmt(selected.price)}</span>
-          {selected.comparePrice && <span style={{ fontSize: 16, textDecoration: 'line-through', color: '#AEAEB2' }}>{fmt(selected.comparePrice)}</span>}
-          {selected.comparePrice && <span style={{ background: '#FFF3F2', color: '#FF3B30', fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 6 }}>
+          {selected.comparePrice && <span style={{ fontSize: 16, textDecoration: 'line-through', color: '#A3B0BC' }}>{fmt(selected.comparePrice)}</span>}
+          {selected.comparePrice && <span style={{ background: '#FEF5F5', color: '#F04F4F', fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 6 }}>
             {Math.round((1 - selected.price / selected.comparePrice) * 100)}% خصم
           </span>}
         </div>
-        {selected.description && <p style={{ margin: '0 0 16px', fontSize: 14, lineHeight: 1.7, color: theme === 'dark' ? '#D1D1D6' : '#48484A' }}>{selected.description}</p>}
-        <p style={{ margin: '0 0 16px', fontSize: 13, color: selected.stock > 0 ? '#34C759' : '#FF3B30' }}>
+        {selected.description && <p style={{ margin: '0 0 16px', fontSize: 14, lineHeight: 1.7, color: theme === 'dark' ? '#D3DCE4' : '#3E5163' }}>{selected.description}</p>}
+        <p style={{ margin: '0 0 16px', fontSize: 13, color: selected.stock > 0 ? '#22B07D' : '#F04F4F' }}>
           {selected.stock > 0 ? `✓ متوفر (${selected.stock} قطعة)` : '✗ غير متوفر'}
         </p>
         {selected.stock > 0 && (
@@ -283,22 +283,22 @@ export default function EmbedPage() {
       </div>
       <div style={{ ...body, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, alignContent: 'start' }}>
         {products.length === 0 ? (
-          <div style={{ gridColumn: '1/-1', textAlign: 'center', paddingTop: 60, color: '#AEAEB2' }}>
+          <div style={{ gridColumn: '1/-1', textAlign: 'center', paddingTop: 60, color: '#A3B0BC' }}>
             <Package size={48} style={{ marginBottom: 12, opacity: 0.4 }} />
             <p>لا توجد منتجات</p>
           </div>
         ) : products.map(p => (
           <button key={p.id} onClick={() => openProduct(p)}
             style={{ background: subtle, border: 'none', borderRadius: 10, overflow: 'hidden', cursor: 'pointer', textAlign: 'right', padding: 0, color: text }}>
-            <div style={{ aspectRatio: '1/1', background: theme === 'dark' ? '#1f2937' : '#E5E5EA', overflow: 'hidden' }}>
+            <div style={{ aspectRatio: '1/1', background: theme === 'dark' ? '#1f2937' : '#E6ECF1', overflow: 'hidden' }}>
               {p.images[0]
                 ? <img src={p.images[0]} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Package size={32} color="#AEAEB2" /></div>}
+                : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Package size={32} color="#A3B0BC" /></div>}
             </div>
             <div style={{ padding: '10px 10px 12px' }}>
               <p style={{ margin: '0 0 4px', fontSize: 13, fontWeight: 600, lineHeight: 1.3 }}>{p.name}</p>
               <p style={{ margin: 0, fontSize: 14, fontWeight: 800, color: accent }}>{fmt(p.price)}</p>
-              {p.comparePrice && <p style={{ margin: 0, fontSize: 11, textDecoration: 'line-through', color: '#AEAEB2' }}>{fmt(p.comparePrice)}</p>}
+              {p.comparePrice && <p style={{ margin: 0, fontSize: 11, textDecoration: 'line-through', color: '#A3B0BC' }}>{fmt(p.comparePrice)}</p>}
             </div>
           </button>
         ))}

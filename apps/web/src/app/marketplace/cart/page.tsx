@@ -26,7 +26,7 @@ export default function CartPage() {
         <p className="text-gray-400 mb-6">لم تضف أي منتجات بعد</p>
         <Link href="/marketplace"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white text-sm"
-          style={{ background: '#1C1C1E' }}>
+          style={{ background: '#0B3550' }}>
           <ArrowLeft className="h-4 w-4" />
           تصفح المنتجات
         </Link>
@@ -37,7 +37,7 @@ export default function CartPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <ShoppingCart className="h-5 w-5" style={{ color: '#007AFF' }} />
+        <ShoppingCart className="h-5 w-5" style={{ color: '#20A9F4' }} />
         سلة التسوق
         <span className="text-sm font-normal text-gray-400">({items.length} منتج)</span>
       </h1>
@@ -46,9 +46,9 @@ export default function CartPage() {
         {Array.from(byStore.entries()).map(([storeId, { storeName, items: storeItems }]) => (
           <div key={storeId} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             {/* Store header */}
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2" style={{ background: '#F2F2F7' }}>
-              <Store className="h-4 w-4" style={{ color: '#1C1C1E' }} />
-              <span className="text-sm font-semibold" style={{ color: '#1C1C1E' }}>{storeName}</span>
+            <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2" style={{ background: '#F6F8FA' }}>
+              <Store className="h-4 w-4" style={{ color: '#0B3550' }} />
+              <span className="text-sm font-semibold" style={{ color: '#0B3550' }}>{storeName}</span>
             </div>
 
             {/* Items */}
@@ -67,7 +67,7 @@ export default function CartPage() {
                     <Link href={`/marketplace/product/${item.listingId}`} className="text-sm font-semibold text-gray-800 hover:underline line-clamp-2">
                       {item.name}
                     </Link>
-                    <p className="text-sm font-bold mt-0.5" style={{ color: '#007AFF' }}>
+                    <p className="text-sm font-bold mt-0.5" style={{ color: '#20A9F4' }}>
                       {formatCurrency(item.price * item.quantity)}
                     </p>
                     <p className="text-xs text-gray-400">{formatCurrency(item.price)} × {item.quantity} {item.unitLabel}</p>
@@ -109,11 +109,11 @@ export default function CartPage() {
         </div>
         <div className="flex justify-between font-bold mb-5">
           <span>الإجمالي</span>
-          <span style={{ color: '#007AFF' }}>{formatCurrency(total())}</span>
+          <span style={{ color: '#20A9F4' }}>{formatCurrency(total())}</span>
         </div>
         <Link href="/marketplace/checkout"
           className="block w-full text-center py-3 rounded-xl font-semibold text-white text-sm transition hover:opacity-90"
-          style={{ background: '#007AFF' }}>
+          style={{ background: '#20A9F4' }}>
           إتمام الشراء
         </Link>
         <Link href="/marketplace"

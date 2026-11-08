@@ -114,15 +114,15 @@ export default function AdminMarketplacePage() {
   return (
     <div style={{ padding: 32 }} dir="rtl">
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1C1C1E', margin: 0 }}>إدارة السوق الموحد</h1>
-        <p style={{ fontSize: 13, color: '#6C6C70', margin: '4px 0 0' }}>مراجعة الطلبات والمنتجات وضبط العمولات</p>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#0B3550', margin: 0 }}>إدارة السوق الموحد</h1>
+        <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>مراجعة الطلبات والمنتجات وضبط العمولات</p>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 24, borderBottom: '1px solid #E5E5EA' }}>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 24, borderBottom: '1px solid #E6ECF1' }}>
         {TABS.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 16px', fontSize: 13, fontWeight: 600, border: 'none', borderBottom: tab === t.key ? '2px solid #007AFF' : '2px solid transparent', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit', marginBottom: -1, color: tab === t.key ? '#007AFF' : '#6C6C70', transition: 'all .15s' }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 16px', fontSize: 13, fontWeight: 600, border: 'none', borderBottom: tab === t.key ? '2px solid #20A9F4' : '2px solid transparent', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit', marginBottom: -1, color: tab === t.key ? '#20A9F4' : '#5B6B7B', transition: 'all .15s' }}>
             <t.icon size={15} />
             {t.label}
           </button>
@@ -138,7 +138,7 @@ export default function AdminMarketplacePage() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                   appStatus === s ? 'text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
-                style={appStatus === s ? { background: '#1C1C1E' } : {}}>
+                style={appStatus === s ? { background: '#0B3550' } : {}}>
                 {s === 'pending' ? 'قيد الانتظار' : s === 'approved' ? 'مُعتمد' : 'مرفوض'}
               </button>
             ))}
@@ -159,7 +159,7 @@ export default function AdminMarketplacePage() {
                 <div key={app.id} className="bg-white rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 p-4">
                   {app.logo
                     ? <img src={app.logo} className="h-12 w-12 rounded-xl object-cover" alt="" />
-                    : <div className="h-12 w-12 rounded-xl flex items-center justify-center" style={{ background: '#1C1C1E' }}>
+                    : <div className="h-12 w-12 rounded-xl flex items-center justify-center" style={{ background: '#0B3550' }}>
                         <Store className="h-6 w-6 text-white" />
                       </div>
                   }
@@ -302,7 +302,7 @@ export default function AdminMarketplacePage() {
             </div>
             <button onClick={saveCommission}
               className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-              style={{ background: '#1C1C1E' }}>
+              style={{ background: '#0B3550' }}>
               حفظ
             </button>
           </div>
@@ -343,7 +343,7 @@ export default function AdminMarketplacePage() {
                       <div className="absolute bottom-full mb-1 hidden group-hover:block text-xs bg-gray-800 text-white px-2 py-1 rounded whitespace-nowrap z-10">
                         {formatCurrency(d.revenue)}
                       </div>
-                      <div className="w-full rounded-t transition-all" style={{ height: `${Math.max(2, pct)}%`, background: '#1C1C1E' }} />
+                      <div className="w-full rounded-t transition-all" style={{ height: `${Math.max(2, pct)}%`, background: '#0B3550' }} />
                     </div>
                   );
                 })}

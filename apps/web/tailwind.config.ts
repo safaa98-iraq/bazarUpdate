@@ -10,15 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // iOS neutral grays (systemGray…systemGray6) instead of Tailwind's blue-tinted grays
+        // Cool, slightly blue-tinted neutrals
         gray: {
-          50: '#F9F9FB', 100: '#F2F2F7', 200: '#E5E5EA', 300: '#D1D1D6', 400: '#AEAEB2',
-          500: '#8E8E93', 600: '#636366', 700: '#48484A', 800: '#2C2C2E', 900: '#1C1C1E', 950: '#000000',
+          50: '#F6F8FA', 100: '#EEF2F6', 200: '#E6ECF1', 300: '#D3DCE4', 400: '#A3B0BC',
+          500: '#7A8A99', 600: '#5B6B7B', 700: '#3E5163', 800: '#1E3A52', 900: '#0B3550', 950: '#061F31',
         },
-        ios: {
-          blue: '#007AFF', indigo: '#5856D6', purple: '#AF52DE', pink: '#FF2D55', red: '#FF3B30',
-          orange: '#FF9500', yellow: '#FFCC00', green: '#34C759', teal: '#30B0C7', gray: '#8E8E93',
-          bg: '#F2F2F7', fill: 'rgba(120,120,128,0.12)', label: '#1C1C1E', separator: 'rgba(60,60,67,0.18)',
+        bz: {
+          brand: '#20A9F4', 'brand-600': '#0E8AD6', 'brand-300': '#7CCFFA', 'brand-100': '#E3F5FE', 'brand-50': '#F1FAFF',
+          ink: '#0B3550', 'ink-2': '#32506A', bg: '#F6F8FA', line: '#E6ECF1', muted: '#7A8A99',
+          green: '#22B07D', red: '#F04F4F', orange: '#F59E0B', yellow: '#FBBF24', purple: '#8B5CF6',
+          // legacy names still used by some components
+          blue: '#20A9F4', fill: '#EEF2F6', label: '#0B3550', separator: '#E6ECF1', gray: '#7A8A99',
+          indigo: '#6366F1', pink: '#EC4899', teal: '#14B8A6',
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -59,7 +62,7 @@ const config: Config = {
         md: '10px',
         lg: 'var(--radius)',
         xl: '14px',
-        '2xl': '18px',
+        '2xl': '16px',
         '3xl': '24px',
       },
       fontFamily: {

@@ -24,7 +24,7 @@ const STATUS_LABELS: Record<string, string> = {
   pending: 'قيد الانتظار', processing: 'قيد التجهيز', shipped: 'تم الشحن', delivered: 'تم التوصيل', cancelled: 'ملغي',
 };
 const STATUS_COLORS: Record<string, string> = {
-  pending: '#FF9500', processing: '#007AFF', shipped: '#8b5cf6', delivered: '#34C759', cancelled: '#FF3B30',
+  pending: '#F59E0B', processing: '#20A9F4', shipped: '#8b5cf6', delivered: '#22B07D', cancelled: '#F04F4F',
 };
 
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
@@ -55,7 +55,7 @@ export default function OrderTrackingPage() {
     <div className="max-w-2xl mx-auto px-4 py-20 text-center text-gray-400">
       <Package className="h-12 w-12 mx-auto mb-3 opacity-30" />
       <p>الطلب غير موجود</p>
-      <Link href="/marketplace" className="mt-4 inline-block text-sm underline" style={{ color: '#007AFF' }}>
+      <Link href="/marketplace" className="mt-4 inline-block text-sm underline" style={{ color: '#20A9F4' }}>
         العودة للسوق
       </Link>
     </div>
@@ -99,7 +99,7 @@ export default function OrderTrackingPage() {
 
         <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between text-sm">
           <span className="text-gray-500">المبلغ الإجمالي</span>
-          <span className="font-bold" style={{ color: '#007AFF' }}>{formatCurrency(order.totalAmount)}</span>
+          <span className="font-bold" style={{ color: '#20A9F4' }}>{formatCurrency(order.totalAmount)}</span>
         </div>
         {order.discountAmount > 0 && (
           <div className="flex justify-between text-sm text-green-600">
@@ -118,16 +118,16 @@ export default function OrderTrackingPage() {
       <div className="space-y-3">
         {order.subOrders?.map(sub => (
           <div key={sub.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100" style={{ background: '#F2F2F7' }}>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100" style={{ background: '#F6F8FA' }}>
               <div className="flex items-center gap-2">
                 {sub.storeLogo
                   ? <img src={sub.storeLogo} className="h-6 w-6 rounded object-cover" alt="" />
-                  : <Store className="h-4 w-4" style={{ color: '#1C1C1E' }} />
+                  : <Store className="h-4 w-4" style={{ color: '#0B3550' }} />
                 }
-                <span className="text-sm font-semibold" style={{ color: '#1C1C1E' }}>{sub.storeName}</span>
+                <span className="text-sm font-semibold" style={{ color: '#0B3550' }}>{sub.storeName}</span>
               </div>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium`}
-                style={{ color: STATUS_COLORS[sub.status] ?? '#AEAEB2', background: (STATUS_COLORS[sub.status] ?? '#AEAEB2') + '15' }}>
+                style={{ color: STATUS_COLORS[sub.status] ?? '#A3B0BC', background: (STATUS_COLORS[sub.status] ?? '#A3B0BC') + '15' }}>
                 {STATUS_LABELS[sub.status] ?? sub.status}
               </span>
             </div>

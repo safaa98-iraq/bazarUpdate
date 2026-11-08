@@ -1,4 +1,5 @@
 'use client';
+import { ClayIcon } from '@/components/ui/ClayIcon';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -15,15 +16,15 @@ import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 const C = {
-  bg:     '#F2F2F7',
-  p:      '#1C1C1E',
-  a:      '#007AFF',
-  blue:      '#007AFF',
-  blueHover: '#0062CC',
-  soft:   '#E5F1FF',
-  text:   '#1C1C1E',
-  muted:  '#8E8E93',
-  border: '#E5F1FF',
+  bg:     '#F6F8FA',
+  p:      '#0B3550',
+  a:      '#20A9F4',
+  blue:      '#20A9F4',
+  blueHover: '#0E8AD6',
+  soft:   '#E3F5FE',
+  text:   '#0B3550',
+  muted:  '#7A8A99',
+  border: '#E3F5FE',
 };
 
 const schema = z.object({
@@ -63,10 +64,16 @@ export default function LoginPage() {
       {/* Left decorative panel (desktop) */}
       <div style={{ display: 'none', flex: '0 0 42%', background: C.p, position: 'relative', overflow: 'hidden' }} className="login-left-panel">
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 48, textAlign: 'center' }}>
-          <div style={{ width: 72, height: 72, borderRadius: 10, background: 'rgba(255,255,255,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
-            <ShoppingBag size={32} color="#fff" strokeWidth={1.5} />
+          <span className="bz-blob" style={{ width: 320, height: 320, background: '#20A9F4', top: -80, left: -80 }} />
+          <span className="bz-blob" style={{ width: 240, height: 240, background: '#7CCFFA', bottom: -90, right: -60, opacity: .3 }} />
+          <div style={{ position: 'relative', width: 220, height: 200, marginBottom: 20 }}>
+            <ClayIcon name="storefront" size={150} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-2xl" />
+            <ClayIcon name="cart" size={64} className="absolute -left-2 top-2 -rotate-12" />
+            <ClayIcon name="shopping-bag" size={58} className="absolute -right-1 top-0 rotate-12" />
+            <ClayIcon name="credit-card" size={60} className="absolute -right-4 bottom-0 rotate-6" />
+            <ClayIcon name="gift" size={52} className="absolute -left-4 bottom-2 -rotate-6" />
           </div>
-          <h2 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 32, color: '#fff', marginBottom: 16, lineHeight: 1.3 }}>مرحباً بعودتك</h2>
+          <h2 style={{ position: 'relative', fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 32, color: '#fff', marginBottom: 16, lineHeight: 1.3 }}>مرحباً بعودتك</h2>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,.55)', lineHeight: 1.8, maxWidth: 280 }}>
             سجّل الدخول لإدارة متجرك ومتابعة طلباتك وعملائك
           </p>
@@ -103,7 +110,7 @@ export default function LoginPage() {
             {/* Divider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0 16px' }}>
               <div style={{ flex: 1, height: 1, background: C.border }} />
-              <span style={{ fontSize: 12, color: '#8E8E93', whiteSpace: 'nowrap' }}>أو بالبريد الإلكتروني</span>
+              <span style={{ fontSize: 12, color: '#7A8A99', whiteSpace: 'nowrap' }}>أو بالبريد الإلكتروني</span>
               <div style={{ flex: 1, height: 1, background: C.border }} />
             </div>
 
@@ -124,7 +131,7 @@ export default function LoginPage() {
                   />
                   <Mail size={16} color={C.muted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 </div>
-                {errors.email && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 6 }}>{errors.email.message}</p>}
+                {errors.email && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{errors.email.message}</p>}
               </div>
 
               {/* Password */}
@@ -144,7 +151,7 @@ export default function LoginPage() {
                     {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                {errors.password && <p style={{ color: '#FF3B30', fontSize: 12, marginTop: 6 }}>{errors.password.message}</p>}
+                {errors.password && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{errors.password.message}</p>}
               </div>
 
               {/* Remember Me */}

@@ -10,7 +10,7 @@ import { useAuthStore } from '@/lib/stores/auth.store';
 import { PlanGate } from '@/components/ui/PlanGate';
 import { canUseFeature, Plan } from '@/lib/plan-features';
 
-const BRAND = { primary: '#1C1C1E', secondary: '#3A3A3C', accent: '#007AFF', light: '#E5F1FF' };
+const BRAND = { primary: '#0B3550', secondary: '#32506A', accent: '#20A9F4', light: '#E3F5FE' };
 
 interface Conversation {
   id: string;
@@ -173,11 +173,11 @@ export default function ChatPage() {
   );
 
   return (
-    <div className="flex h-screen overflow-hidden" dir="rtl" style={{ background: '#F2F2F7' }}>
+    <div className="flex h-screen overflow-hidden" dir="rtl" style={{ background: '#F6F8FA' }}>
       {/* Sidebar — conversation list */}
-      <div className="w-80 flex flex-col border-l" style={{ background: 'white', borderColor: '#E5E5EA' }}>
+      <div className="w-80 flex flex-col border-l" style={{ background: 'white', borderColor: '#E6ECF1' }}>
         {/* Header */}
-        <div className="px-4 py-4 border-b" style={{ borderColor: '#E5E5EA' }}>
+        <div className="px-4 py-4 border-b" style={{ borderColor: '#E6ECF1' }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5" style={{ color: BRAND.accent }} />
@@ -198,7 +198,7 @@ export default function ChatPage() {
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ابحث في المحادثات…"
               className="w-full pr-9 pl-3 py-2 rounded-xl border text-xs focus:outline-none"
-              style={{ borderColor: '#E5E5EA' }} />
+              style={{ borderColor: '#E6ECF1' }} />
           </div>
         </div>
 
@@ -215,12 +215,12 @@ export default function ChatPage() {
             <button key={conv.id} onClick={() => selectConversation(conv)}
               className="w-full text-right px-4 py-3 border-b hover:bg-purple-50/50 transition"
               style={{
-                borderColor: '#F2F2F7',
-                background: selectedConv?.id === conv.id ? '#F2F2F7' : undefined,
+                borderColor: '#F6F8FA',
+                background: selectedConv?.id === conv.id ? '#F6F8FA' : undefined,
               }}>
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                  style={{ background: conv.status === 'closed' ? '#AEAEB2' : BRAND.accent }}>
+                  style={{ background: conv.status === 'closed' ? '#A3B0BC' : BRAND.accent }}>
                   {conv.customerName.charAt(0)}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -251,7 +251,7 @@ export default function ChatPage() {
       {selectedConv ? (
         <div className="flex-1 flex flex-col">
           {/* Chat header */}
-          <div className="flex items-center justify-between px-6 py-4 bg-white border-b" style={{ borderColor: '#E5E5EA' }}>
+          <div className="flex items-center justify-between px-6 py-4 bg-white border-b" style={{ borderColor: '#E6ECF1' }}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
                 style={{ background: BRAND.accent }}>
@@ -266,7 +266,7 @@ export default function ChatPage() {
               {selectedConv.status === 'open' && (
                 <button onClick={() => closeConversation(selectedConv.id)}
                   className="px-3 py-1.5 text-xs font-bold rounded-xl border transition hover:bg-gray-50"
-                  style={{ borderColor: '#E5E5EA', color: '#6C6C70' }}>
+                  style={{ borderColor: '#E6ECF1', color: '#5B6B7B' }}>
                   إغلاق المحادثة
                 </button>
               )}
@@ -285,7 +285,7 @@ export default function ChatPage() {
                     ? 'text-white rounded-tr-none'
                     : 'bg-white border rounded-tl-none'
                 }`}
-                  style={msg.senderType === 'agent' ? { background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` } : { borderColor: '#E5E5EA', color: '#3A3A3C' }}>
+                  style={msg.senderType === 'agent' ? { background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` } : { borderColor: '#E6ECF1', color: '#32506A' }}>
                   {msg.senderType === 'customer' && (
                     <p className="text-xs font-semibold mb-1" style={{ color: BRAND.accent }}>{msg.senderName}</p>
                   )}
@@ -318,21 +318,21 @@ export default function ChatPage() {
           {/* Input */}
           <form onSubmit={sendMessage}
             className="flex items-center gap-3 px-6 py-4 bg-white border-t"
-            style={{ borderColor: '#E5E5EA' }}>
+            style={{ borderColor: '#E6ECF1' }}>
             <input value={msgText} onChange={e => setMsgText(e.target.value)}
               placeholder={selectedConv.status === 'closed' ? 'المحادثة مغلقة' : 'اكتب رسالة…'}
               disabled={selectedConv.status === 'closed' || sending}
               className="flex-1 px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 disabled:bg-gray-50 disabled:text-gray-400"
-              style={{ borderColor: '#E5E5EA' }} />
+              style={{ borderColor: '#E6ECF1' }} />
             <button type="submit" disabled={!msgText.trim() || selectedConv.status === 'closed' || sending}
               className="p-2.5 rounded-xl text-white transition disabled:opacity-40 flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+              style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
               {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </button>
           </form>
         </div>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center" style={{ color: '#AEAEB2' }}>
+        <div className="flex-1 flex flex-col items-center justify-center" style={{ color: '#A3B0BC' }}>
           <MessageCircle className="h-16 w-16 mb-4 opacity-20" />
           <p className="text-lg font-medium">اختر محادثة للبدء</p>
           <p className="text-sm mt-1">ستظهر رسائل العملاء هنا</p>
@@ -341,14 +341,14 @@ export default function ChatPage() {
 
       {/* Customer info sidebar — right side (inside selected conv) */}
       {selectedConv && (
-        <div className="w-64 flex flex-col bg-white border-r" style={{ borderColor: '#E5E5EA' }}>
-          <div className="px-4 py-4 border-b" style={{ borderColor: '#E5E5EA' }}>
+        <div className="w-64 flex flex-col bg-white border-r" style={{ borderColor: '#E6ECF1' }}>
+          <div className="px-4 py-4 border-b" style={{ borderColor: '#E6ECF1' }}>
             <h3 className="text-sm font-bold" style={{ color: BRAND.primary }}>بيانات العميل</h3>
           </div>
           <div className="p-4 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg font-bold"
-                style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+                style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
                 {selectedConv.customerName.charAt(0)}
               </div>
               <div>
@@ -376,7 +376,7 @@ export default function ChatPage() {
               <span>منذ {selectedConv.updatedAt ? formatDate(selectedConv.updatedAt) : '—'}</span>
             </div>
 
-            <div className="pt-2 border-t" style={{ borderColor: '#F2F2F7' }}>
+            <div className="pt-2 border-t" style={{ borderColor: '#F6F8FA' }}>
               <p className="text-xs font-semibold mb-2" style={{ color: BRAND.secondary }}>الردود السريعة</p>
               {quickReplies.length === 0 ? (
                 <p className="text-xs text-gray-400">لا توجد ردود سريعة</p>
@@ -401,7 +401,7 @@ export default function ChatPage() {
       {showQuickReplies && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#E5E5EA' }}>
+            <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#E6ECF1' }}>
               <h2 className="font-bold" style={{ color: BRAND.primary }}>الردود السريعة</h2>
               <button onClick={() => setShowQuickReplies(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400">
                 <X className="h-4 w-4" />
@@ -409,7 +409,7 @@ export default function ChatPage() {
             </div>
             <div className="p-5 space-y-3 max-h-80 overflow-y-auto">
               {quickReplies.map(qr => (
-                <div key={qr.id} className="flex items-start gap-3 p-3 rounded-xl" style={{ background: '#F2F2F7' }}>
+                <div key={qr.id} className="flex items-start gap-3 p-3 rounded-xl" style={{ background: '#F6F8FA' }}>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold" style={{ color: BRAND.primary }}>{qr.title}</p>
                     <p className="text-xs text-gray-500 mt-0.5 truncate">{qr.body}</p>
@@ -422,22 +422,22 @@ export default function ChatPage() {
               {quickReplies.length === 0 && <p className="text-sm text-gray-400 text-center py-4">لا توجد ردود سريعة بعد</p>}
             </div>
             {showNewQR ? (
-              <div className="p-5 border-t space-y-3" style={{ borderColor: '#E5E5EA' }}>
+              <div className="p-5 border-t space-y-3" style={{ borderColor: '#E6ECF1' }}>
                 <input value={newQR.title} onChange={e => setNewQR(n => ({ ...n, title: e.target.value }))}
                   placeholder="عنوان الرد (مثال: شكراً لتواصلك)"
                   className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
-                  style={{ borderColor: '#E5E5EA' }} />
+                  style={{ borderColor: '#E6ECF1' }} />
                 <textarea value={newQR.body} onChange={e => setNewQR(n => ({ ...n, body: e.target.value }))}
                   placeholder="نص الرد…" rows={3}
                   className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none resize-none"
-                  style={{ borderColor: '#E5E5EA' }} />
+                  style={{ borderColor: '#E6ECF1' }} />
                 <div className="flex gap-2">
-                  <button onClick={() => setShowNewQR(false)} className="flex-1 py-2 border rounded-xl text-sm text-gray-500 hover:bg-gray-50" style={{ borderColor: '#E5E5EA' }}>إلغاء</button>
-                  <button onClick={addQuickReply} className="flex-1 py-2 rounded-xl text-sm font-bold text-white" style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>حفظ</button>
+                  <button onClick={() => setShowNewQR(false)} className="flex-1 py-2 border rounded-xl text-sm text-gray-500 hover:bg-gray-50" style={{ borderColor: '#E6ECF1' }}>إلغاء</button>
+                  <button onClick={addQuickReply} className="flex-1 py-2 rounded-xl text-sm font-bold text-white" style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>حفظ</button>
                 </div>
               </div>
             ) : (
-              <div className="p-5 border-t" style={{ borderColor: '#E5E5EA' }}>
+              <div className="p-5 border-t" style={{ borderColor: '#E6ECF1' }}>
                 <button onClick={() => setShowNewQR(true)}
                   className="w-full py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
                   style={{ background: `${BRAND.primary}10`, color: BRAND.primary }}>

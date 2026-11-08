@@ -10,12 +10,12 @@ import {
 } from 'lucide-react';
 import { PLAN_CONFIGS } from '@storebuilder/types';
 
-const B = { p: '#1C1C1E', s: '#3A3A3C', a: '#007AFF', soft: '#F2F2F7', border: '#E5F1FF' };
+const B = { p: '#0B3550', s: '#32506A', a: '#20A9F4', soft: '#F6F8FA', border: '#E3F5FE' };
 
 const PLAN_META = {
-  FREE:       { label: PLAN_CONFIGS.FREE.nameAr,        color: '#6C6C70', bg: '#F2F2F7', icon: Globe,  iconColor: '#6C6C70' },
-  PRO:        { label: PLAN_CONFIGS.PRO.nameAr,         color: '#AF52DE', bg: '#F5EAFB', icon: Zap,    iconColor: '#AF52DE' },
-  ENTERPRISE: { label: PLAN_CONFIGS.ENTERPRISE.nameAr,   color: '#FF9500', bg: '#FFF4E0', icon: Crown,  iconColor: '#FF9500' },
+  FREE:       { label: PLAN_CONFIGS.FREE.nameAr,        color: '#5B6B7B', bg: '#F6F8FA', icon: Globe,  iconColor: '#5B6B7B' },
+  PRO:        { label: PLAN_CONFIGS.PRO.nameAr,         color: '#8B5CF6', bg: '#F1ECFE', icon: Zap,    iconColor: '#8B5CF6' },
+  ENTERPRISE: { label: PLAN_CONFIGS.ENTERPRISE.nameAr,   color: '#F59E0B', bg: '#FEF3E2', icon: Crown,  iconColor: '#F59E0B' },
 };
 
 interface Subscription {
@@ -87,7 +87,7 @@ function ConfirmModal({
             style={{ borderColor: B.border }}>إلغاء</button>
           <button onClick={onConfirm} disabled={loading}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
-            style={{ background: danger ? '#FF3B30' : `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+            style={{ background: danger ? '#F04F4F' : `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {confirmLabel}
           </button>
@@ -167,7 +167,7 @@ export default function SubscriptionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="ios-large-title text-gray-900">إدارة الاشتراكات</h1>
+          <h1 className="bz-large-title text-gray-900">إدارة الاشتراكات</h1>
           <p className="text-sm text-gray-500 mt-0.5">تواريخ الاشتراك، ترقية وإلغاء الخطط</p>
         </div>
         <button onClick={load} disabled={loading}
@@ -181,11 +181,11 @@ export default function SubscriptionsPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
         {[
-          { label: 'إجمالي التجار', value: total, icon: Users, color: B.p, bg: '#EFEFF4' },
-          { label: 'خطة احترافية', value: proCount, icon: Zap, color: '#AF52DE', bg: '#F5EAFB' },
-          { label: 'خطة أعمال', value: entCount, icon: Crown, color: '#FF9500', bg: '#FFF4E0' },
-          { label: 'تنتهي خلال 7 أيام', value: expiring, icon: Clock, color: '#FF9500', bg: '#FFF9DB' },
-          { label: 'منتهية الصلاحية', value: expired, icon: AlertTriangle, color: '#FF3B30', bg: '#FFE9E7' },
+          { label: 'إجمالي التجار', value: total, icon: Users, color: B.p, bg: '#EEF2F6' },
+          { label: 'خطة احترافية', value: proCount, icon: Zap, color: '#8B5CF6', bg: '#F1ECFE' },
+          { label: 'خطة أعمال', value: entCount, icon: Crown, color: '#F59E0B', bg: '#FEF3E2' },
+          { label: 'تنتهي خلال 7 أيام', value: expiring, icon: Clock, color: '#F59E0B', bg: '#FEF9E3' },
+          { label: 'منتهية الصلاحية', value: expired, icon: AlertTriangle, color: '#F04F4F', bg: '#FDECEC' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="bg-white rounded-2xl p-4 border" style={{ borderColor: B.border }}>
             <div className="flex items-center justify-between">
@@ -217,7 +217,7 @@ export default function SubscriptionsPage() {
               style={{
                 borderColor: planFilter === p ? B.a : B.border,
                 background: planFilter === p ? B.a : 'white',
-                color: planFilter === p ? '#fff' : '#6C6C70',
+                color: planFilter === p ? '#fff' : '#5B6B7B',
               }}>
               {p === 'ALL' ? 'الكل' : PLAN_META[p].label}
             </button>
@@ -230,7 +230,7 @@ export default function SubscriptionsPage() {
               style={{
                 borderColor: statusFilter === v ? B.p : B.border,
                 background: statusFilter === v ? B.p : 'white',
-                color: statusFilter === v ? '#fff' : '#6C6C70',
+                color: statusFilter === v ? '#fff' : '#5B6B7B',
               }}>
               {l}
             </button>
@@ -253,7 +253,7 @@ export default function SubscriptionsPage() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y" style={{ borderColor: '#F2F2F7' }}>
+            <tbody className="divide-y" style={{ borderColor: '#F6F8FA' }}>
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center text-sm text-gray-400">
@@ -271,7 +271,7 @@ export default function SubscriptionsPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                          style={{ background: `linear-gradient(135deg, #0A84FF, #5E5CE6)` }}>
+                          style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
                           {row.name.charAt(0)}
                         </div>
                         <div className="min-w-0">
@@ -323,7 +323,7 @@ export default function SubscriptionsPage() {
                       {row.plan === 'FREE' ? (
                         <span className="text-xs text-gray-400">—</span>
                       ) : (
-                        <span className="text-xs" style={{ color: (row.daysLeft ?? 1) <= 0 ? '#FF3B30' : (row.daysLeft ?? 99) <= 7 ? '#FF9500' : '#3A3A3C' }}>
+                        <span className="text-xs" style={{ color: (row.daysLeft ?? 1) <= 0 ? '#F04F4F' : (row.daysLeft ?? 99) <= 7 ? '#F59E0B' : '#32506A' }}>
                           {fmt(row.planExpiry)}
                         </span>
                       )}
@@ -353,7 +353,7 @@ export default function SubscriptionsPage() {
                             onClick={() => setConfirm({ open: true, userId: row.id, name: row.name, targetPlan: downgrade, current: row.plan })}
                             disabled={isLoading}
                             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hover:opacity-90 disabled:opacity-50"
-                            style={{ background: '#FFE9E7', color: '#D70015' }}
+                            style={{ background: '#FDECEC', color: '#C93636' }}
                             title={`تخفيض إلى ${PLAN_META[downgrade].label}`}>
                             {isLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowDownCircle className="h-3.5 w-3.5" />}
                             {downgrade === 'FREE' ? 'إلغاء' : PLAN_META[downgrade].label}

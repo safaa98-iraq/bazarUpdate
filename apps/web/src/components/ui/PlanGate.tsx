@@ -16,19 +16,19 @@ const UPGRADE_HREF = '/dashboard/settings?tab=billing';
 function UpgradeCard({ hint, minPlan }: { hint: string; minPlan: Plan }) {
   return (
     <div className="relative rounded-2xl border-2 border-dashed overflow-hidden"
-      style={{ borderColor: '#C7C7CC', background: '#F2F2F7' }}>
+      style={{ borderColor: '#C2CDD8', background: '#F6F8FA' }}>
       <div className="absolute inset-0 backdrop-blur-[1px]" />
       <div className="relative flex flex-col items-center justify-center p-8 text-center gap-3">
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#F5EAFB' }}>
-          <Lock className="h-5 w-5" style={{ color: '#AF52DE' }} />
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#F1ECFE' }}>
+          <Lock className="h-5 w-5" style={{ color: '#8B5CF6' }} />
         </div>
         <div>
-          <p className="font-bold text-sm mb-1" style={{ color: '#1C1C1E' }}>ميزة {PLAN_LABELS[minPlan]}</p>
+          <p className="font-bold text-sm mb-1" style={{ color: '#0B3550' }}>ميزة {PLAN_LABELS[minPlan]}</p>
           <p className="text-xs text-gray-500 leading-relaxed max-w-xs">{hint}</p>
         </div>
         <a href={UPGRADE_HREF}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
-          style={{ background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)' }}>
+          style={{ background: 'linear-gradient(135deg, #20A9F4, #0E8AD6)' }}>
           <Zap className="h-3.5 w-3.5" />
           ارفع خطتك
         </a>
@@ -46,7 +46,7 @@ function OverlayLock({ hint, minPlan }: { hint: string; minPlan: Plan }) {
         <p className="text-xs font-semibold text-white text-center">{hint}</p>
         <a href={UPGRADE_HREF}
           className="px-3 py-1.5 rounded-lg text-xs font-bold text-white transition hover:opacity-90"
-          style={{ background: '#007AFF' }}>
+          style={{ background: '#20A9F4' }}>
           ارفع خطتك
         </a>
       </div>
@@ -62,12 +62,12 @@ export function PlanBanner({ feature }: { feature: string }) {
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 rounded-xl mb-4 border"
-      style={{ background: '#FFF4E0', borderColor: '#FFCC00' }}>
-      <Zap className="h-4 w-4 flex-shrink-0" style={{ color: '#FF9500' }} />
-      <p className="text-sm flex-1" style={{ color: '#C93400' }}>{f.upgradeHint}</p>
+      style={{ background: '#FEF3E2', borderColor: '#FBBF24' }}>
+      <Zap className="h-4 w-4 flex-shrink-0" style={{ color: '#F59E0B' }} />
+      <p className="text-sm flex-1" style={{ color: '#B45309' }}>{f.upgradeHint}</p>
       <a href={UPGRADE_HREF}
         className="text-xs font-bold px-3 py-1.5 rounded-lg text-white transition hover:opacity-90"
-        style={{ background: '#FF9500' }}>
+        style={{ background: '#F59E0B' }}>
         ارفع الآن
       </a>
     </div>
