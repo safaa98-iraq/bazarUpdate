@@ -2,7 +2,15 @@ import prisma from '@storebuilder/database';
 import { CreateOrderDto, OrderPublic, OrderStatusType, ProductSpecPublic } from '@storebuilder/types';
 import { AppError } from '../middleware/errorHandler';
 import { notifyNewOrder } from '../lib/notify';
+import { afterOrderCreated } from '../lib/orderHooks';
+import { restockOrder } from '../lib/fulfillment';
 import { getSpecsMapForProducts } from './product.service';
+
+const ORDER_INCLUDE = {
+  items: { include: { product: { select: { name: true, images: true } } } },
+  warehouse: { select: { name: true } },
+  shipment: { select: { trackingCode: true, trackingNumber: true, status: true, carrier: true } },
+} as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function toPublic(order: any, specsMap: Record<string, ProductSpecPublic[]> = {}): OrderPublic {
@@ -19,6 +27,12 @@ function toPublic(order: any, specsMap: Record<string, ProductSpecPublic[]> = {}
     shippingAddress: order.shippingAddress as OrderPublic['shippingAddress'],
     stripePaymentId: order.stripePaymentId,
     draftNote: order.draftNote ?? null,
+    confirmationStatus: order.confirmationStatus ?? 'NONE',
+    confirmationToken: order.confirmationToken ?? null,
+    confirmationSentAt: order.confirmationSentAt?.toISOString?.() ?? null,
+    warehouseId: order.warehouseId ?? null,
+    warehouseName: order.warehouse?.name ?? null,
+    shipment: order.shipment ?? null,
     createdAt: order.createdAt.toISOString(),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     items: order.items.map((i: any) => ({
@@ -77,7 +91,7 @@ export class OrderService {
         draftNote: dto.draftNote ?? null,
         items: { create: itemsData },
       },
-      include: { items: { include: { product: { select: { name: true, images: true } } } } },
+      include: ORDER_INCLUDE,
     });
 
     return toPublic(order);
@@ -119,7 +133,7 @@ export class OrderService {
           stripePaymentId: dto.stripePaymentId ?? null,
           items: { create: itemsData },
         },
-        include: { items: { include: { product: { select: { name: true, images: true } } } } },
+        include: ORDER_INCLUDE,
       });
 
       // Decrement stock
@@ -136,6 +150,7 @@ export class OrderService {
     });
 
     notifyNewOrder(dto.storeId, { id: order.id, customerName: order.customerName, total: Number(order.total) }).catch(() => null);
+    await afterOrderCreated(order.id);
 
     return toPublic(order);
   }
@@ -153,16 +168,17 @@ export class OrderService {
       return tx.order.update({
         where: { id },
         data: { status: 'PENDING' },
-        include: { items: { include: { product: { select: { name: true, images: true } } } } },
+        include: ORDER_INCLUDE,
       });
     });
 
-    return toPublic(updated);
+    await afterOrderCreated(updated.id);
+    return this.getById(updated.id, storeId);
   }
 
   async listByStore(
     storeId: string,
-    opts: { status?: string; page?: number; limit?: number }
+    opts: { status?: string; page?: number; limit?: number; warehouseId?: string | null; confirmation?: string }
   ): Promise<{ items: OrderPublic[]; total: number }> {
     const page = opts.page ?? 1;
     const limit = opts.limit ?? 20;
@@ -171,12 +187,14 @@ export class OrderService {
     const where = {
       storeId,
       ...(opts.status ? { status: opts.status as OrderStatusType } : {}),
+      ...(opts.warehouseId ? { warehouseId: opts.warehouseId } : {}),
+      ...(opts.confirmation ? { confirmationStatus: opts.confirmation } : {}),
     };
 
     const [items, total] = await Promise.all([
       prisma.order.findMany({
         where,
-        include: { items: { include: { product: { select: { name: true, images: true } } } } },
+        include: ORDER_INCLUDE,
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
@@ -191,7 +209,7 @@ export class OrderService {
     const order = await prisma.order.findFirst({
       where: { id, ...(storeId ? { storeId } : {}) },
       include: {
-        items: { include: { product: { select: { name: true, images: true } } } },
+        ...ORDER_INCLUDE,
         store: { select: { name: true, slug: true } },
       },
     });
@@ -207,10 +225,15 @@ export class OrderService {
     const order = await prisma.order.findFirst({ where: { id, storeId } });
     if (!order) throw new AppError(404, 'Order not found');
 
+    // Cancelling puts the units back on the shelf (and in the branch).
+    if (status === 'CANCELLED' && order.status !== 'CANCELLED' && order.status !== 'DRAFT') {
+      await restockOrder(order.id);
+    }
+
     const updated = await prisma.order.update({
       where: { id },
       data: { status },
-      include: { items: { include: { product: { select: { name: true, images: true } } } } },
+      include: ORDER_INCLUDE,
     });
     return toPublic(updated);
   }

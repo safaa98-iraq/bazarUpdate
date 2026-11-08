@@ -7,6 +7,7 @@ import { LogOut, Lock, X, Menu, Search, Plus, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import { canUseFeature, Plan, PLAN_LABELS } from '@/lib/plan-features';
+import type { StaffPermission, StaffSession } from '@storebuilder/types';
 import { ClayIcon, type ClayIconName } from '@/components/ui/ClayIcon';
 import { NotificationBell } from './NotificationBell';
 
@@ -17,6 +18,8 @@ type NavLink = {
   icon: ClayIconName;
   exact?: boolean;
   feature?: string;
+  /** Staff permission needed to see this item; 'owner' = store owner only. */
+  perm?: StaffPermission | 'owner';
 };
 
 type NavSection = { title?: string; links: NavLink[] };
@@ -30,40 +33,60 @@ const sections: NavSection[] = [
   {
     title: 'المتجر',
     links: [
-      { href: '/dashboard/products',   label: 'المنتجات',  desc: 'أضف منتجاتك وعدّل أسعارها وصورها',       icon: 'box' },
-      { href: '/dashboard/categories', label: 'التصنيفات', desc: 'أنشئ تصنيفات تظهر في رأس متجرك',         icon: 'tag' },
-      { href: '/dashboard/brands',     label: 'الماركات',  desc: 'أضف ماركات تجارية وصنّف منتجاتك تحتها', icon: 'badge-check', feature: 'brands' },
-      { href: '/dashboard/builder',    label: 'تصميم المتجر', desc: 'صمّم متجرك وأضف البانرات الترويجية', icon: 'storefront' },
+      { href: '/dashboard/products',   label: 'المنتجات',  desc: 'أضف منتجاتك وعدّل أسعارها وصورها',       icon: 'box', perm: 'products' },
+      { href: '/dashboard/categories', label: 'التصنيفات', desc: 'أنشئ تصنيفات تظهر في رأس متجرك',         icon: 'tag', perm: 'products' },
+      { href: '/dashboard/brands',     label: 'الماركات',  desc: 'أضف ماركات تجارية وصنّف منتجاتك تحتها', icon: 'badge-check', feature: 'brands', perm: 'products' },
+      { href: '/dashboard/builder',    label: 'تصميم المتجر', desc: 'صمّم متجرك وأضف البانرات الترويجية', icon: 'storefront', perm: 'design' },
     ],
   },
   {
     title: 'المبيعات',
     links: [
-      { href: '/dashboard/orders',          label: 'الطلبات',         desc: 'تابع طلبات عملائك وحدّث حالتها',          icon: 'cart' },
-      { href: '/dashboard/draft-orders',    label: 'طلبات يدوية',     desc: 'سجّل طلباً وصلك عبر واتساب أو انستغرام', icon: 'documents' },
-      { href: '/dashboard/abandoned-carts', label: 'السلال المتروكة', desc: 'زبائن تركوا سلتهم قبل إتمام الطلب',       icon: 'basket' },
-      { href: '/dashboard/chat',            label: 'رسائل العملاء',   desc: 'تحدث مع عملائك مباشرة من متجرك',          icon: 'chat', feature: 'chat' },
+      { href: '/dashboard/orders',          label: 'الطلبات',         desc: 'تابع طلبات عملائك وحدّث حالتها',          icon: 'cart', perm: 'orders' },
+      { href: '/dashboard/draft-orders',    label: 'طلبات يدوية',     desc: 'سجّل طلباً وصلك عبر واتساب أو انستغرام', icon: 'documents', perm: 'orders' },
+      { href: '/dashboard/abandoned-carts', label: 'السلال المتروكة', desc: 'زبائن تركوا سلتهم قبل إتمام الطلب',       icon: 'basket', perm: 'orders' },
+      { href: '/dashboard/shipping',        label: 'الشحن والبوالص',  desc: 'اطبع البوالص واربط شركة التوصيل وتتبع الشحنات', icon: 'truck', perm: 'orders' },
+      { href: '/dashboard/whatsapp',        label: 'تأكيد واتساب',    desc: 'الزبون يؤكد طلبه قبل الشحن بضغطة', icon: 'send', perm: 'settings', feature: 'whatsapp_confirm' },
+      { href: '/dashboard/chat',            label: 'رسائل العملاء',   desc: 'تحدث مع عملائك مباشرة من متجرك',          icon: 'chat', feature: 'chat', perm: 'chat' },
     ],
   },
   {
     title: 'التسويق',
     links: [
-      { href: '/dashboard/marketing',  label: 'أدوات التسويق',  desc: 'كوبونات الخصم والمسوقون بالعمولة', icon: 'megaphone', feature: 'affiliates' },
-      { href: '/dashboard/promotions', label: 'العروض التلقائية', desc: 'اشترِ واحصل على آخر، أو خصم متدرج', icon: 'discount' },
-      { href: '/dashboard/gift-cards', label: 'بطاقات الهدايا', desc: 'أصدر بطاقات هدايا برصيد للزبائن',   icon: 'gift' },
-      { href: '/dashboard/referrals',  label: 'ادعُ واربح',      desc: 'ادعُ تجاراً واربح أشهراً مجانية',    icon: 'users' },
+      { href: '/dashboard/marketing',  label: 'أدوات التسويق',  desc: 'كوبونات الخصم والمسوقون بالعمولة', icon: 'megaphone', feature: 'affiliates', perm: 'marketing' },
+      { href: '/dashboard/promotions', label: 'العروض التلقائية', desc: 'اشترِ واحصل على آخر، أو خصم متدرج', icon: 'discount', perm: 'marketing' },
+      { href: '/dashboard/gift-cards', label: 'بطاقات الهدايا', desc: 'أصدر بطاقات هدايا برصيد للزبائن',   icon: 'gift', perm: 'marketing' },
+      { href: '/dashboard/referrals',  label: 'ادعُ واربح',      desc: 'ادعُ تجاراً واربح أشهراً مجانية',    icon: 'users', perm: 'owner' },
     ],
   },
   {
     title: 'الحساب',
     links: [
-      { href: '/dashboard/settings', label: 'الإعدادات',        desc: 'اسم المتجر، العملة، الشعار، والرابط',   icon: 'settings' },
-      { href: '/dashboard/upgrade',  label: 'الباقات والترقية', desc: 'قارن الباقات وارفع خطتك بضغطة واحدة', icon: 'star' },
+      { href: '/dashboard/branches', label: 'الفروع والمخازن', desc: 'وزّع المخزون على الفروع وحوّل الطلبات للأقرب', icon: 'location', perm: 'branches', feature: 'branches' },
+      { href: '/dashboard/staff',    label: 'الموظفون',        desc: 'حسابات للموظفين بصلاحيات محددة', icon: 'shield-lock', perm: 'owner', feature: 'staff' },
+      { href: '/dashboard/store-app', label: 'تطبيق المتجر',   desc: 'تطبيق جوال باسم متجرك وشعاره', icon: 'apps', perm: 'settings', feature: 'store_app' },
+      { href: '/dashboard/languages', label: 'لغات المتجر',    desc: 'واجهة المتجر بالعربية والكردية', icon: 'chat', perm: 'settings', feature: 'languages' },
+      { href: '/dashboard/settings', label: 'الإعدادات',        desc: 'اسم المتجر، العملة، الشعار، والرابط',   icon: 'settings', perm: 'settings' },
+      { href: '/dashboard/upgrade',  label: 'الباقات والترقية', desc: 'قارن الباقات وارفع خطتك بضغطة واحدة', icon: 'star', perm: 'owner' },
     ],
   },
 ];
 
 const allLinks = sections.flatMap((s) => s.links);
+
+/** Staff only see the pages their permissions cover (owner-only pages are hidden). */
+export function canStaffSee(staff: StaffSession | null, perm?: NavLink['perm']): boolean {
+  if (!staff || !perm) return true;
+  if (perm === 'owner') return false;
+  return staff.permissions.includes(perm);
+}
+
+function filterSectionsForStaff(staff: StaffSession | null): NavSection[] {
+  if (!staff) return sections;
+  return sections
+    .map(s => ({ ...s, links: s.links.filter(l => canStaffSee(staff, l.perm)) }))
+    .filter(s => s.links.length > 0);
+}
 
 /** Primary destinations shown in the mobile bottom bar. */
 const tabLinks = ['/dashboard', '/dashboard/orders', '/dashboard/products', '/dashboard/builder'];
@@ -96,6 +119,8 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
     logout();
     router.push('/login');
   };
+  const staff = (user as { staff?: StaffSession | null } | null)?.staff ?? null;
+  const visibleSections = filterSectionsForStaff(staff);
 
   return (
     <div className="flex flex-col h-full">
@@ -110,7 +135,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">
-        {sections.map((section, i) => (
+        {visibleSections.map((section, i) => (
           <div key={section.title ?? i} className={i > 0 ? 'mt-5' : ''}>
             {section.title && <p className="px-3 mb-1.5 text-[11px] font-semibold text-bz-muted">{section.title}</p>}
             <div className="space-y-0.5">
@@ -143,7 +168,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </nav>
 
       <div className="p-3 border-t border-bz-line space-y-2 flex-shrink-0">
-        {plan === 'FREE' && (
+        {plan === 'FREE' && !staff && (
           <Link href="/dashboard/upgrade" onClick={onClose}
             className="relative overflow-hidden flex items-center gap-3 rounded-2xl p-3 bg-bz-ink text-white">
             <span className="bz-blob w-24 h-24 bg-bz-brand -top-8 -left-8" />
@@ -161,7 +186,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           </span>
           <span className="flex-1 min-w-0">
             <span className="block text-[13px] font-bold text-bz-ink truncate">{user?.name}</span>
-            <span className="block text-[11px] text-bz-muted truncate">باقة {PLAN_LABELS[plan]}</span>
+            <span className="block text-[11px] text-bz-muted truncate">{staff ? 'حساب موظف' : `باقة ${PLAN_LABELS[plan]}`}</span>
           </span>
           <button onClick={handleLogout} title="تسجيل الخروج" aria-label="تسجيل الخروج"
             className="h-9 w-9 rounded-full flex items-center justify-center text-bz-muted hover:bg-[#FDECEC] hover:text-bz-red">
@@ -200,7 +225,8 @@ export function DashboardTopbar() {
 export function DashboardSidebar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-  const tabs = tabLinks.map((href) => allLinks.find((l) => l.href === href)!);
+  const staff = (useAuthStore((st) => st.user) as { staff?: StaffSession | null } | null)?.staff ?? null;
+  const tabs = tabLinks.map((href) => allLinks.find((l) => l.href === href)!).filter((l) => canStaffSee(staff, l.perm));
 
   return (
     <>

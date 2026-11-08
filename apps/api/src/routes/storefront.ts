@@ -7,9 +7,13 @@ import { giftCardService } from '../services/giftcard.service';
 import { promotionService } from '../services/promotion.service';
 import { loyaltyService } from '../services/loyalty.service';
 import { Decimal } from '@prisma/client/runtime/library';
-import { notifyNewOrder } from '../lib/notify';
+import { notifyNewOrder, notifyOrderConfirmation } from '../lib/notify';
 import { optionalToken } from '../middleware/auth';
 import { cuid } from '../lib/cuid';
+import { afterOrderCreated } from '../lib/orderHooks';
+import { restockOrder } from '../lib/fulfillment';
+import { readAppSettings } from '../lib/storeApp';
+import { SHIPMENT_STATUS_LABELS } from '@storebuilder/types';
 
 const router = Router();
 
@@ -90,6 +94,7 @@ router.get(
           suspendedAt: true, suspendReason: true,
           builderConfig: true, socialLinks: true, deliveryZones: true,
           defaultSizeGuide: true,
+          storefrontLanguages: true, appSettings: true,
           merchant: { select: { plan: true } },
         },
       });
@@ -111,8 +116,18 @@ router.get(
         return;
       }
 
-      const { merchant, ...storeData } = store as typeof store & { merchant?: { plan: string } };
-      res.json({ success: true, data: { ...storeData, merchantPlan: merchant?.plan ?? 'FREE' } });
+      const { merchant, appSettings: _app, storefrontLanguages, ...storeData } = store as typeof store & { merchant?: { plan: string } };
+      const plan = merchant?.plan ?? 'FREE';
+      const app = readAppSettings(store);
+      res.json({
+        success: true,
+        data: {
+          ...storeData, merchantPlan: plan,
+          // Extra languages / branded app are Business-plan features
+          languages: plan === 'ENTERPRISE' && Array.isArray(storefrontLanguages) ? storefrontLanguages : ['ar'],
+          app: plan === 'ENTERPRISE' && app.enabled ? { appName: app.appName, shortName: app.shortName, icon: app.icon, themeColor: app.themeColor, installPrompt: app.installPrompt, androidUrl: app.androidUrl, iosUrl: app.iosUrl } : null,
+        },
+      });
     } catch (err) {
       next(err);
     }
@@ -549,6 +564,7 @@ router.post(
       });
 
       notifyNewOrder(store.id, { id: order.id, customerName, total: Number(order.total) }).catch(() => null);
+      await afterOrderCreated(order.id);
       loyaltyService.awardPoints(customerEmail, Number(order.total), order.id, store.id).catch(() => null);
 
       // Clear the server-synced cart (if any) now that checkout completed — keeps abandoned-cart tracking accurate
@@ -569,5 +585,91 @@ router.post(
     } catch (err) { next(err); }
   }
 );
+
+/* ─── Customer order confirmation (link sent on WhatsApp) ─────────────────── */
+
+async function findByToken(slug: string, token: string) {
+  if (!/^[a-f0-9]{32}$/.test(token)) return null;
+  return prisma.order.findFirst({
+    where: { confirmationToken: token, store: { slug } },
+    include: { items: { include: { product: { select: { name: true, images: true } } } }, store: { select: { name: true, logo: true, theme: true, slug: true } } },
+  });
+}
+
+router.get('/:slug/confirm/:token', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const o = await findByToken(req.params.slug, req.params.token);
+    if (!o) { res.status(404).json({ success: false, error: 'الرابط غير صالح أو منتهي' }); return; }
+    const addr = (o.shippingAddress ?? {}) as Record<string, string>;
+    res.json({
+      success: true,
+      data: {
+        reference: o.id.slice(-6).toUpperCase(),
+        store: o.store,
+        customerName: o.customerName,
+        total: Number(o.total), shippingFee: Number(o.shippingFee),
+        address: { governorate: addr.governorate ?? '', city: addr.city ?? '', address: addr.address ?? '' },
+        items: o.items.map(i => ({ name: i.product?.name ?? '', image: Array.isArray(i.product?.images) ? (i.product!.images as string[])[0] ?? null : null, quantity: i.quantity, price: Number(i.price), variant: i.variantLabel })),
+        confirmationStatus: o.confirmationStatus,
+        orderStatus: o.status,
+        createdAt: o.createdAt.toISOString(),
+      },
+    });
+  } catch (err) { next(err); }
+});
+
+router.post('/:slug/confirm/:token', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const o = await findByToken(req.params.slug, req.params.token);
+    if (!o) { res.status(404).json({ success: false, error: 'الرابط غير صالح أو منتهي' }); return; }
+    const action = req.body?.action;
+    if (action !== 'confirm' && action !== 'reject') { res.status(400).json({ success: false, error: 'إجراء غير معروف' }); return; }
+    if (o.status === 'SHIPPED' || o.status === 'DELIVERED') {
+      res.status(409).json({ success: false, error: 'تم شحن الطلب بالفعل — تواصل مع المتجر' }); return;
+    }
+    if (o.status === 'CANCELLED') { res.status(409).json({ success: false, error: 'هذا الطلب ملغي' }); return; }
+
+    if (action === 'confirm') {
+      await prisma.order.update({ where: { id: o.id }, data: { confirmationStatus: 'CONFIRMED', confirmedAt: new Date() } });
+    } else {
+      await restockOrder(o.id);
+      await prisma.order.update({ where: { id: o.id }, data: { confirmationStatus: 'REJECTED', confirmedAt: new Date(), status: 'CANCELLED' } });
+    }
+    notifyOrderConfirmation(o.storeId, { id: o.id, customerName: o.customerName }, action === 'confirm').catch(() => null);
+    res.json({ success: true, data: { confirmationStatus: action === 'confirm' ? 'CONFIRMED' : 'REJECTED' } });
+  } catch (err) { next(err); }
+});
+
+/* ─── Public shipment tracking ─────────────────────────────────────────── */
+
+router.get('/:slug/track/:code', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const code = req.params.code.trim().toUpperCase();
+    if (!/^[A-Z0-9]{6,20}$/.test(code)) { res.status(404).json({ success: false, error: 'رقم التتبع غير صحيح' }); return; }
+    const s = await prisma.shipment.findFirst({
+      where: { trackingCode: code, store: { slug: req.params.slug } },
+      include: { order: { select: { id: true, customerName: true, total: true, createdAt: true, shippingAddress: true, customerPhone: true } }, store: { select: { name: true, logo: true, theme: true, slug: true } } },
+    });
+    if (!s) { res.status(404).json({ success: false, error: 'لم يتم العثور على الشحنة' }); return; }
+    const addr = (s.order.shippingAddress ?? {}) as Record<string, string>;
+    const phone = s.order.customerPhone ?? '';
+    res.json({
+      success: true,
+      data: {
+        trackingCode: s.trackingCode,
+        status: s.status, statusLabel: SHIPMENT_STATUS_LABELS[s.status as keyof typeof SHIPMENT_STATUS_LABELS] ?? s.status,
+        events: Array.isArray(s.events) ? s.events : [],
+        store: s.store,
+        reference: s.order.id.slice(-6).toUpperCase(),
+        // Only a first name and masked phone are public
+        customerName: s.order.customerName.split(' ')[0],
+        customerPhone: phone ? `${phone.slice(0, 4)}****${phone.slice(-2)}` : '',
+        destination: [addr.governorate, addr.city].filter(Boolean).join(' — '),
+        total: Number(s.order.total),
+        createdAt: s.createdAt.toISOString(),
+      },
+    });
+  } catch (err) { next(err); }
+});
 
 export default router;

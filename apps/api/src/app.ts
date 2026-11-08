@@ -33,6 +33,10 @@ import articleRoutes from './routes/articles';
 import customerRoutes from './routes/customer';
 import giftCardRoutes from './routes/giftcards';
 import promotionRoutes from './routes/promotions';
+import staffRoutes from './routes/staff';
+import warehouseRoutes from './routes/warehouses';
+import shipmentRoutes from './routes/shipments';
+import storeFeatureRoutes from './routes/storeFeatures';
 
 const isProd = process.env.NODE_ENV === 'production';
 const uploadRoot = process.env.UPLOAD_DIR ?? 'uploads';
@@ -164,6 +168,7 @@ export function createApp() {
 
   // ── Routes ───────────────────────────────────────────────────────────
   app.use('/api/auth', authRoutes);
+  app.use('/api/stores/my/features', storeFeatureRoutes);
   app.use('/api/stores', storeRoutes);
   app.use('/api/products', productRoutes);
   app.use('/api/categories', categoryRoutes);
@@ -189,6 +194,9 @@ export function createApp() {
   app.use('/api/customer', customerRoutes);
   app.use('/api/gift-cards', giftCardRoutes);
   app.use('/api/promotions', promotionRoutes);
+  app.use('/api/staff', staffRoutes);
+  app.use('/api/warehouses', warehouseRoutes);
+  app.use('/api/shipments', shipmentRoutes);
 
   // ── 404 ──────────────────────────────────────────────────────────────
   app.use((_req, res) => {

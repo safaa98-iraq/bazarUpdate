@@ -1,7 +1,7 @@
 // Railway deploy marker: pricing and retired-feature cleanup.
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { Alexandria } from 'next/font/google';
+import { Alexandria, Noto_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { FreePlanTextNormalizer } from '@/components/FreePlanTextNormalizer';
@@ -13,6 +13,15 @@ const arabic = Alexandria({
   weight: 'variable', // full 100–900 range from a single file
   variable: '--font-arabic',
   display: 'swap',
+});
+
+// Fallback for Kurdish (Sorani) letters Alexandria lacks: ڕ ڵ ێ ۆ ە ڤ
+const kurdishFallback = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '600', '700'],
+  variable: '--font-arabic-ext',
+  display: 'swap',
+  preload: false,
 });
 
 export const viewport: Viewport = { themeColor: '#F6F8FA', viewportFit: 'cover' };
@@ -151,7 +160,7 @@ const cleanupScript = `
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${arabic.variable} font-[family-name:var(--font-tajawal)]`}>
+      <body className={`${arabic.variable} ${kurdishFallback.variable} font-[family-name:var(--font-tajawal)]`}>
         <Script id="remove-retired-feature-copy" strategy="beforeInteractive">
           {cleanupScript}
         </Script>

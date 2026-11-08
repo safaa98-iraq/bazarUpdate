@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { JwtPayload } from '@storebuilder/types';
 import prisma from '@storebuilder/database';
+import { checkStaffAccess } from './staffAccess';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace -- required by Express's own type-augmentation pattern
@@ -29,13 +30,23 @@ export function verifyToken(req: Request, res: Response, next: NextFunction): vo
     return;
   }
 
+  let payload: JwtPayload;
   try {
-    const payload = jwt.verify(token, getSecret()) as JwtPayload;
-    req.user = payload;
-    next();
+    payload = jwt.verify(token, getSecret()) as JwtPayload;
   } catch {
     res.status(401).json({ success: false, error: 'Invalid or expired token' });
+    return;
   }
+  req.user = payload;
+  if (!payload.staffId) { next(); return; }
+
+  // Staff member: enforce their permissions on this request.
+  checkStaffAccess(req, payload)
+    .then((denied) => {
+      if (denied) { res.status(403).json({ success: false, error: denied }); return; }
+      next();
+    })
+    .catch(next);
 }
 
 export function requireRole(...roles: string[]) {

@@ -93,8 +93,8 @@
   }
 
   body {
-    --font-tajawal: var(--font-arabic), system-ui, sans-serif;
-    --font-cairo: var(--font-arabic), system-ui, sans-serif;
+    --font-tajawal: var(--font-arabic), var(--font-arabic-ext), system-ui, sans-serif;
+    --font-cairo: var(--font-arabic), var(--font-arabic-ext), system-ui, sans-serif;
   }
 
   * { border-color: var(--bz-line); }

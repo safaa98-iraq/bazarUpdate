@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import prisma from '@storebuilder/database';
-import { RegisterDto, LoginDto, AuthResponse, JwtPayload, ReferralStats, PlanKey } from '@storebuilder/types';
+import { RegisterDto, LoginDto, AuthResponse, JwtPayload, ReferralStats, PlanKey, StaffSession, StaffRolePreset, StaffPermission } from '@storebuilder/types';
 import { AppError } from '../middleware/errorHandler';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -128,6 +128,46 @@ export class AuthService {
 
     const token = this.signToken(user.id, user.email, user.role);
     return { token, user: this.toPublic(user) };
+  }
+
+  /** Store staff sign-in. The token is a MERCHANT token for the owner, scoped by staffId + permissions. */
+  async staffLogin(dto: LoginDto): Promise<AuthResponse> {
+    const staff = await prisma.staffMember.findUnique({
+      where: { email: dto.email.trim().toLowerCase() },
+      include: { store: { include: { merchant: true } } },
+    });
+    if (!staff || !(await bcrypt.compare(dto.password, staff.password))) {
+      throw new AppError(401, 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+    }
+    if (!staff.isActive) throw new AppError(403, 'تم إيقاف حساب الموظف — تواصل مع صاحب المتجر');
+    const owner = staff.store.merchant;
+    if (!owner.isActive) throw new AppError(403, 'هذا المتجر موقوف');
+
+    await prisma.staffMember.update({ where: { id: staff.id }, data: { lastLoginAt: new Date() } });
+
+    const session = this.toStaffSession(staff);
+    const payload: JwtPayload = {
+      userId: owner.id, email: staff.email, role: 'MERCHANT', storeId: staff.storeId,
+      staffId: staff.id, permissions: session.permissions, warehouseId: session.warehouseId,
+    };
+    const token = jwt.sign(payload, getSecret(), { expiresIn: process.env.JWT_EXPIRES_IN ?? '7d' } as jwt.SignOptions);
+    return { token, user: { ...this.toPublic({ ...owner, name: staff.name, email: staff.email }), staff: session } };
+  }
+
+  async getStaffMe(staffId: string): Promise<AuthResponse['user']> {
+    const staff = await prisma.staffMember.findUnique({ where: { id: staffId }, include: { store: { include: { merchant: true } } } });
+    if (!staff || !staff.isActive) throw new AppError(401, 'تم إيقاف حساب الموظف');
+    return { ...this.toPublic({ ...staff.store.merchant, name: staff.name, email: staff.email }), staff: this.toStaffSession(staff) };
+  }
+
+  private toStaffSession(staff: { id: string; name: string; role: string; permissions: unknown; warehouseId: string | null }): StaffSession {
+    return {
+      id: staff.id,
+      name: staff.name,
+      role: staff.role as StaffRolePreset,
+      permissions: (Array.isArray(staff.permissions) ? staff.permissions : []) as StaffPermission[],
+      warehouseId: staff.warehouseId,
+    };
   }
 
   async getMe(userId: string): Promise<AuthResponse['user']> {

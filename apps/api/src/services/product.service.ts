@@ -1,5 +1,6 @@
 import prisma from '@storebuilder/database';
 import { CreateProductDto, UpdateProductDto, ProductPublic, ProductSpecPublic, ProductSpecValuePublic } from '@storebuilder/types';
+import { reconcileProductStock } from '../lib/fulfillment';
 import { AppError } from '../middleware/errorHandler';
 import { Decimal } from '@prisma/client/runtime/library';
 
@@ -173,6 +174,9 @@ export class ProductService {
       `;
     }
 
+    // Stores using branches: new stock lands in the default branch.
+    if (product.stock > 0) await reconcileProductStock(storeId, product.id, product.stock).catch(() => null);
+
     return toPublic({ ...product, unitType: unitType ?? 'piece', unitLabel: unitLabel ?? 'قطعة' } as RawProduct);
   }
 
@@ -254,6 +258,10 @@ export class ProductService {
       data: prismaData as UpdateProductDto,
       include: { category: true, brand: true },
     });
+
+    if (dto.stock !== undefined && updated.stock !== existing.stock) {
+      await reconcileProductStock(storeId, id, updated.stock).catch(() => null);
+    }
 
     if (unitType) {
       await prisma.$executeRaw`

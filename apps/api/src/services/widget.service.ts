@@ -1,5 +1,6 @@
 import { prisma } from '@storebuilder/database';
 import { cacheGet, cacheSet, cacheIncr } from '../lib/redis';
+import { afterOrderCreated } from '../lib/orderHooks';
 import { notifyNewOrder } from '../lib/notify';
 
 function hourKey(storeId: string, ip: string): string {
@@ -148,6 +149,7 @@ export const widgetService = {
     });
 
     notifyNewOrder(store.id, { id: order.id, customerName: order.customerName, total: Number(order.total) }).catch(() => null);
+    await afterOrderCreated(order.id);
 
     return order;
   },

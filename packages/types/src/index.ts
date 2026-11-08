@@ -6,6 +6,10 @@ export interface JwtPayload {
   role: 'SUPER_ADMIN' | 'MERCHANT' | 'CUSTOMER' | 'STAFF';
   storeId?: string;
   permissions?: string[];
+  /** Set when a store staff member (not the owner) is signed in. userId is then the store owner's id. */
+  staffId?: string;
+  /** Branch the staff member is restricted to, if any. */
+  warehouseId?: string | null;
   iat?: number;
   exp?: number;
 }
@@ -36,7 +40,97 @@ export interface UserPublic {
   isActive: boolean;
   referralCode?: string | null;
   createdAt: string;
+  /** Present when the signed-in person is a staff member of the store. */
+  staff?: StaffSession | null;
 }
+
+/* ─── Staff & permissions ─────────────────────────────────────────────── */
+
+export type StaffPermission =
+  | 'orders' | 'products' | 'marketing' | 'design' | 'chat' | 'reports' | 'settings' | 'branches';
+
+export const STAFF_PERMISSIONS: { key: StaffPermission; label: string; hint: string }[] = [
+  { key: 'orders',    label: 'الطلبات والشحن',      hint: 'عرض الطلبات وتحديث حالتها، التأكيد عبر واتساب، البوالص' },
+  { key: 'products',  label: 'المنتجات والمخزون',   hint: 'إضافة وتعديل المنتجات والتصنيفات والماركات' },
+  { key: 'marketing', label: 'التسويق',            hint: 'الكوبونات، العروض، بطاقات الهدايا، المسوقون' },
+  { key: 'design',    label: 'تصميم المتجر',        hint: 'محرر الشكل والبانرات' },
+  { key: 'chat',      label: 'رسائل العملاء',       hint: 'الرد على محادثات الزبائن' },
+  { key: 'reports',   label: 'التقارير',            hint: 'المبيعات والتحليلات' },
+  { key: 'branches',  label: 'الفروع والمخازن',     hint: 'إدارة الفروع وتوزيع المخزون' },
+  { key: 'settings',  label: 'إعدادات المتجر',      hint: 'التوصيل، واتساب، التطبيق، اللغات' },
+];
+
+export type StaffRolePreset = 'manager' | 'orders' | 'products' | 'branch' | 'custom';
+
+export const STAFF_ROLE_PRESETS: Record<StaffRolePreset, { label: string; permissions: StaffPermission[] }> = {
+  manager:  { label: 'مدير المتجر',     permissions: ['orders', 'products', 'marketing', 'design', 'chat', 'reports', 'branches', 'settings'] },
+  orders:   { label: 'موظف طلبات',      permissions: ['orders', 'chat'] },
+  products: { label: 'موظف منتجات',     permissions: ['products'] },
+  branch:   { label: 'مسؤول فرع',       permissions: ['orders', 'products'] },
+  custom:   { label: 'صلاحيات مخصصة',   permissions: [] },
+};
+
+export interface StaffSession {
+  id: string;
+  name: string;
+  role: StaffRolePreset;
+  permissions: StaffPermission[];
+  warehouseId: string | null;
+}
+
+export interface StaffMemberPublic extends StaffSession {
+  email: string;
+  isActive: boolean;
+  warehouseName: string | null;
+  lastLoginAt: string | null;
+  createdAt: string;
+}
+
+/* ─── Branches / warehouses ───────────────────────────────────────────── */
+
+export interface WarehousePublic {
+  id: string;
+  name: string;
+  governorate: string | null;
+  address: string | null;
+  phone: string | null;
+  servesGovernorates: string[];
+  isDefault: boolean;
+  isActive: boolean;
+  totalUnits: number;
+  ordersCount: number;
+}
+
+/* ─── Shipments ───────────────────────────────────────────────────────── */
+
+export type ShipmentStatus = 'CREATED' | 'PICKED_UP' | 'IN_TRANSIT' | 'OUT_FOR_DELIVERY' | 'DELIVERED' | 'RETURNED' | 'CANCELLED';
+
+export const SHIPMENT_STATUS_LABELS: Record<ShipmentStatus, string> = {
+  CREATED: 'تم إنشاء البوليصة',
+  PICKED_UP: 'استلمها المندوب',
+  IN_TRANSIT: 'في الطريق',
+  OUT_FOR_DELIVERY: 'خرجت للتوصيل',
+  DELIVERED: 'تم التسليم',
+  RETURNED: 'راجع للمتجر',
+  CANCELLED: 'ملغاة',
+};
+
+export interface ShipmentEvent { status: ShipmentStatus; at: string; note?: string }
+
+export interface ShipmentPublic {
+  id: string;
+  orderId: string;
+  carrier: string;
+  trackingNumber: string | null;
+  trackingCode: string;
+  status: ShipmentStatus;
+  events: ShipmentEvent[];
+  lastSyncedAt: string | null;
+  lastError: string | null;
+  createdAt: string;
+}
+
+export type OrderConfirmationStatus = 'NONE' | 'PENDING' | 'CONFIRMED' | 'REJECTED';
 
 export interface CreateStoreDto {
   name: string;
@@ -417,6 +511,12 @@ export interface OrderPublic {
   shippingAddress: Record<string, unknown>;
   stripePaymentId: string | null;
   draftNote?: string | null;
+  confirmationStatus?: OrderConfirmationStatus;
+  confirmationToken?: string | null;
+  confirmationSentAt?: string | null;
+  warehouseId?: string | null;
+  warehouseName?: string | null;
+  shipment?: Pick<ShipmentPublic, 'trackingCode' | 'trackingNumber' | 'status' | 'carrier'> | null;
   createdAt: string;
   items: Array<{ id: string; productId: string; variantId?: string | null; variantLabel?: string | null; quantity: number; price: number; product?: { name: string; images: string[]; specs?: ProductSpecPublic[] } }>;
   store?: { name: string; slug: string };

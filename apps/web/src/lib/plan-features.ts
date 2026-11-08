@@ -97,6 +97,12 @@ export const FEATURE_LIMITS: FeatureLimit[] = [
     description: 'نطاق مخصص',
     upgradeHint: 'ارفع إلى الخطة المؤسسية للنطاق المخصص',
   },
+  { feature: 'whatsapp_confirm', minPlan: 'PRO', description: 'تأكيد الطلبات عبر واتساب', upgradeHint: 'ارفع إلى الاحترافية لتأكيد الطلبات تلقائياً قبل الشحن' },
+  { feature: 'courier_api', minPlan: 'PRO', description: 'الربط مع شركات التوصيل', upgradeHint: 'ارفع إلى الاحترافية لربط شركة التوصيل وتتبع الشحنات تلقائياً' },
+  { feature: 'staff', minPlan: 'ENTERPRISE', description: 'حسابات الموظفين', upgradeHint: 'حسابات الموظفين بصلاحيات متاحة في باقة الأعمال' },
+  { feature: 'branches', minPlan: 'ENTERPRISE', description: 'الفروع والمخازن', upgradeHint: 'الفروع والمخازن المتعددة متاحة في باقة الأعمال' },
+  { feature: 'languages', minPlan: 'ENTERPRISE', description: 'لغات المتجر', upgradeHint: 'واجهة المتجر بالكردية متاحة في باقة الأعمال' },
+  { feature: 'store_app', minPlan: 'ENTERPRISE', description: 'تطبيق المتجر', upgradeHint: 'تطبيق جوال باسم متجرك متاح في باقة الأعمال' },
 ];
 
 export { PLAN_CONFIGS, PLAN_ORDER, type PlanConfig };

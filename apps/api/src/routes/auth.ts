@@ -68,9 +68,26 @@ router.post(
   }
 );
 
+router.post(
+  '/staff/login',
+  [
+    body('email').isEmail().withMessage('البريد الإلكتروني غير صالح'),
+    body('password').notEmpty().withMessage('كلمة المرور مطلوبة'),
+  ],
+  validate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await authService.staffLogin(req.body);
+      res.json({ success: true, data: result });
+    } catch (err) { next(err); }
+  }
+);
+
 router.get('/me', verifyToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await authService.getMe(req.user!.userId);
+    const user = req.user!.staffId
+      ? await authService.getStaffMe(req.user!.staffId)
+      : await authService.getMe(req.user!.userId);
     res.json({ success: true, data: user });
   } catch (err) { next(err); }
 });

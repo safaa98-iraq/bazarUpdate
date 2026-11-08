@@ -87,6 +87,14 @@ model Store {
   customDomain          String?  @unique @db.VarChar(255)
   customDomainVerified  Boolean  @default(false)
   defaultSizeGuide      String?  @db.Text
+  /// Storefront UI languages, e.g. ["ar","ckb"] (first = default)
+  storefrontLanguages   Json?    @default("[\"ar\"]")
+  /// WhatsApp order confirmation: { autoConfirm, message, phoneNumberId, accessToken, templateName, templateLang }
+  whatsappSettings      Json?
+  /// Courier / waybill: { carrier, username, password, senderName, senderPhone, pickupAddress }
+  shippingSettings      Json?
+  /// Branded app (PWA + native build): { appName, shortName, icon, themeColor, installPrompt, androidPackage, iosBundleId, nativeStatus }
+  appSettings           Json?
   suspendedAt     DateTime?
   suspendReason   String?  @db.VarChar(255)
   createdAt       DateTime @default(now())
@@ -112,6 +120,8 @@ model Store {
   staffMembers      StaffMember[]
   returnRequests    ReturnRequest[]
   bundles           Bundle[]
+  warehouses        Warehouse[]
+  shipments         Shipment[]
 
   @@index([slug])
   @@index([merchantId])
@@ -196,6 +206,7 @@ model Product {
   reviews      ProductReview[]
   variants     ProductVariant[]
   wholesaleTiers WholesalePriceTier[]
+  warehouseStocks WarehouseStock[]
 
   @@index([storeId])
   @@index([categoryId])
@@ -247,18 +258,27 @@ model Order {
   status          OrderStatus @default(PENDING)
   shippingAddress Json
   stripePaymentId String?
+  /// NONE | PENDING | CONFIRMED | REJECTED — customer confirmation via WhatsApp link
+  confirmationStatus String    @default("NONE") @db.VarChar(20)
+  confirmationToken  String?   @unique @db.VarChar(64)
+  confirmationSentAt DateTime?
+  confirmedAt        DateTime?
+  warehouseId     String?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
   store    Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
   customer User?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  warehouse Warehouse? @relation(fields: [warehouseId], references: [id], onDelete: SetNull)
   items    OrderItem[]
   returnRequests ReturnRequest[]
+  shipment Shipment?
 
   @@index([storeId])
   @@index([customerId])
   @@index([status])
   @@index([createdAt])
+  @@index([warehouseId])
 }
 
 model OrderItem {
@@ -690,13 +710,81 @@ model StaffMember {
   password    String
   name        String
   permissions Json     @default("[]")
+  /// Preset: manager | orders | products | branch | custom
+  role        String   @default("custom") @db.VarChar(30)
+  /// When set, the staff member only sees this branch's orders and stock
+  warehouseId String?
+  isActive    Boolean  @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  store     Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  warehouse Warehouse? @relation(fields: [warehouseId], references: [id], onDelete: SetNull)
+
+  @@index([storeId])
+}
+
+/// A branch / warehouse that holds stock and fulfils orders
+model Warehouse {
+  id          String   @id @default(cuid())
+  storeId     String
+  name        String   @db.VarChar(100)
+  governorate String?  @db.VarChar(50)
+  address     String?  @db.Text
+  phone       String?  @db.VarChar(20)
+  /// Governorates this branch ships to (empty = fallback only)
+  servesGovernorates Json @default("[]")
+  isDefault   Boolean  @default(false)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  store  Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  stocks WarehouseStock[]
+  orders Order[]
+  staff  StaffMember[]
+
+  @@index([storeId])
+}
+
+model WarehouseStock {
+  id          String @id @default(cuid())
+  warehouseId String
+  productId   String
+  quantity    Int    @default(0)
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([warehouseId, productId])
+  @@index([productId])
+}
+
+/// Courier shipment + tracking for an order
+model Shipment {
+  id             String    @id @default(cuid())
+  orderId        String    @unique
+  storeId        String
+  /// manual | alwaseet
+  carrier        String    @default("manual") @db.VarChar(30)
+  /// Courier's own reference / waybill number
+  trackingNumber String?   @db.VarChar(100)
+  /// Short public code used on the waybill and the tracking page
+  trackingCode   String    @unique @db.VarChar(20)
+  /// CREATED | PICKED_UP | IN_TRANSIT | OUT_FOR_DELIVERY | DELIVERED | RETURNED | CANCELLED
+  status         String    @default("CREATED") @db.VarChar(30)
+  events         Json      @default("[]")
+  lastSyncedAt   DateTime?
+  lastError      String?   @db.Text
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   @@index([storeId])
+  @@index([status])
 }
 
 model ReturnRequest {

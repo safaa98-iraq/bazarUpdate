@@ -40,13 +40,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw]   = useState(false);
   const [remember, setRemember] = useState(true);
+  const [asStaff, setAsStaff] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      const res = await api.post<{ success: boolean; data: AuthResponse }>('/api/auth/login', data);
+      const res = await api.post<{ success: boolean; data: AuthResponse }>(asStaff ? '/api/auth/staff/login' : '/api/auth/login', data);
       login(res.data.user, res.data.token, remember);
       if (res.data.user.role === 'SUPER_ADMIN') router.push('/admin');
       else if (res.data.user.role === 'MERCHANT') router.push('/dashboard');
@@ -102,6 +103,13 @@ export default function LoginPage() {
               <p style={{ fontSize: 14, color: C.muted }}>سجّل الدخول لإدارة متجرك</p>
             </div>
 
+            {/* Owner / staff switch */}
+            <div className="bz-segmented" style={{ display: 'flex', marginBottom: 20 }}>
+              <button type="button" data-active={!asStaff} onClick={() => setAsStaff(false)} style={{ flex: 1 }}>صاحب المتجر</button>
+              <button type="button" data-active={asStaff} onClick={() => setAsStaff(true)} style={{ flex: 1 }}>موظف في متجر</button>
+            </div>
+
+            {!asStaff && (<>
             {/* Google Sign-In */}
             <div style={{ marginBottom: 8 }}>
               <GoogleSignInButton label="تسجيل الدخول بـ Google" />
@@ -113,6 +121,12 @@ export default function LoginPage() {
               <span style={{ fontSize: 12, color: '#7A8A99', whiteSpace: 'nowrap' }}>أو بالبريد الإلكتروني</span>
               <div style={{ flex: 1, height: 1, background: C.border }} />
             </div>
+            </>)}
+            {asStaff && (
+              <p style={{ fontSize: 13, color: C.muted, background: '#F1FAFF', border: '1px solid #D6EEFC', borderRadius: 12, padding: '10px 14px', marginBottom: 16 }}>
+                استخدم البريد وكلمة المرور التي أعطاك إياها صاحب المتجر.
+              </p>
+            )}
 
             <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 

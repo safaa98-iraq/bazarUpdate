@@ -34,6 +34,11 @@ npx prisma db push --skip-generate --schema packages/database/prisma/schema.pris
 echo "▶ Seeding admin + demo merchant"
 npm run db:seed
 
+# Preview only: give the demo merchant a plan so plan-gated features can be tried.
+if [ -n "${PREVIEW_DEMO_PLAN:-}" ]; then
+  mariadb -uroot bazar -e "UPDATE User SET plan='${PREVIEW_DEMO_PLAN}' WHERE email='merchant@demo.com'; UPDATE Store SET currency='IQD' WHERE slug='demo-store';"
+fi
+
 echo "▶ Starting API on port ${PORT}"
 export NODE_ENV=production
 exec node apps/api/dist/index.js
