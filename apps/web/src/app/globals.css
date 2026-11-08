@@ -407,7 +407,7 @@ a[href="/dashboard/settings?tab=billing"].inline-flex.border {
 
 /* ─── Landing page responsive ─── */
 @media (max-width: 768px) {
-  .hero-inner  { grid-template-columns: 1fr !important; text-align: center !important; }
+  .hero-inner  { grid-template-columns: 1fr !important; text-align: center !important; padding: 20px 0 48px !important; }
   .hero-inner > div:first-child { align-items: center !important; }
   .hero-inner > div:last-child  { display: none !important; }
   .features-grid { grid-template-columns: 1fr !important; }

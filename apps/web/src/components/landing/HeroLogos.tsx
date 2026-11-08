@@ -2,28 +2,38 @@
 import { Check } from 'lucide-react';
 import { BRAND_LOGOS, HERO_LOGO_COUNT, HERO_BADGE_TEXT, PLATFORM_STATS } from '@/lib/landing-content';
 
-/** Overlapping round merchant logos with an "active stores" pill underneath (hero). */
+/**
+ * Hero trust badge: a row of round merchant logos with a wide "active stores"
+ * pill underneath. The pill is exactly as wide as the logo row and tucks
+ * slightly under the logos so the two read as one unit.
+ */
 export function HeroLogos() {
   const logos = BRAND_LOGOS.slice(0, HERO_LOGO_COUNT);
   return (
-    <div className="inline-flex flex-col items-start gap-0 mb-6">
-      <div className="flex items-center ps-3 relative z-10">
+    <div className="inline-grid justify-items-stretch mb-7 max-w-full">
+      {/* Logos */}
+      <div className="relative z-10 flex justify-center px-3">
         {logos.map((b, i) => (
-          <span key={b.name} title={b.name}
-            className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-white border-[3px] border-[#E3F5FE] shadow-[0_4px_10px_rgba(11,53,80,0.10)] flex items-center justify-center overflow-hidden -ms-3 first:ms-0 transition-transform hover:-translate-y-1"
-            style={{ zIndex: logos.length - i }}>
-            <img src={b.mark} alt={b.name} className="h-8 w-8 sm:h-9 sm:w-9 object-contain" />
+          <span
+            key={b.name}
+            title={b.name}
+            className={`${i >= 6 ? 'hidden sm:flex' : 'flex'} h-11 w-11 sm:h-[60px] sm:w-[60px] -ms-1.5 first:ms-0 rounded-full bg-white border-2 border-[#E3F5FE] shadow-[0_2px_8px_rgba(11,53,80,0.10)] items-center justify-center overflow-hidden transition-transform hover:-translate-y-1`}
+            style={{ zIndex: logos.length - i }}
+          >
+            <img src={b.mark} alt={b.name} className="h-7 w-7 sm:h-10 sm:w-10 object-contain" />
           </span>
         ))}
       </div>
-      <span className="-mt-2 inline-flex items-center gap-2 rounded-full bg-white/80 backdrop-blur border border-[#BDE6FC] px-4 py-2 shadow-[0_6px_18px_rgba(32,169,244,0.18)]">
-        <span className="h-6 w-6 rounded-full bg-bz-ink text-white flex items-center justify-center flex-shrink-0">
-          <Check className="h-3.5 w-3.5" strokeWidth={3} />
+
+      {/* Active-stores pill: same width as the logo row, overlapping its bottom edge */}
+      <div className="-mt-3 sm:-mt-4 flex items-center justify-center gap-2.5 sm:gap-3 h-11 sm:h-14 px-4 sm:px-6 rounded-full bg-[#C9EBFD] border-2 border-white shadow-[0_8px_24px_rgba(32,169,244,0.22)]">
+        <span className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-bz-ink text-white flex items-center justify-center flex-shrink-0">
+          <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={3} />
         </span>
-        <span className="text-sm sm:text-[15px] font-bold text-bz-ink">
-          <span className="tabular-nums" dir="ltr">{PLATFORM_STATS[0]?.value}</span> {HERO_BADGE_TEXT}
+        <span className="text-[13px] sm:text-lg font-bold text-bz-ink whitespace-nowrap">
+          <bdi className="tabular-nums">{PLATFORM_STATS[0]?.value}</bdi> {HERO_BADGE_TEXT}
         </span>
-      </span>
+      </div>
     </div>
   );
 }
