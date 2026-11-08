@@ -5,9 +5,10 @@
  * - Change the copy of a store-type tab: edit title / description / bullets below.
  * - Add or remove a business logo: edit BRAND_LOGOS (files live in /public/images/logos).
  *
- * ⚠️ The logos below are FICTIONAL placeholder brands, and the numbers in
- * PLATFORM_STATS are placeholders too. Replace both with real merchants (with
- * their permission) and real figures before launch.
+ * ⚠️ The logos below are placeholder artwork (logo-template designs), not real
+ * Bazar merchants, and the numbers in PLATFORM_STATS are placeholders too.
+ * Replace both with real merchants (with their permission) and real figures
+ * before launch.
  */
 import type { ClayIconName } from '@/components/ui/ClayIcon';
 
@@ -15,31 +16,45 @@ import type { ClayIconName } from '@/components/ui/ClayIcon';
 
 export interface BrandLogo {
   name: string;
-  /** Wide logo used in the partners strip. */
+  /** Logo artwork on its own background (partners strip). */
   logo: string;
-  /** Square mark used in the round hero badges. */
+  /** Square, padded version of the same artwork (round hero badges). */
   mark: string;
+  /** Background colour of the artwork, used to fill the card/badge around it. */
+  bg: string;
 }
 
-const logo = (slug: string, name: string): BrandLogo => ({
+const logo = (slug: string, name: string, bg: string): BrandLogo => ({
   name,
-  logo: `/images/logos/${slug}.svg`,
-  mark: `/images/logos/${slug}-mark.svg`,
+  logo: `/images/logos/${slug}.webp`,
+  mark: `/images/logos/${slug}-mark.webp`,
+  bg,
 });
 
+/** The first HERO_LOGO_COUNT entries also appear as round badges in the hero (first 6 on phones). */
 export const BRAND_LOGOS: BrandLogo[] = [
-  logo('dar-alward', 'دار الورد'),
-  logo('sumer', 'عطور سومر'),
-  logo('tigris-tech', 'Tigris Tech'),
-  logo('bin-alsabah', 'بُن الصباح'),
-  logo('lamar', 'LAMAR'),
-  logo('babel-kids', 'Babel Kids'),
-  logo('areej', 'حلويات أريج'),
-  logo('zaha-home', 'زها هوم'),
-  logo('nakhla', 'نخلة'),
-  logo('nour-optics', 'Nour Optics'),
-  logo('ofuq', 'كتب أفق'),
-  logo('maya-beauty', 'Maya Beauty'),
+  logo('bariq', 'بريق للإكسسوارات', '#FFFFFF'),
+  logo('nakha', 'نكهة', '#322D2A'),
+  logo('gaming-land', 'جيمنج لاند', '#FFFFFF'),
+  logo('point', 'Point Supply', '#FEFFED'),
+  logo('men-suits', 'Men Suits', '#FFFFFF'),
+  logo('joud', 'جود', '#163124'),
+  logo('kattan', 'كتان', '#2C314A'),
+  logo('beau-co', 'Beau & Co.', '#400303'),
+  logo('nasij', 'نسيج', '#F8F4EC'),
+  logo('ra-studio', 'RA Beauty Studio', '#F1F1F1'),
+  logo('adora-rufus', 'Adora & Rufus', '#262626'),
+  logo('dazle', 'Dazle', '#F6F4F0'),
+  logo('meem', 'Meem Studios', '#EADFD3'),
+  logo('sua', 'SUA', '#FFFAF5'),
+  logo('harness', 'Harness', '#EAEAEA'),
+  logo('serena-vale', 'Serena Vale', '#EDE0D0'),
+  logo('hm-studio', 'HM Studio', '#B7B7AA'),
+  logo('helene', 'Helene Jaquet', '#FAF6F1'),
+  logo('beauty-clinic', 'Beauty Clinic', '#FFFBFD'),
+  logo('ms', 'Marissa Samira', '#E7E7E7'),
+  logo('claudia', 'Claudia Alves', '#F1F1F1'),
+  logo('bk-beauty', 'Beauty Kitchen', '#DFDDDB'),
 ];
 
 /** How many logos to show as round badges in the hero. */

@@ -9,9 +9,9 @@ function LogoRow({ reverse = false }: { reverse?: boolean }) {
     <div className="relative overflow-hidden py-3 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
       <div className="flex w-max gap-6 bz-logo-marquee" style={{ animationDirection: reverse ? 'reverse' : 'normal' }}>
         {items.map((b, i) => (
-          <div key={`${b.name}-${i}`} title={b.name}
-            className="h-20 w-48 flex-shrink-0 rounded-2xl bg-white border border-bz-line flex items-center justify-center px-4 grayscale-[35%] hover:grayscale-0 transition">
-            <img src={b.logo} alt={b.name} className="max-h-12 w-full object-contain" loading="lazy" />
+          <div key={`${b.name}-${i}`} title={b.name} style={{ background: b.bg }}
+            className="h-28 w-48 flex-shrink-0 rounded-2xl border border-bz-line overflow-hidden flex items-center justify-center shadow-[0_2px_10px_rgba(11,53,80,0.05)] hover:-translate-y-1 transition-transform">
+            <img src={b.logo} alt={b.name} className="h-full w-full object-contain" loading="lazy" />
           </div>
         ))}
       </div>

@@ -17,10 +17,10 @@ export function HeroLogos() {
           <span
             key={b.name}
             title={b.name}
-            className={`${i >= 6 ? 'hidden sm:flex' : 'flex'} h-11 w-11 sm:h-[60px] sm:w-[60px] -ms-1.5 first:ms-0 rounded-full bg-white border-2 border-[#E3F5FE] shadow-[0_2px_8px_rgba(11,53,80,0.10)] items-center justify-center overflow-hidden transition-transform hover:-translate-y-1`}
-            style={{ zIndex: logos.length - i }}
+            className={`${i >= 6 ? 'hidden sm:flex' : 'flex'} h-11 w-11 sm:h-[60px] sm:w-[60px] -ms-1.5 first:ms-0 rounded-full border-2 border-[#E3F5FE] shadow-[0_2px_8px_rgba(11,53,80,0.10)] items-center justify-center overflow-hidden transition-transform hover:-translate-y-1`}
+            style={{ zIndex: logos.length - i, background: b.bg }}
           >
-            <img src={b.mark} alt={b.name} className="h-7 w-7 sm:h-10 sm:w-10 object-contain" />
+            <img src={b.mark} alt={b.name} className="h-full w-full object-cover scale-[1.18]" />
           </span>
         ))}
       </div>
