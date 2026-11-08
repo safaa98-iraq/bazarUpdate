@@ -46,7 +46,7 @@ const C = {
 
 /* ─── Shared styles ─── */
 const HEADING: React.CSSProperties = { fontFamily: 'var(--font-cairo)' };
-const SEC: React.CSSProperties = { padding: '72px 28px 0', fontFamily: "'Tajawal', sans-serif", position: 'relative' };
+const SEC: React.CSSProperties = { padding: '72px 28px 0', fontFamily: 'var(--font-arabic), sans-serif', position: 'relative' };
 const TITLE: React.CSSProperties = { ...HEADING, fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, color: C.dark, lineHeight: 1.3, margin: 0 };
 const SUBP: React.CSSProperties = { fontSize: 17, color: C.text2, lineHeight: 1.9, margin: '12px 0 0', fontWeight: 300, maxWidth: '56ch' };
 const INNER: React.CSSProperties = { maxWidth: 1200, margin: '0 auto' };
@@ -87,7 +87,7 @@ function SectionCTA({ text = 'ابدأ الآن — أنشئ متجرك مجان
   return (
     <div style={{ textAlign: 'center', marginTop: 36 }}>
       <Link href="/register">
-        <button style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 16, background: C.dark, color: '#fff', padding: '15px 34px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
+        <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 16, background: C.dark, color: '#fff', padding: '15px 34px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
           onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
           onMouseLeave={e => (e.currentTarget.style.background = C.dark)}>
           {text} ←
@@ -112,13 +112,13 @@ function LPHeader() {
 
   return (
     <>
-      <header style={{ maxWidth: 1200, margin: '0 auto', padding: '22px 28px', display: 'flex', alignItems: 'center', gap: 8, fontFamily: "'Tajawal', sans-serif" }}>
+      <header style={{ maxWidth: 1200, margin: '0 auto', padding: '22px 28px', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-arabic), sans-serif' }}>
         <span style={{ ...HEADING, fontWeight: 800, fontSize: 30, color: C.dark, cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>بازار</span>
         <span style={{ flex: 1 }} />
         <nav className="lp-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           {links.map(l => (
             <button key={l.id} onClick={() => go(l.id)}
-              style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 400, fontSize: 15, color: C.dark, padding: '9px 16px', borderRadius: 10, background: 'transparent', border: 'none', cursor: 'pointer', transition: 'background .2s' }}
+              style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 400, fontSize: 15, color: C.dark, padding: '9px 16px', borderRadius: 10, background: 'transparent', border: 'none', cursor: 'pointer', transition: 'background .2s' }}
               onMouseEnter={e => (e.currentTarget.style.background = C.blueLight)}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
               {l.label}
@@ -142,13 +142,13 @@ function LPHeader() {
         <div style={{ padding: '0 28px 20px', display: 'flex', flexDirection: 'column', gap: 4 }}>
           {links.map(l => (
             <button key={l.id} onClick={() => go(l.id)}
-              style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 400, fontSize: 15, color: C.dark, padding: '10px 4px', background: 'none', border: 'none', textAlign: 'right', cursor: 'pointer' }}>
+              style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 400, fontSize: 15, color: C.dark, padding: '10px 4px', background: 'none', border: 'none', textAlign: 'right', cursor: 'pointer' }}>
               {l.label}
             </button>
           ))}
-          <Link href="/login" style={{ fontFamily: "'Tajawal', sans-serif", fontSize: 15, color: C.dark, padding: '10px 4px' }}>دخول</Link>
+          <Link href="/login" style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 15, color: C.dark, padding: '10px 4px' }}>دخول</Link>
           <Link href="/register">
-            <button style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 15, background: C.blue, color: '#fff', padding: 12, borderRadius: 10, border: 'none', width: '100%', marginTop: 8 }}>ابدأ مجاناً</button>
+            <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 15, background: C.blue, color: '#fff', padding: 12, borderRadius: 10, border: 'none', width: '100%', marginTop: 8 }}>ابدأ مجاناً</button>
           </Link>
         </div>
       )}
@@ -222,7 +222,7 @@ function LPHero() {
               <br />
               أسهل وأسرع.
             </h1>
-            <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 400, fontSize: 17, lineHeight: 1.95, margin: '18px 0 0', maxWidth: '46ch', color: C.text2 }}>
+            <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 400, fontSize: 17, lineHeight: 1.95, margin: '18px 0 0', maxWidth: '46ch', color: C.text2 }}>
               أنشئ متجرك الإلكتروني بنفسك في دقائق: منتجاتك، طلباتك، والدفع عند الاستلام بالدينار — بلوحة واحدة بالعربي.{' '}
               <strong style={{ fontWeight: 700, color: C.blue }}>لا عمولة. لا برمجة. لا انتظار.</strong>
             </p>
@@ -243,7 +243,7 @@ function LPHero() {
             <p style={{ margin: '22px 0 0', fontSize: 18, fontWeight: 500, color: C.dark }}>مصمّمة للتجّار في العراق</p>
             <div className="lp-hero-trust" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 22px', marginTop: 18 }}>
               {trust.map((t, i) => (
-                <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 13.5, color: C.text2 }}>
+                <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 13.5, color: C.text2 }}>
                   <t.Icon size={15} strokeWidth={2} color={C.blue} />
                   {t.t}
                 </div>
@@ -282,7 +282,7 @@ function LPValueProps() {
               </div>
             </div>
             <h2 style={{ ...HEADING, fontWeight: 700, fontSize: 26, lineHeight: 1.4, margin: '8px 0 0', color: C.dark }}>{c.h}</h2>
-            <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 15, lineHeight: 1.9, margin: '6px 0 0', color: C.text2 }}>{c.p}</p>
+            <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 15, lineHeight: 1.9, margin: '6px 0 0', color: C.text2 }}>{c.p}</p>
           </div>
         ))}
       </div>
@@ -304,11 +304,11 @@ function BuilderMockup() {
 
       {/* Floating: page-elements order panel (top-right) */}
       <div style={{ position: 'absolute', top: -18, right: '4%', width: '46%', background: '#fff', borderRadius: 10, padding: '12px 14px', boxShadow: '0 14px 30px rgba(11,53,80,0.16)' }}>
-        <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 11.5, color: C.dark }}>ترتيب الصفحة الرئيسية</span>
+        <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 11.5, color: C.dark }}>ترتيب الصفحة الرئيسية</span>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
           {['بانر عريض', 'منتجات مميزة', 'مميزات المتجر'].map((l, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.bg, borderRadius: 8, padding: '6px 10px' }}>
-              <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 10.5, color: C.text2 }}>{l}</span>
+              <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 10.5, color: C.text2 }}>{l}</span>
               <span style={{ width: 10, height: 10, borderRadius: 3, background: C.border }} />
             </div>
           ))}
@@ -328,7 +328,7 @@ function BuilderMockup() {
       <div style={{ position: 'absolute', bottom: -20, left: '2%', width: '38%', background: '#fff', borderRadius: 10, padding: 8, boxShadow: '0 14px 30px rgba(11,53,80,0.16)' }}>
         <div style={{ height: 46, borderRadius: 8, background: C.soft, marginBottom: 6 }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 600, fontSize: 9.5, color: C.dark }}>القالب الحالي</span>
+          <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 600, fontSize: 9.5, color: C.dark }}>القالب الحالي</span>
           <Check size={11} color={C.green} strokeWidth={3} />
         </div>
       </div>
@@ -349,7 +349,7 @@ function LPWork() {
         <div className="work-grid" style={{ display: 'grid', gridTemplateColumns: '7fr 4fr', gap: 28, alignItems: 'center' }}>
           <BuilderMockup />
           <div>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 13, color: C.greenDark, background: C.greenLight, padding: '7px 14px', borderRadius: 99, marginBottom: 16 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 13, color: C.greenDark, background: C.greenLight, padding: '7px 14px', borderRadius: 99, marginBottom: 16 }}>
               <LayoutTemplate size={14} strokeWidth={2} />
               لوحة البناء
             </span>
@@ -361,7 +361,7 @@ function LPWork() {
                   <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, flexShrink: 0, borderRadius: 9, background: b.bg }}>
                     <b.Icon size={17} strokeWidth={1.8} color={b.color} />
                   </span>
-                  <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 14.5, lineHeight: 1.7, margin: 0, color: C.dark }}>
+                  <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 14.5, lineHeight: 1.7, margin: 0, color: C.dark }}>
                     <strong style={{ fontWeight: 700 }}>{b.t}</strong>{' — '}<span style={{ fontWeight: 300, color: C.text2 }}>{b.p}</span>
                   </p>
                 </div>
@@ -369,7 +369,7 @@ function LPWork() {
             </div>
             <div style={{ marginTop: 26 }}>
               <Link href="/register">
-                <button style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 15, background: C.dark, color: '#fff', padding: '13px 26px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
+                <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 15, background: C.dark, color: '#fff', padding: '13px 26px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
                   onMouseLeave={e => (e.currentTarget.style.background = C.dark)}>
                   ابدأ بناء متجرك الآن ←
@@ -405,12 +405,12 @@ function LPFeatures() {
               <div style={{ position: 'relative', width: 72, height: 72, margin: '6px 0 10px' }}>
                 <Image src={it.img} alt={it.h} fill sizes="72px" style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 14px rgba(11,53,80,0.2))' }} />
               </div>
-              <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 16, lineHeight: 1.8, margin: 0, color: it.color }}>{it.micro}</p>
+              <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 16, lineHeight: 1.8, margin: 0, color: it.color }}>{it.micro}</p>
               <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 24, lineHeight: 1.45, margin: '4px 0 0', color: C.dark }}>{it.h}</h3>
-              <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 15, lineHeight: 1.9, margin: '6px 0 0', color: C.text2 }}>{it.p}</p>
+              <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 15, lineHeight: 1.9, margin: '6px 0 0', color: C.text2 }}>{it.p}</p>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 10 }}>
                 <Check size={15} color={C.green} strokeWidth={3} style={{ flexShrink: 0, marginTop: 3 }} />
-                <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 13.5, lineHeight: 1.8, color: C.dark }}>{it.detail}</span>
+                <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 13.5, lineHeight: 1.8, color: C.dark }}>{it.detail}</span>
               </div>
             </div>
           ))}
@@ -446,10 +446,10 @@ function LPMarketing() {
                 <Image src={it.img} alt={it.h} fill sizes="64px" style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 14px rgba(11,53,80,0.18))' }} />
               </div>
               <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 20, lineHeight: 1.4, margin: '14px 0 0', color: C.dark }}>{it.h}</h3>
-              <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 14.5, lineHeight: 1.9, margin: '6px 0 0', color: C.text2 }}>{it.p}</p>
+              <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14.5, lineHeight: 1.9, margin: '6px 0 0', color: C.text2 }}>{it.p}</p>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 10 }}>
                 <Check size={13} color={C.green} strokeWidth={3} style={{ flexShrink: 0, marginTop: 3 }} />
-                <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 12.5, lineHeight: 1.8, color: C.dark }}>{it.detail}</span>
+                <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 12.5, lineHeight: 1.8, color: C.dark }}>{it.detail}</span>
               </div>
             </div>
           ))}
@@ -480,7 +480,7 @@ function LPWhatsNew() {
   return (
     <section id="whats-new" ref={ref as React.RefObject<HTMLElement>} style={SEC}>
       <div style={INNER}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 13, color: C.accentDark, background: C.soft, padding: '7px 14px', borderRadius: 99, marginBottom: 16 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 13, color: C.accentDark, background: C.soft, padding: '7px 14px', borderRadius: 99, marginBottom: 16 }}>
           <Sparkles size={14} strokeWidth={2} />
           جديد في بازار
         </span>
@@ -499,7 +499,7 @@ function LPWhatsNew() {
                 </span>
               ) : null}
               <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 16.5, lineHeight: 1.4, margin: '12px 0 0', color: C.dark }}>{it.h}</h3>
-              <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 13, lineHeight: 1.8, margin: '5px 0 0', color: C.text2 }}>{it.p}</p>
+              <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 13, lineHeight: 1.8, margin: '5px 0 0', color: C.text2 }}>{it.p}</p>
             </div>
           ))}
         </div>
@@ -531,7 +531,7 @@ function LPSteps() {
               <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <span style={{ ...HEADING, fontWeight: 800, fontSize: 52, lineHeight: 1, color: C.green }}>{ARABIC_INDIC[i]}</span>
                 <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 21, lineHeight: 1.45, margin: 0, color: C.dark }}>{s.title}</h3>
-                <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 14.5, lineHeight: 1.85, margin: 0, color: C.text2 }}>{s.desc}</p>
+                <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14.5, lineHeight: 1.85, margin: 0, color: C.text2 }}>{s.desc}</p>
               </div>
             ))}
           </div>
@@ -560,12 +560,12 @@ function LPStories() {
         <div className="stories-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 32 }}>
           {stories.map((s, i) => (
             <div key={i} style={{ background: C.white, borderRadius: 10, padding: '28px 26px 26px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 400, fontSize: 16.5, lineHeight: 1.85, margin: 0, color: C.dark }}>&quot;{s.quote}&quot;</p>
+              <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 400, fontSize: 16.5, lineHeight: 1.85, margin: 0, color: C.dark }}>&quot;{s.quote}&quot;</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ width: 48, height: 48, borderRadius: 10, background: `linear-gradient(135deg, ${s.from}, ${s.to})`, display: 'flex', alignItems: 'center', justifyContent: 'center', ...HEADING, fontWeight: 700, fontSize: 20, color: '#fff' }}>{s.letter}</span>
                 <div>
-                  <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 600, fontSize: 15, margin: 0, color: C.dark }}>{s.name}</p>
-                  <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 13, margin: '2px 0 0', color: C.text2 }}>{s.sub}</p>
+                  <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 600, fontSize: 15, margin: 0, color: C.dark }}>{s.name}</p>
+                  <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 13, margin: '2px 0 0', color: C.text2 }}>{s.sub}</p>
                 </div>
               </div>
             </div>
@@ -586,16 +586,16 @@ function ComparisonIllustration() {
       <rect x="46" y="140" width="88" height="10" rx="10" fill={C.blueMid} />
       <rect x="46" y="156" width="60" height="8" rx="10" fill={C.blueMid} opacity="0.5" />
       <rect x="46" y="170" width="88" height="26" rx="10" fill={C.blue} />
-      <text x="90" y="188" textAnchor="middle" fontFamily="Tajawal,sans-serif" fontSize="12" fontWeight="700" fill="#fff">د.ع</text>
+      <text x="90" y="188" textAnchor="middle" fontFamily="var(--font-arabic), sans-serif" fontSize="12" fontWeight="700" fill="#fff">د.ع</text>
       <rect x="180" y="60" width="140" height="150" rx="10" fill={C.butter} />
       <path d="M180 76 L250 30 L320 76" fill="#C2CDD8" />
       <rect x="206" y="106" width="88" height="24" rx="10" fill="#fff" />
       <rect x="206" y="140" width="88" height="10" rx="10" fill="#C2CDD8" />
       <rect x="206" y="156" width="60" height="8" rx="10" fill="#C2CDD8" opacity="0.5" />
       <rect x="206" y="170" width="88" height="26" rx="10" fill="#9494AC" />
-      <text x="250" y="188" textAnchor="middle" fontFamily="Tajawal,sans-serif" fontSize="11" fontWeight="700" fill="#fff">USD</text>
+      <text x="250" y="188" textAnchor="middle" fontFamily="var(--font-arabic), sans-serif" fontSize="11" fontWeight="700" fill="#fff">USD</text>
       <circle cx="170" cy="26" r="18" fill="#F5CE6A" />
-      <text x="170" y="32" textAnchor="middle" fontFamily="Tajawal,sans-serif" fontSize="14" fontWeight="700" fill={C.dark}>VS</text>
+      <text x="170" y="32" textAnchor="middle" fontFamily="var(--font-arabic), sans-serif" fontSize="14" fontWeight="700" fill={C.dark}>VS</text>
     </svg>
   );
 }
@@ -665,17 +665,17 @@ function LPComparison() {
             </div>
             {rows.map((r, i) => (
               <div key={r.label} style={{ display: 'grid', gridTemplateColumns: '1fr 160px 160px', borderBottom: i < rows.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                <div style={{ padding: '14px 20px', fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 14, color: C.dark, display: 'flex', alignItems: 'center' }}>{r.label}</div>
-                <div style={{ padding: '14px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: `${C.green}08`, fontFamily: "'Tajawal', sans-serif", fontWeight: 600, fontSize: 13, color: C.dark }}>
+                <div style={{ padding: '14px 20px', fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 14, color: C.dark, display: 'flex', alignItems: 'center' }}>{r.label}</div>
+                <div style={{ padding: '14px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: `${C.green}08`, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 600, fontSize: 13, color: C.dark }}>
                   <ShopifyCompareCell value={r.bazar} />
                 </div>
-                <div style={{ padding: '14px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontFamily: "'Tajawal', sans-serif", fontWeight: 400, fontSize: 13, color: C.text2 }}>
+                <div style={{ padding: '14px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 400, fontSize: 13, color: C.text2 }}>
                   <ShopifyCompareCell value={r.shopify} />
                 </div>
               </div>
             ))}
           </div>
-          <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 13.5, lineHeight: 1.85, margin: '18px 0 0', color: C.text2 }}>
+          <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 13.5, lineHeight: 1.85, margin: '18px 0 0', color: C.text2 }}>
             المقارنة مبنية على الخطط الأساسية المعلنة لكل منصة وقت كتابة هذه الصفحة. Shopify علامة تجارية مسجلة لأصحابها.
           </p>
         </div>
@@ -728,7 +728,7 @@ function LPIntegrations() {
               <p style={SUBP}>اربط بازار بإنستغرام، واتساب، فيسبوك، تيك توك، وسناب شات، وشركات التوصيل المحلية — بضغطة واحدة، بلا أكواد.</p>
             </div>
             <span style={{ flex: 1 }} />
-            <button style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 15, color: C.blue, padding: '12px 22px', border: `1px solid ${C.border}`, borderRadius: 10, background: 'transparent', cursor: 'pointer' }}>
+            <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 15, color: C.blue, padding: '12px 22px', border: `1px solid ${C.border}`, borderRadius: 10, background: 'transparent', cursor: 'pointer' }}>
               اطّلع على كل التطبيقات
             </button>
           </div>
@@ -739,7 +739,7 @@ function LPIntegrations() {
                 <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 10, background: a.bg }}>
                   {a.render()}
                 </span>
-                <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 13, color: C.dark }}>{a.label}</span>
+                <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 13, color: C.dark }}>{a.label}</span>
               </div>
             ))}
           </div>
@@ -770,7 +770,7 @@ function LPBlog() {
             <h2 style={TITLE}>من مدونة بازار</h2>
             <p style={SUBP}>نصائح ودلائل للتجارة الإلكترونية في العراق.</p>
           </div>
-          <Link href="/blog" style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 14, color: C.blue, whiteSpace: 'nowrap' }}>
+          <Link href="/blog" style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 14, color: C.blue, whiteSpace: 'nowrap' }}>
             كل المقالات ←
           </Link>
         </div>
@@ -789,9 +789,9 @@ function LPBlog() {
                   : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Newspaper size={28} color={C.border} /></div>}
               </div>
               <div style={{ padding: '18px 20px' }}>
-                {a.category && <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 12, color: C.accent }}>{a.category}</span>}
+                {a.category && <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 12, color: C.accent }}>{a.category}</span>}
                 <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 17, lineHeight: 1.5, margin: '6px 0 0', color: C.dark }}>{a.title}</h3>
-                {a.excerpt && <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 13, lineHeight: 1.8, margin: '8px 0 0', color: C.text2 }} className="line-clamp-2">{a.excerpt}</p>}
+                {a.excerpt && <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 13, lineHeight: 1.8, margin: '8px 0 0', color: C.text2 }} className="line-clamp-2">{a.excerpt}</p>}
               </div>
             </Link>
           ))}
@@ -826,12 +826,12 @@ function LPFaq() {
                   style={{ display: 'flex', alignItems: 'center', gap: 16, width: '100%', textAlign: 'right', background: 'transparent', border: 0, cursor: 'pointer', padding: '22px 26px' }}>
                   <span style={{ ...HEADING, fontWeight: 700, fontSize: 21, lineHeight: 1.45, color: C.dark }}>{f.q}</span>
                   <span style={{ flex: 1 }} />
-                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, flexShrink: 0, fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 22, lineHeight: 1, borderRadius: 10, background: isOpen ? C.blue : C.butter, color: isOpen ? '#fff' : C.blue }}>
+                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, flexShrink: 0, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 22, lineHeight: 1, borderRadius: 10, background: isOpen ? C.blue : C.butter, color: isOpen ? '#fff' : C.blue }}>
                     {isOpen ? '−' : '+'}
                   </span>
                 </button>
                 {isOpen && (
-                  <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 15.5, lineHeight: 1.95, margin: 0, padding: '0 26px 24px', maxWidth: '70ch', color: C.text2 }}>{f.a}</p>
+                  <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 15.5, lineHeight: 1.95, margin: 0, padding: '0 26px 24px', maxWidth: '70ch', color: C.text2 }}>{f.a}</p>
                 )}
               </div>
             );
@@ -863,14 +863,14 @@ function LPPricing() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 26, margin: 0, color: C.dark }}>{plan.name}</h3>
                 {plan.badge && (
-                  <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 13, background: C.blue, color: '#fff', padding: '5px 12px', borderRadius: 10 }}>{plan.badge}</span>
+                  <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 13, background: C.blue, color: '#fff', padding: '5px 12px', borderRadius: 10 }}>{plan.badge}</span>
                 )}
               </div>
               <div style={{ marginTop: 12 }}>
                 <PlanPrice plan={plan.key} align="right" />
               </div>
-              <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 15, lineHeight: 1.9, margin: '8px 0 0', color: C.text2 }}>{plan.desc}</p>
-              <ul style={{ margin: '18px 0 0', padding: 0, listStyle: 'none', fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 14, lineHeight: 2.05, color: C.dark, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 15, lineHeight: 1.9, margin: '8px 0 0', color: C.text2 }}>{plan.desc}</p>
+              <ul style={{ margin: '18px 0 0', padding: 0, listStyle: 'none', fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14, lineHeight: 2.05, color: C.dark, display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {plan.features.slice(0, 5).map((f, j) => (
                   <li key={j} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <span style={{ color: C.success, fontWeight: 700, flexShrink: 0 }}>✓</span>
@@ -879,7 +879,7 @@ function LPPricing() {
                 ))}
               </ul>
               <Link href="/register">
-                <button style={{ display: 'block', width: '100%', textAlign: 'center', marginTop: 22, fontFamily: "'Tajawal', sans-serif", fontWeight: plan.featured ? 700 : 500, fontSize: 16, background: plan.featured ? C.blue : 'transparent', color: plan.featured ? '#fff' : C.dark, border: plan.featured ? 'none' : `2px solid ${C.dark}`, padding: plan.featured ? 15 : 13, borderRadius: 10, cursor: 'pointer', transition: 'opacity .2s' }}
+                <button style={{ display: 'block', width: '100%', textAlign: 'center', marginTop: 22, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: plan.featured ? 700 : 500, fontSize: 16, background: plan.featured ? C.blue : 'transparent', color: plan.featured ? '#fff' : C.dark, border: plan.featured ? 'none' : `2px solid ${C.dark}`, padding: plan.featured ? 15 : 13, borderRadius: 10, cursor: 'pointer', transition: 'opacity .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.opacity = '.85')}
                   onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
                   {plan.cta}
@@ -929,15 +929,15 @@ function LPPlanComparison() {
               <div style={{ padding: '16px 20px' }} />
               {cols.map(col => (
                 <div key={col.key} style={{ padding: '16px 8px', textAlign: 'center', background: col.key === 'PRO' ? `${C.blue}08` : col.key === 'ENTERPRISE' ? `${C.accent}08` : 'transparent' }}>
-                  <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 800, fontSize: 13, color: C.dark }}>{col.label}</span>
+                  <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 800, fontSize: 13, color: C.dark }}>{col.label}</span>
                 </div>
               ))}
             </div>
             {rows.map((row, i) => (
               <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 110px', borderBottom: i < rows.length - 1 ? `1px solid ${C.border}` : 'none', background: row.highlight ? `${C.dark}04` : 'transparent' }}>
                 <div style={{ padding: '12px 20px' }}>
-                  <div style={{ fontFamily: "'Tajawal', sans-serif", fontSize: 13, fontWeight: 500, color: C.dark }}>{row.label}</div>
-                  {row.sub && <div style={{ fontFamily: "'Tajawal', sans-serif", fontSize: 11, color: C.text2, marginTop: 1 }}>{row.sub}</div>}
+                  <div style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 13, fontWeight: 500, color: C.dark }}>{row.label}</div>
+                  {row.sub && <div style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 11, color: C.text2, marginTop: 1 }}>{row.sub}</div>}
                 </div>
                 {cols.map(col => (
                   <div key={col.key} style={{ padding: '12px 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -981,25 +981,25 @@ function LPFinalCTA() {
         <div style={{ background: C.dark, borderRadius: 10, padding: '52px 48px', display: 'grid', gridTemplateColumns: '7fr 4fr', gap: 28, alignItems: 'center' }} className="final-cta-grid">
           <div>
             <h2 style={{ ...HEADING, fontWeight: 800, fontSize: 'clamp(28px, 3.4vw, 46px)', lineHeight: 1.28, margin: 0, color: '#fff', maxWidth: '20ch' }}>متجرك ينتظر منتجه الأول.</h2>
-            <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 18, lineHeight: 1.9, margin: '14px 0 0', maxWidth: '44ch', color: '#C7C4D7' }}>
+            <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 18, lineHeight: 1.9, margin: '14px 0 0', maxWidth: '44ch', color: '#C7C4D7' }}>
               افتتح اليوم مجاناً، وشوف شكله قبل ما تدفع فلساً واحداً.
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 28 }}>
               <Link href="/register">
-                <button style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 17, background: C.blue, color: '#fff', padding: '16px 30px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
+                <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 17, background: C.blue, color: '#fff', padding: '16px 30px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
                   onMouseLeave={e => (e.currentTarget.style.background = C.blue)}>
                   ابدأ مجاناً
                 </button>
               </Link>
               <button onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
-                style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 17, color: '#fff', background: 'transparent', border: `2px solid ${C.text2}`, padding: '14px 28px', borderRadius: 10, cursor: 'pointer' }}>
+                style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 17, color: '#fff', background: 'transparent', border: `2px solid ${C.text2}`, padding: '14px 28px', borderRadius: 10, cursor: 'pointer' }}>
                 شوف بازار وهو يعمل
               </button>
             </div>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginTop: 28 }}>
               {([[Lock, 'آمن 100%'], [Zap, 'إعداد في 5 دقائق'], [BadgeCheck, 'دعم بالعربي']] as [LucideIcon, string][]).map(([Icon, label], i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.8)', fontSize: 14, fontWeight: 500, fontFamily: "'Tajawal', sans-serif" }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.8)', fontSize: 14, fontWeight: 500, fontFamily: 'var(--font-arabic), sans-serif' }}>
                   <Icon size={16} strokeWidth={2} />{label}
                 </div>
               ))}
@@ -1023,7 +1023,7 @@ function LPFooter() {
   const go = (id: string | null) => { if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); };
 
   return (
-    <footer style={{ marginTop: 72, background: C.white, borderTop: `1px solid ${C.border}`, fontFamily: "'Tajawal', sans-serif" }}>
+    <footer style={{ marginTop: 72, background: C.white, borderTop: `1px solid ${C.border}`, fontFamily: 'var(--font-arabic), sans-serif' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '56px 28px 40px', display: 'grid', gridTemplateColumns: '3fr repeat(4, 2fr)', gap: 28 }} className="lp-footer-top">
         <div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
@@ -1032,24 +1032,24 @@ function LPFooter() {
             </div>
             <span style={{ ...HEADING, fontWeight: 800, fontSize: 24, color: C.dark }}>بازار</span>
           </div>
-          <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 14.5, lineHeight: 1.9, margin: '12px 0 0', maxWidth: '32ch', color: C.text2 }}>
+          <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14.5, lineHeight: 1.9, margin: '12px 0 0', maxWidth: '32ch', color: C.text2 }}>
             منصة عراقية لبناء متجر إلكتروني يبيع فعلاً — بالعربي وبالدينار، بلا عمولة وبلا برمجة.
           </p>
         </div>
         {cols.map((col, i) => (
           <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-            <span style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 14, color: C.dark }}>{col.h}</span>
+            <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 14, color: C.dark }}>{col.h}</span>
             {col.links.map((l, j) => (
               l.href ? (
                 <Link key={j} href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 14, color: C.text2, textAlign: 'right', transition: 'color .2s' }}
+                  style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14, color: C.text2, textAlign: 'right', transition: 'color .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = C.blue)}
                   onMouseLeave={e => (e.currentTarget.style.color = C.text2)}>
                   {l.l}
                 </Link>
               ) : (
                 <button key={j} onClick={() => go(l.id)}
-                  style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 14, color: C.text2, background: 'none', border: 'none', cursor: l.id ? 'pointer' : 'default', textAlign: 'right', padding: 0, transition: 'color .2s' }}
+                  style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14, color: C.text2, background: 'none', border: 'none', cursor: l.id ? 'pointer' : 'default', textAlign: 'right', padding: 0, transition: 'color .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = C.blue)}
                   onMouseLeave={e => (e.currentTarget.style.color = C.text2)}>
                   {l.l}
@@ -1077,7 +1077,7 @@ function LPFooter() {
 /* ─── Page ─── */
 export default function LandingPage() {
   return (
-    <div style={{ fontFamily: "'Tajawal', sans-serif", background: C.bg }}>
+    <div style={{ fontFamily: 'var(--font-arabic), sans-serif', background: C.bg }}>
       <div style={{ background: 'linear-gradient(180deg, #D3EFFE 0%, #E6F6FF 70%, #F6F8FA 100%)', overflowX: 'clip' }}>
         <LPHeader />
         <LPHero />

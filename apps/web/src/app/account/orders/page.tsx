@@ -52,7 +52,7 @@ export default function CustomerOrdersPage() {
   if (!user || user.role !== 'CUSTOMER') return null;
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, fontFamily: "'Tajawal', sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: C.bg, fontFamily: 'var(--font-arabic), sans-serif' }} dir="rtl">
       <nav style={{ background: '#fff', borderBottom: `1px solid ${C.border}` }}>
         <div style={{ maxWidth: 800, margin: '0 auto', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 22, color: C.p, textDecoration: 'none' }}>بازار</Link>

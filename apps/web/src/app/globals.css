@@ -1,3 +1,7 @@
+/* STIX Two Math is not in next/font's catalogue, so it is loaded from Google Fonts here.
+   (Alexandria, the main UI font, is self-hosted via next/font in app/layout.tsx.) */
+@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Math&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -545,3 +549,10 @@ a[href="/dashboard/settings?tab=billing"].inline-flex.border {
 @keyframes bz-logo-marquee { from { transform: translateX(0); } to { transform: translateX(50%); } }
 .bz-logo-marquee { animation: bz-logo-marquee 40s linear infinite; }
 .bz-logo-marquee:hover { animation-play-state: paused; }
+
+/* Math / formula text */
+.stix-two-math-regular {
+  font-family: "STIX Two Math", serif;
+  font-weight: 400;
+  font-style: normal;
+}

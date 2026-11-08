@@ -1,16 +1,16 @@
 // Railway deploy marker: pricing and retired-feature cleanup.
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { IBM_Plex_Sans_Arabic } from 'next/font/google';
+import { Alexandria } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { FreePlanTextNormalizer } from '@/components/FreePlanTextNormalizer';
 
 // One family for the whole UI (headings + body). globals.css maps the legacy
 // --font-tajawal / --font-cairo variables onto --font-arabic.
-const arabic = IBM_Plex_Sans_Arabic({
+const arabic = Alexandria({
   subsets: ['arabic', 'latin'],
-  weight: ['300', '400', '500', '600', '700'],
+  weight: 'variable', // full 100–900 range from a single file
   variable: '--font-arabic',
   display: 'swap',
 });

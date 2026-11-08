@@ -38,7 +38,7 @@ export default async function BlogArticlePage({ params }: { params: { slug: stri
     : null;
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, fontFamily: "'Tajawal', sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: C.bg, fontFamily: 'var(--font-arabic), sans-serif' }} dir="rtl">
       <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 28px 80px' }}>
         <Link href="/blog" className="inline-flex items-center gap-1.5 text-sm mb-8 hover:opacity-70 transition" style={{ color: C.accent }}>
           <ArrowLeft size={16} /> كل المقالات

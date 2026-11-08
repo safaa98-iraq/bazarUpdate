@@ -25,7 +25,7 @@ export default function BlogListPage() {
   const [featured, ...rest] = articles;
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, fontFamily: "'Tajawal', sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: C.bg, fontFamily: 'var(--font-arabic), sans-serif' }} dir="rtl">
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '64px 28px 0' }}>
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm mb-8 hover:opacity-70 transition" style={{ color: C.accent }}>
           <ArrowLeft size={16} /> العودة للرئيسية

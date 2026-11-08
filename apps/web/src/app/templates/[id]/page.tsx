@@ -131,7 +131,7 @@ export default function TemplatePreviewPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, fontFamily: "'Tajawal', sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: C.bg, fontFamily: 'var(--font-arabic), sans-serif' }} dir="rtl">
       {/* Preview chrome */}
       <div style={{ background: C.dark, padding: '14px 24px', position: 'sticky', top: 0, zIndex: 20 }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
