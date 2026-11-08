@@ -540,3 +540,8 @@ a[href="/dashboard/settings?tab=billing"].inline-flex.border {
 @media (max-width: 640px) {
   .bz-large-title { font-size: 24px; line-height: 32px; }
 }
+
+/* Partner-logo marquee (RTL-safe: duplicated list, moves by half its width) */
+@keyframes bz-logo-marquee { from { transform: translateX(0); } to { transform: translateX(50%); } }
+.bz-logo-marquee { animation: bz-logo-marquee 40s linear infinite; }
+.bz-logo-marquee:hover { animation-play-state: paused; }

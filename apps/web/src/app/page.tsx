@@ -7,6 +7,9 @@ import { PLAN_CONFIGS, PLAN_COMPARISON, type PlanComparisonRow, type ArticlePubl
 import { PlanPrice } from '@/components/pricing/PlanPrice';
 import { STORE_TYPES } from '@/lib/store-types';
 import { api } from '@/lib/api';
+import { HeroLogos } from '@/components/landing/HeroLogos';
+import { StatsPartners } from '@/components/landing/StatsPartners';
+import { StoreTypeTabs } from '@/components/landing/StoreTypeTabs';
 import {
   Store,
   LayoutTemplate, Palette, MonitorSmartphone,
@@ -121,13 +124,13 @@ function LPHeader() {
               {l.label}
             </button>
           ))}
-          <Link href="/login" style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 400, fontSize: 15, color: C.dark, padding: '9px 16px', borderRadius: 10 }}>دخول</Link>
+          <Link href="/login" style={{ fontWeight: 600, fontSize: 15, color: C.dark, padding: '10px 18px', borderRadius: 12, border: `1.5px solid ${C.dark}`, marginInlineStart: 8 }}>تسجيل دخول</Link>
         </nav>
         <Link href="/register" className="lp-nav-cta">
-          <button style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 15, background: C.blue, color: '#fff', padding: '12px 22px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
+          <button style={{ fontWeight: 700, fontSize: 15, background: C.dark, color: '#fff', padding: '12px 22px', borderRadius: 12, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
             onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
-            onMouseLeave={e => (e.currentTarget.style.background = C.blue)}>
-            ابدأ مجاناً
+            onMouseLeave={e => (e.currentTarget.style.background = C.dark)}>
+            أنشئ متجرك مجاناً
           </button>
         </Link>
         <button className="lp-mobile-toggle" onClick={() => setMobileOpen(!mobileOpen)}
@@ -208,39 +211,37 @@ function LPHero() {
   ];
 
   return (
-    <section id="hero" style={{ ...SEC, paddingTop: 14, position: 'relative' }}>
+    <section id="hero" style={{ ...SEC, paddingTop: 0, position: 'relative' }}>
       <div style={{ ...INNER, maxWidth: 'none' }}>
-        <div className="hero-inner" style={{ background: `linear-gradient(180deg, ${C.lavender}EB, ${C.soft})`, borderRadius: 10, padding: '52px 48px 46px', display: 'grid', gridTemplateColumns: '6fr 6fr', gap: 28, alignItems: 'center' }}>
+        <div className="hero-inner" style={{ maxWidth: 1240, margin: '0 auto', padding: '36px 56px 72px', display: 'grid', gridTemplateColumns: '6fr 6fr', gap: 56, alignItems: 'center' }}>
           <div>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 13, color: C.blue, background: 'rgba(255,255,255,0.65)', border: `1px solid ${C.blueMid}55`, padding: '7px 14px', borderRadius: 99, marginBottom: 18 }}>
-              <Store size={14} strokeWidth={2} />
-              منصة تجارة إلكترونية عراقية 100%
-            </span>
+            <HeroLogos />
 
             <h1 style={{ ...HEADING, fontWeight: 800, fontSize: 'clamp(32px, 4.5vw, 58px)', lineHeight: 1.22, margin: 0, color: C.dark }}>
-              أنشئ متجرك الإلكتروني
+              بازار.. تجارتك
               <br />
-              بنفسك بـ٥ دقائق.
+              أسهل وأسرع.
             </h1>
             <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 400, fontSize: 17, lineHeight: 1.95, margin: '18px 0 0', maxWidth: '46ch', color: C.text2 }}>
-              منصة عراقية تبني بها متجرك كاملاً: منتجاتك، طلباتك، والدفع عند الاستلام بالدينار — بلوحة واحدة بالعربي.{' '}
+              أنشئ متجرك الإلكتروني بنفسك في دقائق: منتجاتك، طلباتك، والدفع عند الاستلام بالدينار — بلوحة واحدة بالعربي.{' '}
               <strong style={{ fontWeight: 700, color: C.blue }}>لا عمولة. لا برمجة. لا انتظار.</strong>
             </p>
             <div className="lp-hero-btns" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 30 }}>
               <Link href="/register">
-                <button style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 17, background: C.dark, color: '#fff', padding: '16px 30px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
+                <button style={{ fontWeight: 700, fontSize: 17, background: C.dark, color: '#fff', padding: '16px 30px', borderRadius: 12, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
                   onMouseLeave={e => (e.currentTarget.style.background = C.dark)}>
-                  ابدأ مجاناً
+                  أنشئ متجرك مجاناً
                 </button>
               </Link>
               <button onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
-                style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 17, color: C.accent, background: 'transparent', border: `2px solid ${C.blueMid}`, padding: '14px 28px', borderRadius: 10, cursor: 'pointer' }}>
-                شوف بازار وهو يعمل
+                style={{ fontWeight: 700, fontSize: 17, color: C.dark, background: 'rgba(255,255,255,0.6)', border: `1.5px solid ${C.dark}`, padding: '14.5px 28px', borderRadius: 12, cursor: 'pointer' }}>
+                جرّب المنصة
               </button>
             </div>
 
-            <div className="lp-hero-trust" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 22px', marginTop: 28, paddingTop: 22, borderTop: `1px solid ${C.blueMid}30` }}>
+            <p style={{ margin: '22px 0 0', fontSize: 18, fontWeight: 500, color: C.dark }}>مصمّمة للتجّار في العراق</p>
+            <div className="lp-hero-trust" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 22px', marginTop: 18 }}>
               {trust.map((t, i) => (
                 <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: "'Tajawal', sans-serif", fontWeight: 500, fontSize: 13.5, color: C.text2 }}>
                   <t.Icon size={15} strokeWidth={2} color={C.blue} />
@@ -421,41 +422,6 @@ function LPFeatures() {
 }
 
 /* ─── Ready-made store templates ─── */
-function LPTemplates() {
-  const [ref, visible] = useScrollReveal(0.1);
-
-  return (
-    <section id="templates" ref={ref as React.RefObject<HTMLElement>} style={SEC}>
-      <div style={INNER}>
-        <h2 style={TITLE}>قالب جاهز لنوع متجرك</h2>
-        <p style={SUBP}>اختر مجال متجرك وابدأ بتصميم جاهز ومخصص له — وعدّله كيفما تريد لاحقاً.</p>
-        <div className="templates-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18, marginTop: 30 }}>
-          {STORE_TYPES.map((t, i) => (
-            <Link key={t.id} href={`/templates/${t.id}`}
-              style={{
-                display: 'block', textDecoration: 'none', borderRadius: 10, padding: '22px 20px',
-                background: C.white, border: `1px solid ${C.border}`,
-                opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)',
-                transition: 'all .4s, box-shadow .2s, border-color .2s', transitionDelay: `${i * 50}ms`,
-              }}
-              onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 12px 30px ${t.themeColor}22`; e.currentTarget.style.borderColor = t.themeColor; }}
-              onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = C.border; }}>
-              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 10, background: `${t.themeColor}15` }}>
-                <t.icon size={22} strokeWidth={1.8} color={t.themeColor} />
-              </span>
-              <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 18, margin: '14px 0 0', color: C.dark }}>{t.label}</h3>
-              <p style={{ fontFamily: "'Tajawal', sans-serif", fontWeight: 300, fontSize: 14, lineHeight: 1.8, margin: '6px 0 0', color: C.text2 }}>{t.description}</p>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 14, fontFamily: "'Tajawal', sans-serif", fontWeight: 700, fontSize: 13, color: t.themeColor }}>
-                معاينة القالب ←
-              </span>
-            </Link>
-          ))}
-        </div>
-        <SectionCTA text="اختر مجالك وابدأ الآن" />
-      </div>
-    </section>
-  );
-}
 
 /* ─── Marketing tools ─── */
 function LPMarketing() {
@@ -1112,12 +1078,15 @@ function LPFooter() {
 export default function LandingPage() {
   return (
     <div style={{ fontFamily: "'Tajawal', sans-serif", background: C.bg }}>
-      <LPHeader />
-      <LPHero />
+      <div style={{ background: 'linear-gradient(180deg, #D3EFFE 0%, #E6F6FF 70%, #F6F8FA 100%)', overflowX: 'clip' }}>
+        <LPHeader />
+        <LPHero />
+      </div>
+      <StatsPartners />
       <LPValueProps />
       <LPWork />
       <LPFeatures />
-      <LPTemplates />
+      <StoreTypeTabs />
       <LPMarketing />
       <LPWhatsNew />
       <LPSteps />
