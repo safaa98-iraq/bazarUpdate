@@ -2,10 +2,17 @@ import prisma from '@storebuilder/database';
 import { CreateProductReviewDto, ProductReviewPublic, PlanKey } from '@storebuilder/types';
 import { AppError } from '../middleware/errorHandler';
 
-function toPublic(r: { id: string; productId: string; customerName: string; rating: number; comment: string | null; createdAt: Date }): ProductReviewPublic {
+function toPublic(r: {
+  id: string; productId: string; customerName: string; rating: number; comment: string | null;
+  images: unknown; merchantReply: string | null; merchantReplyAt: Date | null; createdAt: Date;
+}): ProductReviewPublic {
   return {
     id: r.id, productId: r.productId, customerName: r.customerName,
-    rating: r.rating, comment: r.comment, createdAt: r.createdAt.toISOString(),
+    rating: r.rating, comment: r.comment,
+    images: Array.isArray(r.images) ? r.images.filter((i): i is string => typeof i === 'string') : [],
+    merchantReply: r.merchantReply,
+    merchantReplyAt: r.merchantReplyAt ? r.merchantReplyAt.toISOString() : null,
+    createdAt: r.createdAt.toISOString(),
   };
 }
 
