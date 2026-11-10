@@ -1,8 +1,13 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export interface PublicStoreApp {
-  appName: string; shortName: string; icon: string | null; themeColor: string; installPrompt: boolean;
+  appName: string; shortName: string; icon: string | null; themeColor: string;
+  /** Installable web app (manifest) — switched on by the Bazar admin */
+  pwa: boolean; installPrompt: boolean;
+  /** Store links, set by the Bazar admin once the native app is published */
   androidUrl: string | null; iosUrl: string | null;
+  /** Merchant chose to show the download buttons on the storefront */
+  showOnStore: boolean;
 }
 export interface PublicStoreMeta {
   name: string; description: string | null; logo: string | null; theme: string;

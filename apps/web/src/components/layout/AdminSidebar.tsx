@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard, Users, Store, ShoppingCart, BarChart2, ClipboardList, LogOut, Shield, Sparkles, Code2, Globe, Gift, CreditCard, Activity, CalendarCheck, ShoppingBag, Newspaper, AlertTriangle, GitCompare,
+  LayoutDashboard, Users, Store, ShoppingCart, BarChart2, ClipboardList, LogOut, Shield, Sparkles, Code2, Globe, Gift, CreditCard, Activity, CalendarCheck, ShoppingBag, Newspaper, AlertTriangle, GitCompare, Smartphone,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import { NotificationBell } from './NotificationBell';
@@ -28,6 +28,7 @@ const links = [
   { href: '/admin/loyalty',   label: 'برنامج الولاء',  icon: Gift, clay: 'heart' as ClayIconName },
   { href: '/admin/payments',  label: 'طلبات الدفع',   icon: CreditCard, clay: 'credit-card' as ClayIconName },
   { href: '/admin/subscriptions', label: 'الاشتراكات', icon: CalendarCheck, clay: 'wallet' as ClayIconName },
+  { href: '/admin/apps', label: 'تطبيقات المتاجر', icon: Smartphone, clay: 'apps' as ClayIconName },
 ];
 
 export function AdminSidebar() {

@@ -2,19 +2,25 @@
 
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Save, Smartphone, ExternalLink, Send } from 'lucide-react';
+import { Copy, ExternalLink, Clock, Loader2 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import { canUseFeature, type Plan } from '@/lib/plan-features';
 import { ClayIcon } from '@/components/ui/ClayIcon';
 import { UpgradeNotice } from '@/components/dashboard/UpgradeNotice';
+import { AppDownloadButtons } from '@/components/storefront/AppDownloadButtons';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
+type Status = 'NONE' | 'REQUESTED' | 'IN_PROGRESS' | 'READY';
 type App = {
-  enabled: boolean; appName: string; shortName: string; icon: string | null; themeColor: string; installPrompt: boolean;
-  nativeStatus: 'NONE' | 'REQUESTED' | 'IN_REVIEW' | 'PUBLISHED'; nativePlatforms: string[]; androidUrl: string | null; iosUrl: string | null;
+  status: Status; requestedAt: string | null; appName: string; themeColor: string;
+  androidUrl: string | null; iosUrl: string | null; showOnStore: boolean;
 };
-const NATIVE_LABEL: Record<App['nativeStatus'], string> = { NONE: '', REQUESTED: 'تم استلام طلبك — سنتواصل معك', IN_REVIEW: 'قيد المراجعة في المتجر', PUBLISHED: 'منشور ✓' };
+
+const STATUS_TEXT: Record<Exclude<Status, 'NONE' | 'READY'>, string> = {
+  REQUESTED: 'استلمنا طلبك — فريق بازار يجهّز تطبيقك الآن، وستظهر أزرار التحميل هنا فور نشره.',
+  IN_PROGRESS: 'تطبيقك قيد التجهيز والنشر على Google Play و App Store.',
+};
 
 export default function StoreAppPage() {
   useDocumentTitle('تطبيق المتجر');
@@ -22,85 +28,99 @@ export default function StoreAppPage() {
   const allowed = canUseFeature(plan, 'store_app');
   const [app, setApp] = useState<App | null>(null);
   const [slug, setSlug] = useState('');
-  const [platforms, setPlatforms] = useState<string[]>(['android']);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     api.get<{ data: { app: App; slug: string } }>('/api/stores/my/features').then(r => { setApp(r.data.app); setSlug(r.data.slug); }).catch(() => null);
   }, []);
 
-  const save = async () => {
-    if (!app) return;
-    try { const r = await api.put<{ data: App }>('/api/stores/my/features/app', app); setApp(r.data); toast.success('تم حفظ التطبيق'); }
+  const request = async () => {
+    setBusy(true);
+    try { const r = await api.post<{ data: App }>('/api/stores/my/features/app/request', {}); setApp(r.data); }
     catch (e) { toast.error((e as Error).message); }
+    finally { setBusy(false); }
   };
-  const requestNative = async () => {
-    try { const r = await api.post<{ data: App }>('/api/stores/my/features/app/native-request', { platforms }); setApp(r.data); toast.success('تم إرسال الطلب'); }
-    catch (e) { toast.error((e as Error).message); }
+  const setShow = async (showOnStore: boolean) => {
+    if (!app) return;
+    setApp({ ...app, showOnStore });
+    try { const r = await api.put<{ data: App }>('/api/stores/my/features/app/display', { showOnStore }); setApp(r.data); toast.success(showOnStore ? 'ستظهر أزرار التطبيق في متجرك' : 'تم إخفاء أزرار التطبيق من متجرك'); }
+    catch (e) { setApp({ ...app }); toast.error((e as Error).message); }
   };
 
-  const storeUrl = typeof window !== 'undefined' && slug ? `${window.location.origin}/store/${slug}` : '';
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const downloadPage = slug ? `${origin}/store/${slug}/app` : '';
+  const ready = app?.status === 'READY' && !!(app.androidUrl || app.iosUrl);
+  const embed = app && ready
+    ? `<a href="${downloadPage}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:14px;background:#000;color:#fff;font-family:sans-serif;font-weight:600;text-decoration:none">📱 حمّل تطبيق ${app.appName}</a>`
+    : '';
+  const copy = (t: string) => { navigator.clipboard.writeText(t).then(() => toast.success('تم النسخ')).catch(() => null); };
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-12 max-w-5xl">
+    <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-12 max-w-3xl">
       <h1 className="bz-large-title">تطبيق المتجر</h1>
-      <p className="text-sm text-bz-muted mt-1 mb-6">تطبيق باسم متجرك وشعاره يثبّته زبائنك على أندرويد وآيفون — يفتح بشاشة كاملة بدون متصفح، ويعمل فوراً بدون انتظار متجر التطبيقات.</p>
+      <p className="text-sm text-bz-muted mt-1 mb-6">تطبيق باسم متجرك وشعارك على Google Play و App Store — يجهّزه وينشره فريق بازار لك.</p>
       {!allowed && <UpgradeNotice feature="store_app" />}
-      {allowed && app && (
-        <div className="grid lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-3 space-y-6">
-            <section className="bz-card p-5 space-y-3">
-              <label className="flex items-center gap-3"><input type="checkbox" checked={app.enabled} onChange={e => setApp({ ...app, enabled: e.target.checked })} /><span className="font-semibold">تفعيل التطبيق لمتجري</span></label>
-              <div className="grid sm:grid-cols-2 gap-3">
-                <div><p className="text-sm font-semibold mb-1">اسم التطبيق</p><input maxLength={45} className="w-full h-10 px-3 border border-bz-line" value={app.appName} onChange={e => setApp({ ...app, appName: e.target.value })} /></div>
-                <div><p className="text-sm font-semibold mb-1">الاسم تحت الأيقونة (12 حرفاً)</p><input maxLength={12} className="w-full h-10 px-3 border border-bz-line" value={app.shortName} onChange={e => setApp({ ...app, shortName: e.target.value })} /></div>
-                <div><p className="text-sm font-semibold mb-1">رابط الأيقونة (مربعة 512×512)</p><input dir="ltr" placeholder="يُستخدم شعار المتجر إن تُرك فارغاً" className="w-full h-10 px-3 border border-bz-line text-sm" value={app.icon ?? ''} onChange={e => setApp({ ...app, icon: e.target.value })} /></div>
-                <div><p className="text-sm font-semibold mb-1">لون التطبيق</p><input type="color" className="h-10 w-20 border border-bz-line" value={app.themeColor} onChange={e => setApp({ ...app, themeColor: e.target.value })} /></div>
-              </div>
-              <label className="flex items-center gap-3"><input type="checkbox" checked={app.installPrompt} onChange={e => setApp({ ...app, installPrompt: e.target.checked })} /><span className="text-sm">اعرض للزبائن بطاقة «ثبّت التطبيق» في المتجر</span></label>
-              <button onClick={save} className="bz-btn"><Save className="h-4 w-4" /> حفظ</button>
-            </section>
 
-            <section className="bz-card p-5">
-              <div className="flex items-center gap-3 mb-2"><ClayIcon name="star" size={40} /><h2 className="bz-headline">نشر على Google Play و App Store</h2></div>
-              <p className="text-sm text-bz-muted leading-7 mb-3">نجهّز نسخة أصلية من تطبيقك ونرفعها على المتاجر باسمك. يتطلب حساب مطوّر (Google Play: 25$ مرة واحدة، Apple: 99$ سنوياً).</p>
-              {app.nativeStatus !== 'NONE' ? (
-                <span className="bz-chip bg-bz-brand-50 text-bz-brand-600">{NATIVE_LABEL[app.nativeStatus]}</span>
-              ) : (
-                <div className="flex flex-wrap items-center gap-3">
-                  {['android', 'ios'].map(p => (
-                    <label key={p} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={platforms.includes(p)} onChange={() => setPlatforms(ps => ps.includes(p) ? ps.filter(x => x !== p) : [...ps, p])} />{p === 'android' ? 'أندرويد' : 'آيفون'}</label>
-                  ))}
-                  <button onClick={requestNative} disabled={!platforms.length} className="bz-btn bz-btn-ink h-10"><Send className="h-4 w-4" /> اطلب النشر</button>
-                </div>
-              )}
-              {(app.androidUrl || app.iosUrl) && (
-                <div className="flex gap-2 mt-3">
-                  {app.androidUrl && <a href={app.androidUrl} target="_blank" className="bz-btn bz-btn-outline h-9 text-sm">Google Play</a>}
-                  {app.iosUrl && <a href={app.iosUrl} target="_blank" className="bz-btn bz-btn-outline h-9 text-sm">App Store</a>}
-                </div>
-              )}
-            </section>
-          </div>
+      {allowed && app && app.status === 'NONE' && (
+        <section className="bz-card p-8 text-center">
+          <ClayIcon name="apps" size={72} className="mx-auto !block" />
+          <h2 className="bz-title-2 mt-4">هل تريد تطبيقاً لمتجرك؟</h2>
+          <p className="text-bz-muted mt-2 leading-7 max-w-md mx-auto">نصمّم لك تطبيق أندرويد وآيفون باسم متجرك وشعارك وننشره على المتاجر، بدون أي تكلفة إضافية ضمن باقتك.</p>
+          <button onClick={request} disabled={busy} className="bz-btn mt-6 h-12 px-8 text-base">
+            {busy && <Loader2 className="h-4 w-4 animate-spin" />} نعم، أريد تطبيقاً
+          </button>
+        </section>
+      )}
 
-          <aside className="lg:col-span-2">
-            <p className="text-sm font-semibold mb-2">كيف يبدو على جوال الزبون</p>
-            <div className="mx-auto w-[220px] rounded-[36px] border-[8px] border-bz-ink bg-gradient-to-b from-[#BDE6FC] to-[#E3F5FE] p-5 h-[400px]">
-              <div className="grid grid-cols-3 gap-4 mt-6">
-                {[0, 1, 2, 3, 4].map(i => <div key={i} className="aspect-square rounded-2xl bg-white/60" />)}
-                <div className="text-center">
-                  <img src={slug ? `/store/${slug}/app-icon/192` : ''} alt="" className="aspect-square w-full rounded-2xl shadow-md bg-white" />
-                  <p className="text-[10px] mt-1 font-semibold truncate">{app.shortName}</p>
+      {allowed && app && app.status !== 'NONE' && (
+        <div className="space-y-6">
+          <section className="bz-card p-6">
+            <h2 className="bz-headline mb-1">حمّل تطبيق متجرك</h2>
+            <p className="text-sm text-bz-muted mb-5">أندرويد أو آيفون — جرّبه بنفسك وشارك الرابط مع زبائنك.</p>
+            {ready ? (
+              <AppDownloadButtons androidUrl={app.androidUrl} iosUrl={app.iosUrl} size="lg" />
+            ) : (
+              <>
+                <div className="flex flex-wrap justify-center gap-3 opacity-50 pointer-events-none select-none" aria-hidden>
+                  <AppDownloadButtons androidUrl="#" iosUrl="#" size="lg" />
                 </div>
+                <p className="mt-4 flex items-start gap-2 text-sm bg-bz-brand-50 text-bz-brand-600 rounded-xl p-3 leading-6">
+                  <Clock className="h-4 w-4 mt-1 flex-shrink-0" /> {STATUS_TEXT[app.status as 'REQUESTED' | 'IN_PROGRESS']}
+                </p>
+              </>
+            )}
+          </section>
+
+          <section className="bz-card p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="bz-headline">ضع رابط التطبيق في موقعي</h2>
+                <p className="text-sm text-bz-muted mt-1 leading-6">يظهر لزبائنك شريط «حمّل تطبيقنا» مع زرّي Google Play و App Store أسفل صفحات متجرك.</p>
               </div>
+              <button role="switch" aria-checked={app.showOnStore} disabled={!ready} onClick={() => setShow(!app.showOnStore)}
+                className={`relative h-8 w-14 flex-shrink-0 rounded-full transition ${app.showOnStore ? 'bg-bz-brand' : 'bg-bz-line'} disabled:opacity-40`}>
+                <span className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition-all ${app.showOnStore ? 'start-7' : 'start-1'}`} />
+              </button>
             </div>
-            {storeUrl && app.enabled && (
-              <div className="bz-card p-4 mt-4 text-sm leading-7">
-                <p className="font-semibold flex items-center gap-2"><Smartphone className="h-4 w-4" /> جرّبه الآن</p>
-                <p className="text-bz-muted">افتح متجرك من جوالك ← «ثبّت التطبيق» (أندرويد) أو مشاركة ← «إضافة إلى الشاشة الرئيسية» (آيفون).</p>
-                <a href={storeUrl} target="_blank" className="text-bz-brand-600 font-semibold inline-flex items-center gap-1 mt-1" dir="ltr">{storeUrl.replace(/^https?:\/\//, '')} <ExternalLink className="h-3.5 w-3.5" /></a>
+            {!ready && <p className="text-xs text-bz-muted mt-3">يتفعّل هذا الخيار بعد نشر تطبيقك.</p>}
+            {ready && (
+              <div className="mt-5 space-y-4 border-t border-bz-line pt-5">
+                <div>
+                  <p className="text-sm font-semibold mb-1.5">رابط صفحة تحميل التطبيق</p>
+                  <div className="flex gap-2">
+                    <input readOnly dir="ltr" value={downloadPage} className="flex-1 min-w-0 h-10 px-3 rounded-xl border border-bz-line text-sm bg-bz-bg" />
+                    <button onClick={() => copy(downloadPage)} className="bz-btn bz-btn-outline h-10"><Copy className="h-4 w-4" /> نسخ</button>
+                    <a href={downloadPage} target="_blank" className="bz-btn bz-btn-plain h-10" aria-label="فتح"><ExternalLink className="h-4 w-4" /></a>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold mb-1.5">كود زر التحميل لموقع آخر أو صفحتك على الإنترنت</p>
+                  <textarea readOnly dir="ltr" rows={3} value={embed} className="w-full p-3 rounded-xl border border-bz-line text-xs font-mono bg-bz-bg" />
+                  <button onClick={() => copy(embed)} className="bz-btn bz-btn-outline h-9 mt-2 text-sm"><Copy className="h-4 w-4" /> نسخ الكود</button>
+                </div>
               </div>
             )}
-          </aside>
+          </section>
         </div>
       )}
     </div>

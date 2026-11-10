@@ -4,7 +4,7 @@ import { fetchStoreMeta } from '../lib-store';
 /** Per-store Web App Manifest — makes each storefront installable as its own app. */
 export async function GET(_req: Request, { params }: { params: { slug: string } }) {
   const store = await fetchStoreMeta(params.slug);
-  if (!store?.app) return new NextResponse('Not found', { status: 404 });
+  if (!store?.app?.pwa) return new NextResponse('Not found', { status: 404 });
   const base = `/store/${params.slug}`;
   const manifest = {
     id: `${base}/`,

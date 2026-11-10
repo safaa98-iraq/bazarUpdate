@@ -12,7 +12,7 @@ import { optionalToken } from '../middleware/auth';
 import { cuid } from '../lib/cuid';
 import { afterOrderCreated } from '../lib/orderHooks';
 import { restockOrder } from '../lib/fulfillment';
-import { readAppSettings } from '../lib/storeApp';
+import { publicAppSettings } from '../lib/storeApp';
 import { SHIPMENT_STATUS_LABELS } from '@storebuilder/types';
 
 const router = Router();
@@ -118,14 +118,13 @@ router.get(
 
       const { merchant, appSettings: _app, storefrontLanguages, ...storeData } = store as typeof store & { merchant?: { plan: string } };
       const plan = merchant?.plan ?? 'FREE';
-      const app = readAppSettings(store);
       res.json({
         success: true,
         data: {
           ...storeData, merchantPlan: plan,
           // Extra languages / branded app are Business-plan features
           languages: plan === 'ENTERPRISE' && Array.isArray(storefrontLanguages) ? storefrontLanguages : ['ar'],
-          app: plan === 'ENTERPRISE' && app.enabled ? { appName: app.appName, shortName: app.shortName, icon: app.icon, themeColor: app.themeColor, installPrompt: app.installPrompt, androidUrl: app.androidUrl, iosUrl: app.iosUrl } : null,
+          app: publicAppSettings(store, plan),
         },
       });
     } catch (err) {

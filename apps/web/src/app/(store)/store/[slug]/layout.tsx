@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { ChatWidget } from '@/components/storefront/ChatWidget';
 import { StorefrontLanguage } from '@/components/storefront/StorefrontLanguage';
 import { InstallAppPrompt } from '@/components/storefront/InstallAppPrompt';
+import { AppDownloadBar } from '@/components/storefront/AppDownloadButtons';
 import { fetchStoreMeta } from './lib-store';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -10,7 +11,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: store.name,
     description: store.description ?? undefined,
-    ...(store.app ? {
+    ...(store.app?.pwa ? {
       manifest: `/store/${params.slug}/manifest.webmanifest`,
       appleWebApp: { capable: true, title: store.app.shortName, statusBarStyle: 'default' },
       icons: { apple: `/store/${params.slug}/app-icon/180` },
@@ -28,9 +29,13 @@ export default async function StoreLayout({ children, params }: { children: Reac
   return (
     <>
       {children}
+      {store?.app?.showOnStore && (
+        <AppDownloadBar appName={store.app.appName} icon={`/store/${params.slug}/app-icon/192`}
+          androidUrl={store.app.androidUrl} iosUrl={store.app.iosUrl} themeColor={store.app.themeColor} />
+      )}
       <ChatWidget slug={params.slug} />
       {store && <StorefrontLanguage slug={params.slug} languages={store.languages} />}
-      {store?.app?.installPrompt && (
+      {store?.app?.pwa && store.app.installPrompt && (
         <InstallAppPrompt slug={params.slug} appName={store.app.appName} themeColor={store.app.themeColor}
           icon={`/store/${params.slug}/app-icon/192`} />
       )}

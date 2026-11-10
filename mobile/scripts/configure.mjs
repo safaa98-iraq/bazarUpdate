@@ -18,7 +18,7 @@ if (!slug) { console.error('Usage: node scripts/configure.mjs --slug <store-slug
 const res = await fetch(`${api}/api/storefront/${slug}`).catch(() => null);
 const store = res?.ok ? (await res.json()).data : null;
 if (!store) { console.error(`Store "${slug}" not found at ${api}`); process.exit(1); }
-if (!store.app) { console.error('This store has not enabled its app (Business plan → تطبيق المتجر).'); process.exit(1); }
+if (!store.app) { console.error('No app set up for this store yet: open Super Admin → تطبيقات المتاجر, fill in the app and tick the web-app (PWA) option first.'); process.exit(1); }
 
 const appId = args.id ?? `iq.bazar.${slug.replace(/[^a-z0-9]/gi, '').toLowerCase() || 'store'}`;
 const config = {

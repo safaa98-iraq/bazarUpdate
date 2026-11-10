@@ -4,7 +4,9 @@ Every Bazar store on the Business plan is already an **installable app** (PWA): 
 "ثبّت التطبيق" on Android, or Share → "Add to Home Screen" on iPhone. That works today with no store review.
 
 This folder turns a store into a **native app for Google Play / the App Store** when a merchant asks
-for it from *لوحة التاجر ← تطبيق المتجر ← اطلب النشر*.
+for it from *لوحة التاجر ← تطبيق المتجر ← «نعم، أريد تطبيقاً»*. Only the super admin creates the app
+(*لوحة الأدمن ← تطبيقات المتاجر*): fill the name/icon/colour, build with this kit, then paste the
+Google Play / App Store links and set the status to «منشور» — the merchant then sees the download buttons.
 
 The native app is a thin [Capacitor](https://capacitorjs.com) shell around the live storefront, so the merchant
 never needs to publish an update when they change products or prices.

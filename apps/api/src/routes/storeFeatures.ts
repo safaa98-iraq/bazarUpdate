@@ -9,7 +9,7 @@ import { AppError } from '../middleware/errorHandler';
 import { getMerchantContext, assertPlan } from '../lib/plan';
 import { publicWhatsappSettings, readWhatsappSettings, DEFAULT_CONFIRM_MESSAGE } from '../lib/whatsapp';
 import { publicShippingSettings, readShippingSettings, CARRIERS } from '../lib/couriers';
-import { readAppSettings } from '../lib/storeApp';
+import { readAppSettings, rawAppSettings } from '../lib/storeApp';
 
 const router = Router();
 const merchant = [verifyToken, requireRole('MERCHANT')];
@@ -95,36 +95,31 @@ router.put('/languages', ...merchant, async (req: Request, res: Response, next: 
   } catch (err) { next(err); }
 });
 
-router.put('/app', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
+/**
+ * The app itself is created by the Bazar super admin (see routes/adminApps.ts).
+ * The merchant can only ask for one and decide whether its links show on the storefront.
+ */
+router.post('/app/request', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { store, plan } = await getMerchantContext(req);
     assertPlan(plan, 'ENTERPRISE', 'تطبيق المتجر');
-    const cur = (store.appSettings && typeof store.appSettings === 'object' ? store.appSettings : {}) as Record<string, unknown>;
-    const b = req.body ?? {};
-    const color = str(b.themeColor, 9);
-    const nextSettings = {
-      ...cur,
-      enabled: typeof b.enabled === 'boolean' ? b.enabled : cur.enabled ?? true,
-      appName: str(b.appName, 45) ?? cur.appName,
-      shortName: str(b.shortName, 12) ?? cur.shortName,
-      icon: str(b.icon, 500) ?? cur.icon,
-      themeColor: color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : cur.themeColor,
-      installPrompt: typeof b.installPrompt === 'boolean' ? b.installPrompt : cur.installPrompt ?? true,
-    };
+    const cur = rawAppSettings(store);
+    const current = readAppSettings(store);
+    const nextSettings = current.status === 'NONE'
+      ? { ...cur, status: 'REQUESTED', requestedAt: new Date().toISOString() }
+      : cur;
     await prisma.store.update({ where: { id: store.id }, data: { appSettings: nextSettings as never } });
     const fresh = await prisma.store.findUnique({ where: { id: store.id } });
     res.json({ success: true, data: readAppSettings(fresh!) });
   } catch (err) { next(err); }
 });
 
-/** Merchant asks the Bazar team to publish a native Android/iOS build of their app. */
-router.post('/app/native-request', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
+router.put('/app/display', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { store, plan } = await getMerchantContext(req);
     assertPlan(plan, 'ENTERPRISE', 'تطبيق المتجر');
-    const cur = (store.appSettings && typeof store.appSettings === 'object' ? store.appSettings : {}) as Record<string, unknown>;
-    const platforms = Array.isArray(req.body?.platforms) ? req.body.platforms.filter((p: string) => p === 'android' || p === 'ios') : ['android'];
-    const nextSettings = { ...cur, nativeStatus: 'REQUESTED', nativePlatforms: platforms, nativeRequestedAt: new Date().toISOString() };
+    if (typeof req.body?.showOnStore !== 'boolean') throw new AppError(400, 'showOnStore مطلوب');
+    const nextSettings = { ...rawAppSettings(store), showOnStore: req.body.showOnStore };
     await prisma.store.update({ where: { id: store.id }, data: { appSettings: nextSettings as never } });
     const fresh = await prisma.store.findUnique({ where: { id: store.id } });
     res.json({ success: true, data: readAppSettings(fresh!) });
