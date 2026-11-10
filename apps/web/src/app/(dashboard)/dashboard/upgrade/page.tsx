@@ -93,6 +93,9 @@ function PayModal({ plan, cycle, config, onClose, onDone }: {
                   <p className="text-xs text-bz-muted">{quote.installment ? `المبلغ المطلوب الآن (الدفعة ${quote.installment} من ${quote.installmentsTotal})` : 'المبلغ المطلوب'}</p>
                   <p className="text-3xl font-extrabold text-bz-ink tabular-nums mt-1">{n(quote.amount)} <span className="text-base text-bz-muted">د.ع</span></p>
                   {quote.note && <p className="text-xs text-green-700 font-semibold mt-1">{quote.note}</p>}
+                  {(quote.cycle === 'YEARLY' || quote.cycle === 'LIFETIME') && (
+                    <p className="text-xs mt-1"><span className="line-through text-bz-muted">{n(cfg.listPrices[cycle])} د.ع</span> <span className="font-bold text-red-500">خصم 35%</span></p>
+                  )}
                   {cycle === 'YEARLY' && <p className="text-xs text-green-700 font-semibold mt-1">وفّرت {n(yearlySavingIQD(plan))} د.ع مقارنة بالشهري</p>}
                 </>
               )}

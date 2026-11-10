@@ -8,7 +8,7 @@
 import { useEffect, useState } from 'react';
 import { Check, Lock, ShieldCheck, Wallet, Clock3 } from 'lucide-react';
 import {
-  PLAN_CONFIGS, PLAN_ORDER, CYCLE_PERKS, TRIAL_DAYS, REFUND_DAYS, LIFETIME_INSTALLMENTS,
+  PLAN_CONFIGS, PLAN_ORDER, CYCLE_PERKS, TRIAL_DAYS, REFUND_DAYS, LIFETIME_INSTALLMENTS, CYCLE_DISCOUNT_PERCENT,
   yearlySavingIQD, perDayIQD, type PlanKey, type BillingCycle,
 } from '@storebuilder/types';
 import { cn } from '@/lib/utils';
@@ -17,8 +17,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 const n = (v: number) => v.toLocaleString('en-US');
 
 const CYCLES: { key: BillingCycle; label: string; tag?: string }[] = [
-  { key: 'LIFETIME', label: 'أبدي' },
-  { key: 'YEARLY', label: 'سنوي', tag: 'الأفضل قيمة' },
+  { key: 'LIFETIME', label: 'أبدي', tag: 'خصم 35%' },
+  { key: 'YEARLY', label: 'سنوي', tag: 'الأفضل قيمة · خصم 35%' },
   { key: 'MONTHLY', label: 'شهري' },
 ];
 
@@ -56,8 +56,16 @@ function PriceBlock({ plan, cycle, seatsLeft }: { plan: PlanKey; cycle: BillingC
     );
   }
   const price = cfg.prices[cycle];
+  const list = cfg.listPrices[cycle];
+  const pct = CYCLE_DISCOUNT_PERCENT[cycle];
   return (
     <div>
+      {pct && list > price && (
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-sm text-bz-muted line-through tabular-nums">{n(list)} د.ع</span>
+          <span className="text-[11px] font-bold bg-red-500 text-white px-2 py-0.5 rounded-full">خصم {pct}%</span>
+        </div>
+      )}
       <div className="flex items-baseline gap-1.5">
         <span className="text-3xl font-extrabold text-bz-ink tabular-nums">{n(price)}</span>
         <span className="text-sm font-bold text-bz-muted">د.ع</span>
