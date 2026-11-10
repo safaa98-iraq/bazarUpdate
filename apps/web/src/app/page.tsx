@@ -429,7 +429,7 @@ function LPMarketing() {
   const items: { img: string; color: string; h: string; p: string; detail: string }[] = [
     { img: '/icons/clay/coupon.webp', color: C.blue, h: 'كوبونات وأكواد خصم', p: 'أنشئ كوبوناً بنسبة أو مبلغ، أو ضع حداً أدنى للطلب، أو حصره على منتج معيّن.', detail: 'مثال: خصم 20% لأول طلب، أو توصيل مجاني فوق مبلغ معيّن.' },
     { img: '/icons/clay/chat.webp', color: C.greenDark, h: 'رسائل SMS للزبائن', p: 'تنبيه الشحنة، شكر بعد الاستلام، عروض المناسبات — تصل مباشرة إلى جوالاتهم.', detail: 'رسالة تلقائية فور تغيّر حالة الطلب، بلا أي إعداد يدوي.' },
-    { img: '/icons/clay/share.webp', color: C.blue, h: 'شارك على السوشيال', p: 'رابط منتج بضغطة إلى إنستغرام وواتساب وفيسبوك — بصورة وسعر جاهزين.', detail: 'مشاركة جاهزة بدون تصميم يدوي أو أخذ سكرين شوت.' },
+    { img: '/icons/clay/share.webp', color: C.blue, h: 'شارك على السوشيال', p: 'رابط منتج بضغطة إلى إنستغرام وفيسبوك وتيك توك — بصورة وسعر جاهزين.', detail: 'مشاركة جاهزة بدون تصميم يدوي أو أخذ سكرين شوت.' },
     { img: '/icons/clay/gift.webp', color: C.accent, h: 'برنامج إحالات', p: 'زبونك يجلب زبوناً جديداً، يربح خصماً — ومتجرك يكبر بنفسه.', detail: 'رابط إحالة خاص لكل زبون، تتبعه من لوحتك مباشرة.' },
     { img: '/icons/clay/search.webp', color: C.greenDark, h: 'تحسين ظهور جوجل', p: 'عناوين ووصف تلقائي بالعربي — يظهر متجرك حين يبحث زبون عن منتجك.', detail: 'بدون أي إعداد تقني أو خبرة SEO مسبقة.' },
   ];
@@ -464,7 +464,7 @@ function LPMarketing() {
 function LPWhatsNew() {
   const [ref, visible] = useScrollReveal(0.1);
   const items: { img?: string; Icon?: LucideIcon; iconBg?: string; color: string; h: string; p: string }[] = [
-    { img: '/icons/clay/documents.webp', color: C.blue, h: 'طلبات يدوية', p: 'سجّل طلباً وصلك عبر واتساب أو انستغرام مباشرة من لوحتك.' },
+    { img: '/icons/clay/documents.webp', color: C.blue, h: 'طلبات يدوية', p: 'سجّل طلباً وصلك عبر الهاتف أو انستغرام مباشرة من لوحتك.' },
     { img: '/icons/clay/basket.webp', color: C.accent, h: 'تنبيه السلال المتروكة', p: 'اعرف زبائن تركوا سلتهم قبل الدفع وتواصل معهم بضغطة.' },
     { img: '/icons/clay/printer.webp', color: C.greenDark, h: 'طباعة فاتورة وبوليصة شحن', p: 'اطبع فاتورة الطلب أو بوليصة الشحن جاهزة من صفحة الطلبات.' },
     { img: '/icons/clay/apps.webp', color: C.blue, h: 'فلاتر تصفح أقوى', p: 'زبونك يفلتر حسب السعر والتقييم ليصل لمنتجه بسرعة.' },
@@ -518,7 +518,7 @@ function LPSteps() {
     { title: 'اختر قالبك', desc: 'قوالب جاهزة للملابس والعطور والإلكترونيات.' },
     { title: 'أضف منتجاتك', desc: 'صورة وسعر بالدينار — والوصف نقترحه لك.' },
     { title: 'فعّل الدفع والتوصيل', desc: 'دفع عند الاستلام ومناطق توصيل داخل العراق.' },
-    { title: 'انشر وابدأ البيع', desc: 'رابط متجرك جاهز للنشر على إنستغرام وواتساب.' },
+    { title: 'انشر وابدأ البيع', desc: 'رابط متجرك جاهز للنشر على إنستغرام وفيسبوك.' },
   ];
 
   return (
@@ -685,13 +685,6 @@ function LPComparison() {
 }
 
 /* ─── Integrations ─── */
-function WhatsAppGlyph({ size = 24, color = '#fff' }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path fill={color} d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.35 5.06L2 22l5.06-1.32A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2Zm5.2 14.15c-.22.62-1.28 1.18-1.77 1.24-.45.06-1.02.08-1.65-.1-.38-.11-.87-.28-1.5-.55-2.64-1.14-4.36-3.79-4.5-3.97-.13-.18-1.08-1.44-1.08-2.74 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.45.22.53.75 1.83.82 1.96.07.13.11.29.02.47-.09.18-.13.29-.26.44-.13.16-.28.35-.4.47-.13.13-.27.28-.12.55.15.27.68 1.11 1.46 1.79 1 .88 1.85 1.15 2.11 1.28.27.13.42.11.58-.07.16-.18.67-.78.85-1.05.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.13.07.71-.15 1.33Z" />
-    </svg>
-  );
-}
 function TikTokGlyph({ size = 24, color = '#fff' }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -711,11 +704,9 @@ function LPIntegrations() {
   const [ref, visible] = useScrollReveal(0.1);
   const apps: { label: string; bg: string; render: () => React.ReactNode }[] = [
     { label: 'إنستغرام', bg: 'linear-gradient(135deg, #833AB4, #20A9F4, #F5A623)', render: () => <Instagram size={24} color="#fff" strokeWidth={1.8} /> },
-    { label: 'واتساب', bg: '#25D366', render: () => <WhatsAppGlyph size={24} /> },
     { label: 'فيسبوك', bg: '#1877F2', render: () => <Facebook size={22} color="#fff" strokeWidth={2} /> },
     { label: 'سناب شات', bg: '#FFFC00', render: () => <SnapchatGlyph size={24} /> },
     { label: 'تيك توك', bg: '#000000', render: () => <TikTokGlyph size={24} /> },
-    { label: 'شركات التوصيل', bg: C.butter, render: () => <Truck size={24} color={C.blue} strokeWidth={1.8} /> },
   ];
 
   return (
@@ -725,14 +716,14 @@ function LPIntegrations() {
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, flexWrap: 'wrap' }}>
             <div style={{ minWidth: 0, maxWidth: 520 }}>
               <h2 style={{ ...TITLE, fontSize: 'clamp(24px, 3vw, 36px)' }}>تتصل بالأدوات التي تستخدمها كل يوم</h2>
-              <p style={SUBP}>اربط بازار بإنستغرام، واتساب، فيسبوك، تيك توك، وسناب شات، وشركات التوصيل المحلية — بضغطة واحدة، بلا أكواد.</p>
+              <p style={SUBP}>اربط بازار بإنستغرام، فيسبوك، تيك توك، وسناب شات — بضغطة واحدة، بلا أكواد.</p>
             </div>
             <span style={{ flex: 1 }} />
             <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 15, color: C.blue, padding: '12px 22px', border: `1px solid ${C.border}`, borderRadius: 10, background: 'transparent', cursor: 'pointer' }}>
               اطّلع على كل التطبيقات
             </button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 14, marginTop: 28 }} className="integrations-grid">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginTop: 28 }} className="integrations-grid">
             {apps.map((a, i) => (
               <div key={a.label}
                 style={{ background: C.white, borderRadius: 10, padding: '18px 14px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all .4s', transitionDelay: `${i * 60}ms` }}>

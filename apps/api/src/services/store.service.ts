@@ -3,7 +3,7 @@ import { CreateStoreDto, UpdateStoreDto, StorePublic, StoreSocialLinks, StoreDel
 import { AppError } from '../middleware/errorHandler';
 import type { Prisma } from '@prisma/client';
 
-const SOCIAL_TEXT_FIELDS = ['instagram', 'whatsapp', 'facebook', 'tiktok', 'snapchat'] as const;
+const SOCIAL_TEXT_FIELDS = ['instagram', 'facebook', 'tiktok', 'snapchat'] as const;
 const VALID_GOVERNORATES = new Set<string>(IRAQI_GOVERNORATES);
 const DOMAIN_PATTERN = /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.(?!-)[a-z0-9-]{1,63}(?<!-))+$/i;
 
@@ -21,7 +21,6 @@ function sanitizeSocialLinks(input: unknown): StoreSocialLinks {
     if (typeof value !== 'string') continue;
     let trimmed = value.trim();
     if (field !== 'facebook') trimmed = trimmed.replace(/^@/, '');
-    if (field === 'whatsapp') trimmed = trimmed.replace(/[^\d+]/g, '');
     if (!trimmed) continue;
     clean[field] = trimmed.slice(0, 200);
   }

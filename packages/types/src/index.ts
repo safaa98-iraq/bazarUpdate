@@ -50,14 +50,14 @@ export type StaffPermission =
   | 'orders' | 'products' | 'marketing' | 'design' | 'chat' | 'reports' | 'settings' | 'branches';
 
 export const STAFF_PERMISSIONS: { key: StaffPermission; label: string; hint: string }[] = [
-  { key: 'orders',    label: 'الطلبات والشحن',      hint: 'عرض الطلبات وتحديث حالتها، التأكيد عبر واتساب، البوالص' },
+  { key: 'orders',    label: 'الطلبات والشحن',      hint: 'عرض الطلبات وتحديث حالتها وطباعة البوالص' },
   { key: 'products',  label: 'المنتجات والمخزون',   hint: 'إضافة وتعديل المنتجات والتصنيفات والماركات' },
   { key: 'marketing', label: 'التسويق',            hint: 'الكوبونات، العروض، بطاقات الهدايا، المسوقون' },
   { key: 'design',    label: 'تصميم المتجر',        hint: 'محرر الشكل والبانرات' },
   { key: 'chat',      label: 'رسائل العملاء',       hint: 'الرد على محادثات الزبائن' },
   { key: 'reports',   label: 'التقارير',            hint: 'المبيعات والتحليلات' },
   { key: 'branches',  label: 'الفروع والمخازن',     hint: 'إدارة الفروع وتوزيع المخزون' },
-  { key: 'settings',  label: 'إعدادات المتجر',      hint: 'التوصيل، واتساب، اللغات' },
+  { key: 'settings',  label: 'إعدادات المتجر',      hint: 'التوصيل واللغات وبيانات المتجر' },
 ];
 
 export type StaffRolePreset = 'manager' | 'orders' | 'products' | 'branch' | 'custom';
@@ -120,17 +120,12 @@ export interface ShipmentEvent { status: ShipmentStatus; at: string; note?: stri
 export interface ShipmentPublic {
   id: string;
   orderId: string;
-  carrier: string;
-  trackingNumber: string | null;
   trackingCode: string;
   status: ShipmentStatus;
   events: ShipmentEvent[];
-  lastSyncedAt: string | null;
-  lastError: string | null;
   createdAt: string;
 }
 
-export type OrderConfirmationStatus = 'NONE' | 'PENDING' | 'CONFIRMED' | 'REJECTED';
 
 export interface CreateStoreDto {
   name: string;
@@ -142,7 +137,6 @@ export interface CreateStoreDto {
 
 export interface StoreSocialLinks {
   instagram?: string;
-  whatsapp?: string;
   facebook?: string;
   tiktok?: string;
   snapchat?: string;
@@ -295,17 +289,17 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
     maxBranches: 0,
     templates: -1,
     badge: 'الأكثر اختياراً',
-    headline: 'بِع أكثر، وقلّل الطلبات الراجعة',
-    audience: 'تاجر انستغرام أو واتساب تصله طلبات يومية',
+    headline: 'بِع أكثر بلا حدود، واعرف ما يبيع',
+    audience: 'تاجر انستغرام أو فيسبوك تصله طلبات يومية',
     cta: 'ابدأ البيع الاحترافي',
     subtitle: 'للنمو',
-    support: 'واتساب',
+    support: 'دعم مباشر',
     features: [
       'منتجات وطلبات غير محدودة',
-      'تأكيد الطلب عبر واتساب قبل الشحن',
-      'ربط شركة التوصيل وتتبع تلقائي',
-      'السلال المتروكة ومراسلتها على واتساب',
+      'التحليلات: الإيرادات والأكثر مبيعاً',
+      'السلال المتروكة بأسماء الزبائن وأرقامهم',
       'المحادثة مع الزبائن داخل المتجر',
+      'التعليقات النصية على المنتجات',
       'العروض التلقائية و10 أكواد خصم و3 مؤثرين',
       'كل القوالب والأقسام المتقدمة',
     ],
@@ -315,7 +309,7 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
     nameAr: 'الأعمال',
     price: 26,
     priceIQD: 39000,
-    prices: { MONTHLY: 39000, YEARLY: 389000, LIFETIME: 1090000 },
+    prices: { MONTHLY: 39000, YEARLY: 389000, LIFETIME: 600000 },
     products: -1,
     ordersPerMonth: -1,
     categories: -1,
@@ -330,14 +324,14 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
     audience: 'متجر بفريق أو فروع أو علامة تجارية معروفة',
     cta: 'نمِّ علامتك',
     subtitle: 'للتوسع',
-    support: 'واتساب بأولوية',
+    support: 'دعم بأولوية',
     features: [
       'كل ميزات الاحترافية',
       'دومين خاص بدون «مدعوم بـ بازار»',
       '5 موظفين بصلاحيات محددة',
       '3 فروع ومخازن وتوجيه الطلب للأقرب',
       'واجهة المتجر بالكردية',
-      'تأكيد واتساب تلقائي (API) وبطاقات هدايا',
+      'بطاقات الهدايا',
       'قسم الفيديو، أكواد ومؤثرون بلا حد',
     ],
   },
@@ -372,10 +366,8 @@ export const PLAN_COMPARISON: PlanComparisonRow[] = [
   { label: 'العروض التلقائية', sub: 'اشترِ X واحصل على Y', FREE: false, PRO: true, ENTERPRISE: true },
   { label: 'بطاقات الهدايا', FREE: false, PRO: false, ENTERPRISE: true },
   { label: 'المسوقون بالعمولة', FREE: false, PRO: '3', ENTERPRISE: 'غير محدود' },
-  { label: 'السلال المتروكة', FREE: 'عددها فقط', PRO: 'القائمة + مراسلة واتساب', ENTERPRISE: 'القائمة + مراسلة واتساب' },
-  { label: 'تأكيد الطلب قبل الشحن', FREE: false, PRO: 'يدوي عبر واتساب', ENTERPRISE: 'يدوي + تلقائي (API)', highlight: true },
-  { label: 'الربط مع شركة التوصيل', FREE: false, PRO: true, ENTERPRISE: true },
-  { label: 'المحادثة مع العملاء', FREE: false, PRO: true, ENTERPRISE: true },
+  { label: 'السلال المتروكة', FREE: 'عددها فقط', PRO: 'الأسماء والأرقام', ENTERPRISE: 'الأسماء والأرقام' },
+  { label: 'المحادثة مع العملاء', FREE: false, PRO: true, ENTERPRISE: true, highlight: true },
   { label: 'التقييم بالنجوم', FREE: true, PRO: true, ENTERPRISE: true },
   { label: 'التعليق النصي على المنتجات', FREE: false, PRO: true, ENTERPRISE: true },
   { label: 'التحليلات', FREE: 'عدد الطلبات فقط', PRO: 'المؤشرات الأربعة', ENTERPRISE: 'المؤشرات الأربعة' },
@@ -384,7 +376,7 @@ export const PLAN_COMPARISON: PlanComparisonRow[] = [
   { label: 'واجهة بالكردية', FREE: false, PRO: false, ENTERPRISE: true },
   { label: 'حسابات الموظفين', FREE: false, PRO: false, ENTERPRISE: '5' },
   { label: 'الفروع والمخازن', FREE: false, PRO: false, ENTERPRISE: '3' },
-  { label: 'الدعم', FREE: 'مركز المساعدة', PRO: 'واتساب', ENTERPRISE: 'واتساب بأولوية' },
+  { label: 'الدعم', FREE: 'مركز المساعدة', PRO: 'دعم مباشر', ENTERPRISE: 'دعم بأولوية' },
 ];
 
 /** Extras that depend on how long the merchant pays for (paid plans). */
@@ -610,12 +602,9 @@ export interface OrderPublic {
   shippingAddress: Record<string, unknown>;
   stripePaymentId: string | null;
   draftNote?: string | null;
-  confirmationStatus?: OrderConfirmationStatus;
-  confirmationToken?: string | null;
-  confirmationSentAt?: string | null;
   warehouseId?: string | null;
   warehouseName?: string | null;
-  shipment?: Pick<ShipmentPublic, 'trackingCode' | 'trackingNumber' | 'status' | 'carrier'> | null;
+  shipment?: Pick<ShipmentPublic, 'trackingCode' | 'status'> | null;
   createdAt: string;
   items: Array<{ id: string; productId: string; variantId?: string | null; variantLabel?: string | null; quantity: number; price: number; product?: { name: string; images: string[]; specs?: ProductSpecPublic[] } }>;
   store?: { name: string; slug: string };
@@ -909,7 +898,7 @@ export interface MerchantIssue {
   merchantId: string;
   merchantName: string;
   merchantEmail: string;
-  merchantWhatsapp: string | null;
+  merchantPhone: string | null;
   storeId: string | null;
   storeName: string | null;
   storeSlug: string | null;

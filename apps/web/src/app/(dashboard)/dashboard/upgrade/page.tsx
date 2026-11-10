@@ -121,7 +121,7 @@ function PayModal({ plan, cycle, config, onClose, onDone }: {
                     <p><span className="text-bz-muted">رقم ZainCash:</span> <span dir="ltr" className="font-bold">{config.zainCashNumber}</span></p>
                     {config.zainCashName && <p><span className="text-bz-muted">الاسم:</span> {config.zainCashName}</p>}
                   </>
-                ) : <p className="text-bz-muted">تواصل مع دعم بازار على واتساب لاستلام رقم ZainCash.</p>}
+                ) : <p className="text-bz-muted">تواصل مع دعم بازار لاستلام رقم ZainCash.</p>}
                 <p className="text-xs text-bz-muted mt-2">{config.instructions}</p>
               </div>
               <input value={txRef} onChange={e => setTxRef(e.target.value)} placeholder="رقم العملية أو آخر 4 أرقام (اختياري)"

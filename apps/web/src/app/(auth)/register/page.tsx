@@ -33,7 +33,7 @@ const schema = z.object({
     .min(8, 'كلمة المرور 8 أحرف على الأقل')
     .regex(/[A-Z]/, 'يجب أن تحتوي على حرف كبير')
     .regex(/[0-9]/, 'يجب أن تحتوي على رقم'),
-  whatsapp:  z.string().regex(/^\+?[0-9]{7,15}$/, 'رقم واتساب غير صالح').optional().or(z.literal('')),
+  phone:     z.string().regex(/^\+?[0-9]{7,15}$/, 'رقم الهاتف غير صالح').optional().or(z.literal('')),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -87,7 +87,7 @@ function RegisterForm() {
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      const payload = { ...data, whatsapp: data.whatsapp || undefined, referralCode: extractReferralCode(referralInput) };
+      const payload = { ...data, phone: data.phone || undefined, referralCode: extractReferralCode(referralInput) };
       const res = await api.post<{ success: boolean; data: AuthResponse }>('/api/auth/register', payload);
       login(res.data.user, res.data.token);
       toast.success('تم إنشاء الحساب! أنشئ متجرك الآن');
@@ -271,28 +271,28 @@ function RegisterForm() {
                 {errors.password && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{errors.password.message}</p>}
               </div>
 
-              {/* WhatsApp */}
+              {/* Phone */}
               <div>
                 <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 8 }}>
-                  رقم واتساب
+                  رقم الهاتف
                   <span style={{ color: C.muted, fontWeight: 500, fontSize: 12, marginRight: 6 }}>(اختياري — لإشعارات التفعيل)</span>
                 </label>
                 <div style={{ position: 'relative' }}>
                   <input
-                    {...register('whatsapp')}
+                    {...register('phone')}
                     type="tel"
                     placeholder="+9647XXXXXXXXX"
                     dir="ltr"
-                    style={{ width: '100%', padding: '12px 16px 12px 44px', background: C.bg, border: `1.5px solid ${errors.whatsapp ? 'rgba(239,68,68,.5)' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'inherit', color: C.text, textAlign: 'left', transition: 'border-color .2s', caretColor: C.a }}
+                    style={{ width: '100%', padding: '12px 16px 12px 44px', background: C.bg, border: `1.5px solid ${errors.phone ? 'rgba(239,68,68,.5)' : C.border}`, borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'inherit', color: C.text, textAlign: 'left', transition: 'border-color .2s', caretColor: C.a }}
                     onFocus={e => (e.target.style.borderColor = 'rgba(5,150,105,.4)')}
-                    onBlur={e => (e.target.style.borderColor = errors.whatsapp ? 'rgba(239,68,68,.5)' : C.border)}
+                    onBlur={e => (e.target.style.borderColor = errors.phone ? 'rgba(239,68,68,.5)' : C.border)}
                   />
                   <Phone size={16} color="#25D366" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 </div>
-                {errors.whatsapp && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{errors.whatsapp.message}</p>}
+                {errors.phone && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{errors.phone.message}</p>}
                 <p style={{ fontSize: 11, color: C.muted, marginTop: 5, display: 'flex', alignItems: 'center', gap: 5 }}>
                   <Smartphone size={12} />
-                  سنرسل لك إشعار واتساب عند تفعيل خطتك
+                  نتواصل معك عليه عند تفعيل باقتك
                 </p>
               </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { ShoppingCart, Loader2, MessageCircle, Package } from 'lucide-react';
+import { ShoppingCart, Loader2, Phone, Package } from 'lucide-react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -55,7 +55,7 @@ export default function AbandonedCartsPage() {
         <div className="bz-card p-8 text-center">
           <p className="text-4xl font-extrabold text-bz-ink tabular-nums">{locked.count}</p>
           <p className="text-bz-muted mt-1">{locked.count ? `زبوناً تركوا سلالهم بقيمة ${locked.total.toLocaleString('en-US')} د.ع تقريباً` : 'لا توجد سلال متروكة حالياً'}</p>
-          {locked.count > 0 && <p className="text-sm text-bz-ink mt-4 leading-7">استرجع زبائن كادوا يشترون برسالة واحدة: في الاحترافية ترى أسماءهم وأرقامهم وما تركوه، وتراسلهم على واتساب بضغطة.</p>}
+          {locked.count > 0 && <p className="text-sm text-bz-ink mt-4 leading-7">استرجع زبائن كادوا يشترون برسالة واحدة: في الاحترافية ترى أسماءهم وأرقامهم وما تركوه، وتتصل بهم مباشرة.</p>}
           <a href="/dashboard/upgrade" className="bz-btn mt-5 inline-flex">اعرف من هم — الترقية للاحترافية</a>
         </div>
       ) : carts.length === 0 ? (
@@ -73,10 +73,10 @@ export default function AbandonedCartsPage() {
                   <p className="text-xs text-gray-400 mt-0.5">منذ {formatDate(c.updatedAt)} · {c.itemCount} قطعة · {formatCurrency(c.total)}</p>
                 </div>
                 {c.customerPhone && (
-                  <a href={`https://wa.me/${c.customerPhone.replace(/[^\d]/g, '')}`} target="_blank" rel="noreferrer"
-                    className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition hover:bg-green-50"
-                    style={{ borderColor: BRAND.border }}>
-                    <MessageCircle className="h-3.5 w-3.5 text-green-500" /> تواصل واتساب
+                  <a href={`tel:${c.customerPhone.replace(/[^\d+]/g, '')}`}
+                    className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition hover:bg-bz-bg"
+                    style={{ borderColor: BRAND.border }} dir="ltr">
+                    <Phone className="h-3.5 w-3.5 text-bz-brand" /> {c.customerPhone}
                   </a>
                 )}
               </div>

@@ -27,13 +27,6 @@ interface Store {
   defaultSizeGuide?: string | null;
 }
 
-function WhatsAppGlyph({ size = 18, color = '#25D366' }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path fill={color} d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.35 5.06L2 22l5.06-1.32A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2Zm5.2 14.15c-.22.62-1.28 1.18-1.77 1.24-.45.06-1.02.08-1.65-.1-.38-.11-.87-.28-1.5-.55-2.64-1.14-4.36-3.79-4.5-3.97-.13-.18-1.08-1.44-1.08-2.74 0-1.3.68-1.94.93-2.2.24-.27.53-.33.7-.33h.5c.16 0 .38-.06.6.45.22.53.75 1.83.82 1.96.07.13.11.29.02.47-.09.18-.13.29-.26.44-.13.16-.28.35-.4.47-.13.13-.27.28-.12.55.15.27.68 1.11 1.46 1.79 1 .88 1.85 1.15 2.11 1.28.27.13.42.11.58-.07.16-.18.67-.78.85-1.05.18-.27.36-.22.6-.13.24.09 1.53.72 1.79.85.27.13.44.2.51.31.07.13.07.71-.15 1.33Z" />
-    </svg>
-  );
-}
 function TikTokGlyph({ size = 18, color = '#000' }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -51,7 +44,6 @@ function SnapchatGlyph({ size = 18, color = '#000' }: { size?: number; color?: s
 
 const SOCIAL_FIELDS: { key: keyof Omit<StoreSocialLinks, 'deliveryPartners'>; label: string; placeholder: string; prefix?: string; bg: string; icon: React.ReactNode; dir?: 'ltr' | 'rtl' }[] = [
   { key: 'instagram', label: 'إنستغرام', placeholder: 'اسم_المستخدم', prefix: '@', bg: 'linear-gradient(135deg,#833AB4,#E1306C,#F5A623)', icon: <Instagram size={18} color="#fff" strokeWidth={2} />, dir: 'ltr' },
-  { key: 'whatsapp', label: 'واتساب', placeholder: '+9647xxxxxxxxx', bg: '#25D366', icon: <WhatsAppGlyph size={18} />, dir: 'ltr' },
   { key: 'facebook', label: 'فيسبوك', placeholder: 'https://facebook.com/اسم_الصفحة', bg: '#1877F2', icon: <Facebook size={16} color="#fff" strokeWidth={2} />, dir: 'ltr' },
   { key: 'tiktok', label: 'تيك توك', placeholder: 'اسم_المستخدم', prefix: '@', bg: '#000', icon: <TikTokGlyph size={18} color="#fff" />, dir: 'ltr' },
   { key: 'snapchat', label: 'سناب شات', placeholder: 'اسم_المستخدم', prefix: '@', bg: '#FFFC00', icon: <SnapchatGlyph size={18} color="#000" />, dir: 'ltr' },

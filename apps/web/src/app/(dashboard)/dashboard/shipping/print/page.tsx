@@ -13,7 +13,7 @@ type Waybill = {
   address: { governorate?: string; city?: string; address?: string; notes?: string };
   codAmount: number; shippingFee: number;
   items: { name: string; quantity: number; variant: string | null }[];
-  trackingCode: string; trackingNumber: string | null; carrier: string;
+  trackingCode: string;
   branch: { name: string; phone: string | null; address: string | null } | null;
 };
 type Data = { store: { name: string; slug: string; logo: string | null }; sender: { name: string; phone: string; address: string }; waybills: Waybill[] };
@@ -84,7 +84,6 @@ function WaybillsInner() {
             <footer className="pt-2 flex flex-col items-center">
               <Barcode128 value={w.trackingCode} height={46} className="w-full max-w-[85mm] h-[12mm]" />
               <p className="font-bold tracking-[0.2em] text-[12px] mt-1" dir="ltr">{w.trackingCode}</p>
-              {w.trackingNumber && <p className="text-[10px]" dir="ltr">{w.carrier === 'alwaseet' ? 'الوسيط' : 'Courier'}: {w.trackingNumber}</p>}
               <p className="text-[9px] mt-0.5" dir="ltr">{trackBase}/{w.trackingCode}</p>
             </footer>
           </article>

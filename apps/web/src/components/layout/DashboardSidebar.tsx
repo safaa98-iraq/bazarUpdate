@@ -43,10 +43,9 @@ const sections: NavSection[] = [
     title: 'المبيعات',
     links: [
       { href: '/dashboard/orders',          label: 'الطلبات',         desc: 'تابع طلبات عملائك وحدّث حالتها',          icon: 'cart', perm: 'orders' },
-      { href: '/dashboard/draft-orders',    label: 'طلبات يدوية',     desc: 'سجّل طلباً وصلك عبر واتساب أو انستغرام', icon: 'documents', perm: 'orders' },
+      { href: '/dashboard/draft-orders',    label: 'طلبات يدوية',     desc: 'سجّل طلباً وصلك عبر الهاتف أو انستغرام', icon: 'documents', perm: 'orders' },
       { href: '/dashboard/abandoned-carts', label: 'السلال المتروكة', desc: 'زبائن تركوا سلتهم قبل إتمام الطلب',       icon: 'basket', perm: 'orders' },
-      { href: '/dashboard/shipping',        label: 'الشحن والبوالص',  desc: 'اطبع البوالص واربط شركة التوصيل وتتبع الشحنات', icon: 'truck', perm: 'orders' },
-      { href: '/dashboard/whatsapp',        label: 'تأكيد واتساب',    desc: 'الزبون يؤكد طلبه قبل الشحن بضغطة', icon: 'send', perm: 'settings', feature: 'whatsapp_confirm' },
+      { href: '/dashboard/shipping',        label: 'الشحن والبوالص',  desc: 'اطبع البوالص وحدّث حالة الشحنات', icon: 'truck', perm: 'orders' },
       { href: '/dashboard/chat',            label: 'رسائل العملاء',   desc: 'تحدث مع عملائك مباشرة من متجرك',          icon: 'chat', feature: 'chat', perm: 'chat' },
     ],
   },

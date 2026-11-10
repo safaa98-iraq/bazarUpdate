@@ -172,7 +172,6 @@ export function PricingPlans({ currentPlan, onChoose, initialCycle = 'YEARLY', d
         </div>
       </div>
 
-      <p className="text-center text-sm text-bz-muted mt-5">إذا أنقذ تأكيد الطلب عبر واتساب بضعة طلبات راجعة في الشهر، فالاشتراك يغطي نفسه.</p>
 
       {/* What the billing cycle adds */}
       <div className="mt-8 overflow-x-auto rounded-2xl border border-bz-line bg-white">

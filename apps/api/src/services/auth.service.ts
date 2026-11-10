@@ -35,7 +35,7 @@ async function generateUniqueReferralCode(): Promise<string> {
 }
 
 export class AuthService {
-  async register(dto: RegisterDto & { whatsapp?: string }): Promise<AuthResponse> {
+  async register(dto: RegisterDto & { phone?: string }): Promise<AuthResponse> {
     const existing = await prisma.user.findUnique({ where: { email: dto.email } });
     if (existing) throw new AppError(409, 'البريد الإلكتروني مسجل مسبقاً');
 
@@ -56,7 +56,7 @@ export class AuthService {
         role: 'MERCHANT',
         referralCode,
         ...(referredById ? { referredById } : {}),
-        ...(dto.whatsapp ? { whatsapp: dto.whatsapp } : {}),
+        ...(dto.phone ? { phone: dto.phone } : {}),
         ...trialData(),
       },
     });

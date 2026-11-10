@@ -22,7 +22,7 @@ interface Subscription {
   id: string;
   name: string;
   email: string;
-  whatsapp: string | null;
+  phone: string | null;
   plan: 'FREE' | 'PRO' | 'ENTERPRISE';
   isActive: boolean;
   joinedAt: string;
@@ -160,7 +160,7 @@ export default function SubscriptionsPage() {
       (d.daysLeft !== null && d.daysLeft < 0);
     const q = search.toLowerCase();
     const matchSearch = !q || d.name.toLowerCase().includes(q) || d.email.toLowerCase().includes(q)
-      || (d.whatsapp ?? '').includes(q);
+      || (d.phone ?? '').includes(q);
     return matchPlan && matchStatus && matchSearch;
   });
 
@@ -284,9 +284,9 @@ export default function SubscriptionsPage() {
                         <div className="min-w-0">
                           <p className="font-semibold text-gray-900 truncate">{row.name}</p>
                           <p className="text-xs text-gray-400 truncate">{row.email}</p>
-                          {row.whatsapp && (
+                          {row.phone && (
                             <p className="text-xs text-gray-400 flex items-center gap-1">
-                              <Phone className="h-2.5 w-2.5" />{row.whatsapp}
+                              <Phone className="h-2.5 w-2.5" />{row.phone}
                             </p>
                           )}
                         </div>

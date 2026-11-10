@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { apiFetch } from '@/lib/api';
-import { AlertTriangle, Store, Package, TrendingDown, Ban, Clock, MessageCircle } from 'lucide-react';
+import { AlertTriangle, Store, Package, TrendingDown, Ban, Clock, Phone } from 'lucide-react';
 import type { MerchantIssue, MerchantIssueType } from '@storebuilder/types';
 
 const B = { p: '#0B3550', a: '#20A9F4', border: '#E6ECF1', bg: '#F6F8FA' };
@@ -100,10 +100,10 @@ export default function MerchantIssuesPage() {
                   <p className="text-xs text-gray-300">{new Date(issue.since).toLocaleDateString('ar-IQ')}</p>
                 </div>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
-                  {issue.merchantWhatsapp && (
-                    <a href={`https://wa.me/${issue.merchantWhatsapp.replace(/[^\d]/g, '')}`} target="_blank" rel="noreferrer"
-                      className="w-8 h-8 rounded-xl flex items-center justify-center border transition hover:bg-green-50" style={{ borderColor: B.border }} title="تواصل واتساب">
-                      <MessageCircle size={14} className="text-green-500" />
+                  {issue.merchantPhone && (
+                    <a href={`tel:${issue.merchantPhone}`}
+                      className="w-8 h-8 rounded-xl flex items-center justify-center border transition hover:bg-green-50" style={{ borderColor: B.border }} title="اتصال">
+                      <Phone size={14} className="text-bz-brand" />
                     </a>
                   )}
                   <Link href="/admin/merchants" title={issue.merchantEmail}

@@ -226,7 +226,7 @@ router.get('/admin/requests', verifyToken, requireRole('SUPER_ADMIN'), async (re
       where: status === 'ALL' ? {} : { status },
       orderBy: { createdAt: 'desc' },
       take: 100,
-      include: { user: { select: { name: true, email: true, whatsapp: true } } },
+      include: { user: { select: { name: true, email: true, phone: true } } },
     });
     res.json({ success: true, data: requests });
   } catch (err) { next(err); }
@@ -316,7 +316,7 @@ router.get('/admin/subscriptions', verifyToken, requireRole('SUPER_ADMIN'), asyn
       where: { role: 'MERCHANT' },
       orderBy: { createdAt: 'desc' },
       select: {
-        id: true, name: true, email: true, whatsapp: true,
+        id: true, name: true, email: true, phone: true,
         plan: true, planChangedAt: true, isActive: true, createdAt: true, billingCycle: true, planExpiresAt: true, lifetimeInstallmentsPaid: true,
         paymentRequests: {
           where: { status: 'APPROVED' },
@@ -337,7 +337,7 @@ router.get('/admin/subscriptions', verifyToken, requireRole('SUPER_ADMIN'), asyn
         : null;
 
       return {
-        id: m.id, name: m.name, email: m.email, whatsapp: m.whatsapp ?? null,
+        id: m.id, name: m.name, email: m.email, phone: m.phone ?? null,
         plan: m.plan, isActive: m.isActive, billingCycle: m.billingCycle, lifetimeInstallmentsPaid: m.lifetimeInstallmentsPaid,
         joinedAt: m.createdAt,
         planChangedAt: planStart,

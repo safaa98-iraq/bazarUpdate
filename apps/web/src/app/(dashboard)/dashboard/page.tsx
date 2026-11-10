@@ -163,7 +163,7 @@ export default function DashboardOverview() {
             <p className="bz-headline text-bz-ink">أنت على الباقة المجانية</p>
             <p className="text-sm text-bz-muted mt-0.5">الاحترافية: بِع أكثر، وقلّل الطلبات الراجعة — من 22,000 د.ع شهرياً</p>
             <div className="flex flex-wrap gap-2 mt-3">
-              {['طلبات ومنتجات بلا حد', 'تأكيد الطلب عبر واتساب', 'ربط شركة التوصيل', 'السلال المتروكة'].map(label => (
+              {['طلبات ومنتجات بلا حد', 'تحليلات المبيعات', 'المحادثة مع الزبائن', 'السلال المتروكة'].map(label => (
                 <span key={label} className="bz-chip bg-white border border-bz-line text-bz-ink-2"><Lock className="h-3 w-3 text-bz-muted" /> {label}</span>
               ))}
             </div>

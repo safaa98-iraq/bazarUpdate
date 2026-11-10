@@ -75,12 +75,3 @@ export async function notifyOrderMilestone(storeId: string, usedOverride?: numbe
     await notifyUser(merchantId, kind, 'وصلت للحد الشهري من الطلبات', `استقبلت ${limit} طلباً هذا الشهر وهو حد الباقة المجانية — الطلبات الجديدة متوقفة حتى بداية الشهر القادم أو حتى ترقيتك.`, { used, limit, upgrade: 'PRO' });
   }
 }
-
-/** First cancelled or returned order on the Free plan → suggest WhatsApp confirmation. */
-export async function notifyFirstLostOrder(storeId: string) {
-  const { plan, merchantId } = await planOfStore(storeId);
-  if (plan !== 'FREE') return;
-  const already = await prisma.notification.count({ where: { userId: merchantId, type: 'UPSELL_CONFIRM' } });
-  if (already) return;
-  await notifyUser(merchantId, 'UPSELL_CONFIRM', 'أكّد الطلبات قبل الشحن ووفّر أجور التوصيل', 'طلب أُلغي أو رجع؟ في الاحترافية يؤكد الزبون طلبه على واتساب قبل أن تشحنه، فلا تدفع توصيلاً لطلب لن يُستلم.', { upgrade: 'PRO' });
-}

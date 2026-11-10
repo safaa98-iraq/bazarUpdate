@@ -29,15 +29,3 @@ export async function notifyNewChatMessage(storeId: string, conversationId: stri
     { conversationId }
   );
 }
-
-export async function notifyOrderConfirmation(storeId: string, order: { id: string; customerName: string }, confirmed: boolean) {
-  const store = await prisma.store.findUnique({ where: { id: storeId }, select: { merchantId: true } });
-  if (!store) return;
-  await notifyUser(
-    store.merchantId,
-    'ORDER_CONFIRMATION',
-    confirmed ? 'تم تأكيد طلب ✅' : 'ألغى الزبون طلبه ❌',
-    `${order.customerName} ${confirmed ? 'أكّد' : 'ألغى'} الطلب #${order.id.slice(-6).toUpperCase()}${confirmed ? ' — جاهز للشحن' : ''}`,
-    { orderId: order.id }
-  );
-}

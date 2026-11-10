@@ -91,7 +91,7 @@ export function FreeUsageCard() {
       {usage.abandonedCarts > 0 && (
         <Link href="/dashboard/upgrade" className="flex items-center gap-3 rounded-2xl bg-bz-brand-50 p-3 text-sm text-bz-brand-600 hover:opacity-90">
           <ShoppingBasket className="h-5 w-5 flex-shrink-0" />
-          <span className="flex-1"><b>{usage.abandonedCarts}</b> زبوناً تركوا سلالهم — اعرف من هم وراسلهم على واتساب في الاحترافية</span>
+          <span className="flex-1"><b>{usage.abandonedCarts}</b> زبوناً تركوا سلالهم — اعرف من هم وتواصل معهم في الاحترافية</span>
           <span className="font-bold">←</span>
         </Link>
       )}

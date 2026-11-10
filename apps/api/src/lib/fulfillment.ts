@@ -1,4 +1,3 @@
-import { notifyFirstLostOrder } from './limits';
 import prisma from '@storebuilder/database';
 
 /** Product.stock is the sum of its branch stocks once a store uses branches. Returns the new total. */
@@ -94,13 +93,12 @@ export async function reassignWarehouse(orderId: string, storeId: string, wareho
 }
 
 /**
- * Put an order's units back (customer rejected it, or the courier returned it).
+ * Put an order's units back (order cancelled, or the shipment came back).
  * Idempotent per order: callers only invoke it on the transition into CANCELLED.
  */
 export async function restockOrder(orderId: string): Promise<void> {
   const order = await prisma.order.findUnique({ where: { id: orderId }, include: { items: true } });
   if (!order || order.status === 'DRAFT') return;
-  notifyFirstLostOrder(order.storeId).catch(() => null);
   const ops = [];
   for (const i of order.items) {
     if (i.variantId) {

@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
 import { PLAN_CONFIGS } from '@storebuilder/types';
-import { Clock, CheckCircle2, XCircle, Eye, Check, X, RefreshCw, Loader2, MessageCircle, AlertTriangle, Lightbulb } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, Eye, Check, X, RefreshCw, Loader2, Phone, AlertTriangle, Lightbulb } from 'lucide-react';
 import { toast } from 'sonner';
 import Image from 'next/image';
 
@@ -47,7 +47,7 @@ interface PayRequest {
   proofUrl: string | null;
   adminNote: string | null;
   createdAt: string;
-  user: { name: string; email: string; whatsapp: string | null };
+  user: { name: string; email: string; phone: string | null };
 }
 
 function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () => void; onDone: () => void }) {
@@ -85,14 +85,14 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
               <div>
                 <div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>{req.user.name}</div>
                 <div style={{ fontSize: 12, color: C.muted }}>{req.user.email}</div>
-                {req.user.whatsapp && (
+                {req.user.phone && (
                   <a
-                    href={`https://wa.me/${req.user.whatsapp.replace(/\D/g, '')}`}
+                    href={`tel:${req.user.phone}`}
                     target="_blank" rel="noreferrer"
                     style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 6, color: '#25D366', fontSize: 12, fontWeight: 700, textDecoration: 'none', background: '#F0FBF6', padding: '3px 10px', borderRadius: 99, border: '1px solid #BDEFD9' }}
                   >
-                    <MessageCircle size={14} />
-                    تواصل واتساب: {req.user.whatsapp}
+                    <Phone size={14} />
+                    الهاتف: {req.user.phone}
                   </a>
                 )}
               </div>
@@ -251,10 +251,10 @@ export default function AdminPaymentsPage() {
                       <td style={{ padding: '14px 16px' }}>
                         <div style={{ fontWeight: 700, color: C.text }}>{r.user.name}</div>
                         <div style={{ fontSize: 11, color: C.muted }}>{r.user.email}</div>
-                        {r.user.whatsapp && (
-                          <a href={`https://wa.me/${r.user.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noreferrer"
+                        {r.user.phone && (
+                          <a href={`tel:${r.user.phone}`}
                             style={{ display: 'inline-flex', alignItems: 'center', gap: 3, marginTop: 3, color: '#25D366', fontSize: 10, fontWeight: 700, textDecoration: 'none' }}>
-                            <MessageCircle size={10} /> {r.user.whatsapp}
+                            <Phone size={10} /> {r.user.phone}
                           </a>
                         )}
                       </td>

@@ -3,9 +3,8 @@ import prisma from '@storebuilder/database';
 import { SHIPMENT_STATUS_LABELS, type ShipmentStatus } from '@storebuilder/types';
 import { verifyToken, requireRole } from '../middleware/auth';
 import { AppError } from '../middleware/errorHandler';
-import { getMerchantContext, assertPlan } from '../lib/plan';
-import { readShippingSettings } from '../lib/couriers';
-import { applyShipmentStatus, createShipment, shipmentToPublic, syncShipments } from '../lib/shipments';
+import { getMerchantContext } from '../lib/plan';
+import { applyShipmentStatus, createShipment, shipmentToPublic, readShippingSettings } from '../lib/shipments';
 
 const router = Router();
 const merchant = [verifyToken, requireRole('MERCHANT')];
@@ -13,8 +12,7 @@ const merchant = [verifyToken, requireRole('MERCHANT')];
 /** Create waybills for one or many orders. */
 router.post('/', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { store, plan } = await getMerchantContext(req);
-    if (readShippingSettings(store.shippingSettings).carrier === 'alwaseet') assertPlan(plan, 'PRO', 'الربط مع شركات التوصيل');
+    const { store } = await getMerchantContext(req);
     const ids: string[] = Array.isArray(req.body?.orderIds) ? req.body.orderIds.slice(0, 100) : [req.body?.orderId].filter(Boolean);
     if (!ids.length) throw new AppError(400, 'اختر طلباً واحداً على الأقل');
     const results = [];
@@ -82,8 +80,6 @@ router.get('/waybills', ...merchant, async (req: Request, res: Response, next: N
           shippingFee: Number(o.shippingFee),
           items: o.items.map(i => ({ name: i.product?.name ?? '', quantity: i.quantity, variant: i.variantLabel })),
           trackingCode: o.shipment!.trackingCode,
-          trackingNumber: o.shipment!.trackingNumber,
-          carrier: o.shipment!.carrier,
           branch: o.warehouse,
         })),
       },
@@ -109,14 +105,6 @@ router.patch('/:id/status', ...merchant, async (req: Request, res: Response, nex
     await applyShipmentStatus(s.id, status, typeof req.body?.note === 'string' ? req.body.note : undefined);
     const fresh = await prisma.shipment.findUnique({ where: { id: s.id } });
     res.json({ success: true, data: shipmentToPublic(fresh) });
-  } catch (err) { next(err); }
-});
-
-router.post('/sync', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { store } = await getMerchantContext(req);
-    const updated = await syncShipments(store.id);
-    res.json({ success: true, data: { updated } });
   } catch (err) { next(err); }
 });
 

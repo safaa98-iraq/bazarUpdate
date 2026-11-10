@@ -96,7 +96,7 @@ export default function DraftOrdersPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="bz-large-title text-gray-900">طلبات يدوية</h1>
-          <p className="text-sm text-gray-500 mt-0.5">سجّل طلباً وصلك عبر واتساب أو انستغرام، وانشره لاحقاً لينقص من المخزون</p>
+          <p className="text-sm text-gray-500 mt-0.5">سجّل طلباً وصلك عبر الهاتف أو انستغرام، وانشره لاحقاً لينقص من المخزون</p>
         </div>
         <button onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
@@ -195,7 +195,7 @@ export default function DraftOrdersPage() {
               <div>
                 <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>ملاحظة داخلية (اختياري)</label>
                 <input value={draftNote} onChange={e => setDraftNote(e.target.value)}
-                  placeholder="مثال: طلب عبر واتساب"
+                  placeholder="مثال: طلب عبر انستغرام"
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
               </div>
 

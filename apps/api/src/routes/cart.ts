@@ -71,7 +71,7 @@ router.get('/abandoned', ...merchant, async (req: Request, res: Response, next: 
       where: { storeId, updatedAt: { lt: threshold }, items: { some: {} } },
       include: {
         items: { include: { product: { select: { id: true, name: true, price: true, images: true } } } },
-        customer: { select: { name: true, email: true, whatsapp: true } },
+        customer: { select: { name: true, email: true, phone: true } },
       },
       orderBy: { updatedAt: 'desc' },
       take: 100,
@@ -86,7 +86,7 @@ router.get('/abandoned', ...merchant, async (req: Request, res: Response, next: 
       id: c.id,
       customerName: c.customer?.name ?? null,
       customerEmail: c.customer?.email ?? null,
-      customerPhone: c.customer?.whatsapp ?? null,
+      customerPhone: c.customer?.phone ?? null,
       updatedAt: c.updatedAt.toISOString(),
       itemCount: c.items.reduce((s, i) => s + i.quantity, 0),
       total: c.items.reduce((s, i) => s + Number(i.product.price) * i.quantity, 0),

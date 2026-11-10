@@ -1,5 +1,5 @@
 'use client';
-import { OrderFulfillment, CONFIRMATION_BADGE } from '@/components/dashboard/OrderFulfillment';
+import { OrderFulfillment } from '@/components/dashboard/OrderFulfillment';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import type { WarehousePublic, StaffSession } from '@storebuilder/types';
 
@@ -188,7 +188,6 @@ export default function OrdersPage() {
   const [printLabelOrder, setPrintLabelOrder] = useState<OrderPublic | null>(null);
   const [branches, setBranches] = useState<WarehousePublic[]>([]);
   const [branchFilter, setBranchFilter] = useState('');
-  const [confirmFilter, setConfirmFilter] = useState('');
   const staffSession = (useAuthStore(s => s.user) as { staff?: StaffSession | null } | null)?.staff ?? null;
 
   const load = useCallback(async () => {
@@ -197,14 +196,13 @@ export default function OrdersPage() {
       const qs = new URLSearchParams();
       if (statusFilter !== 'ALL') qs.set('status', statusFilter);
       if (branchFilter) qs.set('warehouseId', branchFilter);
-      if (confirmFilter) qs.set('confirmation', confirmFilter);
       const params = qs.toString() ? `?${qs}` : '';
       const res = await api.get<{ success: boolean; data: OrderPublic[]; pagination: { total: number } }>(`/api/orders${params}`);
       setOrders(res.data ?? []);
       setTotal(res.pagination?.total ?? 0);
     } catch { toast.error('فشل تحميل الطلبات'); }
     finally { setLoading(false); }
-  }, [statusFilter, branchFilter, confirmFilter]);
+  }, [statusFilter, branchFilter]);
 
   useEffect(() => {
     api.get<{ data: WarehousePublic[] }>('/api/warehouses').then(r => setBranches(r.data)).catch(() => null);
@@ -279,12 +277,6 @@ export default function OrdersPage() {
 
       {/* Fulfilment filters */}
       <div className="flex flex-wrap gap-2 -mt-3 mb-6">
-        <select value={confirmFilter} onChange={e => setConfirmFilter(e.target.value)} className="h-9 px-3 border border-bz-line text-sm">
-          <option value="">كل حالات التأكيد</option>
-          <option value="PENDING">بانتظار تأكيد الزبون</option>
-          <option value="CONFIRMED">أكّدها الزبون</option>
-          <option value="REJECTED">ألغاها الزبون</option>
-        </select>
         {branches.length > 0 && !staffSession?.warehouseId && (
           <select value={branchFilter} onChange={e => setBranchFilter(e.target.value)} className="h-9 px-3 border border-bz-line text-sm">
             <option value="">كل الفروع</option>
@@ -332,11 +324,6 @@ export default function OrdersPage() {
                       #{order.id.slice(-8).toUpperCase()} · {formatDate(order.createdAt)}
                       {order.warehouseName ? ` · 📍 ${order.warehouseName}` : ''}
                     </p>
-                    {CONFIRMATION_BADGE[order.confirmationStatus ?? 'NONE'] && (
-                      <span className={`bz-chip mt-1.5 ${CONFIRMATION_BADGE[order.confirmationStatus!].cls}`} style={{ height: 22, fontSize: 11 }}>
-                        {CONFIRMATION_BADGE[order.confirmationStatus!].label}
-                      </span>
-                    )}
                   </div>
 
                   {/* Items count */}

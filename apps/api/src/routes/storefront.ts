@@ -7,7 +7,7 @@ import { giftCardService } from '../services/giftcard.service';
 import { promotionService } from '../services/promotion.service';
 import { loyaltyService } from '../services/loyalty.service';
 import { Decimal } from '@prisma/client/runtime/library';
-import { notifyNewOrder, notifyOrderConfirmation } from '../lib/notify';
+import { notifyNewOrder } from '../lib/notify';
 import { optionalToken, verifyToken } from '../middleware/auth';
 import { cuid } from '../lib/cuid';
 import { afterOrderCreated } from '../lib/orderHooks';
@@ -598,59 +598,6 @@ router.post(
   }
 );
 
-/* ─── Customer order confirmation (link sent on WhatsApp) ─────────────────── */
-
-async function findByToken(slug: string, token: string) {
-  if (!/^[a-f0-9]{32}$/.test(token)) return null;
-  return prisma.order.findFirst({
-    where: { confirmationToken: token, store: { slug } },
-    include: { items: { include: { product: { select: { name: true, images: true } } } }, store: { select: { name: true, logo: true, theme: true, slug: true } } },
-  });
-}
-
-router.get('/:slug/confirm/:token', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const o = await findByToken(req.params.slug, req.params.token);
-    if (!o) { res.status(404).json({ success: false, error: 'الرابط غير صالح أو منتهي' }); return; }
-    const addr = (o.shippingAddress ?? {}) as Record<string, string>;
-    res.json({
-      success: true,
-      data: {
-        reference: o.id.slice(-6).toUpperCase(),
-        store: o.store,
-        customerName: o.customerName,
-        total: Number(o.total), shippingFee: Number(o.shippingFee),
-        address: { governorate: addr.governorate ?? '', city: addr.city ?? '', address: addr.address ?? '' },
-        items: o.items.map(i => ({ name: i.product?.name ?? '', image: Array.isArray(i.product?.images) ? (i.product!.images as string[])[0] ?? null : null, quantity: i.quantity, price: Number(i.price), variant: i.variantLabel })),
-        confirmationStatus: o.confirmationStatus,
-        orderStatus: o.status,
-        createdAt: o.createdAt.toISOString(),
-      },
-    });
-  } catch (err) { next(err); }
-});
-
-router.post('/:slug/confirm/:token', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const o = await findByToken(req.params.slug, req.params.token);
-    if (!o) { res.status(404).json({ success: false, error: 'الرابط غير صالح أو منتهي' }); return; }
-    const action = req.body?.action;
-    if (action !== 'confirm' && action !== 'reject') { res.status(400).json({ success: false, error: 'إجراء غير معروف' }); return; }
-    if (o.status === 'SHIPPED' || o.status === 'DELIVERED') {
-      res.status(409).json({ success: false, error: 'تم شحن الطلب بالفعل — تواصل مع المتجر' }); return;
-    }
-    if (o.status === 'CANCELLED') { res.status(409).json({ success: false, error: 'هذا الطلب ملغي' }); return; }
-
-    if (action === 'confirm') {
-      await prisma.order.update({ where: { id: o.id }, data: { confirmationStatus: 'CONFIRMED', confirmedAt: new Date() } });
-    } else {
-      await restockOrder(o.id);
-      await prisma.order.update({ where: { id: o.id }, data: { confirmationStatus: 'REJECTED', confirmedAt: new Date(), status: 'CANCELLED' } });
-    }
-    notifyOrderConfirmation(o.storeId, { id: o.id, customerName: o.customerName }, action === 'confirm').catch(() => null);
-    res.json({ success: true, data: { confirmationStatus: action === 'confirm' ? 'CONFIRMED' : 'REJECTED' } });
-  } catch (err) { next(err); }
-});
 
 /* ─── Public shipment tracking ─────────────────────────────────────────── */
 

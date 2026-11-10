@@ -26,7 +26,7 @@ router.post(
     body('email').isEmail().normalizeEmail().withMessage('بريد إلكتروني غير صالح'),
     passwordRules,
     body('name').trim().isLength({ min: 2, max: 100 }).withMessage('الاسم يجب أن يكون بين 2 و100 حرف'),
-    body('whatsapp').optional().matches(/^\+?[0-9]{7,20}$/).withMessage('رقم واتساب غير صالح'),
+    body('phone').optional().matches(/^\+?[0-9]{7,20}$/).withMessage('رقم الهاتف غير صالح'),
   ],
   validate,
   async (req: Request, res: Response, next: NextFunction) => {

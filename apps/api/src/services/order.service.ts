@@ -10,7 +10,7 @@ import { getSpecsMapForProducts } from './product.service';
 const ORDER_INCLUDE = {
   items: { include: { product: { select: { name: true, images: true } } } },
   warehouse: { select: { name: true } },
-  shipment: { select: { trackingCode: true, trackingNumber: true, status: true, carrier: true } },
+  shipment: { select: { trackingCode: true, status: true } },
 } as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,9 +28,6 @@ function toPublic(order: any, specsMap: Record<string, ProductSpecPublic[]> = {}
     shippingAddress: order.shippingAddress as OrderPublic['shippingAddress'],
     stripePaymentId: order.stripePaymentId,
     draftNote: order.draftNote ?? null,
-    confirmationStatus: order.confirmationStatus ?? 'NONE',
-    confirmationToken: order.confirmationToken ?? null,
-    confirmationSentAt: order.confirmationSentAt?.toISOString?.() ?? null,
     warehouseId: order.warehouseId ?? null,
     warehouseName: order.warehouse?.name ?? null,
     shipment: order.shipment ?? null,
@@ -181,7 +178,7 @@ export class OrderService {
 
   async listByStore(
     storeId: string,
-    opts: { status?: string; page?: number; limit?: number; warehouseId?: string | null; confirmation?: string }
+    opts: { status?: string; page?: number; limit?: number; warehouseId?: string | null }
   ): Promise<{ items: OrderPublic[]; total: number }> {
     const page = opts.page ?? 1;
     const limit = opts.limit ?? 20;
@@ -191,7 +188,6 @@ export class OrderService {
       storeId,
       ...(opts.status ? { status: opts.status as OrderStatusType } : {}),
       ...(opts.warehouseId ? { warehouseId: opts.warehouseId } : {}),
-      ...(opts.confirmation ? { confirmationStatus: opts.confirmation } : {}),
     };
 
     const [items, total] = await Promise.all([

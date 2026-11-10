@@ -47,7 +47,8 @@ model User {
   lifetimeTarget            String?  @db.VarChar(20)
   lifetimeInstallmentsPaid  Int      @default(0)
   lifetimeTotal             Int?
-  whatsapp        String?  @db.VarChar(20)
+  /// Contact phone (stored in the old "whatsapp" column)
+  phone           String?  @map("whatsapp") @db.VarChar(20)
   googleId        String?  @unique @db.VarChar(128)
   isActive        Boolean  @default(true)
   aiRequestLimit  Int      @default(50)
@@ -100,9 +101,7 @@ model Store {
   defaultSizeGuide      String?  @db.Text
   /// Storefront UI languages, e.g. ["ar","ckb"] (first = default)
   storefrontLanguages   Json?    @default("[\"ar\"]")
-  /// WhatsApp order confirmation: { autoConfirm, message, phoneNumberId, accessToken, templateName, templateLang }
-  whatsappSettings      Json?
-  /// Courier / waybill: { carrier, username, password, senderName, senderPhone, pickupAddress }
+  /// Waybill sender details: { senderName, senderPhone, pickupAddress }
   shippingSettings      Json?
   suspendedAt     DateTime?
   suspendReason   String?  @db.VarChar(255)
@@ -267,11 +266,6 @@ model Order {
   status          OrderStatus @default(PENDING)
   shippingAddress Json
   stripePaymentId String?
-  /// NONE | PENDING | CONFIRMED | REJECTED — customer confirmation via WhatsApp link
-  confirmationStatus String    @default("NONE") @db.VarChar(20)
-  confirmationToken  String?   @unique @db.VarChar(64)
-  confirmationSentAt DateTime?
-  confirmedAt        DateTime?
   warehouseId     String?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -778,22 +772,16 @@ model WarehouseStock {
   @@index([productId])
 }
 
-/// Courier shipment + tracking for an order
+/// Waybill + manual tracking for an order
 model Shipment {
   id             String    @id @default(cuid())
   orderId        String    @unique
   storeId        String
-  /// manual | alwaseet
-  carrier        String    @default("manual") @db.VarChar(30)
-  /// Courier's own reference / waybill number
-  trackingNumber String?   @db.VarChar(100)
   /// Short public code used on the waybill and the tracking page
   trackingCode   String    @unique @db.VarChar(20)
   /// CREATED | PICKED_UP | IN_TRANSIT | OUT_FOR_DELIVERY | DELIVERED | RETURNED | CANCELLED
   status         String    @default("CREATED") @db.VarChar(30)
   events         Json      @default("[]")
-  lastSyncedAt   DateTime?
-  lastError      String?   @db.Text
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 

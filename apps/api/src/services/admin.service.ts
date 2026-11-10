@@ -340,11 +340,11 @@ export class AdminService {
     // 1. Signed up 3+ days ago, still no store
     const noStoreMerchants = await prisma.user.findMany({
       where: { role: 'MERCHANT', isActive: true, createdAt: { lt: threeDaysAgo }, store: null },
-      select: { id: true, name: true, email: true, whatsapp: true, createdAt: true },
+      select: { id: true, name: true, email: true, phone: true, createdAt: true },
     });
     for (const m of noStoreMerchants) {
       issues.push({
-        merchantId: m.id, merchantName: m.name, merchantEmail: m.email, merchantWhatsapp: m.whatsapp,
+        merchantId: m.id, merchantName: m.name, merchantEmail: m.email, merchantPhone: m.phone,
         storeId: null, storeName: null, storeSlug: null,
         issueType: 'NO_STORE', detail: 'سجّل ولم ينشئ متجراً بعد', since: m.createdAt.toISOString(),
       });
@@ -355,13 +355,13 @@ export class AdminService {
       where: { createdAt: { lt: threeDaysAgo }, isActive: true, products: { none: {} } },
       select: {
         id: true, name: true, slug: true, createdAt: true,
-        merchant: { select: { id: true, name: true, email: true, whatsapp: true, isActive: true } },
+        merchant: { select: { id: true, name: true, email: true, phone: true, isActive: true } },
       },
     });
     for (const s of storesWithNoProducts) {
       if (!s.merchant.isActive) continue;
       issues.push({
-        merchantId: s.merchant.id, merchantName: s.merchant.name, merchantEmail: s.merchant.email, merchantWhatsapp: s.merchant.whatsapp,
+        merchantId: s.merchant.id, merchantName: s.merchant.name, merchantEmail: s.merchant.email, merchantPhone: s.merchant.phone,
         storeId: s.id, storeName: s.name, storeSlug: s.slug,
         issueType: 'NO_PRODUCTS', detail: 'أنشأ متجراً ولم يضف أي منتج بعد', since: s.createdAt.toISOString(),
       });
@@ -372,13 +372,13 @@ export class AdminService {
       where: { isPublished: true, isActive: true, createdAt: { lt: fourteenDaysAgo }, orders: { none: {} } },
       select: {
         id: true, name: true, slug: true, createdAt: true,
-        merchant: { select: { id: true, name: true, email: true, whatsapp: true, isActive: true } },
+        merchant: { select: { id: true, name: true, email: true, phone: true, isActive: true } },
       },
     });
     for (const s of storesWithNoSales) {
       if (!s.merchant.isActive) continue;
       issues.push({
-        merchantId: s.merchant.id, merchantName: s.merchant.name, merchantEmail: s.merchant.email, merchantWhatsapp: s.merchant.whatsapp,
+        merchantId: s.merchant.id, merchantName: s.merchant.name, merchantEmail: s.merchant.email, merchantPhone: s.merchant.phone,
         storeId: s.id, storeName: s.name, storeSlug: s.slug,
         issueType: 'NO_SALES', detail: 'متجر منشور منذ أكثر من أسبوعين بدون أي طلب', since: s.createdAt.toISOString(),
       });
@@ -389,12 +389,12 @@ export class AdminService {
       where: { suspendedAt: { not: null } },
       select: {
         id: true, name: true, slug: true, suspendedAt: true, suspendReason: true,
-        merchant: { select: { id: true, name: true, email: true, whatsapp: true } },
+        merchant: { select: { id: true, name: true, email: true, phone: true } },
       },
     });
     for (const s of suspendedStores) {
       issues.push({
-        merchantId: s.merchant.id, merchantName: s.merchant.name, merchantEmail: s.merchant.email, merchantWhatsapp: s.merchant.whatsapp,
+        merchantId: s.merchant.id, merchantName: s.merchant.name, merchantEmail: s.merchant.email, merchantPhone: s.merchant.phone,
         storeId: s.id, storeName: s.name, storeSlug: s.slug,
         issueType: 'SUSPENDED', detail: s.suspendReason ?? 'المتجر موقوف', since: (s.suspendedAt ?? new Date()).toISOString(),
       });
@@ -405,12 +405,12 @@ export class AdminService {
       where: { status: 'PENDING', createdAt: { lt: fortyEightHoursAgo } },
       select: {
         createdAt: true, planTarget: true,
-        user: { select: { id: true, name: true, email: true, whatsapp: true } },
+        user: { select: { id: true, name: true, email: true, phone: true } },
       },
     });
     for (const p of stalePayments) {
       issues.push({
-        merchantId: p.user.id, merchantName: p.user.name, merchantEmail: p.user.email, merchantWhatsapp: p.user.whatsapp,
+        merchantId: p.user.id, merchantName: p.user.name, merchantEmail: p.user.email, merchantPhone: p.user.phone,
         storeId: null, storeName: null, storeSlug: null,
         issueType: 'PAYMENT_PENDING', detail: `طلب ترقية لخطة ${p.planTarget} بانتظار المراجعة منذ أكثر من يومين`, since: p.createdAt.toISOString(),
       });

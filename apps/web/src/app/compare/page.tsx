@@ -29,7 +29,7 @@ const rows: CompRow[] = [
   { label: 'دفع عبر Stripe / PayPal', bazar: true, shopify: true },
   { label: 'لا حاجة لبطاقة ائتمان للبدء', bazar: true, shopify: false },
   { label: 'إعداد المتجر في دقائق', bazar: true, shopify: 'يحتاج خبرة تقنية' },
-  { label: 'دعم عربي عبر واتساب', bazar: true, shopify: false },
+  { label: 'دعم فني باللغة العربية', bazar: true, shopify: false },
   { label: 'ذكاء اصطناعي لكتابة الأوصاف', bazar: true, shopify: 'إضافة مدفوعة' },
   { label: 'كوبونات الخصم', bazar: true, shopify: true },
   { label: 'تحليلات المبيعات', bazar: true, shopify: true },
@@ -102,7 +102,7 @@ export default function ComparePage() {
           {[
             { label: 'متجر', value: '0 كلفة', sub: 'للبدء', color: '#22B07D', bg: '#F0FBF6', border: '#BDEFD9' },
             { label: 'عمولة', value: '0%', sub: 'على مبيعاتك', color: C.s, bg: '#F1ECFE', border: '#C2CDD8' },
-            { label: 'دعم', value: '< ساعة', sub: 'استجابة واتساب', color: C.a, bg: '#FFF1F2', border: '#FECDD3' },
+            { label: 'دعم', value: '< ساعة', sub: 'استجابة الدعم', color: C.a, bg: '#FFF1F2', border: '#FECDD3' },
           ].map(({ label, value, sub, color, bg, border }) => (
             <div key={label} style={{ background: bg, border: `1.5px solid ${border}`, borderRadius: 10, padding: '20px 28px', minWidth: 140 }}>
               <div style={{ fontSize: 28, fontWeight: 900, color, fontFamily: 'var(--font-cairo)' }}>{value}</div>
@@ -180,7 +180,7 @@ export default function ComparePage() {
               {
                 icon: MessageCircle, color: '#22B07D',
                 title: 'دعم عربي فوري',
-                body: 'فريق الدعم يتحدث العربية ويرد عبر واتساب خلال أقل من ساعة — لا بوتات ولا ردود إنجليزية آلية.',
+                body: 'فريق الدعم يتحدث العربية ويرد خلال أقل من ساعة — لا بوتات ولا ردود إنجليزية آلية.',
               },
               {
                 icon: Shield, color: C.s,
