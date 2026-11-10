@@ -9,7 +9,6 @@ import { AppError } from '../middleware/errorHandler';
 import { getMerchantContext, assertPlan } from '../lib/plan';
 import { publicWhatsappSettings, readWhatsappSettings, DEFAULT_CONFIRM_MESSAGE } from '../lib/whatsapp';
 import { publicShippingSettings, readShippingSettings, CARRIERS } from '../lib/couriers';
-import { readAppSettings, rawAppSettings } from '../lib/storeApp';
 
 const router = Router();
 const merchant = [verifyToken, requireRole('MERCHANT')];
@@ -28,7 +27,6 @@ router.get('/', ...merchant, async (req: Request, res: Response, next: NextFunct
         whatsapp: publicWhatsappSettings(store.whatsappSettings),
         shipping: { ...publicShippingSettings(store.shippingSettings), carriers: CARRIERS },
         languages: Array.isArray(store.storefrontLanguages) ? store.storefrontLanguages : ['ar'],
-        app: readAppSettings(store),
         slug: store.slug,
         // Owner-only hint so the UI can hide credentials from staff
         canEditCredentials: !isStaff,
@@ -92,37 +90,6 @@ router.put('/languages', ...merchant, async (req: Request, res: Response, next: 
     if (unique.some(l => l !== 'ar')) assertPlan(plan, 'ENTERPRISE', 'لغات المتجر الإضافية');
     await prisma.store.update({ where: { id: store.id }, data: { storefrontLanguages: unique } });
     res.json({ success: true, data: unique });
-  } catch (err) { next(err); }
-});
-
-/**
- * The app itself is created by the Bazar super admin (see routes/adminApps.ts).
- * The merchant can only ask for one and decide whether its links show on the storefront.
- */
-router.post('/app/request', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { store, plan } = await getMerchantContext(req);
-    assertPlan(plan, 'ENTERPRISE', 'تطبيق المتجر');
-    const cur = rawAppSettings(store);
-    const current = readAppSettings(store);
-    const nextSettings = current.status === 'NONE'
-      ? { ...cur, status: 'REQUESTED', requestedAt: new Date().toISOString() }
-      : cur;
-    await prisma.store.update({ where: { id: store.id }, data: { appSettings: nextSettings as never } });
-    const fresh = await prisma.store.findUnique({ where: { id: store.id } });
-    res.json({ success: true, data: readAppSettings(fresh!) });
-  } catch (err) { next(err); }
-});
-
-router.put('/app/display', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { store, plan } = await getMerchantContext(req);
-    assertPlan(plan, 'ENTERPRISE', 'تطبيق المتجر');
-    if (typeof req.body?.showOnStore !== 'boolean') throw new AppError(400, 'showOnStore مطلوب');
-    const nextSettings = { ...rawAppSettings(store), showOnStore: req.body.showOnStore };
-    await prisma.store.update({ where: { id: store.id }, data: { appSettings: nextSettings as never } });
-    const fresh = await prisma.store.findUnique({ where: { id: store.id } });
-    res.json({ success: true, data: readAppSettings(fresh!) });
   } catch (err) { next(err); }
 });
 

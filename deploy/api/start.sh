@@ -11,8 +11,7 @@ if [ ! -d "$DATADIR/mysql" ]; then
 fi
 
 echo "▶ Starting MariaDB"
-# App files (APK/IPA) are stored as blobs, so allow large packets
-mariadbd --user=mysql --datadir="$DATADIR" --max-allowed-packet=256M &
+mariadbd --user=mysql --datadir="$DATADIR" &
 
 for i in $(seq 1 60); do
   mariadb-admin ping --silent 2>/dev/null && break

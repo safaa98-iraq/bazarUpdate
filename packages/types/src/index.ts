@@ -57,7 +57,7 @@ export const STAFF_PERMISSIONS: { key: StaffPermission; label: string; hint: str
   { key: 'chat',      label: 'رسائل العملاء',       hint: 'الرد على محادثات الزبائن' },
   { key: 'reports',   label: 'التقارير',            hint: 'المبيعات والتحليلات' },
   { key: 'branches',  label: 'الفروع والمخازن',     hint: 'إدارة الفروع وتوزيع المخزون' },
-  { key: 'settings',  label: 'إعدادات المتجر',      hint: 'التوصيل، واتساب، التطبيق، اللغات' },
+  { key: 'settings',  label: 'إعدادات المتجر',      hint: 'التوصيل، واتساب، اللغات' },
 ];
 
 export type StaffRolePreset = 'manager' | 'orders' | 'products' | 'branch' | 'custom';

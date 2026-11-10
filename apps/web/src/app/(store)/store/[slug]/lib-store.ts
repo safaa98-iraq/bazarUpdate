@@ -1,21 +1,11 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
-export interface PublicStoreApp {
-  appName: string; shortName: string; icon: string | null; themeColor: string;
-  /** Installable web app (manifest) — switched on by the Bazar admin */
-  pwa: boolean; installPrompt: boolean;
-  /** Downloadable app files stored by Bazar (null = not uploaded) */
-  ready: boolean;
-  android: { version: string; size: number } | null; ios: { version: string; size: number } | null;
-  /** Merchant chose to show the download buttons on the storefront */
-  showOnStore: boolean;
-}
 export interface PublicStoreMeta {
   name: string; description: string | null; logo: string | null; theme: string;
-  languages: ('ar' | 'ckb')[]; app: PublicStoreApp | null;
+  languages: ('ar' | 'ckb')[];
 }
 
-/** Store data needed by the layout, manifest and icons (server side, cached briefly). */
+/** Store data needed by the layout (server side, cached briefly). */
 export async function fetchStoreMeta(slug: string): Promise<PublicStoreMeta | null> {
   try {
     // Short timeout: a sleeping API must not block the storefront from rendering.

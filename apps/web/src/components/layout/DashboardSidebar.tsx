@@ -64,7 +64,6 @@ const sections: NavSection[] = [
     links: [
       { href: '/dashboard/branches', label: 'الفروع والمخازن', desc: 'وزّع المخزون على الفروع وحوّل الطلبات للأقرب', icon: 'location', perm: 'branches', feature: 'branches' },
       { href: '/dashboard/staff',    label: 'الموظفون',        desc: 'حسابات للموظفين بصلاحيات محددة', icon: 'shield-lock', perm: 'owner', feature: 'staff' },
-      { href: '/dashboard/store-app', label: 'تطبيق المتجر',   desc: 'تطبيق جوال باسم متجرك وشعاره', icon: 'apps', perm: 'settings', feature: 'store_app' },
       { href: '/dashboard/languages', label: 'لغات المتجر',    desc: 'واجهة المتجر بالعربية والكردية', icon: 'chat', perm: 'settings', feature: 'languages' },
       { href: '/dashboard/settings', label: 'الإعدادات',        desc: 'اسم المتجر، العملة، الشعار، والرابط',   icon: 'settings', perm: 'settings' },
       { href: '/dashboard/upgrade',  label: 'الباقات والترقية', desc: 'قارن الباقات وارفع خطتك بضغطة واحدة', icon: 'star', perm: 'owner' },

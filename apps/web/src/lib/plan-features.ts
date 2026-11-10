@@ -102,7 +102,6 @@ export const FEATURE_LIMITS: FeatureLimit[] = [
   { feature: 'staff', minPlan: 'ENTERPRISE', description: 'حسابات الموظفين', upgradeHint: 'حسابات الموظفين بصلاحيات متاحة في باقة الأعمال' },
   { feature: 'branches', minPlan: 'ENTERPRISE', description: 'الفروع والمخازن', upgradeHint: 'الفروع والمخازن المتعددة متاحة في باقة الأعمال' },
   { feature: 'languages', minPlan: 'ENTERPRISE', description: 'لغات المتجر', upgradeHint: 'واجهة المتجر بالكردية متاحة في باقة الأعمال' },
-  { feature: 'store_app', minPlan: 'ENTERPRISE', description: 'تطبيق المتجر', upgradeHint: 'تطبيق جوال باسم متجرك متاح في باقة الأعمال' },
 ];
 
 export { PLAN_CONFIGS, PLAN_ORDER, type PlanConfig };

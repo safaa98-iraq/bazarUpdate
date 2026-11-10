@@ -37,7 +37,6 @@ import staffRoutes from './routes/staff';
 import warehouseRoutes from './routes/warehouses';
 import shipmentRoutes from './routes/shipments';
 import storeFeatureRoutes from './routes/storeFeatures';
-import adminAppRoutes from './routes/adminApps';
 
 const isProd = process.env.NODE_ENV === 'production';
 const uploadRoot = process.env.UPLOAD_DIR ?? 'uploads';
@@ -177,7 +176,6 @@ export function createApp() {
   app.use('/api/cart', cartRoutes);
   app.use('/api/checkout', checkoutRoutes);
   app.use('/api/storefront', storefrontRoutes);
-  app.use('/api/admin/apps', adminAppRoutes);
   app.use('/api/admin', adminRoutes);
   app.use('/api/upload', uploadRoutes);
   app.use('/api/coupons', couponRoutes);
