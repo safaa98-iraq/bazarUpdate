@@ -248,7 +248,7 @@ export const LIFETIME_INSTALLMENTS = 3;
 /** Merchants who subscribed before the 2026-11 pricing get this % off lifetime. */
 export const LEGACY_LIFETIME_DISCOUNT_PERCENT = 10;
 /** Current promotion on yearly and lifetime payments (prices already include it). */
-export const CYCLE_DISCOUNT_PERCENT: Partial<Record<BillingCycle, number>> = { YEARLY: 35, LIFETIME: 35 };
+export const CYCLE_DISCOUNT_PERCENT: Partial<Record<BillingCycle, number>> = { YEARLY: 35, LIFETIME: 48 };
 /** Apply a % discount and round to the nearest 1,000 IQD. */
 const discounted = (v: number, pct = 0) => Math.round((v * (100 - pct)) / 100 / 1000) * 1000;
 function cyclePrices(list: Record<BillingCycle, number>): { prices: Record<BillingCycle, number>; listPrices: Record<BillingCycle, number> } {
@@ -294,7 +294,7 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
     nameAr: 'الاحترافية',
     price: 14,
     priceIQD: 22000,
-    ...cyclePrices({ MONTHLY: 22000, YEARLY: 189000, LIFETIME: 499000 }),
+    ...cyclePrices({ MONTHLY: 22000, YEARLY: 189000, LIFETIME: 623000 }),
     products: -1,
     ordersPerMonth: -1,
     categories: 20,
@@ -326,7 +326,7 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
     nameAr: 'الأعمال',
     price: 26,
     priceIQD: 39000,
-    ...cyclePrices({ MONTHLY: 39000, YEARLY: 389000, LIFETIME: 600000 }),
+    ...cyclePrices({ MONTHLY: 39000, YEARLY: 389000, LIFETIME: 750000 }),
     products: -1,
     ordersPerMonth: -1,
     categories: -1,

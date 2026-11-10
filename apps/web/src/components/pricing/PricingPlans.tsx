@@ -17,8 +17,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 const n = (v: number) => v.toLocaleString('en-US');
 
 const CYCLES: { key: BillingCycle; label: string; tag?: string }[] = [
-  { key: 'LIFETIME', label: 'أبدي', tag: 'خصم 35%' },
-  { key: 'YEARLY', label: 'سنوي', tag: 'الأفضل قيمة · خصم 35%' },
+  { key: 'LIFETIME', label: 'أبدي', tag: `خصم ${CYCLE_DISCOUNT_PERCENT.LIFETIME}%` },
+  { key: 'YEARLY', label: 'سنوي', tag: `الأفضل قيمة · خصم ${CYCLE_DISCOUNT_PERCENT.YEARLY}%` },
   { key: 'MONTHLY', label: 'شهري' },
 ];
 

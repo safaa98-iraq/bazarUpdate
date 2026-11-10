@@ -1,4 +1,4 @@
-import { PLAN_CONFIGS, perDayIQD, yearlySavingIQD, type PlanKey } from '@storebuilder/types';
+import { PLAN_CONFIGS, CYCLE_DISCOUNT_PERCENT, perDayIQD, yearlySavingIQD, type PlanKey } from '@storebuilder/types';
 
 type Props = {
   plan: PlanKey;
@@ -22,7 +22,7 @@ export function PlanPrice({ plan, align = 'right', compact = false, showCurrency
           </div>
           <div style={{ fontSize: 12, color: '#7A8A99', marginTop: 2 }}>أقل من {perDayIQD(plan, 'MONTHLY').toLocaleString('en')} د.ع يومياً</div>
           <div style={{ fontSize: 12, fontWeight: 700, color: '#22B07D', marginTop: 4 }}>
-            أو <s style={{ fontWeight: 400, color: '#7A8A99' }}>{cfg.listPrices.YEARLY.toLocaleString('en')}</s> {cfg.prices.YEARLY.toLocaleString('en')}{currency} سنوياً (خصم 35%) — وفّر {yearlySavingIQD(plan).toLocaleString('en')}{currency}
+            أو <s style={{ fontWeight: 400, color: '#7A8A99' }}>{cfg.listPrices.YEARLY.toLocaleString('en')}</s> {cfg.prices.YEARLY.toLocaleString('en')}{currency} سنوياً (خصم {CYCLE_DISCOUNT_PERCENT.YEARLY}%) — وفّر {yearlySavingIQD(plan).toLocaleString('en')}{currency}
           </div>
         </>
       )}
