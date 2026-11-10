@@ -30,8 +30,8 @@ export default async function StoreLayout({ children, params }: { children: Reac
     <>
       {children}
       {store?.app?.showOnStore && (
-        <AppDownloadBar appName={store.app.appName} icon={`/store/${params.slug}/app-icon/192`}
-          androidUrl={store.app.androidUrl} iosUrl={store.app.iosUrl} themeColor={store.app.themeColor} />
+        <AppDownloadBar slug={params.slug} appName={store.app.appName} themeColor={store.app.themeColor}
+          availability={{ android: !!store.app.android, ios: !!store.app.ios, pwa: store.app.pwa }} />
       )}
       <ChatWidget slug={params.slug} />
       {store && <StorefrontLanguage slug={params.slug} languages={store.languages} />}

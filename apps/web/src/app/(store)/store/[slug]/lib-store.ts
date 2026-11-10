@@ -4,8 +4,9 @@ export interface PublicStoreApp {
   appName: string; shortName: string; icon: string | null; themeColor: string;
   /** Installable web app (manifest) — switched on by the Bazar admin */
   pwa: boolean; installPrompt: boolean;
-  /** Store links, set by the Bazar admin once the native app is published */
-  androidUrl: string | null; iosUrl: string | null;
+  /** Downloadable app files stored by Bazar (null = not uploaded) */
+  ready: boolean;
+  android: { version: string; size: number } | null; ios: { version: string; size: number } | null;
   /** Merchant chose to show the download buttons on the storefront */
   showOnStore: boolean;
 }

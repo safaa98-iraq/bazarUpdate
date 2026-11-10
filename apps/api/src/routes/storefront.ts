@@ -12,7 +12,7 @@ import { optionalToken } from '../middleware/auth';
 import { cuid } from '../lib/cuid';
 import { afterOrderCreated } from '../lib/orderHooks';
 import { restockOrder } from '../lib/fulfillment';
-import { publicAppSettings } from '../lib/storeApp';
+import { publicAppSettings, readAppSettings, hasDownloads } from '../lib/storeApp';
 import { SHIPMENT_STATUS_LABELS } from '@storebuilder/types';
 
 const router = Router();
@@ -668,6 +668,64 @@ router.get('/:slug/track/:code', async (req: Request, res: Response, next: NextF
         createdAt: s.createdAt.toISOString(),
       },
     });
+  } catch (err) { next(err); }
+});
+
+// ─── Branded app downloads (files stored in the database, no app stores) ─────
+
+async function loadReadyApp(slug: string) {
+  const store = await prisma.store.findUnique({
+    where: { slug },
+    select: { id: true, name: true, logo: true, theme: true, appSettings: true, isActive: true, isPublished: true, merchant: { select: { plan: true } } },
+  });
+  if (!store || !store.isActive || !store.isPublished || store.merchant.plan !== 'ENTERPRISE') return null;
+  const app = readAppSettings(store);
+  if (app.status !== 'READY' || !hasDownloads(app)) return null;
+  return { store, app };
+}
+
+const asciiName = (s: string) => s.replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '') || 'app';
+
+// GET /api/storefront/:slug/app/ios/manifest.plist — over-the-air install manifest for iPhone
+router.get('/:slug/app/ios/manifest.plist', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const found = await loadReadyApp(req.params.slug);
+    const build = found && await prisma.storeAppBuild.findUnique({
+      where: { storeId_platform: { storeId: found.store.id, platform: 'ios' } },
+      select: { version: true, bundleId: true },
+    });
+    if (!found || !build) { res.status(404).json({ success: false, error: 'لا يوجد تطبيق آيفون' }); return; }
+    const esc = (v: string) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const ipaUrl = `${req.protocol}://${req.get('host')}/api/storefront/${encodeURIComponent(req.params.slug)}/app/ios`;
+    res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict><key>items</key><array><dict>
+<key>assets</key><array><dict><key>kind</key><string>software-package</string><key>url</key><string>${esc(ipaUrl)}</string></dict></array>
+<key>metadata</key><dict>
+<key>bundle-identifier</key><string>${esc(build.bundleId ?? '')}</string>
+<key>bundle-version</key><string>${esc(build.version)}</string>
+<key>kind</key><string>software</string>
+<key>title</key><string>${esc(found.app.appName)}</string>
+</dict></dict></array></dict></plist>`);
+  } catch (err) { next(err); }
+});
+
+// GET /api/storefront/:slug/app/:platform — download the APK (android) or IPA (ios)
+router.get('/:slug/app/:platform', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const platform = req.params.platform;
+    if (platform !== 'android' && platform !== 'ios') { res.status(404).json({ success: false, error: 'Not found' }); return; }
+    const found = await loadReadyApp(req.params.slug);
+    const build = found && await prisma.storeAppBuild.findUnique({ where: { storeId_platform: { storeId: found.store.id, platform } } });
+    if (!found || !build) { res.status(404).json({ success: false, error: 'التطبيق غير متوفر' }); return; }
+    prisma.storeAppBuild.update({ where: { id: build.id }, data: { downloads: { increment: 1 } } }).catch(() => null);
+    const ext = platform === 'android' ? 'apk' : 'ipa';
+    res.setHeader('Content-Type', platform === 'android' ? 'application/vnd.android.package-archive' : 'application/octet-stream');
+    res.setHeader('Content-Length', String(build.data.length));
+    res.setHeader('Content-Disposition', `attachment; filename="${asciiName(req.params.slug)}-${asciiName(build.version)}.${ext}"`);
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.end(Buffer.from(build.data));
   } catch (err) { next(err); }
 });
 

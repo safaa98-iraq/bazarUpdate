@@ -93,7 +93,7 @@ model Store {
   whatsappSettings      Json?
   /// Courier / waybill: { carrier, username, password, senderName, senderPhone, pickupAddress }
   shippingSettings      Json?
-  /// Branded app (PWA + native build): { appName, shortName, icon, themeColor, installPrompt, androidPackage, iosBundleId, nativeStatus }
+  /// Branded app, managed by the super admin: { status, appName, shortName, icon, themeColor, enabled, installPrompt, showOnStore, builds meta }
   appSettings           Json?
   suspendedAt     DateTime?
   suspendReason   String?  @db.VarChar(255)
@@ -121,6 +121,7 @@ model Store {
   returnRequests    ReturnRequest[]
   bundles           Bundle[]
   warehouses        Warehouse[]
+  appBuilds         StoreAppBuild[]
   shipments         Shipment[]
 
   @@index([slug])
@@ -834,4 +835,24 @@ model WholesalePriceTier {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
+}
+
+/// Installable app files (Android APK / iPhone IPA) uploaded by the super admin and
+/// served directly from Bazar — no Google Play / App Store.
+model StoreAppBuild {
+  id         String   @id @default(cuid())
+  storeId    String
+  platform   String   @db.VarChar(10) // android | ios
+  fileName   String   @db.VarChar(200)
+  version    String   @db.VarChar(40)
+  bundleId   String?  @db.VarChar(200)
+  size       Int
+  sha256     String   @db.Char(64)
+  data       Bytes    @db.LongBlob
+  downloads  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  store      Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, platform])
 }

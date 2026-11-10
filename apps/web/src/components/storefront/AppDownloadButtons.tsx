@@ -1,5 +1,7 @@
+'use client';
 /* eslint-disable @next/next/no-img-element */
-/** Google Play / App Store download buttons for a store's branded app (no client JS). */
+import { usePathname } from 'next/navigation';
+/** Download buttons for a store's branded app (files served from Bazar, not app stores). */
 
 function AndroidMark({ className }: { className?: string }) {
   return (
@@ -17,21 +19,41 @@ function AppleMark({ className }: { className?: string }) {
   );
 }
 
-export function AppDownloadButtons({ androidUrl, iosUrl, size = 'md' }: { androidUrl: string | null; iosUrl: string | null; size?: 'md' | 'lg' }) {
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+
+export interface AppAvailability { android: boolean; ios: boolean; pwa: boolean }
+
+/**
+ * Direct download links — the files live in Bazar's database, not on Google Play / App Store.
+ * iPhone: over-the-air install of the uploaded IPA when there is one, otherwise the
+ * web app ("Add to Home Screen" steps on the store's /app page).
+ */
+export function appLinks(slug: string, a: AppAvailability) {
+  const base = `${API_URL}/api/storefront/${encodeURIComponent(slug)}/app`;
+  return {
+    android: a.android ? `${base}/android` : null,
+    ios: a.ios
+      ? `itms-services://?action=download-manifest&url=${encodeURIComponent(`${base}/ios/manifest.plist`)}`
+      : a.pwa ? `/store/${slug}/app#iphone` : null,
+  };
+}
+
+export function AppDownloadButtons({ slug, availability, size = 'md' }: { slug: string; availability: AppAvailability; size?: 'md' | 'lg' }) {
+  const { android, ios } = appLinks(slug, availability);
   const h = size === 'lg' ? 'h-14 px-5 min-w-[190px]' : 'h-12 px-4 min-w-[160px]';
   const cls = `inline-flex items-center gap-3 rounded-2xl bg-black text-white hover:bg-neutral-800 transition ${h}`;
   return (
-    <div className="flex flex-wrap justify-center gap-3" dir="ltr">
-      {androidUrl && (
-        <a href={androidUrl} target="_blank" rel="noopener" className={cls}>
+    <div className="flex flex-wrap justify-center gap-3">
+      {android && (
+        <a href={android} download className={cls}>
           <AndroidMark className="h-7 w-7 text-[#3DDC84]" />
-          <span className="text-start leading-tight"><span className="block text-[10px] opacity-80">GET IT ON</span><span className="block text-base font-semibold">Google Play</span></span>
+          <span className="text-start leading-tight"><span className="block text-[11px] opacity-80">تحميل التطبيق</span><span className="block text-base font-semibold">لأندرويد</span></span>
         </a>
       )}
-      {iosUrl && (
-        <a href={iosUrl} target="_blank" rel="noopener" className={cls}>
+      {ios && (
+        <a href={ios} className={cls}>
           <AppleMark className="h-7 w-7" />
-          <span className="text-start leading-tight"><span className="block text-[10px] opacity-80">Download on the</span><span className="block text-base font-semibold">App Store</span></span>
+          <span className="text-start leading-tight"><span className="block text-[11px] opacity-80">تحميل التطبيق</span><span className="block text-base font-semibold">للآيفون</span></span>
         </a>
       )}
     </div>
@@ -39,18 +61,20 @@ export function AppDownloadButtons({ androidUrl, iosUrl, size = 'md' }: { androi
 }
 
 /** Strip shown at the bottom of a storefront when the merchant turned on "show app links". */
-export function AppDownloadBar({ appName, icon, androidUrl, iosUrl, themeColor }: { appName: string; icon: string; androidUrl: string | null; iosUrl: string | null; themeColor: string }) {
+export function AppDownloadBar({ slug, appName, availability, themeColor }: { slug: string; appName: string; availability: AppAvailability; themeColor: string }) {
+  const path = usePathname();
+  if (path?.endsWith(`/store/${slug}/app`)) return null; // the download page already shows the buttons
   return (
     <section dir="rtl" className="px-4 pt-8 pb-28 sm:pb-10" style={{ background: `${themeColor}14` }}>
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
         <div className="flex items-center gap-3">
-          <img src={icon} alt="" className="h-14 w-14 rounded-2xl shadow-md bg-white" />
+          <img src={`/store/${slug}/app-icon/192`} alt="" className="h-14 w-14 rounded-2xl shadow-md bg-white" />
           <div>
             <p className="font-bold text-lg">حمّل تطبيق {appName}</p>
             <p className="text-sm opacity-70">تسوّق أسرع وتابع طلباتك من جوالك</p>
           </div>
         </div>
-        <AppDownloadButtons androidUrl={androidUrl} iosUrl={iosUrl} />
+        <AppDownloadButtons slug={slug} availability={availability} />
       </div>
     </section>
   );

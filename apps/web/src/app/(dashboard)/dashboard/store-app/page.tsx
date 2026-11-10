@@ -12,14 +12,15 @@ import { AppDownloadButtons } from '@/components/storefront/AppDownloadButtons';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 type Status = 'NONE' | 'REQUESTED' | 'IN_PROGRESS' | 'READY';
+type Build = { fileName: string; version: string; size: number; uploadedAt: string } | null;
 type App = {
-  status: Status; requestedAt: string | null; appName: string; themeColor: string;
-  androidUrl: string | null; iosUrl: string | null; showOnStore: boolean;
+  status: Status; requestedAt: string | null; appName: string; themeColor: string; enabled: boolean;
+  builds: { android: Build; ios: Build }; showOnStore: boolean;
 };
 
 const STATUS_TEXT: Record<Exclude<Status, 'NONE' | 'READY'>, string> = {
   REQUESTED: 'استلمنا طلبك — فريق بازار يجهّز تطبيقك الآن، وستظهر أزرار التحميل هنا فور نشره.',
-  IN_PROGRESS: 'تطبيقك قيد التجهيز والنشر على Google Play و App Store.',
+  IN_PROGRESS: 'تطبيقك قيد التجهيز — ستظهر أزرار التحميل هنا فور جاهزيته.',
 };
 
 export default function StoreAppPage() {
@@ -49,7 +50,8 @@ export default function StoreAppPage() {
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const downloadPage = slug ? `${origin}/store/${slug}/app` : '';
-  const ready = app?.status === 'READY' && !!(app.androidUrl || app.iosUrl);
+  const availability = { android: !!app?.builds.android, ios: !!app?.builds.ios, pwa: !!app?.enabled };
+  const ready = app?.status === 'READY' && (availability.android || availability.ios || availability.pwa);
   const embed = app && ready
     ? `<a href="${downloadPage}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:14px;background:#000;color:#fff;font-family:sans-serif;font-weight:600;text-decoration:none">📱 حمّل تطبيق ${app.appName}</a>`
     : '';
@@ -58,14 +60,14 @@ export default function StoreAppPage() {
   return (
     <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-12 max-w-3xl">
       <h1 className="bz-large-title">تطبيق المتجر</h1>
-      <p className="text-sm text-bz-muted mt-1 mb-6">تطبيق باسم متجرك وشعارك على Google Play و App Store — يجهّزه وينشره فريق بازار لك.</p>
+      <p className="text-sm text-bz-muted mt-1 mb-6">تطبيق أندرويد وآيفون باسم متجرك وشعارك — يجهّزه فريق بازار ويحمّله زبائنك مباشرة من متجرك.</p>
       {!allowed && <UpgradeNotice feature="store_app" />}
 
       {allowed && app && app.status === 'NONE' && (
         <section className="bz-card p-8 text-center">
           <ClayIcon name="apps" size={72} className="mx-auto !block" />
           <h2 className="bz-title-2 mt-4">هل تريد تطبيقاً لمتجرك؟</h2>
-          <p className="text-bz-muted mt-2 leading-7 max-w-md mx-auto">نصمّم لك تطبيق أندرويد وآيفون باسم متجرك وشعارك وننشره على المتاجر، بدون أي تكلفة إضافية ضمن باقتك.</p>
+          <p className="text-bz-muted mt-2 leading-7 max-w-md mx-auto">نجهّز لك تطبيق أندرويد وآيفون باسم متجرك وشعارك، ويحمّله زبائنك مباشرة من رابط متجرك — بدون أي تكلفة إضافية ضمن باقتك.</p>
           <button onClick={request} disabled={busy} className="bz-btn mt-6 h-12 px-8 text-base">
             {busy && <Loader2 className="h-4 w-4 animate-spin" />} نعم، أريد تطبيقاً
           </button>
@@ -78,11 +80,11 @@ export default function StoreAppPage() {
             <h2 className="bz-headline mb-1">حمّل تطبيق متجرك</h2>
             <p className="text-sm text-bz-muted mb-5">أندرويد أو آيفون — جرّبه بنفسك وشارك الرابط مع زبائنك.</p>
             {ready ? (
-              <AppDownloadButtons androidUrl={app.androidUrl} iosUrl={app.iosUrl} size="lg" />
+              <AppDownloadButtons slug={slug} availability={availability} size="lg" />
             ) : (
               <>
                 <div className="flex flex-wrap justify-center gap-3 opacity-50 pointer-events-none select-none" aria-hidden>
-                  <AppDownloadButtons androidUrl="#" iosUrl="#" size="lg" />
+                  <AppDownloadButtons slug={slug || 'x'} availability={{ android: true, ios: true, pwa: true }} size="lg" />
                 </div>
                 <p className="mt-4 flex items-start gap-2 text-sm bg-bz-brand-50 text-bz-brand-600 rounded-xl p-3 leading-6">
                   <Clock className="h-4 w-4 mt-1 flex-shrink-0" /> {STATUS_TEXT[app.status as 'REQUESTED' | 'IN_PROGRESS']}
@@ -95,14 +97,14 @@ export default function StoreAppPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="bz-headline">ضع رابط التطبيق في موقعي</h2>
-                <p className="text-sm text-bz-muted mt-1 leading-6">يظهر لزبائنك شريط «حمّل تطبيقنا» مع زرّي Google Play و App Store أسفل صفحات متجرك.</p>
+                <p className="text-sm text-bz-muted mt-1 leading-6">يظهر لزبائنك شريط «حمّل تطبيقنا» مع زرّي التحميل لأندرويد والآيفون أسفل صفحات متجرك.</p>
               </div>
               <button role="switch" aria-checked={app.showOnStore} disabled={!ready} onClick={() => setShow(!app.showOnStore)}
                 className={`relative h-8 w-14 flex-shrink-0 rounded-full transition ${app.showOnStore ? 'bg-bz-brand' : 'bg-bz-line'} disabled:opacity-40`}>
                 <span className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition-all ${app.showOnStore ? 'start-7' : 'start-1'}`} />
               </button>
             </div>
-            {!ready && <p className="text-xs text-bz-muted mt-3">يتفعّل هذا الخيار بعد نشر تطبيقك.</p>}
+            {!ready && <p className="text-xs text-bz-muted mt-3">يتفعّل هذا الخيار عندما يصبح تطبيقك جاهزاً.</p>}
             {ready && (
               <div className="mt-5 space-y-4 border-t border-bz-line pt-5">
                 <div>
