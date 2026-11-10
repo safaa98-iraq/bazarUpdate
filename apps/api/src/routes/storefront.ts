@@ -8,7 +8,7 @@ import { promotionService } from '../services/promotion.service';
 import { loyaltyService } from '../services/loyalty.service';
 import { Decimal } from '@prisma/client/runtime/library';
 import { notifyNewOrder, notifyOrderConfirmation } from '../lib/notify';
-import { optionalToken } from '../middleware/auth';
+import { optionalToken, verifyToken } from '../middleware/auth';
 import { cuid } from '../lib/cuid';
 import { afterOrderCreated } from '../lib/orderHooks';
 import { restockOrder } from '../lib/fulfillment';
@@ -296,13 +296,19 @@ router.get(
   }
 );
 
-// GET /api/storefront/:slug/analytics — store dashboard analytics
+// GET /api/storefront/:slug/analytics — store dashboard analytics.
+// Private: only the store owner (or staff with the "reports" permission) and the super admin.
 router.get(
   '/:slug/analytics',
+  verifyToken,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const store = await prisma.store.findUnique({ where: { slug: req.params.slug } });
       if (!store) { res.status(404).json({ success: false, error: 'Store not found' }); return; }
+      const u = req.user!;
+      const isOwner = u.role === 'MERCHANT' && u.userId === store.merchantId;
+      const allowed = u.role === 'SUPER_ADMIN' || (isOwner && (!u.staffId || (u.permissions ?? []).includes('reports')));
+      if (!allowed) { res.status(403).json({ success: false, error: 'لا تملك صلاحية عرض إحصائيات هذا المتجر' }); return; }
 
       const [orderStats, topProducts, recentOrders] = await Promise.all([
         prisma.order.aggregate({
