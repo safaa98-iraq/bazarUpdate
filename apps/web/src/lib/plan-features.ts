@@ -30,78 +30,34 @@ export interface FeatureLimit {
   upgradeHint: string;
 }
 
+/** -1 in PLAN_CONFIGS means unlimited → null here. */
+const lim = (p: Plan, k: 'products' | 'ordersPerMonth' | 'categories' | 'maxCoupons' | 'maxBrands' | 'maxBanners' | 'maxAffiliates' | 'maxStaff' | 'maxBranches') => {
+  const v = PLAN_CONFIGS[p][k];
+  return v === -1 ? null : v;
+};
+
 export const FEATURE_LIMITS: FeatureLimit[] = [
-  {
-    feature: 'products',
-    minPlan: 'FREE',
-    limit: { FREE: PLAN_CONFIGS.FREE.products, PRO: null, ENTERPRISE: null },
-    description: 'عدد المنتجات',
-    upgradeHint: 'ارفع خطتك لإضافة منتجات أكثر',
-  },
-  {
-    feature: 'categories',
-    minPlan: 'FREE',
-    limit: { FREE: 3, PRO: null, ENTERPRISE: null },
-    description: 'التصنيفات',
-    upgradeHint: 'ارفع خطتك لإضافة تصنيفات غير محدودة',
-  },
-  {
-    feature: 'analytics',
-    minPlan: 'PRO',
-    description: 'تحليلات المتجر',
-    upgradeHint: 'ارفع إلى الخطة الاحترافية لعرض التحليلات',
-  },
-  {
-    feature: 'affiliates',
-    minPlan: 'PRO',
-    limit: { FREE: 0, PRO: 10, ENTERPRISE: null },
-    description: 'برنامج المؤثرين',
-    upgradeHint: 'ارفع إلى الخطة الاحترافية لإضافة مؤثرين',
-  },
-  {
-    feature: 'coupons',
-    minPlan: 'PRO',
-    limit: { FREE: PLAN_CONFIGS.FREE.maxCoupons, PRO: PLAN_CONFIGS.PRO.maxCoupons, ENTERPRISE: PLAN_CONFIGS.ENTERPRISE.maxCoupons },
-    description: 'كوبونات الخصم',
-    upgradeHint: 'ارفع إلى الخطة الاحترافية لإضافة كود خصم',
-  },
-  {
-    feature: 'brands',
-    minPlan: 'PRO',
-    limit: { FREE: PLAN_CONFIGS.FREE.maxBrands, PRO: PLAN_CONFIGS.PRO.maxBrands, ENTERPRISE: PLAN_CONFIGS.ENTERPRISE.maxBrands === -1 ? null : PLAN_CONFIGS.ENTERPRISE.maxBrands },
-    description: 'الماركات التجارية',
-    upgradeHint: 'ارفع إلى الخطة الاحترافية لإضافة ماركات',
-  },
-  {
-    feature: 'banners',
-    minPlan: 'FREE',
-    limit: { FREE: PLAN_CONFIGS.FREE.maxBanners, PRO: PLAN_CONFIGS.PRO.maxBanners, ENTERPRISE: PLAN_CONFIGS.ENTERPRISE.maxBanners === -1 ? null : PLAN_CONFIGS.ENTERPRISE.maxBanners },
-    description: 'البانرات الإعلانية',
-    upgradeHint: 'ارفع خطتك لإضافة بانرات أكثر',
-  },
-  {
-    feature: 'product_comments',
-    minPlan: 'ENTERPRISE',
-    description: 'التعليق على المنتجات',
-    upgradeHint: 'ارفع إلى خطة الأعمال للسماح بالتعليقات على المنتجات',
-  },
-  {
-    feature: 'chat',
-    minPlan: 'PRO',
-    description: 'نظام المحادثات',
-    upgradeHint: 'ارفع إلى الخطة الاحترافية للمحادثات',
-  },
-  {
-    feature: 'custom_domain',
-    minPlan: 'ENTERPRISE',
-    description: 'نطاق مخصص',
-    upgradeHint: 'ارفع إلى الخطة المؤسسية للنطاق المخصص',
-  },
-  { feature: 'whatsapp_confirm', minPlan: 'PRO', description: 'تأكيد الطلبات عبر واتساب', upgradeHint: 'ارفع إلى الاحترافية لتأكيد الطلبات تلقائياً قبل الشحن' },
-  { feature: 'courier_api', minPlan: 'PRO', description: 'الربط مع شركات التوصيل', upgradeHint: 'ارفع إلى الاحترافية لربط شركة التوصيل وتتبع الشحنات تلقائياً' },
-  { feature: 'staff', minPlan: 'ENTERPRISE', description: 'حسابات الموظفين', upgradeHint: 'حسابات الموظفين بصلاحيات متاحة في باقة الأعمال' },
-  { feature: 'branches', minPlan: 'ENTERPRISE', description: 'الفروع والمخازن', upgradeHint: 'الفروع والمخازن المتعددة متاحة في باقة الأعمال' },
-  { feature: 'languages', minPlan: 'ENTERPRISE', description: 'لغات المتجر', upgradeHint: 'واجهة المتجر بالكردية متاحة في باقة الأعمال' },
+  { feature: 'products', minPlan: 'FREE', limit: { FREE: lim('FREE', 'products'), PRO: lim('PRO', 'products'), ENTERPRISE: lim('ENTERPRISE', 'products') }, description: 'عدد المنتجات', upgradeHint: 'ارفع للاحترافية لإضافة منتجات بلا حد' },
+  { feature: 'orders', minPlan: 'FREE', limit: { FREE: lim('FREE', 'ordersPerMonth'), PRO: lim('PRO', 'ordersPerMonth'), ENTERPRISE: lim('ENTERPRISE', 'ordersPerMonth') }, description: 'الطلبات الشهرية', upgradeHint: 'ارفع للاحترافية لتستقبل طلبات بلا حد' },
+  { feature: 'categories', minPlan: 'FREE', limit: { FREE: lim('FREE', 'categories'), PRO: lim('PRO', 'categories'), ENTERPRISE: lim('ENTERPRISE', 'categories') }, description: 'التصنيفات', upgradeHint: 'ارفع باقتك لإضافة تصنيفات أكثر' },
+  { feature: 'analytics', minPlan: 'PRO', description: 'تحليلات المتجر', upgradeHint: 'الإيرادات والأكثر مبيعاً وآخر الطلبات متاحة في الاحترافية' },
+  { feature: 'affiliates', minPlan: 'PRO', limit: { FREE: lim('FREE', 'maxAffiliates'), PRO: lim('PRO', 'maxAffiliates'), ENTERPRISE: lim('ENTERPRISE', 'maxAffiliates') }, description: 'المسوقون بالعمولة', upgradeHint: 'اعرف أي مؤثر جلب لك المبيعات — متاح في الاحترافية' },
+  { feature: 'coupons', minPlan: 'FREE', limit: { FREE: lim('FREE', 'maxCoupons'), PRO: lim('PRO', 'maxCoupons'), ENTERPRISE: lim('ENTERPRISE', 'maxCoupons') }, description: 'أكواد الخصم', upgradeHint: 'ارفع باقتك لإضافة أكواد خصم أكثر' },
+  { feature: 'promotions', minPlan: 'PRO', description: 'العروض التلقائية', upgradeHint: '«اشترِ X واحصل على Y» والخصم المتدرج متاحة في الاحترافية' },
+  { feature: 'gift_cards', minPlan: 'ENTERPRISE', description: 'بطاقات الهدايا', upgradeHint: 'بطاقات الهدايا متاحة في باقة الأعمال' },
+  { feature: 'brands', minPlan: 'PRO', limit: { FREE: lim('FREE', 'maxBrands'), PRO: lim('PRO', 'maxBrands'), ENTERPRISE: lim('ENTERPRISE', 'maxBrands') }, description: 'الماركات التجارية', upgradeHint: 'ارفع للاحترافية لإضافة ماركات' },
+  { feature: 'banners', minPlan: 'FREE', limit: { FREE: lim('FREE', 'maxBanners'), PRO: lim('PRO', 'maxBanners'), ENTERPRISE: lim('ENTERPRISE', 'maxBanners') }, description: 'البانرات الإعلانية', upgradeHint: 'ارفع باقتك لإضافة بانرات أكثر' },
+  { feature: 'abandoned_carts', minPlan: 'PRO', description: 'تفاصيل السلال المتروكة', upgradeHint: 'استرجع زبائن كادوا يشترون برسالة واحدة — متاح في الاحترافية' },
+  { feature: 'product_comments', minPlan: 'PRO', description: 'التعليق على المنتجات', upgradeHint: 'التعليقات النصية مع التقييم متاحة في الاحترافية' },
+  { feature: 'chat', minPlan: 'PRO', description: 'المحادثة مع العملاء', upgradeHint: 'أجب على الزبون وهو داخل المتجر — متاح في الاحترافية' },
+  { feature: 'custom_domain', minPlan: 'ENTERPRISE', description: 'نطاق مخصص', upgradeHint: 'زبائنك يرون علامتك أنت — الدومين الخاص في باقة الأعمال' },
+  { feature: 'whatsapp_confirm', minPlan: 'PRO', description: 'تأكيد الطلبات عبر واتساب', upgradeHint: 'لا تدفع أجرة توصيل لطلب لن يُستلم — التأكيد في الاحترافية' },
+  { feature: 'whatsapp_api', minPlan: 'ENTERPRISE', description: 'التأكيد التلقائي (WhatsApp API)', upgradeHint: 'الإرسال التلقائي عبر WhatsApp Business API في باقة الأعمال' },
+  { feature: 'courier_api', minPlan: 'PRO', description: 'الربط مع شركات التوصيل', upgradeHint: 'الشحنة تُسجّل وحالتها تتحدث تلقائياً — في الاحترافية' },
+  { feature: 'staff', minPlan: 'ENTERPRISE', limit: { FREE: lim('FREE', 'maxStaff'), PRO: lim('PRO', 'maxStaff'), ENTERPRISE: lim('ENTERPRISE', 'maxStaff') }, description: 'حسابات الموظفين', upgradeHint: 'أضف فريقك بصلاحيات محددة — في باقة الأعمال' },
+  { feature: 'branches', minPlan: 'ENTERPRISE', limit: { FREE: lim('FREE', 'maxBranches'), PRO: lim('PRO', 'maxBranches'), ENTERPRISE: lim('ENTERPRISE', 'maxBranches') }, description: 'الفروع والمخازن', upgradeHint: 'وجّه الطلبات للفرع الأقرب — في باقة الأعمال' },
+  { feature: 'languages', minPlan: 'ENTERPRISE', description: 'لغات المتجر', upgradeHint: 'بِع لزبائن أربيل والسليمانية ودهوك بلغتهم — في باقة الأعمال' },
+  { feature: 'remove_branding', minPlan: 'ENTERPRISE', description: 'إزالة «مدعوم بـ بازار»', upgradeHint: 'متجرك باسمك فقط — في باقة الأعمال' },
 ];
 
 export { PLAN_CONFIGS, PLAN_ORDER, type PlanConfig };

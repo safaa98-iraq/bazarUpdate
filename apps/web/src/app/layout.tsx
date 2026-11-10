@@ -46,21 +46,11 @@ const cleanupScript = `
     /machine learning/i
   ];
 
-  const productLimitPatterns = [
-    /100\\s*منتجات?/g,
-    /10\\s*منتجات?/g,
-    /١٠٠\\s*منتجات?/g,
-    /١٠\\s*منتجات?/g
-  ];
-
   const containsBlockedText = (text) => blocked.some((pattern) => pattern.test(text || ''));
 
   const normalizeText = (node) => {
     if (!node || !node.nodeValue) return;
     let value = node.nodeValue;
-    productLimitPatterns.forEach((pattern) => {
-      value = value.replace(pattern, '55 منتج');
-    });
     if (value !== node.nodeValue) node.nodeValue = value;
   };
 

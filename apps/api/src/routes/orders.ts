@@ -76,6 +76,7 @@ router.post('/:id/confirmation', ...merchant, async (req: Request, res: Response
 
     let sent = false; let sendError: string | null = null;
     if (req.body?.send === true) {
+      assertPlan(plan, 'ENTERPRISE', 'الإرسال التلقائي عبر WhatsApp Business API');
       sendError = await sendViaCloudApi(c.settings, c.phone, c.text, { name: c.order.customerName, store: c.store.name, total: formatIQD(Number(c.order.total)), token: c.token });
       sent = !sendError;
     }

@@ -10,7 +10,7 @@ import { useCartStore } from '@/lib/stores/cart.store';
 import { useWishlistStore } from '@/lib/stores/wishlist.store';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import { ProductPublic, StorePublic, BrandPublic } from '@storebuilder/types';
-import { ShoppingCart, Search, Mail, Copy, Check, Star, X, Package, Lock, Instagram, Facebook, Truck, Heart, User as UserIcon, SlidersHorizontal } from 'lucide-react';
+import { ShoppingCart, Search, Copy, Check, Star, X, Package, Lock, Instagram, Facebook, Truck, Heart, User as UserIcon, SlidersHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 import { StoreAdPopup } from '@/components/storefront/StoreAdPopup';
 import { RecentlyViewed } from '@/components/storefront/RecentlyViewed';
@@ -772,10 +772,12 @@ function StorefrontPageContent() {
       {/* Footer */}
       <footer className="border-t py-6 text-center text-xs text-gray-400 mt-8">
         <StoreSocialBar links={storeInfo.socialLinks} />
-        <div className="pt-2">
-          <Mail className="h-4 w-4 inline ml-1" />
-          مدعوم بـ <span className="font-semibold" style={{ color: '#20A9F4' }}>بناء المتجر</span>
-        </div>
+        {/* Business plan removes the platform credit */}
+        {merchantPlan !== 'ENTERPRISE' && (
+          <div className="pt-2">
+            مدعوم بـ <a href="/" className="font-semibold" style={{ color: '#20A9F4' }}>بازار</a>
+          </div>
+        )}
       </footer>
 
       {/* Google Ads popup — FREE plan only */}

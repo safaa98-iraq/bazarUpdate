@@ -54,6 +54,11 @@ router.put('/whatsapp', ...merchant, async (req: Request, res: Response, next: N
       }),
     };
     if (!nextSettings.message.includes('{link}')) throw new AppError(400, 'يجب أن تحتوي الرسالة على {link}');
+    // Automatic sending through the WhatsApp Business API is a Business-plan feature; Pro confirms manually.
+    if (plan !== 'ENTERPRISE') {
+      const wantsApi = nextSettings.autoConfirm || (!req.user!.staffId && (str(b.accessToken, 1000) || str(b.phoneNumberId, 50)));
+      if (wantsApi) assertPlan(plan, 'ENTERPRISE', 'التأكيد التلقائي عبر WhatsApp Business API');
+    }
     await prisma.store.update({ where: { id: store.id }, data: { whatsappSettings: nextSettings as never } });
     res.json({ success: true, data: publicWhatsappSettings(nextSettings) });
   } catch (err) { next(err); }

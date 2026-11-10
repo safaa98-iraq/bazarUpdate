@@ -19,8 +19,9 @@ interface CompRow {
 }
 
 const rows: CompRow[] = [
-  { label: 'السعر الشهري', bazar: `من ${PLAN_CONFIGS.FREE.priceIQD.toLocaleString('en')} د.ع حتى ${PLAN_CONFIGS.ENTERPRISE.priceIQD.toLocaleString('en')} د.ع`, shopify: '$29 — $299 / شهر' },
-  { label: 'السعر بعد الخصم للسنة الأولى', bazar: `من ${PLAN_CONFIGS.PRO.firstYearPriceIQD?.toLocaleString('en')} د.ع حتى ${PLAN_CONFIGS.ENTERPRISE.firstYearPriceIQD?.toLocaleString('en')} د.ع`, shopify: '—' },
+  { label: 'السعر الشهري', bazar: `مجاناً، ثم من ${PLAN_CONFIGS.PRO.prices.MONTHLY.toLocaleString('en')} د.ع شهرياً`, shopify: 'من $39 / شهر (Basic)' },
+  { label: 'السعر السنوي', bazar: `من ${PLAN_CONFIGS.PRO.prices.YEARLY.toLocaleString('en')} د.ع سنوياً`, shopify: '$29 / شهر بالدفع السنوي' },
+  { label: 'دفعة واحدة مدى الحياة', bazar: `من ${PLAN_CONFIGS.PRO.prices.LIFETIME.toLocaleString('en')} د.ع (أول 100 تاجر)`, shopify: false },
   { label: 'عمولة على كل بيعة', bazar: 'صفر % ✓', shopify: '0.5% — 2% ×' },
   { label: 'واجهة عربية كاملة', bazar: true, shopify: false },
   { label: 'دعم الدينار العراقي', bazar: true, shopify: false },

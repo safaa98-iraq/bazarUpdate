@@ -2,6 +2,7 @@ import prisma from '@storebuilder/database';
 import type { Prisma } from '@prisma/client';
 import { CreatePromotionDto, PromotionPublic } from '@storebuilder/types';
 import { AppError } from '../middleware/errorHandler';
+import { planOfStore } from '../lib/limits';
 
 export interface PromoLineItem {
   productId: string;
@@ -104,6 +105,8 @@ export class PromotionService {
 
   /** Computes the total automatic-promotion discount for a cart. Read-only, no side effects. */
   async computeDiscount(storeId: string, items: PromoLineItem[]): Promise<{ discount: number; applied: { name: string; amount: number }[] }> {
+    // Automatic offers are a paid-plan feature: stores on Free don't apply them.
+    if ((await planOfStore(storeId)).plan === 'FREE') return { discount: 0, applied: [] };
     const now = new Date();
     const promos = await prisma.promotion.findMany({
       where: {

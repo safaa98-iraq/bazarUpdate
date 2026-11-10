@@ -36,6 +36,17 @@ model User {
   name            String
   plan            Plan     @default(FREE)
   planChangedAt   DateTime?
+  /// MONTHLY | YEARLY | LIFETIME | TRIAL | LEGACY (paid before the 2026-11 pricing) | MANUAL (set by admin)
+  billingCycle    String?  @db.VarChar(20)
+  /// When the paid/trial period ends (null = never: free, lifetime, or manual without end).
+  planExpiresAt   DateTime?
+  trialUsed       Boolean  @default(false)
+  /// Subscribed before the 2026-11 pricing → keeps old price until expiry + lifetime discount.
+  legacyPricing   Boolean  @default(false)
+  /// Lifetime bought in installments: target plan, installments approved so far, total price.
+  lifetimeTarget            String?  @db.VarChar(20)
+  lifetimeInstallmentsPaid  Int      @default(0)
+  lifetimeTotal             Int?
   whatsapp        String?  @db.VarChar(20)
   googleId        String?  @unique @db.VarChar(128)
   isActive        Boolean  @default(true)
@@ -580,6 +591,14 @@ model PaymentRequest {
   id          String   @id @default(cuid())
   userId      String
   planTarget  String   @db.VarChar(20)
+  /// MONTHLY | YEARLY | LIFETIME | LIFETIME_INSTALLMENT | LIFETIME_UPGRADE
+  cycle       String   @default("MONTHLY") @db.VarChar(30)
+  /// For installments: which one (1..3)
+  installment Int?
+  /// BANK | ZAINCASH
+  method      String?  @db.VarChar(20)
+  /// Price breakdown shown to the admin (credit for this year's payment, legacy discount…)
+  priceNote   String?  @db.VarChar(255)
   amount      Decimal  @db.Decimal(10, 2)
   currency    String   @default("IQD") @db.VarChar(10)
   status      String   @default("PENDING") @db.VarChar(20)

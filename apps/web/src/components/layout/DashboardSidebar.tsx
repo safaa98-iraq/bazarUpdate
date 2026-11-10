@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { LogOut, Lock, X, Menu, Search, Plus, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/lib/stores/auth.store';
-import { canUseFeature, Plan, PLAN_LABELS } from '@/lib/plan-features';
+import { canUseFeature, Plan, PLAN_LABELS, getFeature } from '@/lib/plan-features';
 import type { StaffPermission, StaffSession } from '@storebuilder/types';
 import { ClayIcon, type ClayIconName } from '@/components/ui/ClayIcon';
 import { NotificationBell } from './NotificationBell';
@@ -53,9 +53,9 @@ const sections: NavSection[] = [
   {
     title: 'التسويق',
     links: [
-      { href: '/dashboard/marketing',  label: 'أدوات التسويق',  desc: 'كوبونات الخصم والمسوقون بالعمولة', icon: 'megaphone', feature: 'affiliates', perm: 'marketing' },
-      { href: '/dashboard/promotions', label: 'العروض التلقائية', desc: 'اشترِ واحصل على آخر، أو خصم متدرج', icon: 'discount', perm: 'marketing' },
-      { href: '/dashboard/gift-cards', label: 'بطاقات الهدايا', desc: 'أصدر بطاقات هدايا برصيد للزبائن',   icon: 'gift', perm: 'marketing' },
+      { href: '/dashboard/marketing',  label: 'أدوات التسويق',  desc: 'كوبونات الخصم والمسوقون بالعمولة', icon: 'megaphone', perm: 'marketing' },
+      { href: '/dashboard/promotions', label: 'العروض التلقائية', desc: 'اشترِ واحصل على آخر، أو خصم متدرج', icon: 'discount', perm: 'marketing', feature: 'promotions' },
+      { href: '/dashboard/gift-cards', label: 'بطاقات الهدايا', desc: 'أصدر بطاقات هدايا برصيد للزبائن',   icon: 'gift', perm: 'marketing', feature: 'gift_cards' },
       { href: '/dashboard/referrals',  label: 'ادعُ واربح',      desc: 'ادعُ تجاراً واربح أشهراً مجانية',    icon: 'users', perm: 'owner' },
     ],
   },
@@ -141,12 +141,13 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
               {section.links.map((link) => {
                 const active = isActive(pathname, link);
                 const locked = link.feature ? !canUseFeature(plan, link.feature) : false;
+                const needs = link.feature ? getFeature(link.feature)?.minPlan : undefined;
                 return (
                   <Link
                     key={link.href}
                     href={locked ? '/dashboard/upgrade' : link.href}
                     onClick={onClose}
-                    title={locked ? `${link.desc} — متاح في الخطة الاحترافية` : link.desc}
+                    title={locked ? `${link.desc} — متاح في باقة ${needs ? PLAN_LABELS[needs] : 'أعلى'}` : link.desc}
                     className={cn(
                       'relative flex items-center gap-3 rounded-xl px-3 h-11 text-[14px] transition-colors',
                       active
@@ -157,7 +158,11 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                   >
                     <ClayIcon name={link.icon} size={26} className={locked ? 'grayscale' : ''} />
                     <span className="flex-1 truncate">{link.label}</span>
-                    {locked && <Lock className="h-3.5 w-3.5 text-bz-muted" />}
+                    {locked && (
+                      <span className="flex items-center gap-1 text-[10px] font-semibold text-bz-muted">
+                        <Lock className="h-3 w-3" />{needs ? PLAN_LABELS[needs] : ''}
+                      </span>
+                    )}
                   </Link>
                 );
               })}

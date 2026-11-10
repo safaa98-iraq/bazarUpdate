@@ -2,10 +2,15 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import prisma from '@storebuilder/database';
-import { RegisterDto, LoginDto, AuthResponse, JwtPayload, ReferralStats, PlanKey, StaffSession, StaffRolePreset, StaffPermission } from '@storebuilder/types';
+import { RegisterDto, LoginDto, AuthResponse, JwtPayload, ReferralStats, PlanKey, StaffSession, StaffRolePreset, StaffPermission, TRIAL_DAYS } from '@storebuilder/types';
 import { AppError } from '../middleware/errorHandler';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+/** Every new merchant starts on a Business-plan trial (see lib/billing.ts). */
+function trialData() {
+  return { plan: 'ENTERPRISE' as const, billingCycle: 'TRIAL', planExpiresAt: new Date(Date.now() + TRIAL_DAYS * 864e5), trialUsed: true, planChangedAt: new Date() };
+}
+
 const REFERRAL_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 function getSecret(): string {
@@ -52,6 +57,7 @@ export class AuthService {
         referralCode,
         ...(referredById ? { referredById } : {}),
         ...(dto.whatsapp ? { whatsapp: dto.whatsapp } : {}),
+        ...trialData(),
       },
     });
 
@@ -109,6 +115,7 @@ export class AuthService {
           role: 'MERCHANT',
           googleId,
           referralCode,
+          ...trialData(),
         },
       });
     }

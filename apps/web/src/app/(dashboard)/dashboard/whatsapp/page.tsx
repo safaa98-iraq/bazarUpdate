@@ -66,7 +66,13 @@ export default function WhatsappPage() {
                 <p className="font-semibold mt-3">٢. تلقائياً عبر WhatsApp Business API</p>
                 <p className="text-bz-muted">تُرسل الرسالة لحظة وصول الطلب بدون أي تدخل. تحتاج حساب Meta Business ورقماً مفعّلاً وقالب رسالة معتمداً.</p>
               </div>
-              {canEditCreds ? (
+              {!canUseFeature(plan, 'whatsapp_api') ? (
+                <div className="rounded-xl border border-dashed border-bz-line p-4 text-sm flex items-center gap-3">
+                  <span className="bz-chip bg-bz-bg text-bz-muted">🔒 الأعمال</span>
+                  <span className="flex-1 text-bz-muted">الإرسال التلقائي عبر WhatsApp Business API متاح في باقة الأعمال. في باقتك تؤكد الطلبات يدوياً بضغطة.</span>
+                  <a href="/dashboard/upgrade" className="text-bz-brand-600 font-bold whitespace-nowrap">الترقية</a>
+                </div>
+              ) : canEditCreds ? (
                 <div className="grid sm:grid-cols-2 gap-3">
                   <input dir="ltr" placeholder="Phone Number ID" className="h-10 px-3 border border-bz-line text-sm" value={wa.phoneNumberId} onChange={e => setWa({ ...wa, phoneNumberId: e.target.value })} />
                   <input dir="ltr" type="password" placeholder={wa.hasAccessToken ? '•••••• Access token (محفوظ)' : 'Access token'} className="h-10 px-3 border border-bz-line text-sm" value={token} onChange={e => setToken(e.target.value)} />
@@ -75,11 +81,11 @@ export default function WhatsappPage() {
                   <p className="sm:col-span-2 text-[11px] text-bz-muted">القالب: نص بثلاث متغيرات (الاسم، المتجر، المبلغ) وزر رابط ينتهي بـ <code dir="ltr">/confirm/{'{{1}}'}</code>.</p>
                 </div>
               ) : <p className="text-xs text-bz-muted">بيانات الربط يعدّلها صاحب المتجر فقط.</p>}
-              <label className="flex items-center gap-3 mt-4 rounded-xl border border-bz-line p-3 cursor-pointer">
+              {canUseFeature(plan, 'whatsapp_api') && <label className="flex items-center gap-3 mt-4 rounded-xl border border-bz-line p-3 cursor-pointer">
                 <input type="checkbox" checked={wa.autoConfirm} onChange={e => setWa({ ...wa, autoConfirm: e.target.checked })} />
                 <span className="text-sm"><span className="font-semibold">أرسل التأكيد تلقائياً لكل طلب جديد</span>{!wa.apiConfigured && <span className="block text-xs text-[#B45309]">يتطلب ربط WhatsApp Business API أولاً</span>}</span>
-              </label>
-              {wa.apiConfigured && <p className="text-xs text-[#17845C] mt-2 flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> الربط مفعّل</p>}
+              </label>}
+              {wa.apiConfigured && canUseFeature(plan, 'whatsapp_api') && <p className="text-xs text-[#17845C] mt-2 flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> الربط مفعّل</p>}
             </section>
 
             <button onClick={save} disabled={saving} className="bz-btn"><Save className="h-4 w-4" /> {saving ? 'جارٍ الحفظ…' : 'حفظ'}</button>

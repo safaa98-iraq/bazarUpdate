@@ -1,203 +1,310 @@
 'use client';
 
-import { useEffect, useState, type ElementType } from 'react';
-import { api } from '@/lib/api';
-import { Check, Zap, Crown, Shield, Loader2, QrCode, X, Clock, CheckCircle2, XCircle, Star, Minus } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import Image from 'next/image';
+import { Loader2, X, Clock, CheckCircle2, XCircle, Crown, Check, Minus, Building2, Smartphone, Sparkles } from 'lucide-react';
+import {
+  PLAN_CONFIGS, PLAN_COMPARISON, BILLING_CYCLE_LABELS, LIFETIME_INSTALLMENTS, yearlySavingIQD,
+  type PlanKey, type BillingCycle,
+} from '@storebuilder/types';
+import { api } from '@/lib/api';
 import { trackPage, track } from '@/lib/track';
-import { PLAN_COMPARISON, type PlanConfig, type PlanComparisonRow, type PlanKey } from '@storebuilder/types';
-import { PlanPrice } from '@/components/pricing/PlanPrice';
-import { WavePatternOverlay } from '@/components/ui/WavePatternOverlay';
+import { useAuthStore } from '@/lib/stores/auth.store';
+import { PricingPlans } from '@/components/pricing/PricingPlans';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
+import { cn } from '@/lib/utils';
 
-const C = {
-  bg: '#F6F8FA', bgAlt: '#FFFFFF', p: '#0B3550', s: '#32506A',
-  a: '#20A9F4', text: '#0B3550', muted: '#7A8A99', border: '#E3F5FE',
+const n = (v: number) => v.toLocaleString('en-US');
+
+interface PayConfig {
+  qrImageUrl: string | null; bankName: string; accountName: string; accountNumber: string; instructions: string;
+  zainCashNumber: string | null; zainCashName: string | null;
+}
+interface Status {
+  plan: PlanKey; billingCycle: string | null; planExpiresAt: string | null; daysLeft: number | null;
+  legacyPricing: boolean; monthlyPaymentsCount: number; lastYearlyPaidAt: string | null;
+  lifetime: { target: PlanKey; paid: number; of: number; total: number | null } | null;
+  lifetimeSeatsLeft: number; lifetimeSeats: number;
+  pendingRequest: { id: string; planTarget: PlanKey; cycle: string; installment: number | null; amount: number; createdAt: string } | null;
+}
+interface Quote { plan: PlanKey; cycle: string; amount: number; installment?: number; installmentsTotal?: number; note?: string }
+interface MyRequest { id: string; planTarget: string; status: string; adminNote: string | null; createdAt: string }
+
+const CYCLE_AR: Record<string, string> = {
+  MONTHLY: 'شهري', YEARLY: 'سنوي', LIFETIME: 'أبدي', TRIAL: 'تجربة مجانية', LEGACY: 'اشتراك سابق', MANUAL: 'مفعّل من الإدارة',
+  LIFETIME_INSTALLMENT: 'أبدي بالتقسيط', LIFETIME_UPGRADE: 'ترقية الأبدي',
 };
 
-const HIDDEN_FEATURE_PATTERNS = [
-  'ذكاء', 'الذكاء', 'اصطناعي', 'AI', 'OpenAI', 'ChatGPT',
-  'توليد', 'اقتراح سعر', 'رصيد', 'وصف المنتجات', 'أوصاف المنتجات',
-];
-
-function isVisibleFeature(text?: string | null) {
-  if (!text) return true;
-  return !HIDDEN_FEATURE_PATTERNS.some(pattern => text.includes(pattern));
-}
-
-function cleanPlan(plan: PlanConfig): PlanConfig {
-  return { ...plan, features: plan.features.filter(isVisibleFeature) };
-}
-
-function cleanCompareRow(row: PlanComparisonRow) {
-  return isVisibleFeature(row.label) && isVisibleFeature(row.sub);
-}
-
-type Plan = PlanConfig;
-type PlansData = Record<PlanKey, Plan>;
-interface PayConfig { qrImageUrl: string | null; bankName: string; accountName: string; accountNumber: string; instructions: string; }
-interface PayRequest { id: string; planTarget: string; status: string; adminNote: string | null; createdAt: string; }
-
-const PLAN_ICONS = { FREE: Shield, PRO: Zap, ENTERPRISE: Crown } as const;
-const PLAN_COLORS = { FREE: '#7A8A99', PRO: '#0B3550', ENTERPRISE: '#20A9F4' } as const;
-const PLAN_GR = {
-  FREE: 'linear-gradient(135deg,#7A8A99,#32506A)',
-  PRO: 'linear-gradient(135deg, #20A9F4, #0E8AD6)',
-  ENTERPRISE: 'linear-gradient(135deg,#20A9F4,#0E8AD6)',
-} as const;
-
-function QRModal({ plan, planData, config, onClose, onPaid }: {
-  plan: string; planData: Plan; config: PayConfig; onClose: () => void; onPaid: () => void;
+function PayModal({ plan, cycle, config, onClose, onDone }: {
+  plan: PlanKey; cycle: BillingCycle; config: PayConfig; onClose: () => void; onDone: () => void;
 }) {
-  const [submitting, setSubmitting] = useState(false);
+  const [installments, setInstallments] = useState<1 | 3>(1);
+  const [quote, setQuote] = useState<Quote | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [method, setMethod] = useState<'BANK' | 'ZAINCASH'>('BANK');
+  const [txRef, setTxRef] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  const handlePaid = async () => {
-    setSubmitting(true);
+  useEffect(() => {
+    setQuote(null); setError(null);
+    api.get<{ data: Quote }>(`/api/billing/quote?plan=${plan}&cycle=${cycle}&installments=${installments}`)
+      .then(r => setQuote(r.data)).catch(e => setError((e as Error).message));
+  }, [plan, cycle, installments]);
+
+  const pay = async () => {
+    setBusy(true);
     try {
-      await api.post('/api/billing/pay-request', { plan, currency: 'IQD' });
-      onPaid();
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'حدث خطأ');
-    } finally {
-      setSubmitting(false);
-    }
+      await api.post('/api/billing/pay-request', { plan, cycle, installments, method, txRef: txRef.trim() || undefined });
+      track({ event: 'payment_requested', meta: { plan, cycle, installments } });
+      onDone();
+    } catch (e) { toast.error((e as Error).message); }
+    finally { setBusy(false); }
   };
 
+  const cfg = PLAN_CONFIGS[plan];
   return (
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(10,5,20,.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: C.bgAlt, borderRadius: 10, width: '100%', maxWidth: 420, boxShadow: '0 40px 100px rgba(0,0,0,.4)', overflow: 'hidden' }}>
-        <div style={{ background: `linear-gradient(135deg,${C.p},${C.s})`, padding: '22px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div onClick={onClose} className="fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div onClick={e => e.stopPropagation()} className="bg-white rounded-3xl w-full max-w-md max-h-[92vh] overflow-y-auto shadow-2xl">
+        <div className="flex items-start justify-between gap-3 p-5 border-b border-bz-line">
           <div>
-            <div style={{ fontFamily: 'var(--font-cairo)', fontWeight: 900, fontSize: 17, color: '#fff' }}>ادفع للترقية — {planData.nameAr}</div>
-            <div style={{ marginTop: 6 }}><PlanPrice plan={plan as PlanKey} align="right" compact showCurrency /></div>
+            <p className="text-xs text-bz-muted">الاشتراك في</p>
+            <h2 className="text-lg font-extrabold text-bz-ink">{cfg.nameAr} — {BILLING_CYCLE_LABELS[cycle]}</h2>
           </div>
-          <button onClick={onClose} style={{ background: 'rgba(255,255,255,.15)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff', flexShrink: 0 }}><X size={16} /></button>
+          <button onClick={onClose} aria-label="إغلاق" className="h-9 w-9 rounded-full bg-bz-bg flex items-center justify-center"><X className="h-4 w-4" /></button>
         </div>
-        <div style={{ padding: '28px 24px 32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
-            <div style={{ width: 200, height: 200, borderRadius: 10, border: `3px solid ${C.border}`, background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-              {config.qrImageUrl ? <Image src={config.qrImageUrl} alt="QR للدفع" fill style={{ objectFit: 'contain', padding: 12 }} unoptimized /> : <QrCode size={72} color={C.muted} strokeWidth={1} />}
+
+        <div className="p-5 space-y-4">
+          {cycle === 'LIFETIME' && !error && quote?.cycle !== 'LIFETIME_UPGRADE' && (
+            <div className="grid grid-cols-2 gap-2">
+              {([1, 3] as const).map(k => (
+                <button key={k} onClick={() => setInstallments(k)}
+                  className={cn('rounded-2xl border-2 p-3 text-sm font-bold', installments === k ? 'border-bz-brand bg-bz-brand-50 text-bz-brand-600' : 'border-bz-line text-bz-ink-2')}>
+                  {k === 1 ? 'دفعة واحدة' : `${LIFETIME_INSTALLMENTS} دفعات خلال 60 يوماً`}
+                </button>
+              ))}
             </div>
+          )}
+
+          <div className="rounded-2xl bg-bz-bg p-4 text-center">
+            {error ? <p className="text-sm text-red-600 font-semibold">{error}</p>
+              : !quote ? <Loader2 className="h-5 w-5 animate-spin mx-auto text-bz-brand" />
+              : (
+                <>
+                  <p className="text-xs text-bz-muted">{quote.installment ? `المبلغ المطلوب الآن (الدفعة ${quote.installment} من ${quote.installmentsTotal})` : 'المبلغ المطلوب'}</p>
+                  <p className="text-3xl font-extrabold text-bz-ink tabular-nums mt-1">{n(quote.amount)} <span className="text-base text-bz-muted">د.ع</span></p>
+                  {quote.note && <p className="text-xs text-green-700 font-semibold mt-1">{quote.note}</p>}
+                  {cycle === 'YEARLY' && <p className="text-xs text-green-700 font-semibold mt-1">وفّرت {n(yearlySavingIQD(plan))} د.ع مقارنة بالشهري</p>}
+                </>
+              )}
           </div>
-          <div style={{ background: `${C.p}08`, border: `1px solid ${C.p}18`, borderRadius: 10, padding: '14px 18px', marginBottom: 24, textAlign: 'center' }}>
-            <div style={{ fontSize: 14, color: C.text, fontWeight: 600, lineHeight: 1.8 }}>افتح تطبيق البنك وامسح رمز QR<br /><span style={{ color: C.muted, fontWeight: 500, fontSize: 13 }}>ثم اضغط &quot;دفعت الآن&quot; بعد إتمام الدفع</span></div>
-          </div>
-          <button onClick={handlePaid} disabled={submitting} style={{ width: '100%', padding: '16px 0', background: submitting ? 'rgba(67,46,84,.35)' : `linear-gradient(135deg, #20A9F4, #0E8AD6)`, color: '#fff', fontWeight: 700, fontSize: 16, border: 'none', borderRadius: 10, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: 'inherit' }}>{submitting ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> جارٍ التسجيل...</> : '✓ دفعت الآن'}</button>
+
+          {!error && (
+            <>
+              <div className="grid grid-cols-2 gap-2">
+                <button onClick={() => setMethod('BANK')} className={cn('rounded-2xl border-2 p-3 text-sm font-bold flex items-center justify-center gap-2', method === 'BANK' ? 'border-bz-ink' : 'border-bz-line text-bz-muted')}>
+                  <Building2 className="h-4 w-4" /> تحويل مصرفي
+                </button>
+                <button onClick={() => setMethod('ZAINCASH')} className={cn('rounded-2xl border-2 p-3 text-sm font-bold flex items-center justify-center gap-2', method === 'ZAINCASH' ? 'border-bz-ink' : 'border-bz-line text-bz-muted')}>
+                  <Smartphone className="h-4 w-4" /> ZainCash
+                </button>
+              </div>
+              <div className="rounded-2xl border border-bz-line p-4 text-sm leading-7">
+                {method === 'BANK' ? (
+                  <>
+                    {config.qrImageUrl && <img src={config.qrImageUrl} alt="رمز QR للدفع" className="h-40 w-40 mx-auto object-contain mb-2" />}
+                    <p><span className="text-bz-muted">المصرف:</span> {config.bankName}</p>
+                    <p><span className="text-bz-muted">اسم الحساب:</span> {config.accountName}</p>
+                    <p><span className="text-bz-muted">رقم الحساب:</span> <span dir="ltr">{config.accountNumber}</span></p>
+                  </>
+                ) : config.zainCashNumber ? (
+                  <>
+                    <p><span className="text-bz-muted">رقم ZainCash:</span> <span dir="ltr" className="font-bold">{config.zainCashNumber}</span></p>
+                    {config.zainCashName && <p><span className="text-bz-muted">الاسم:</span> {config.zainCashName}</p>}
+                  </>
+                ) : <p className="text-bz-muted">تواصل مع دعم بازار على واتساب لاستلام رقم ZainCash.</p>}
+                <p className="text-xs text-bz-muted mt-2">{config.instructions}</p>
+              </div>
+              <input value={txRef} onChange={e => setTxRef(e.target.value)} placeholder="رقم العملية أو آخر 4 أرقام (اختياري)"
+                className="w-full h-11 px-4 rounded-2xl border border-bz-line text-sm" />
+              <button onClick={pay} disabled={busy || !quote} className="bz-btn w-full h-12 text-base">
+                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />} دفعت الآن
+              </button>
+              <p className="text-[11px] text-bz-muted text-center">نراجع التحويل ونفعّل باقتك عادةً خلال ساعات. استرداد خلال 14 يوماً.</p>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function SuccessScreen({ planName }: { planName: string }) {
-  return <div style={{ textAlign: 'center', padding: '48px 24px', maxWidth: 480, margin: '0 auto' }}><CheckCircle2 size={72} color="#22B07D" /><h2 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 900, fontSize: 28, color: C.text }}>تم استلام طلبك بنجاح!</h2><p style={{ fontSize: 15, color: C.muted }}>طلبت ترقية حساب إلى خطة <strong style={{ color: C.p }}>{planName}</strong></p></div>;
-}
-
-function PlanCard({ planKey, plan, current, selected, onSelect }: { planKey: string; plan: Plan; current: string; selected: string; onSelect: (p: string) => void; }) {
-  const Icon = PLAN_ICONS[planKey as keyof typeof PLAN_ICONS] ?? Shield;
-  const color = PLAN_COLORS[planKey as keyof typeof PLAN_COLORS] ?? C.muted;
-  const gradient = PLAN_GR[planKey as keyof typeof PLAN_GR];
-  const isActive = current === planKey;
-  const isSelected = selected === planKey;
-  const visiblePlan = cleanPlan(plan);
-
+function SubscriptionCard({ s, onPayNextInstallment }: { s: Status; onPayNextInstallment: () => void }) {
+  const cfg = PLAN_CONFIGS[s.plan];
+  const expires = s.planExpiresAt ? new Date(s.planExpiresAt).toLocaleDateString('ar-IQ', { year: 'numeric', month: 'long', day: 'numeric' }) : null;
   return (
-    <div onClick={() => planKey !== 'FREE' && !isActive && onSelect(planKey)} style={{ background: C.bgAlt, border: isSelected ? `2.5px solid ${color}` : `1.5px solid ${C.border}`, borderRadius: 10, padding: '22px 20px', cursor: planKey === 'FREE' || isActive ? 'default' : 'pointer', position: 'relative', transition: 'all .2s', transform: isSelected ? 'translateY(-4px)' : 'none', boxShadow: isSelected ? `0 16px 48px ${color}28` : '0 2px 12px rgba(67,46,84,.06)', flex: '1 1 240px', minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-      {planKey === 'ENTERPRISE' && <div style={{ position: 'absolute', top: -13, right: 18, background: 'linear-gradient(135deg,#20A9F4,#0E8AD6)', color: '#fff', fontSize: 11, fontWeight: 700, padding: '4px 14px', borderRadius: 99, display: 'flex', alignItems: 'center', gap: 5 }}><Star size={9} fill="#fff" /> الأكثر طلباً</div>}
-      {isActive && <div style={{ position: 'absolute', top: -13, left: 18, background: '#22B07D', color: '#fff', fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 99 }}>خطتك الحالية</div>}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-        <div style={{ width: 44, height: 44, borderRadius: 10, background: gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Icon size={20} color="#fff" strokeWidth={1.75} /></div>
-        <div><div style={{ fontWeight: 800, fontSize: 16, color: C.text }}>{visiblePlan.nameAr}</div><PlanPrice plan={planKey as PlanKey} align="right" compact /></div>
+    <div className="bz-card p-5 flex flex-wrap items-center gap-4">
+      <div className="h-12 w-12 rounded-2xl bg-bz-brand-50 flex items-center justify-center"><Crown className="h-6 w-6 text-bz-brand" /></div>
+      <div className="flex-1 min-w-[200px]">
+        <p className="text-xs text-bz-muted">باقتك الحالية</p>
+        <p className="text-lg font-extrabold text-bz-ink">
+          {cfg.nameAr}
+          {s.billingCycle && <span className="text-sm font-semibold text-bz-muted"> · {CYCLE_AR[s.billingCycle] ?? s.billingCycle}</span>}
+        </p>
+        {s.billingCycle === 'TRIAL' && s.daysLeft !== null && (
+          <p className="text-sm text-amber-700 font-semibold">بقي {s.daysLeft} يوماً من تجربة الأعمال — بعدها ينتقل متجرك للمجانية</p>
+        )}
+        {s.billingCycle !== 'TRIAL' && expires && <p className="text-sm text-bz-muted">يتجدد أو ينتهي في {expires} ({s.daysLeft} يوماً)</p>}
+        {s.billingCycle === 'LIFETIME' && <p className="text-sm text-green-700 font-semibold">اشتراك أبدي — لا تجديد</p>}
       </div>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>{[{ l: 'منتج', v: visiblePlan.products }, { l: 'تصنيف', v: visiblePlan.categories }].map(({ l, v }) => <div key={l} style={{ flex: '1 1 55px', background: C.bg, borderRadius: 10, padding: '6px 8px', textAlign: 'center' }}><div style={{ fontWeight: 800, fontSize: 14, color }}>{v === -1 ? '∞' : v}</div><div style={{ fontSize: 10, color: C.muted }}>{l}</div></div>)}</div>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>{visiblePlan.features.map(f => <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 16, height: 16, borderRadius: '50%', background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Check size={9} color={color} strokeWidth={3} /></div><span style={{ fontSize: 12, color: C.text }}>{f}</span></div>)}</div>
-      {planKey !== 'FREE' && !isActive && <div style={{ padding: '10px 0', borderRadius: 10, textAlign: 'center', background: isSelected ? gradient : 'transparent', border: isSelected ? 'none' : `1.5px solid ${color}`, color: isSelected ? '#fff' : color, fontWeight: 700, fontSize: 13 }}>{isSelected ? '✓ محدد' : 'اختر هذه الخطة'}</div>}
-      {isActive && <div style={{ padding: '10px 0', borderRadius: 10, textAlign: 'center', background: '#05966912', color: '#22B07D', fontWeight: 700, fontSize: 13 }}>خطتك الحالية</div>}
+      {s.lifetime && (
+        <div className="w-full sm:w-auto">
+          <p className="text-sm font-semibold text-bz-ink">الأبدي بالتقسيط: {s.lifetime.paid} من {s.lifetime.of} دفعات</p>
+          <div className="h-2 rounded-full bg-bz-bg mt-1.5 overflow-hidden"><div className="h-full bg-bz-brand" style={{ width: `${(s.lifetime.paid / s.lifetime.of) * 100}%` }} /></div>
+          {!s.pendingRequest && <button onClick={onPayNextInstallment} className="bz-btn h-9 text-sm mt-2">ادفع الدفعة {s.lifetime.paid + 1}</button>}
+        </div>
+      )}
     </div>
   );
-}
-
-type CellValue = boolean | string | null;
-const COMPARE_FEATURES: PlanComparisonRow[] = PLAN_COMPARISON.filter(cleanCompareRow);
-
-function CompareCell({ value, col }: { value: CellValue; col: 'FREE' | 'PRO' | 'ENTERPRISE' }) {
-  const color = col === 'FREE' ? C.muted : col === 'PRO' ? C.s : C.a;
-  if (value === true) return <div style={{ display: 'flex', justifyContent: 'center' }}><div style={{ width: 20, height: 20, borderRadius: '50%', background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={11} color={color} strokeWidth={3} /></div></div>;
-  if (value === false) return <div style={{ display: 'flex', justifyContent: 'center' }}><Minus size={13} color="#D3DCE4" /></div>;
-  if (value === null) return <div style={{ display: 'flex', justifyContent: 'center' }}><X size={13} color="#F04F4F" /></div>;
-  return <div style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, color }}>{value}</div>;
 }
 
 function CompareTable() {
-  const headers: { key: string; label: string; price: string; color: string; gr: string; Icon: ElementType }[] = [
-    { key: 'FREE', label: 'مجاني', price: 'مجاناً', color: C.muted, gr: 'linear-gradient(135deg,#7A8A99,#32506A)', Icon: Shield },
-    { key: 'PRO', label: 'احترافي', price: '60,000 د.ع', color: C.s, gr: 'linear-gradient(135deg, #20A9F4, #0E8AD6)', Icon: Zap },
-    { key: 'ENTERPRISE', label: 'مؤسسي', price: '100,000 د.ع', color: C.a, gr: 'linear-gradient(135deg,#20A9F4,#0E8AD6)', Icon: Crown },
-  ];
-
+  const cell = (v: boolean | string | null) =>
+    v === true ? <Check className="h-4 w-4 mx-auto text-green-600" strokeWidth={3} />
+      : v === false || v === null ? <Minus className="h-4 w-4 mx-auto text-bz-line" />
+      : <span className="text-xs font-semibold">{v}</span>;
   return (
-    <div style={{ marginTop: 32, marginBottom: 4 }}>
-      <div style={{ textAlign: 'center', marginBottom: 20 }}><div style={{ fontSize: 16, fontWeight: 800, color: C.text, marginBottom: 4 }}>مقارنة الميزات</div><div style={{ fontSize: 13, color: C.muted }}>جميع الباقات تشمل متجر جاهز — الفرق في الأدوات</div></div>
-      <div style={{ background: C.bgAlt, border: `1.5px solid ${C.border}`, borderRadius: 10, overflow: 'hidden', boxShadow: '0 4px 24px rgba(67,46,84,.07)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px 100px', borderBottom: `1.5px solid ${C.border}` }}><div style={{ padding: '16px 20px' }} />{headers.map(({ key, label, price, color, gr, Icon }) => <div key={key} style={{ padding: '12px 6px', textAlign: 'center', background: key === 'PRO' ? `${C.s}06` : key === 'ENTERPRISE' ? `${C.a}06` : 'transparent' }}><div style={{ width: 30, height: 30, borderRadius: 10, background: gr, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 6px' }}><Icon size={14} color="#fff" /></div><div style={{ fontWeight: 800, fontSize: 11, color: C.text, marginBottom: 1 }}>{label}</div><div style={{ fontSize: 10, fontWeight: 600, color }}>{price}</div></div>)}</div>
-        {COMPARE_FEATURES.map((row, i) => <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px 100px', borderBottom: i < COMPARE_FEATURES.length - 1 ? `1px solid ${C.border}` : 'none', background: row.highlight ? `${C.p}04` : i % 2 === 0 ? 'transparent' : `${C.bg}60` }}><div style={{ padding: '10px 20px' }}><div style={{ fontSize: 12, fontWeight: 500, color: C.text }}>{row.label}</div>{row.sub && <div style={{ fontSize: 10, color: C.muted, marginTop: 1 }}>{row.sub}</div>}</div>{(['FREE', 'PRO', 'ENTERPRISE'] as const).map((col, j) => <div key={col} style={{ padding: '10px 6px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: j === 1 ? `${C.s}04` : j === 2 ? `${C.a}04` : 'transparent' }}><CompareCell value={row[col]} col={col} /></div>)}</div>)}
+    <div className="mt-10">
+      <h2 className="bz-title-2 text-center mb-4">مقارنة الميزات</h2>
+      <div className="overflow-x-auto rounded-2xl border border-bz-line bg-white">
+        <table className="w-full text-sm min-w-[560px]">
+          <thead>
+            <tr className="bg-bz-bg">
+              <th className="text-start px-4 py-3">الميزة</th>
+              {(['FREE', 'PRO', 'ENTERPRISE'] as const).map(k => <th key={k} className="px-3 py-3 text-center">{PLAN_CONFIGS[k].nameAr}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {PLAN_COMPARISON.map(r => (
+              <tr key={r.label} className={cn('border-t border-bz-line', r.highlight && 'bg-bz-brand-50/40')}>
+                <td className="px-4 py-2.5">{r.label}{r.sub && <span className="block text-[11px] text-bz-muted">{r.sub}</span>}</td>
+                <td className="text-center px-3">{cell(r.FREE)}</td>
+                <td className="text-center px-3">{cell(r.PRO)}</td>
+                <td className="text-center px-3">{cell(r.ENTERPRISE)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 }
 
-import { useDocumentTitle } from '@/lib/useDocumentTitle';
-
 export default function UpgradePage() {
   useDocumentTitle('الباقات والترقية');
-  const [plans, setPlans] = useState<PlansData | null>(null);
+  const setUser = useAuthStore(s => s.setUser);
+  const authUser = useAuthStore(s => s.user);
+  const [status, setStatus] = useState<Status | null>(null);
   const [config, setConfig] = useState<PayConfig | null>(null);
-  const [currentPlan, setCurrentPlan] = useState('FREE');
-  const [pendingRequest, setPendingRequest] = useState<PayRequest | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState('PRO');
-  const [loading, setLoading] = useState(true);
-  const [showQR, setShowQR] = useState(false);
-  const [paid, setPaid] = useState(false);
+  const [lastRequest, setLastRequest] = useState<MyRequest | null>(null);
+  const [choice, setChoice] = useState<{ plan: PlanKey; cycle: BillingCycle } | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+
+  const load = useCallback(() => {
+    Promise.all([
+      api.get<{ data: Status }>('/api/billing/status'),
+      api.get<{ data: PayConfig }>('/api/billing/payment-config', { noAuth: true }),
+      api.get<{ data: MyRequest[] }>('/api/billing/my-requests').catch(() => ({ data: [] as MyRequest[] })),
+    ]).then(([st, cfg, reqs]) => {
+      setStatus(st.data); setConfig(cfg.data); setLastRequest(reqs.data[0] ?? null);
+      // Keep the cached session plan in sync (expiry / approval may have changed it).
+      if (authUser && authUser.plan !== st.data.plan) setUser({ ...authUser, plan: st.data.plan });
+    }).catch(() => null);
+  }, [authUser, setUser]);
 
   useEffect(() => { trackPage('upgrade'); track({ event: 'upgrade_clicked' }); }, []);
+  useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    Promise.all([
-      api.get<{ success: boolean; data: PlansData }>('/api/billing/plans', { noAuth: true }),
-      api.get<{ success: boolean; data: PayConfig }>('/api/billing/payment-config', { noAuth: true }),
-      api.get<{ success: boolean; data: { plan: string; pendingRequest: PayRequest | null } }>('/api/billing/status'),
-    ]).then(([plansRes, cfgRes, statusRes]) => {
-      setPlans(Object.fromEntries(Object.entries(plansRes.data).map(([key, plan]) => [key, cleanPlan(plan as PlanConfig)])) as PlansData);
-      setConfig(cfgRes.data);
-      setCurrentPlan(statusRes.data.plan);
-      setPendingRequest(statusRes.data.pendingRequest);
-      if (statusRes.data.plan === 'FREE') setSelectedPlan('PRO');
-      else if (statusRes.data.plan === 'PRO') setSelectedPlan('ENTERPRISE');
-    }).catch(() => {}).finally(() => setLoading(false));
-  }, []);
+  const choose = async (plan: PlanKey, cycle: BillingCycle) => {
+    if (plan === 'FREE') {
+      if (!confirm('الانتقال للباقة المجانية؟ متجرك وبياناتك تبقى كما هي، وتتوقف ميزات الباقة المدفوعة.')) return;
+      try { await api.post('/api/billing/downgrade', {}); toast.success('انتقلت للباقة المجانية'); load(); }
+      catch (e) { toast.error((e as Error).message); }
+      return;
+    }
+    if (status?.pendingRequest) { toast.error('لديك طلب دفع قيد المراجعة'); return; }
+    setChoice({ plan, cycle });
+  };
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style><Loader2 size={32} color={C.p} style={{ animation: 'spin 1s linear infinite' }} /></div>;
-  if (!plans || !config) return null;
-  if (paid) return <SuccessScreen planName={plans[selectedPlan as keyof PlansData]?.nameAr ?? selectedPlan} />;
+  if (!status || !config) return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-bz-brand" /></div>;
 
-  const selectedPlanData = plans[selectedPlan as keyof PlansData];
-
-  return (
-    <div style={{ padding: '32px 20px', maxWidth: 960, margin: '0 auto', fontFamily: 'var(--font-tajawal)', position: 'relative' }}>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}} @keyframes pop-in{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}`}</style>
-      <WavePatternOverlay opacity={0.04} color={C.p} />
-      {showQR && selectedPlanData && config && <QRModal plan={selectedPlan} planData={selectedPlanData} config={config} onClose={() => setShowQR(false)} onPaid={() => { setShowQR(false); setPaid(true); }} />}
-      <div style={{ textAlign: 'center', marginBottom: 36, position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: `${C.a}12`, color: C.a, padding: '7px 14px', borderRadius: 99, fontSize: 12, fontWeight: 700, marginBottom: 14 }}><Crown size={14} /> الباقات والترقية</div>
-        <h1 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 900, fontSize: 'clamp(26px,5vw,42px)', color: C.text, margin: '0 0 10px' }}>اختر الخطة المناسبة لنمو متجرك</h1>
-        <p style={{ color: C.muted, fontSize: 15, margin: 0 }}>ابدأ مجاناً، وارفع خطتك عند الحاجة إلى أدوات أكثر</p>
+  if (submitted) {
+    return (
+      <div className="text-center px-6 py-16 max-w-md mx-auto">
+        <CheckCircle2 className="h-16 w-16 text-green-600 mx-auto" />
+        <h2 className="bz-title-2 mt-4">تم استلام طلبك</h2>
+        <p className="text-bz-muted mt-2 leading-7">نراجع التحويل ونفعّل باقتك ونرسل لك إشعاراً هنا فور التفعيل.</p>
+        <button onClick={() => { setSubmitted(false); load(); }} className="bz-btn bz-btn-outline mt-6">العودة للباقات</button>
       </div>
-      {pendingRequest?.status === 'PENDING' && <div style={{ background: '#FEF3E2', border: '1.5px solid #F59E0B', borderRadius: 10, padding: '14px 18px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12, position: 'relative', zIndex: 1 }}><Clock size={20} color="#F59E0B" /><div style={{ flex: 1 }}><div style={{ fontWeight: 800, color: '#B45309', fontSize: 14 }}>لديك طلب ترقية قيد المراجعة</div><div style={{ color: '#B45309', fontSize: 12, marginTop: 2 }}>سيتم التواصل معك قريباً لتأكيد الدفع</div></div></div>}
-      {pendingRequest?.status === 'APPROVED' && <div style={{ background: '#F0FBF6', border: '1px solid #BDEFD9', borderRadius: 10, padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 14 }}><CheckCircle2 size={22} color="#22B07D" /><div style={{ fontWeight: 700, fontSize: 14, color: '#166534' }}>✓ تم تفعيل خطتك بنجاح!</div></div>}
-      {pendingRequest?.status === 'REJECTED' && <div style={{ background: '#FEF5F5', border: '1px solid #FAD0D0', borderRadius: 10, padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'flex-start', gap: 14 }}><XCircle size={22} color="#F04F4F" /><div><div style={{ fontWeight: 700, fontSize: 14, color: '#C93636', marginBottom: 4 }}>تم رفض الطلب</div>{pendingRequest.adminNote && <div style={{ fontSize: 13, color: '#B91C1C' }}>{pendingRequest.adminNote}</div>}</div></div>}
-      <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>{(['FREE', 'PRO', 'ENTERPRISE'] as PlanKey[]).map(k => <PlanCard key={k} planKey={k} plan={plans[k]} current={currentPlan} selected={selectedPlan} onSelect={setSelectedPlan} />)}</div>
-      {selectedPlan !== 'FREE' && selectedPlan !== currentPlan && <div style={{ textAlign: 'center', marginTop: 28, position: 'relative', zIndex: 1 }}><button onClick={() => setShowQR(true)} style={{ padding: '15px 44px', borderRadius: 10, border: 'none', background: `linear-gradient(135deg, #20A9F4, #0E8AD6)`, color: '#fff', fontWeight: 800, fontSize: 16, cursor: 'pointer', boxShadow: '0 10px 30px rgba(174,68,90,.25)' }}>المتابعة للدفع</button></div>}
+    );
+  }
+
+  // Upgrade nudges tied to the merchant's billing moment.
+  const nudge = (() => {
+    if (status.billingCycle === 'MONTHLY' && status.monthlyPaymentsCount >= 2) {
+      return { text: `حوّل للسنوي ووفّر حتى ${n(yearlySavingIQD(status.plan))} د.ع`, plan: status.plan, cycle: 'YEARLY' as BillingCycle };
+    }
+    if (status.billingCycle === 'YEARLY' && !status.lifetime && status.lifetimeSeatsLeft > 0) {
+      const recent = status.lastYearlyPaidAt && Date.now() - new Date(status.lastYearlyPaidAt).getTime() <= 60 * 864e5;
+      const nearRenewal = status.daysLeft !== null && status.daysLeft <= 30;
+      if (recent || nearRenewal) return { text: 'انتقل للأبدي — يُخصم ما دفعته هذا العام من سعر الأبدي', plan: status.plan, cycle: 'LIFETIME' as BillingCycle };
+    }
+    if (status.billingCycle === 'LIFETIME' && status.plan === 'PRO') {
+      return { text: `رقِّ أبدي الاحترافية إلى أبدي الأعمال بدفع الفرق فقط (${n(PLAN_CONFIGS.ENTERPRISE.prices.LIFETIME - PLAN_CONFIGS.PRO.prices.LIFETIME)} د.ع)`, plan: 'ENTERPRISE' as PlanKey, cycle: 'LIFETIME' as BillingCycle };
+    }
+    return null;
+  })();
+
+  const pr = status.pendingRequest;
+  return (
+    <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-16 max-w-6xl mx-auto">
+      <div className="text-center mb-6">
+        <h1 className="bz-large-title">متجر متكامل بدون مبرمج — بسعر يناسب السوق العراقي</h1>
+        <p className="text-bz-muted mt-2">الأسعار بالدينار وثابتة طوال مدة اشتراكك. ادفع بالتحويل المصرفي أو ZainCash.</p>
+      </div>
+
+      <div className="space-y-3 mb-8">
+        <SubscriptionCard s={status} onPayNextInstallment={() => status.lifetime && setChoice({ plan: status.lifetime.target, cycle: 'LIFETIME' })} />
+        {pr && (
+          <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 flex items-center gap-3">
+            <Clock className="h-5 w-5 text-amber-600" />
+            <p className="text-sm text-amber-800 font-semibold">طلبك ({PLAN_CONFIGS[pr.planTarget]?.nameAr} — {CYCLE_AR[pr.cycle] ?? pr.cycle}{pr.installment ? ` ${pr.installment}/${LIFETIME_INSTALLMENTS}` : ''} — {n(pr.amount)} د.ع) قيد المراجعة.</p>
+          </div>
+        )}
+        {!pr && lastRequest?.status === 'REJECTED' && (
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 flex items-start gap-3">
+            <XCircle className="h-5 w-5 text-red-500 mt-0.5" />
+            <div className="text-sm"><p className="font-bold text-red-700">لم نتمكن من تأكيد آخر دفعة</p>{lastRequest.adminNote && <p className="text-red-600">{lastRequest.adminNote}</p>}</div>
+          </div>
+        )}
+        {nudge && !pr && (
+          <button onClick={() => setChoice({ plan: nudge.plan, cycle: nudge.cycle })}
+            className="w-full rounded-2xl bg-bz-ink text-white p-4 flex items-center gap-3 text-start hover:opacity-95">
+            <Sparkles className="h-5 w-5 text-amber-300 flex-shrink-0" />
+            <span className="flex-1 font-bold">{nudge.text}</span>
+            <span className="text-sm opacity-80">التفاصيل ←</span>
+          </button>
+        )}
+        {status.legacyPricing && status.billingCycle !== 'LIFETIME' && (
+          <p className="text-sm text-center text-green-700 font-semibold">
+            {status.plan !== 'FREE' && status.billingCycle === 'LEGACY' ? 'كمشترك قديم تبقى على سعرك الحالي حتى نهاية اشتراكك، ' : 'كمشترك قديم '}لك خصم 10% على الباقة الأبدية.
+          </p>
+        )}
+      </div>
+
+      <PricingPlans currentPlan={status.plan} onChoose={choose} />
       <CompareTable />
+
+      {choice && <PayModal plan={choice.plan} cycle={choice.cycle} config={config} onClose={() => setChoice(null)} onDone={() => { setChoice(null); setSubmitted(true); }} />}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { verifyToken, requireRole } from '../middleware/auth';
 import prisma from '@storebuilder/database';
+import { assertUnderLimit } from '../lib/limits';
 
 const router = Router();
 
@@ -34,13 +35,7 @@ router.post(
       if (!store) { res.status(404).json({ success: false, error: 'Store not found' }); return; }
 
       const user = await prisma.user.findUnique({ where: { id: req.user!.userId }, select: { plan: true } });
-      if (user?.plan === 'FREE') {
-        const count = await prisma.category.count({ where: { storeId: store.id } });
-        if (count >= 3) {
-          res.status(403).json({ success: false, error: 'وصلت إلى الحد الأقصى للخطة المجانية (3 تصنيفات). ارفع خطتك للمزيد.' });
-          return;
-        }
-      }
+      assertUnderLimit(user?.plan ?? 'FREE', 'categories', await prisma.category.count({ where: { storeId: store.id } }), 'التصنيفات');
 
       const category = await prisma.category.create({
         data: { storeId: store.id, name: req.body.name, slug: req.body.slug },

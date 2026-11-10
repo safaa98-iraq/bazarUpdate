@@ -4,6 +4,7 @@ import multer from 'multer';
 import { verifyToken, requireRole, resolveStoreId } from '../middleware/auth';
 import { productService } from '../services/product.service';
 import prisma from '@storebuilder/database';
+import { planLimit } from '../lib/limits';
 import { PLAN_CONFIGS } from '@storebuilder/types';
 import { parseCsv, stringifyCsv } from '../lib/csv';
 
@@ -211,7 +212,11 @@ router.post('/import/csv', ...merchant, csvUpload.single('file'), async (req: Re
     const catByName = new Map(categories.map(c => [c.name.trim().toLowerCase(), c.id]));
     const brandByName = new Map(brands.map(b => [b.name.trim().toLowerCase(), b.id]));
 
-    let created = 0, updated = 0, failed = 0;
+    let created = 0, updated = 0, failed = 0, overLimit = 0;
+    // Respect the plan's product limit for new rows (updates of existing products are always fine).
+    const owner = await prisma.store.findUnique({ where: { id: storeId }, select: { merchant: { select: { plan: true } } } });
+    const productLimit = planLimit(owner?.merchant.plan ?? 'FREE', 'products');
+    let productCount = await prisma.product.count({ where: { storeId } });
     for (const row of dataRows) {
       try {
         const get = (col: string) => (idx(col) >= 0 ? row[idx(col)] ?? '' : '');
@@ -238,13 +243,14 @@ router.post('/import/csv', ...merchant, csvUpload.single('file'), async (req: Re
           await prisma.product.update({ where: { id: existing.id }, data });
           updated++;
         } else {
+          if (productLimit !== -1 && productCount >= productLimit) { overLimit++; continue; }
           await productService.create(storeId, data);
-          created++;
+          created++; productCount++;
         }
       } catch { failed++; }
     }
 
-    res.json({ success: true, data: { created, updated, failed, total: dataRows.length } });
+    res.json({ success: true, data: { created, updated, failed, overLimit, total: dataRows.length } });
   } catch (err) { next(err); }
 });
 

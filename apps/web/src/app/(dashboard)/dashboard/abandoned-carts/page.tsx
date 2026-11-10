@@ -24,11 +24,13 @@ export default function AbandonedCartsPage() {
   useDocumentTitle('السلال المتروكة');
   const [carts, setCarts] = useState<AbandonedCart[]>([]);
   const [loading, setLoading] = useState(true);
+  const [locked, setLocked] = useState<{ count: number; total: number } | null>(null);
 
   const fetchCarts = useCallback(async () => {
     try {
-      const res = await api.get<{ success: boolean; data: AbandonedCart[] }>('/api/cart/abandoned');
+      const res = await api.get<{ success: boolean; data: AbandonedCart[]; locked?: boolean; count?: number; total?: number }>('/api/cart/abandoned');
       setCarts(res.data ?? []);
+      setLocked(res.locked ? { count: res.count ?? 0, total: res.total ?? 0 } : null);
     } catch { toast.error('فشل تحميل السلال المتروكة'); }
     finally { setLoading(false); }
   }, []);
@@ -49,6 +51,13 @@ export default function AbandonedCartsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center h-40"><Loader2 className="h-6 w-6 animate-spin" style={{ color: BRAND.accent }} /></div>
+      ) : locked ? (
+        <div className="bz-card p-8 text-center">
+          <p className="text-4xl font-extrabold text-bz-ink tabular-nums">{locked.count}</p>
+          <p className="text-bz-muted mt-1">{locked.count ? `زبوناً تركوا سلالهم بقيمة ${locked.total.toLocaleString('en-US')} د.ع تقريباً` : 'لا توجد سلال متروكة حالياً'}</p>
+          {locked.count > 0 && <p className="text-sm text-bz-ink mt-4 leading-7">استرجع زبائن كادوا يشترون برسالة واحدة: في الاحترافية ترى أسماءهم وأرقامهم وما تركوه، وتراسلهم على واتساب بضغطة.</p>}
+          <a href="/dashboard/upgrade" className="bz-btn mt-5 inline-flex">اعرف من هم — الترقية للاحترافية</a>
+        </div>
       ) : carts.length === 0 ? (
         <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: BRAND.border }}>
           <ShoppingCart className="h-12 w-12 mx-auto mb-4 text-gray-200" />

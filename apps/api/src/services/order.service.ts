@@ -3,6 +3,7 @@ import { CreateOrderDto, OrderPublic, OrderStatusType, ProductSpecPublic } from 
 import { AppError } from '../middleware/errorHandler';
 import { notifyNewOrder } from '../lib/notify';
 import { afterOrderCreated } from '../lib/orderHooks';
+import { assertCanReceiveOrder } from '../lib/limits';
 import { restockOrder } from '../lib/fulfillment';
 import { getSpecsMapForProducts } from './product.service';
 
@@ -98,6 +99,7 @@ export class OrderService {
   }
 
   async create(dto: CreateOrderDto, customerId?: string): Promise<OrderPublic> {
+    await assertCanReceiveOrder(dto.storeId);
     // Validate products and compute total
     const productIds = dto.items.map((i) => i.productId);
     const products = await prisma.product.findMany({
@@ -160,6 +162,7 @@ export class OrderService {
     const order = await prisma.order.findFirst({ where: { id, storeId }, include: { items: true } });
     if (!order) throw new AppError(404, 'الطلب غير موجود');
     if (order.status !== 'DRAFT') throw new AppError(400, 'هذا الطلب ليس مسودة');
+    await assertCanReceiveOrder(storeId, 'merchant');
 
     const updated = await prisma.$transaction(async (tx) => {
       await Promise.all(order.items.map(i =>

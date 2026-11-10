@@ -136,6 +136,9 @@ export async function sendViaCloudApi(s: WhatsappSettings, to: string, text: str
 export async function autoSendConfirmation(orderId: string): Promise<void> {
   const c = await ensureConfirmation(orderId);
   if (!c || !c.settings.autoConfirm || !c.phone || !apiConfigured(c.settings)) return;
+  // Auto-send (API) is Business-plan only — a downgraded store stops sending automatically.
+  const owner = await prisma.order.findUnique({ where: { id: orderId }, select: { store: { select: { merchant: { select: { plan: true } } } } } });
+  if (owner?.store.merchant.plan !== 'ENTERPRISE') return;
   const err = await sendViaCloudApi(c.settings, c.phone, c.text, {
     name: c.order.customerName, store: c.store.name, total: formatIQD(Number(c.order.total)), token: c.token,
   });

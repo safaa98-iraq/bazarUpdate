@@ -2,6 +2,8 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { verifyToken, requireRole } from '../middleware/auth';
 import prisma from '@storebuilder/database';
 import { cuid } from '../lib/cuid';
+import { assertUnderLimit } from '../lib/limits';
+import { getMerchantContext } from '../lib/plan';
 
 const router = Router();
 const merchant = [verifyToken, requireRole('MERCHANT')];
@@ -58,6 +60,8 @@ router.get('/:id', ...merchant, async (req: Request, res: Response, next: NextFu
 router.post('/', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const store = await getMerchantStore(req.user!.userId);
+    const { plan } = await getMerchantContext(req);
+    assertUnderLimit(plan, 'maxAffiliates', await prisma.affiliate.count({ where: { storeId: store.id } }), 'المسوقين بالعمولة');
     const { name, email, phone, platform, handle, followerCount, commissionType, commissionRate, notes } = req.body;
     const id = cuid();
     await prisma.$executeRaw`

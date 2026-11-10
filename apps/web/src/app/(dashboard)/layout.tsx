@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { DashboardSidebar, DashboardTopbar } from '@/components/layout/DashboardSidebar';
 import { useAuthStore } from '@/lib/stores/auth.store';
+import { PlanBanner, UpgradeErrorListener } from '@/components/dashboard/PlanNudges';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -37,6 +38,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
       <main className="flex-1 min-w-0 overflow-auto pt-14 pb-24 lg:pt-0 lg:pb-0 print:pt-0 print:pb-0 print:overflow-visible">
         <DashboardTopbar />
+        <PlanBanner />
+        <UpgradeErrorListener />
         {children}
       </main>
     </div>

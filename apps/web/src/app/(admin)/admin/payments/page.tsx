@@ -1,11 +1,10 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
-import { PLAN_CONFIGS, type PlanKey } from '@storebuilder/types';
+import { PLAN_CONFIGS } from '@storebuilder/types';
 import { Clock, CheckCircle2, XCircle, Eye, Check, X, RefreshCw, Loader2, MessageCircle, AlertTriangle, Lightbulb } from 'lucide-react';
 import { toast } from 'sonner';
 import Image from 'next/image';
-import { PlanPrice } from '@/components/pricing/PlanPrice';
 
 const C = {
   bg: '#F6F8FA', bgAlt: '#FFFFFF', p: '#0B3550', s: '#32506A',
@@ -19,11 +18,28 @@ const STATUS_META: Record<string, { label: string; bg: string; color: string; Ic
 };
 
 const planMeta = (plan: string) => PLAN_CONFIGS[plan as keyof typeof PLAN_CONFIGS];
+const CYCLE_AR: Record<string, string> = { MONTHLY: 'شهري', YEARLY: 'سنوي', LIFETIME: 'أبدي — دفعة واحدة', LIFETIME_INSTALLMENT: 'أبدي بالتقسيط', LIFETIME_UPGRADE: 'ترقية أبدي (الفرق)' };
+
+/** What this request pays for: cycle, installment, amount and how it was paid. */
+function RequestPrice({ r, align = 'left' }: { r: { cycle?: string; installment?: number | null; method?: string | null; priceNote?: string | null; amount: number | string }; align?: 'left' | 'right' }) {
+  return (
+    <div style={{ textAlign: align, fontSize: 12, lineHeight: 1.7 }}>
+      <div style={{ fontWeight: 900, fontSize: 16, color: '#0B3550' }}>{Number(r.amount).toLocaleString('en')} د.ع</div>
+      <div style={{ color: '#32506A', fontWeight: 700 }}>{CYCLE_AR[r.cycle ?? 'MONTHLY'] ?? r.cycle}{r.installment ? ` — الدفعة ${r.installment} من 3` : ''}</div>
+      <div style={{ color: '#7A8A99' }}>{r.method === 'ZAINCASH' ? 'ZainCash' : 'تحويل مصرفي'}</div>
+      {r.priceNote && <div style={{ color: '#22B07D', fontWeight: 600 }}>{r.priceNote}</div>}
+    </div>
+  );
+}
 
 interface PayRequest {
   id: string;
   userId: string;
   planTarget: string;
+  cycle?: string;
+  installment?: number | null;
+  method?: string | null;
+  priceNote?: string | null;
   amount: number;
   currency: string;
   status: string;
@@ -83,7 +99,7 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
               <div style={{ textAlign: 'left' }}>
                 <div style={{ fontWeight: 800, fontSize: 15, color: C.p }}>{planMeta(req.planTarget)?.nameAr ?? req.planTarget}</div>
                 <div style={{ marginTop: 6 }}>
-                  <PlanPrice plan={req.planTarget as PlanKey} align="left" compact />
+                  <RequestPrice r={req} />
                 </div>
               </div>
             </div>
@@ -245,7 +261,7 @@ export default function AdminPaymentsPage() {
                       <td style={{ padding: '14px 16px' }}>
                         <div style={{ fontWeight: 700, color: C.p }}>{planMeta(r.planTarget)?.nameAr ?? r.planTarget}</div>
                         <div style={{ marginTop: 6 }}>
-                          <PlanPrice plan={r.planTarget as PlanKey} align="left" compact />
+                          <RequestPrice r={r} />
                         </div>
                       </td>
                       <td style={{ padding: '14px 16px', fontFamily: 'monospace', color: C.muted, fontSize: 12 }}>{r.txRef}</td>

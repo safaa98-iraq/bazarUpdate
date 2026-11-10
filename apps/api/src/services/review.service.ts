@@ -42,7 +42,7 @@ export class ReviewService {
     }
 
     const plan = product.store.merchant.plan as PlanKey;
-    const canComment = plan === 'ENTERPRISE';
+    const canComment = plan === 'PRO' || plan === 'ENTERPRISE';
     const comment = canComment && dto.comment?.trim() ? dto.comment.trim().slice(0, 2000) : null;
 
     const review = await prisma.productReview.create({

@@ -4,6 +4,7 @@ import prisma from '@storebuilder/database';
 import { STAFF_PERMISSIONS, STAFF_ROLE_PRESETS, type StaffMemberPublic, type StaffRolePreset } from '@storebuilder/types';
 import { verifyToken, requireRole } from '../middleware/auth';
 import { AppError } from '../middleware/errorHandler';
+import { assertUnderLimit } from '../lib/limits';
 import { getMerchantContext, assertPlan } from '../lib/plan';
 
 const router = Router();
@@ -11,7 +12,6 @@ const router = Router();
 const owner = [verifyToken, requireRole('MERCHANT')];
 
 const VALID_PERMS = new Set(STAFF_PERMISSIONS.map(p => p.key));
-const MAX_STAFF = 20;
 
 function toPublic(s: {
   id: string; name: string; email: string; role: string; permissions: unknown; warehouseId: string | null;
@@ -58,7 +58,7 @@ router.post('/', ...owner, async (req: Request, res: Response, next: NextFunctio
     if (!(role in STAFF_ROLE_PRESETS)) throw new AppError(400, 'دور غير معروف');
 
     const count = await prisma.staffMember.count({ where: { storeId: store.id } });
-    if (count >= MAX_STAFF) throw new AppError(400, `الحد الأقصى ${MAX_STAFF} موظفاً`);
+    assertUnderLimit(plan, 'maxStaff', count, 'حسابات الموظفين');
 
     const normalized = String(email).trim().toLowerCase();
     const [staffTaken, userTaken] = await Promise.all([

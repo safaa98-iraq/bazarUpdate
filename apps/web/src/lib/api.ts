@@ -31,7 +31,12 @@ export async function apiFetch<T = unknown>(
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({ error: 'Request failed' }));
-    throw new ApiError(res.status, body.error ?? body.message ?? 'Request failed');
+    const message: string = body.error ?? body.message ?? 'Request failed';
+    // Plan limits answer 403 with an "upgrade" message — let the dashboard offer the upgrade page.
+    if (res.status === 403 && typeof window !== 'undefined' && /ارفع|باقة|باقتك/.test(message)) {
+      window.dispatchEvent(new CustomEvent('bz:upgrade-needed', { detail: message }));
+    }
+    throw new ApiError(res.status, message);
   }
 
   return res.json() as Promise<T>;

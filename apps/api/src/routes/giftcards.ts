@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { verifyToken, requireRole, resolveStoreId } from '../middleware/auth';
 import { giftCardService } from '../services/giftcard.service';
+import { getMerchantContext, assertPlan } from '../lib/plan';
 
 const router = Router();
 const merchant = [verifyToken, requireRole('MERCHANT')];
@@ -16,6 +17,7 @@ router.get('/', ...merchant, async (req: Request, res: Response, next: NextFunct
 router.post('/', ...merchant, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const storeId = await resolveStoreId(req);
+    assertPlan((await getMerchantContext(req)).plan, 'ENTERPRISE', 'بطاقات الهدايا');
     const card = await giftCardService.create(storeId, req.body);
     res.status(201).json({ success: true, data: card });
   } catch (err) { next(err); }

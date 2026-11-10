@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { optionalToken, verifyToken, requireRole, resolveStoreId } from '../middleware/auth';
 import prisma from '@storebuilder/database';
+import { getMerchantContext } from '../lib/plan';
 
 const router = Router();
 const merchant = [verifyToken, requireRole('MERCHANT')];
@@ -75,6 +76,12 @@ router.get('/abandoned', ...merchant, async (req: Request, res: Response, next: 
       orderBy: { updatedAt: 'desc' },
       take: 100,
     });
+    // Free plan: the merchant sees how many carts were abandoned, not who left them.
+    const { plan } = await getMerchantContext(req);
+    if (plan === 'FREE') {
+      res.json({ success: true, data: [], locked: true, count: carts.length, total: carts.reduce((s, c) => s + c.items.reduce((t, i) => t + Number(i.product.price) * i.quantity, 0), 0) });
+      return;
+    }
     const data = carts.map(c => ({
       id: c.id,
       customerName: c.customer?.name ?? null,

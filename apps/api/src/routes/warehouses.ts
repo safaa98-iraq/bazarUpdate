@@ -3,12 +3,12 @@ import prisma from '@storebuilder/database';
 import type { WarehousePublic } from '@storebuilder/types';
 import { verifyToken, requireRole } from '../middleware/auth';
 import { AppError } from '../middleware/errorHandler';
+import { assertUnderLimit } from '../lib/limits';
 import { getMerchantContext, assertPlan } from '../lib/plan';
 import { syncProductStock } from '../lib/fulfillment';
 
 const router = Router();
 const merchant = [verifyToken, requireRole('MERCHANT')];
-const MAX_WAREHOUSES = 30;
 
 function govList(v: unknown): string[] {
   return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string').slice(0, 30) : [];
@@ -42,7 +42,7 @@ router.post('/', ...merchant, async (req: Request, res: Response, next: NextFunc
     const { name, governorate, address, phone, servesGovernorates } = req.body ?? {};
     if (!name?.trim()) throw new AppError(400, 'اسم الفرع مطلوب');
     const count = await prisma.warehouse.count({ where: { storeId: store.id } });
-    if (count >= MAX_WAREHOUSES) throw new AppError(400, `الحد الأقصى ${MAX_WAREHOUSES} فرعاً`);
+    assertUnderLimit(plan, 'maxBranches', count, 'الفروع والمخازن');
 
     const isFirst = count === 0;
     const wh = await prisma.$transaction(async (tx) => {

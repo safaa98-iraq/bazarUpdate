@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { FreeUsageCard } from '@/components/dashboard/PlanNudges';
 import { api } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,7 @@ import { trackPage } from '@/lib/track';
 import { ClayIcon, type ClayIconName } from '@/components/ui/ClayIcon';
 
 interface DashboardData {
-  totalRevenue: number; totalOrders: number;
+  totalRevenue: number | null; totalOrders: number; locked?: boolean;
   topProducts: { product: { name: string }; totalSold: number }[];
   recentOrders: { id: string; customerName: string; total: number; status: string; createdAt: string }[];
 }
@@ -75,10 +76,11 @@ export default function DashboardOverview() {
   );
 
   const stats: { label: string; value: string; icon: ClayIconName; hint: string }[] = [
-    { label: 'إجمالي المبيعات', value: formatCurrency(data?.totalRevenue ?? 0), icon: 'wallet', hint: 'منذ إنشاء المتجر' },
+    // Free plan: only the order count; the other indicators show as locked (data is not sent by the API).
+    { label: 'إجمالي المبيعات', value: data?.locked ? '🔒' : formatCurrency(data?.totalRevenue ?? 0), icon: 'wallet', hint: data?.locked ? 'في الباقة الاحترافية' : 'منذ إنشاء المتجر' },
     { label: 'الطلبات', value: String(data?.totalOrders ?? 0), icon: 'cart', hint: 'كل الحالات' },
-    { label: 'الأكثر مبيعاً', value: data?.topProducts?.[0]?.product?.name ?? '—', icon: 'box', hint: 'المنتج الأول' },
-    { label: 'وحدات مباعة', value: String(data?.topProducts?.[0]?.totalSold ?? 0), icon: 'growth', hint: 'لأفضل منتج' },
+    { label: 'الأكثر مبيعاً', value: data?.locked ? '🔒' : data?.topProducts?.[0]?.product?.name ?? '—', icon: 'box', hint: data?.locked ? 'في الباقة الاحترافية' : 'المنتج الأول' },
+    { label: 'وحدات مباعة', value: data?.locked ? '🔒' : String(data?.topProducts?.[0]?.totalSold ?? 0), icon: 'growth', hint: data?.locked ? 'في الباقة الاحترافية' : 'لأفضل منتج' },
   ];
 
   const quick: { label: string; href: string; icon: ClayIconName }[] = [
@@ -152,14 +154,16 @@ export default function DashboardOverview() {
         </div>
       </section>
 
+      {isFree && <div className="mb-6"><FreeUsageCard /></div>}
+
       {isFree && (
         <section className="mb-6 bz-card p-5 flex flex-wrap items-center gap-4 bg-gradient-to-l from-bz-brand-50 to-white">
           <ClayIcon name="star" size={56} />
           <div className="flex-1 min-w-[220px]">
             <p className="bz-headline text-bz-ink">أنت على الباقة المجانية</p>
-            <p className="text-sm text-bz-muted mt-0.5">55 منتج • 3 تصنيفات • بدون تحليلات أو محادثات</p>
+            <p className="text-sm text-bz-muted mt-0.5">الاحترافية: بِع أكثر، وقلّل الطلبات الراجعة — من 22,000 د.ع شهرياً</p>
             <div className="flex flex-wrap gap-2 mt-3">
-              {['منتجات غير محدودة', 'تحليلات متقدمة', 'مسوقون بالعمولة'].map(label => (
+              {['طلبات ومنتجات بلا حد', 'تأكيد الطلب عبر واتساب', 'ربط شركة التوصيل', 'السلال المتروكة'].map(label => (
                 <span key={label} className="bz-chip bg-white border border-bz-line text-bz-ink-2"><Lock className="h-3 w-3 text-bz-muted" /> {label}</span>
               ))}
             </div>

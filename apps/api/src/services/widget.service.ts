@@ -1,6 +1,7 @@
 import { prisma } from '@storebuilder/database';
 import { cacheGet, cacheSet, cacheIncr } from '../lib/redis';
 import { afterOrderCreated } from '../lib/orderHooks';
+import { assertCanReceiveOrder } from '../lib/limits';
 import { notifyNewOrder } from '../lib/notify';
 
 function hourKey(storeId: string, ip: string): string {
@@ -105,6 +106,7 @@ export const widgetService = {
     const store = await prisma.store.findUnique({ where: { slug } });
     if (!store || !store.isActive) throw Object.assign(new Error('Store not found'), { status: 404 });
     if (!checkOrigin(store, origin)) throw Object.assign(new Error('Origin not allowed'), { status: 403 });
+    await assertCanReceiveOrder(store.id);
 
     const products = await prisma.product.findMany({
       where: { id: { in: body.items.map(i => i.productId) }, storeId: store.id },

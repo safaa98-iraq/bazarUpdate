@@ -1,6 +1,7 @@
 import prisma from '@storebuilder/database';
 import { CreateGiftCardDto, GiftCardPublic } from '@storebuilder/types';
 import { AppError } from '../middleware/errorHandler';
+import { planOfStore } from '../lib/limits';
 
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
@@ -78,6 +79,7 @@ export class GiftCardService {
 
   /** Validate a code for a store and return its usable balance, without spending it. */
   async peek(storeId: string, code: string): Promise<GiftCardPublic> {
+    if ((await planOfStore(storeId)).plan !== 'ENTERPRISE') throw new AppError(400, 'بطاقات الهدايا غير مفعّلة في هذا المتجر');
     const card = await prisma.giftCard.findFirst({ where: { storeId, code: code.toUpperCase().trim() } });
     if (!card) throw new AppError(404, 'كود بطاقة الهدايا غير صالح');
     if (!card.isActive) throw new AppError(400, 'بطاقة الهدايا غير مفعّلة');

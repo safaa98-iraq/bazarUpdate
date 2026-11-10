@@ -195,24 +195,41 @@ export interface StoreTypeConfig {
 
 export type PlanKey = 'FREE' | 'PRO' | 'ENTERPRISE';
 
+export type BillingCycle = 'MONTHLY' | 'YEARLY' | 'LIFETIME';
+export const BILLING_CYCLES: BillingCycle[] = ['LIFETIME', 'YEARLY', 'MONTHLY'];
+export const BILLING_CYCLE_LABELS: Record<BillingCycle, string> = { MONTHLY: 'شهري', YEARLY: 'سنوي', LIFETIME: 'أبدي' };
+/** Days a paid period lasts (lifetime never expires). */
+export const BILLING_CYCLE_DAYS: Record<Exclude<BillingCycle, 'LIFETIME'>, number> = { MONTHLY: 30, YEARLY: 365 };
+
+/** -1 = unlimited, 0 = not available on this plan. */
 export interface PlanConfig {
   key: PlanKey;
   nameAr: string;
+  /** Monthly price in USD (reference only, sold in IQD). */
   price: number;
+  /** Monthly price in IQD. */
   priceIQD: number;
-  firstYearDiscountPercent?: number;
-  firstYearPriceIQD?: number;
+  /** IQD price per billing cycle (paid plans). */
+  prices: Record<BillingCycle, number>;
   products: number;
+  ordersPerMonth: number;
   categories: number;
-  /** -1 = unlimited, 0 = not available on this plan */
   maxCoupons: number;
-  /** -1 = unlimited, 0 = not available on this plan */
   maxBrands: number;
-  /** -1 = unlimited */
   maxBanners: number;
+  maxAffiliates: number;
+  maxStaff: number;
+  maxBranches: number;
+  /** Number of store templates available (-1 = all). */
+  templates: number;
+  /** Outcome-first sales headline + who it is for (pricing page). */
+  headline: string;
+  audience: string;
+  cta: string;
   features: string[];
   badge?: string;
   subtitle?: string;
+  support: string;
 }
 
 export interface PlanComparisonRow {
@@ -226,74 +243,156 @@ export interface PlanComparisonRow {
 
 export const PLAN_ORDER: PlanKey[] = ['FREE', 'PRO', 'ENTERPRISE'];
 
+/** Days of the Business-plan trial every new merchant gets. */
+export const TRIAL_DAYS = 14;
+/** Lifetime deals are limited to the first N merchants. */
+export const LIFETIME_SEATS = 100;
+/** Lifetime can be paid in this many installments (within 60 days). */
+export const LIFETIME_INSTALLMENTS = 3;
+/** Merchants who subscribed before the 2026-11 pricing get this % off lifetime. */
+export const LEGACY_LIFETIME_DISCOUNT_PERCENT = 10;
+/** Payment refund window (days). */
+export const REFUND_DAYS = 14;
+
 export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
   FREE: {
     key: 'FREE',
     nameAr: 'المجانية',
     price: 0,
     priceIQD: 0,
-    products: 55,
+    prices: { MONTHLY: 0, YEARLY: 0, LIFETIME: 0 },
+    products: 30,
+    ordersPerMonth: 50,
     categories: 3,
-    maxCoupons: 0,
+    maxCoupons: 1,
     maxBrands: 0,
     maxBanners: 1,
+    maxAffiliates: 0,
+    maxStaff: 0,
+    maxBranches: 0,
+    templates: 1,
+    headline: 'ابدأ متجرك اليوم بدون مبرمج وبدون تكلفة',
+    audience: 'تاجر يجرّب البيع أونلاين لأول مرة',
+    cta: 'ابدأ مجاناً',
     subtitle: 'للبدء',
-    features: ['55 منتج', '3 تصنيفات', 'متجر عام', 'دعم أساسي'],
+    support: 'مركز المساعدة',
+    features: ['30 منتجاً', '50 طلباً شهرياً', '3 تصنيفات', 'قالب واحد', 'كود خصم واحد', 'الدفع عند الاستلام وطباعة البوالص'],
   },
   PRO: {
     key: 'PRO',
     nameAr: 'الاحترافية',
-    price: 19,
-    priceIQD: 60000,
-    firstYearDiscountPercent: 18,
-    firstYearPriceIQD: 49200,
+    price: 14,
+    priceIQD: 22000,
+    prices: { MONTHLY: 22000, YEARLY: 189000, LIFETIME: 499000 },
     products: -1,
+    ordersPerMonth: -1,
     categories: 20,
-    maxCoupons: 1,
+    maxCoupons: 10,
     maxBrands: 5,
     maxBanners: 5,
-    badge: 'الأكثر طلباً',
+    maxAffiliates: 3,
+    maxStaff: 0,
+    maxBranches: 0,
+    templates: -1,
+    badge: 'الأكثر اختياراً',
+    headline: 'بِع أكثر، وقلّل الطلبات الراجعة',
+    audience: 'تاجر انستغرام أو واتساب تصله طلبات يومية',
+    cta: 'ابدأ البيع الاحترافي',
     subtitle: 'للنمو',
-    features: ['منتجات غير محدودة', '20 تصنيف', 'تحليلات متقدمة', 'أولوية دعم', 'كود خصم واحد', '5 ماركات'],
+    support: 'واتساب',
+    features: [
+      'منتجات وطلبات غير محدودة',
+      'تأكيد الطلب عبر واتساب قبل الشحن',
+      'ربط شركة التوصيل وتتبع تلقائي',
+      'السلال المتروكة ومراسلتها على واتساب',
+      'المحادثة مع الزبائن داخل المتجر',
+      'العروض التلقائية و10 أكواد خصم و3 مؤثرين',
+      'كل القوالب والأقسام المتقدمة',
+    ],
   },
   ENTERPRISE: {
     key: 'ENTERPRISE',
     nameAr: 'الأعمال',
-    price: 49,
-    priceIQD: 100000,
-    firstYearDiscountPercent: 25,
-    firstYearPriceIQD: 75000,
+    price: 26,
+    priceIQD: 39000,
+    prices: { MONTHLY: 39000, YEARLY: 389000, LIFETIME: 1090000 },
     products: -1,
+    ordersPerMonth: -1,
     categories: -1,
-    maxCoupons: 5,
+    maxCoupons: -1,
     maxBrands: -1,
     maxBanners: -1,
+    maxAffiliates: -1,
+    maxStaff: 5,
+    maxBranches: 3,
+    templates: -1,
+    headline: 'متجرك باسمك ودومينك، وفريقك يديره معك',
+    audience: 'متجر بفريق أو فروع أو علامة تجارية معروفة',
+    cta: 'نمِّ علامتك',
     subtitle: 'للتوسع',
-    features: ['كل مميزات الاحترافية', 'تقارير Excel تلقائية', 'نطاق مخصص', '5 أكواد خصم', 'ماركات غير محدودة', 'التعليق على المنتجات'],
+    support: 'واتساب بأولوية',
+    features: [
+      'كل ميزات الاحترافية',
+      'دومين خاص بدون «مدعوم بـ بازار»',
+      '5 موظفين بصلاحيات محددة',
+      '3 فروع ومخازن وتوجيه الطلب للأقرب',
+      'واجهة المتجر بالكردية',
+      'تأكيد واتساب تلقائي (API) وبطاقات هدايا',
+      'قسم الفيديو، أكواد ومؤثرون بلا حد',
+    ],
   },
 };
 
+/** Whole-dinar savings of yearly vs. 12 monthly payments. */
+export function yearlySavingIQD(plan: PlanKey): number {
+  const p = PLAN_CONFIGS[plan].prices;
+  return Math.max(0, p.MONTHLY * 12 - p.YEARLY);
+}
+
+/**
+ * Price per day for the pricing page: monthly → an upper bound rounded up to 50 IQD
+ * ("less than 750 a day"), yearly → rounded to the nearest 10 IQD ("about 520 a day").
+ */
+export function perDayIQD(plan: PlanKey, cycle: 'MONTHLY' | 'YEARLY'): number {
+  const p = PLAN_CONFIGS[plan].prices;
+  if (cycle === 'MONTHLY') return Math.ceil((p.MONTHLY / 30 + 1) / 50) * 50;
+  return Math.round(p.YEARLY / 365 / 10) * 10;
+}
+
 export const PLAN_COMPARISON: PlanComparisonRow[] = [
-  { label: 'إنشاء متجر إلكتروني', FREE: true, PRO: true, ENTERPRISE: true },
-  { label: 'عدد المنتجات', FREE: '55', PRO: 'غير محدود', ENTERPRISE: 'غير محدود' },
-  { label: 'تعديل تصميم المتجر', sub: 'عدد مرات حفظ التصميم', FREE: '4 مرات', PRO: 'غير محدود', ENTERPRISE: 'غير محدود' },
+  { label: 'المنتجات', FREE: '30', PRO: 'غير محدود', ENTERPRISE: 'غير محدود' },
+  { label: 'الطلبات شهرياً', FREE: '50', PRO: 'غير محدود', ENTERPRISE: 'غير محدود' },
   { label: 'التصنيفات', FREE: '3', PRO: '20', ENTERPRISE: 'غير محدود' },
-  { label: 'رابط المتجر (bazar.iq/store)', FREE: true, PRO: true, ENTERPRISE: true },
-  { label: 'نطاق مخصص', sub: 'مثل: myshop.com', FREE: false, PRO: false, ENTERPRISE: true },
-  { label: 'تخصيص شكل المتجر', FREE: true, PRO: true, ENTERPRISE: true },
-  { label: 'بانرات ترويجية', sub: 'بصور قابلة للضغط', FREE: '1', PRO: '5', ENTERPRISE: 'غير محدود' },
-  { label: 'أقسام فيديو مضمّن', sub: 'يوتيوب أو رابط فيديو مباشر', FREE: false, PRO: false, ENTERPRISE: true },
-  { label: 'قوالب تصميم متعددة', FREE: '1', PRO: '5+', ENTERPRISE: '5+' },
-  { label: 'رفع صور المنتجات', FREE: true, PRO: true, ENTERPRISE: true },
-  { label: 'كوبونات الخصم', FREE: false, PRO: 'كود واحد', ENTERPRISE: '5 أكواد' },
-  { label: 'الماركات التجارية', FREE: false, PRO: '5 ماركات', ENTERPRISE: 'غير محدود' },
-  { label: 'تقييمات المنتجات', FREE: true, PRO: true, ENTERPRISE: true },
-  { label: 'التعليق على المنتجات', FREE: false, PRO: false, ENTERPRISE: true },
-  { label: 'المسوقون بالعمولة', sub: 'تتبع المبيعات عبر روابط خاصة', FREE: false, PRO: '10 مسوق', ENTERPRISE: 'غير محدود' },
-  { label: 'إشعارات الطلبات', FREE: true, PRO: true, ENTERPRISE: true },
-  { label: 'تحليلات المتجر', FREE: false, PRO: true, ENTERPRISE: true },
-  { label: 'دعم عبر الواتساب', FREE: false, PRO: true, ENTERPRISE: true },
-  { label: 'مشاركة السلة', sub: 'رابط سلة قابل للمشاركة مع العملاء', FREE: false, PRO: true, ENTERPRISE: true },
+  { label: 'القوالب', FREE: '1', PRO: 'كل القوالب', ENTERPRISE: 'كل القوالب' },
+  { label: 'حفظ تصميم المتجر', FREE: '4 مرات', PRO: 'غير محدود', ENTERPRISE: 'غير محدود' },
+  { label: 'الأقسام المتقدمة', sub: 'آراء، معرض، ماركات', FREE: false, PRO: true, ENTERPRISE: true },
+  { label: 'قسم الفيديو', FREE: false, PRO: false, ENTERPRISE: true },
+  { label: 'البانرات', FREE: '1', PRO: '5', ENTERPRISE: 'غير محدود' },
+  { label: 'أكواد الخصم', FREE: '1', PRO: '10', ENTERPRISE: 'غير محدود' },
+  { label: 'العروض التلقائية', sub: 'اشترِ X واحصل على Y', FREE: false, PRO: true, ENTERPRISE: true },
+  { label: 'بطاقات الهدايا', FREE: false, PRO: false, ENTERPRISE: true },
+  { label: 'المسوقون بالعمولة', FREE: false, PRO: '3', ENTERPRISE: 'غير محدود' },
+  { label: 'السلال المتروكة', FREE: 'عددها فقط', PRO: 'القائمة + مراسلة واتساب', ENTERPRISE: 'القائمة + مراسلة واتساب' },
+  { label: 'تأكيد الطلب قبل الشحن', FREE: false, PRO: 'يدوي عبر واتساب', ENTERPRISE: 'يدوي + تلقائي (API)', highlight: true },
+  { label: 'الربط مع شركة التوصيل', FREE: false, PRO: true, ENTERPRISE: true },
+  { label: 'المحادثة مع العملاء', FREE: false, PRO: true, ENTERPRISE: true },
+  { label: 'التقييم بالنجوم', FREE: true, PRO: true, ENTERPRISE: true },
+  { label: 'التعليق النصي على المنتجات', FREE: false, PRO: true, ENTERPRISE: true },
+  { label: 'التحليلات', FREE: 'عدد الطلبات فقط', PRO: 'المؤشرات الأربعة', ENTERPRISE: 'المؤشرات الأربعة' },
+  { label: 'عبارة «مدعوم بـ بازار»', FREE: 'ظاهرة', PRO: 'ظاهرة', ENTERPRISE: 'تُزال' },
+  { label: 'نطاق خاص (دومين)', FREE: false, PRO: false, ENTERPRISE: true },
+  { label: 'واجهة بالكردية', FREE: false, PRO: false, ENTERPRISE: true },
+  { label: 'حسابات الموظفين', FREE: false, PRO: false, ENTERPRISE: '5' },
+  { label: 'الفروع والمخازن', FREE: false, PRO: false, ENTERPRISE: '3' },
+  { label: 'الدعم', FREE: 'مركز المساعدة', PRO: 'واتساب', ENTERPRISE: 'واتساب بأولوية' },
+];
+
+/** Extras that depend on how long the merchant pays for (paid plans). */
+export const CYCLE_PERKS: { label: string; MONTHLY: string; YEARLY: string; LIFETIME: string }[] = [
+  { label: 'تثبيت السعر', MONTHLY: 'لا', YEARLY: 'طوال السنة', LIFETIME: 'دائم' },
+  { label: 'تصميم المتجر بواسطة فريق بازار', MONTHLY: 'لا', YEARLY: 'الأعمال فقط', LIFETIME: 'الباقتان' },
+  { label: 'رفع المنتجات نيابةً عن التاجر', MONTHLY: 'لا', YEARLY: 'لا', LIFETIME: 'حتى 100 منتج' },
+  { label: 'أشهر الإحالة المجانية', MONTHLY: 'نعم', YEARLY: 'نعم', LIFETIME: '—' },
 ];
 
 export interface CategoryPublic {

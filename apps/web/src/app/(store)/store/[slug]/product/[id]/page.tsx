@@ -523,7 +523,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        <ReviewsSection productId={product.id} theme={theme} canComment={store.merchantPlan === 'ENTERPRISE'} />
+        <ReviewsSection productId={product.id} theme={theme} canComment={(store.merchantPlan === 'PRO' || store.merchantPlan === 'ENTERPRISE')} />
 
         {/* Recommendations */}
         {recommendations.length > 0 && (

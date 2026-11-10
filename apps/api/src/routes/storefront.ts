@@ -12,6 +12,7 @@ import { optionalToken, verifyToken } from '../middleware/auth';
 import { cuid } from '../lib/cuid';
 import { afterOrderCreated } from '../lib/orderHooks';
 import { restockOrder } from '../lib/fulfillment';
+import { assertCanReceiveOrder } from '../lib/limits';
 import { SHIPMENT_STATUS_LABELS } from '@storebuilder/types';
 
 const router = Router();
@@ -309,6 +310,13 @@ router.get(
       const isOwner = u.role === 'MERCHANT' && u.userId === store.merchantId;
       const allowed = u.role === 'SUPER_ADMIN' || (isOwner && (!u.staffId || (u.permissions ?? []).includes('reports')));
       if (!allowed) { res.status(403).json({ success: false, error: 'لا تملك صلاحية عرض إحصائيات هذا المتجر' }); return; }
+      // Free plan: only the order count; the four indicators are a paid feature (enforced here, not only in the UI).
+      const owner = await prisma.user.findUnique({ where: { id: store.merchantId }, select: { plan: true } });
+      if (owner?.plan === 'FREE') {
+        const totalOrders = await prisma.order.count({ where: { storeId: store.id, status: { notIn: ['CANCELLED', 'DRAFT'] } } });
+        res.json({ success: true, data: { totalOrders, totalRevenue: null, topProducts: [], recentOrders: [], locked: true } });
+        return;
+      }
 
       const [orderStats, topProducts, recentOrders] = await Promise.all([
         prisma.order.aggregate({
@@ -451,6 +459,7 @@ router.post(
         res.status(404).json({ success: false, error: 'المتجر غير موجود' });
         return;
       }
+      await assertCanReceiveOrder(store.id);
 
       const { customerName, customerPhone, governorate, city, address, notes, items, couponCode, giftCardCode } = req.body as {
         customerName: string; customerPhone: string;

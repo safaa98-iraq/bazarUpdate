@@ -127,7 +127,14 @@ export default function SubscriptionsPage() {
   const applyPlan = async (userId: string, plan: 'FREE' | 'PRO' | 'ENTERPRISE') => {
     setActionLoading(userId);
     try {
-      await api.patch(`/api/billing/admin/subscriptions/${userId}`, { plan });
+      // Paid plans set from here need a duration: monthly, yearly, lifetime, or open-ended.
+      let cycle: string | undefined;
+      if (plan !== 'FREE') {
+        const answer = window.prompt('مدة الاشتراك: اكتب 1 لشهري، 2 لسنوي، 3 لأبدي، أو اتركه فارغاً بدون تاريخ انتهاء', '2');
+        if (answer === null) { setActionLoading(null); setConfirm(null); return; }
+        cycle = ({ '1': 'MONTHLY', '2': 'YEARLY', '3': 'LIFETIME' } as Record<string, string>)[answer.trim()] ?? 'NONE';
+      }
+      await api.patch(`/api/billing/admin/subscriptions/${userId}`, { plan, cycle });
       toast.success('تم تغيير الخطة بنجاح');
       await load();
     } catch (err: unknown) {

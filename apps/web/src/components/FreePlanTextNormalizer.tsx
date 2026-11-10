@@ -2,23 +2,8 @@
 
 import { useEffect } from 'react';
 
-const REPLACEMENTS: Record<string, string> = {
-  '100 منتجات': '55 منتج',
-  '100 منتج': '55 منتج',
-  '10 منتجات': '55 منتج',
-  '10 منتج': '55 منتج',
-  '75 منتجات': '55 منتج',
-  '75 منتج': '55 منتج',
-  '١٠٠ منتجات': '٥٥ منتج',
-  '١٠٠ منتج': '٥٥ منتج',
-  '١٠ منتجات': '٥٥ منتج',
-  '١٠ منتج': '٥٥ منتج',
-  '٧٥ منتجات': '٥٥ منتج',
-  '٧٥ منتج': '٥٥ منتج',
-  '100 products': '55 products',
-  '10 products': '55 products',
-  '75 products': '55 products',
-};
+/** Plan numbers now come from PLAN_CONFIGS directly; no text is rewritten any more. */
+const REPLACEMENTS: Record<string, string> = {};
 
 const BLOCKED_TEXT_PATTERNS = [
   /ذكاء/i,
@@ -56,7 +41,7 @@ const HIDE_SELECTOR = [
   'div',
 ].join(',');
 
-const OLD_LIMITS = new Set(['10', '100', '75', '١٠', '١٠٠', '٧٥']);
+const OLD_LIMITS = new Set<string>();
 type SearchRoot = Document | Element | DocumentFragment;
 
 function normalizeNodeText(node: Node) {
@@ -107,13 +92,6 @@ function hideElementForAttributes(element: Element) {
 }
 
 function enforceFreeProductLimit(root: SearchRoot = document) {
-  root.querySelectorAll('tr').forEach(row => {
-    const cells = row.querySelectorAll('td, th');
-    const rowText = row.textContent?.replace(/\s+/g, ' ').trim() ?? '';
-    if (!rowText.includes('عدد المنتجات') || cells.length < 2) return;
-    if ((cells[1].textContent ?? '').trim() !== '55') cells[1].textContent = '55';
-  });
-
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   let node = walker.nextNode();
   while (node) {

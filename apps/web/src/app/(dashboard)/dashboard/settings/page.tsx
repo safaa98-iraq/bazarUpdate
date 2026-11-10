@@ -11,6 +11,7 @@ import { useAuthStore } from '@/lib/stores/auth.store';
 import { Plan, PLAN_LABELS, PLAN_COLORS } from '@/lib/plan-features';
 import { trackPage, track } from '@/lib/track';
 import { PlanPrice } from '@/components/pricing/PlanPrice';
+import { PLAN_CONFIGS } from '@storebuilder/types';
 import { PlanGate } from '@/components/ui/PlanGate';
 import type { StoreSocialLinks, StoreDeliveryZone } from '@storebuilder/types';
 import { IRAQI_GOVERNORATES } from '@storebuilder/types';
@@ -129,15 +130,7 @@ const PLAN_DEFS = [
     icon: <Globe className="h-5 w-5" />,
     color: '#5B6B7B',
     planKey: 'FREE' as const,
-    features: [
-      { label: '55 منتج', ok: true },
-      { label: '3 تصنيفات', ok: true },
-      { label: 'أكواد خصم', ok: false },
-      { label: 'متجر عام', ok: true },
-      { label: 'تحليلات متقدمة', ok: false },
-      { label: 'مؤثرون', ok: false },
-      { label: 'محادثات', ok: false },
-    ],
+    features: PLAN_CONFIGS.FREE.features.map(label => ({ label, ok: true })),
     cta: null,
   },
   {
@@ -145,17 +138,8 @@ const PLAN_DEFS = [
     icon: <Zap className="h-5 w-5" />,
     color: '#8B5CF6',
     planKey: 'PRO' as const,
-    badge: 'الأكثر شعبية',
-    features: [
-      { label: 'منتجات غير محدودة', ok: true },
-      { label: 'تصنيفات غير محدودة', ok: true },
-      { label: 'كود خصم واحد', ok: true },
-      { label: '5 ماركات تجارية', ok: true },
-      { label: 'نوع متجر متخصص', ok: true },
-      { label: 'تحليلات متقدمة', ok: true },
-      { label: '10 مؤثرين', ok: true },
-      { label: 'نظام محادثات', ok: true },
-    ],
+    badge: PLAN_CONFIGS.PRO.badge,
+    features: PLAN_CONFIGS.PRO.features.map(label => ({ label, ok: true })),
     cta: 'ارفع إلى PRO',
   },
   {
@@ -163,18 +147,7 @@ const PLAN_DEFS = [
     icon: <Building2 className="h-5 w-5" />,
     color: '#F59E0B',
     planKey: 'ENTERPRISE' as const,
-    features: [
-      { label: 'منتجات غير محدودة', ok: true },
-      { label: 'تصنيفات غير محدودة', ok: true },
-      { label: '5 أكواد خصم', ok: true },
-      { label: 'ماركات تجارية غير محدودة', ok: true },
-      { label: 'التعليق على المنتجات', ok: true },
-      { label: 'نوع متجر متخصص', ok: true },
-      { label: 'تحليلات متقدمة', ok: true },
-      { label: 'مؤثرون غير محدودون', ok: true },
-      { label: 'نظام محادثات', ok: true },
-      { label: 'نطاق مخصص', ok: true },
-    ],
+    features: PLAN_CONFIGS.ENTERPRISE.features.map(label => ({ label, ok: true })),
     cta: 'تواصل للترقية',
   },
 ];

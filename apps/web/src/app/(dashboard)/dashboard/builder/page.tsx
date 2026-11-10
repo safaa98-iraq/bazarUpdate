@@ -1104,9 +1104,12 @@ function BuilderPageContent() {
               <div className="space-y-2 mb-5">
                 {STORE_TEMPLATES.map(tpl => {
                   const isMatch = tpl.storeTypes.includes(storeType);
+                  // Free plan: one template — the one made for the store's type (or the general one).
+                  const freeTpl = STORE_TEMPLATES.find(t => t.storeTypes.includes(storeType)) ?? STORE_TEMPLATES[STORE_TEMPLATES.length - 1];
+                  const locked = plan === 'FREE' && tpl.id !== freeTpl.id;
                   return (
                     <button key={tpl.id}
-                      onClick={() => applyTemplate(tpl)}
+                      onClick={() => locked ? toast.error('كل القوالب متاحة في الباقة الاحترافية — ارفع باقتك من «الباقات والترقية»') : applyTemplate(tpl)}
                       disabled={applyingTemplate === tpl.id}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border-2 text-right transition hover:border-opacity-70 disabled:opacity-50"
                       style={{ borderColor: isMatch ? tpl.themeColor : '#E6ECF1', background: isMatch ? `${tpl.themeColor}08` : 'white' }}>
@@ -1119,6 +1122,9 @@ function BuilderPageContent() {
                               style={{ background: `${tpl.themeColor}20`, color: tpl.themeColor }}>
                               موصى
                             </span>
+                          )}
+                          {locked && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold bg-bz-bg text-bz-muted">🔒 الاحترافية</span>
                           )}
                         </div>
                         <p className="text-xs text-gray-400 truncate">{tpl.desc}</p>

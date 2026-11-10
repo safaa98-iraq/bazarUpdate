@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PLAN_CONFIGS, PLAN_COMPARISON, type PlanComparisonRow, type ArticlePublic } from '@storebuilder/types';
-import { PlanPrice } from '@/components/pricing/PlanPrice';
+import { PricingPlans } from '@/components/pricing/PricingPlans';
 import { STORE_TYPES } from '@/lib/store-types';
 import { api } from '@/lib/api';
 import { HeroLogos } from '@/components/landing/HeroLogos';
@@ -623,7 +623,7 @@ function ShopifyCompareCell({ value }: { value: CompareCellVal }) {
 function LPComparison() {
   const [ref, visible] = useScrollReveal(0.1);
   const rows: { label: string; bazar: CompareCellVal; shopify: CompareCellVal }[] = [
-    { label: 'السعر الشهري', bazar: `من ${PLAN_CONFIGS.FREE.priceIQD.toLocaleString('en')} حتى ${PLAN_CONFIGS.ENTERPRISE.priceIQD.toLocaleString('en')} د.ع`, shopify: '$29 — $299 / شهر' },
+    { label: 'السعر الشهري', bazar: `مجاناً، ثم من ${PLAN_CONFIGS.PRO.prices.MONTHLY.toLocaleString('en')} د.ع`, shopify: 'من $39 / شهر' },
     { label: 'عمولة على كل بيعة', bazar: 'صفر %', shopify: '0.5% — 2%' },
     { label: 'واجهة ولوحة تاجر بالعربي بالكامل', bazar: true, shopify: false },
     { label: 'عملة الاشتراك', bazar: 'دينار عراقي', shopify: 'دولار أمريكي' },
@@ -844,49 +844,13 @@ function LPFaq() {
 
 /* ─── Pricing ─── */
 function LPPricing() {
-  const [ref, visible] = useScrollReveal(0.1);
-  const plans = [
-    { key: 'FREE' as const, name: PLAN_CONFIGS.FREE.nameAr, desc: 'تجربة مثالية لفتح متجرك الأول.', features: PLAN_CONFIGS.FREE.features, cta: 'ابدأ مجاناً', featured: false },
-    { key: 'PRO' as const, name: PLAN_CONFIGS.PRO.nameAr, badge: PLAN_CONFIGS.PRO.badge ?? 'الأكثر فعالية', desc: 'لمتجر يبيع كل يوم.', features: PLAN_CONFIGS.PRO.features, cta: 'ابدأ مجاناً ثم ترقّى', featured: true },
-    { key: 'ENTERPRISE' as const, name: PLAN_CONFIGS.ENTERPRISE.nameAr, desc: 'لمتجر بفريق ومخزون.', features: PLAN_CONFIGS.ENTERPRISE.features, cta: 'تحدّث معنا', featured: false },
-  ];
-
   return (
-    <section id="pricing" ref={ref as React.RefObject<HTMLElement>} style={SEC}>
+    <section id="pricing" style={SEC}>
       <div style={INNER}>
-        <h2 style={TITLE}>أسعار واضحة بالدينار</h2>
-        <p style={SUBP}>ابدأ مجاناً. لا عمولة على مبيعاتك في كل الخطط.</p>
-        <div className="pricing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginTop: 30, alignItems: 'start' }}>
-          {plans.map((plan, i) => (
-            <div key={plan.key}
-              style={{ background: plan.featured ? C.blueLight : C.white, borderRadius: 10, padding: '32px 30px 34px', boxShadow: plan.featured ? '0 18px 40px rgba(74,138,199,0.22)' : 'none', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(20px)', transition: 'all .4s', transitionDelay: `${i * 100}ms` }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 26, margin: 0, color: C.dark }}>{plan.name}</h3>
-                {plan.badge && (
-                  <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 13, background: C.blue, color: '#fff', padding: '5px 12px', borderRadius: 10 }}>{plan.badge}</span>
-                )}
-              </div>
-              <div style={{ marginTop: 12 }}>
-                <PlanPrice plan={plan.key} align="right" />
-              </div>
-              <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 15, lineHeight: 1.9, margin: '8px 0 0', color: C.text2 }}>{plan.desc}</p>
-              <ul style={{ margin: '18px 0 0', padding: 0, listStyle: 'none', fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14, lineHeight: 2.05, color: C.dark, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {plan.features.slice(0, 5).map((f, j) => (
-                  <li key={j} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ color: C.success, fontWeight: 700, flexShrink: 0 }}>✓</span>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/register">
-                <button style={{ display: 'block', width: '100%', textAlign: 'center', marginTop: 22, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: plan.featured ? 700 : 500, fontSize: 16, background: plan.featured ? C.blue : 'transparent', color: plan.featured ? '#fff' : C.dark, border: plan.featured ? 'none' : `2px solid ${C.dark}`, padding: plan.featured ? 15 : 13, borderRadius: 10, cursor: 'pointer', transition: 'opacity .2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.opacity = '.85')}
-                  onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-                  {plan.cta}
-                </button>
-              </Link>
-            </div>
-          ))}
+        <h2 style={TITLE}>متجر متكامل بدون مبرمج — بسعر يناسب السوق العراقي</h2>
+        <p style={SUBP}>ابدأ مجاناً، وانتقل للباقة المناسبة عندما تزداد طلباتك. الدفع بالتحويل المصرفي أو ZainCash، والأسعار بالدينار وثابتة طوال مدة اشتراكك. لا عمولة على مبيعاتك.</p>
+        <div style={{ marginTop: 28 }}>
+          <PricingPlans />
         </div>
       </div>
     </section>

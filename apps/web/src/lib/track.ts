@@ -4,6 +4,7 @@
 type TrackEvent =
   | 'page_view'
   | 'store_created'
+  | 'payment_requested'
   | 'product_added'
   | 'product_edited'
   | 'category_added'
