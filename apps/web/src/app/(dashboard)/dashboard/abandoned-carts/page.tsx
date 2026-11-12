@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import { ShoppingCart, Loader2, Phone, Package } from 'lucide-react';
 import { toast } from 'sonner';
@@ -21,7 +22,8 @@ interface AbandonedCart {
 }
 
 export default function AbandonedCartsPage() {
-  useDocumentTitle('السلال المتروكة');
+  const t = useT();
+  useDocumentTitle(t("السلال المتروكة"));
   const [carts, setCarts] = useState<AbandonedCart[]>([]);
   const [loading, setLoading] = useState(true);
   const [locked, setLocked] = useState<{ count: number; total: number } | null>(null);
@@ -31,7 +33,7 @@ export default function AbandonedCartsPage() {
       const res = await api.get<{ success: boolean; data: AbandonedCart[]; locked?: boolean; count?: number; total?: number }>('/api/cart/abandoned');
       setCarts(res.data ?? []);
       setLocked(res.locked ? { count: res.count ?? 0, total: res.total ?? 0 } : null);
-    } catch { toast.error('فشل تحميل السلال المتروكة'); }
+    } catch { toast.error(t("فشل تحميل السلال المتروكة")); }
     finally { setLoading(false); }
   }, []);
 
@@ -44,8 +46,8 @@ export default function AbandonedCartsPage() {
           <ShoppingCart className="h-5 w-5" style={{ color: BRAND.accent }} />
         </div>
         <div>
-          <h1 className="bz-large-title text-gray-900">السلال المتروكة</h1>
-          <p className="text-sm text-gray-500 mt-0.5">سلال فيها منتجات ولم تتحرك منذ 3 ساعات على الأقل — إشارة تقريبية وليست مؤكدة</p>
+          <h1 className="bz-large-title text-gray-900">{t("السلال المتروكة")}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{t("سلال فيها منتجات ولم تتحرك منذ 3 ساعات على الأقل — إشارة تقريبية وليست مؤكدة")}</p>
         </div>
       </div>
 
@@ -54,14 +56,14 @@ export default function AbandonedCartsPage() {
       ) : locked ? (
         <div className="bz-card p-8 text-center">
           <p className="text-4xl font-extrabold text-bz-ink tabular-nums">{locked.count}</p>
-          <p className="text-bz-muted mt-1">{locked.count ? `زبوناً تركوا سلالهم بقيمة ${locked.total.toLocaleString('en-US')} د.ع تقريباً` : 'لا توجد سلال متروكة حالياً'}</p>
-          {locked.count > 0 && <p className="text-sm text-bz-ink mt-4 leading-7">استرجع زبائن كادوا يشترون برسالة واحدة: في الاحترافية ترى أسماءهم وأرقامهم وما تركوه، وتتصل بهم مباشرة.</p>}
-          <a href="/dashboard/upgrade" className="bz-btn mt-5 inline-flex">اعرف من هم — الترقية للاحترافية</a>
+          <p className="text-bz-muted mt-1">{locked.count ? t("زبوناً تركوا سلالهم بقيمة {0} د.ع تقريباً", [locked.total.toLocaleString('en-US')]) : t("لا توجد سلال متروكة حالياً")}</p>
+          {locked.count > 0 && <p className="text-sm text-bz-ink mt-4 leading-7">{t("استرجع زبائن كادوا يشترون برسالة واحدة: في الاحترافية ترى أسماءهم وأرقامهم وما تركوه، وتتصل بهم مباشرة.")}</p>}
+          <a href="/dashboard/upgrade" className="bz-btn mt-5 inline-flex">{t("اعرف من هم — الترقية للاحترافية")}</a>
         </div>
       ) : carts.length === 0 ? (
         <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: BRAND.border }}>
           <ShoppingCart className="h-12 w-12 mx-auto mb-4 text-gray-200" />
-          <p className="font-medium text-gray-400 mb-1">لا توجد سلال متروكة حالياً</p>
+          <p className="font-medium text-gray-400 mb-1">{t("لا توجد سلال متروكة حالياً")}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -69,8 +71,8 @@ export default function AbandonedCartsPage() {
             <div key={c.id} className="bg-white rounded-2xl border p-4" style={{ borderColor: BRAND.border }}>
               <div className="flex items-center justify-between gap-3 mb-3">
                 <div>
-                  <span className="font-bold text-sm" style={{ color: BRAND.primary }}>{c.customerName ?? 'زائر'}</span>
-                  <p className="text-xs text-gray-400 mt-0.5">منذ {formatDate(c.updatedAt)} · {c.itemCount} قطعة · {formatCurrency(c.total)}</p>
+                  <span className="font-bold text-sm" style={{ color: BRAND.primary }}>{c.customerName ?? t("زائر")}</span>
+                  <p className="text-xs text-gray-400 mt-0.5">{t("منذ")}{' '}{formatDate(c.updatedAt)} · {c.itemCount} {' '}{t("قطعة ·")}{' '}{formatCurrency(c.total)}</p>
                 </div>
                 {c.customerPhone && (
                   <a href={`tel:${c.customerPhone.replace(/[^\d+]/g, '')}`}

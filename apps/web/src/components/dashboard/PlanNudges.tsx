@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 /**
  * Upgrade nudges tied to moments the merchant actually feels:
  *  - trial countdown (Business trial for new stores),
@@ -36,6 +37,7 @@ export function useUsage() {
 
 /** Slim banner at the top of every dashboard page. */
 export function PlanBanner() {
+  const t = useT();
   const usage = useUsage();
   const [hidden, setHidden] = useState(false);
   if (!usage || hidden) return null;
@@ -45,8 +47,8 @@ export function PlanBanner() {
     content = (
       <>
         <Clock3 className="h-4 w-4 flex-shrink-0" />
-        <span>بقي <b>{usage.daysLeft}</b> يوماً من تجربة باقة الأعمال. بعدها ينتقل متجرك للمجانية — بياناتك محفوظة.</span>
-        <Link href="/dashboard/upgrade" className="ms-auto font-bold underline whitespace-nowrap">اشترك الآن</Link>
+        <span>{t("بقي")}{' '}<b>{usage.daysLeft}</b> {' '}{t("يوماً من تجربة باقة الأعمال. بعدها ينتقل متجرك للمجانية — بياناتك محفوظة.")}</span>
+        <Link href="/dashboard/upgrade" className="ms-auto font-bold underline whitespace-nowrap">{t("اشترك الآن")}</Link>
       </>
     );
   } else if (usage.plan === 'FREE' && usage.orders.limit > 0 && usage.orders.used >= Math.floor(usage.orders.limit * 0.8)) {
@@ -54,8 +56,8 @@ export function PlanBanner() {
     content = (
       <>
         <TrendingUp className="h-4 w-4 flex-shrink-0" />
-        <span>{left > 0 ? <>متجرك ينمو — بقي <b>{left}</b> طلبات هذا الشهر في الباقة المجانية.</> : <>وصلت لحد {usage.orders.limit} طلباً هذا الشهر — الطلبات الجديدة متوقفة حتى ترقيتك.</>}</span>
-        <Link href="/dashboard/upgrade" className="ms-auto font-bold underline whitespace-nowrap">طلبات بلا حد</Link>
+        <span>{left > 0 ? <>{t("متجرك ينمو — بقي")}{' '}<b>{left}</b> {' '}{t("طلبات هذا الشهر في الباقة المجانية.")}</> : <>{t("وصلت لحد")}{' '}{usage.orders.limit} {' '}{t("طلباً هذا الشهر — الطلبات الجديدة متوقفة حتى ترقيتك.")}</>}</span>
+        <Link href="/dashboard/upgrade" className="ms-auto font-bold underline whitespace-nowrap">{t("طلبات بلا حد")}</Link>
       </>
     );
   }
@@ -63,13 +65,14 @@ export function PlanBanner() {
   return (
     <div className="flex items-center gap-2 px-4 sm:px-6 lg:px-8 py-2.5 text-sm bg-amber-50 text-amber-900 border-b border-amber-200">
       {content}
-      <button onClick={() => setHidden(true)} aria-label="إخفاء" className="p-1 opacity-60 hover:opacity-100"><X className="h-3.5 w-3.5" /></button>
+      <button onClick={() => setHidden(true)} aria-label={t("إخفاء")} className="p-1 opacity-60 hover:opacity-100"><X className="h-3.5 w-3.5" /></button>
     </div>
   );
 }
 
 /** Card for the dashboard home: Free plan usage + abandoned carts they can't see yet. */
 export function FreeUsageCard() {
+  const t = useT();
   const usage = useUsage();
   if (!usage || usage.plan !== 'FREE') return null;
   const pct = (used: number, limit: number) => Math.min(100, Math.round((used / Math.max(1, limit)) * 100));
@@ -77,8 +80,8 @@ export function FreeUsageCard() {
     <div className="bz-card p-5 space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         {[
-          { label: 'الطلبات هذا الشهر', ...usage.orders },
-          { label: 'المنتجات', ...usage.products },
+          { label: t("الطلبات هذا الشهر"), ...usage.orders },
+          { label: t("المنتجات"), ...usage.products },
         ].map(m => (
           <div key={m.label}>
             <div className="flex justify-between text-sm"><span className="text-bz-muted">{m.label}</span><span className="font-bold tabular-nums">{m.used} / {m.limit}</span></div>
@@ -91,7 +94,7 @@ export function FreeUsageCard() {
       {usage.abandonedCarts > 0 && (
         <Link href="/dashboard/upgrade" className="flex items-center gap-3 rounded-2xl bg-bz-brand-50 p-3 text-sm text-bz-brand-600 hover:opacity-90">
           <ShoppingBasket className="h-5 w-5 flex-shrink-0" />
-          <span className="flex-1"><b>{usage.abandonedCarts}</b> زبوناً تركوا سلالهم — اعرف من هم وتواصل معهم في الاحترافية</span>
+          <span className="flex-1"><b>{usage.abandonedCarts}</b> {' '}{t("زبوناً تركوا سلالهم — اعرف من هم وتواصل معهم في الاحترافية")}</span>
           <span className="font-bold">←</span>
         </Link>
       )}
@@ -101,13 +104,14 @@ export function FreeUsageCard() {
 
 /** Listens for plan-limit errors from the API and offers the upgrade page. */
 export function UpgradeErrorListener() {
+  const t = useT();
   useEffect(() => {
     const onNeed = (e: Event) => {
       const msg = (e as CustomEvent<string>).detail;
-      toast('ميزة من باقة أعلى', {
+      toast(t("ميزة من باقة أعلى"), {
         id: 'upgrade-needed',
         description: msg,
-        action: { label: 'الترقية', onClick: () => { window.location.href = '/dashboard/upgrade'; } },
+        action: { label: t("الترقية"), onClick: () => { window.location.href = '/dashboard/upgrade'; } },
       });
     };
     window.addEventListener('bz:upgrade-needed', onNeed);

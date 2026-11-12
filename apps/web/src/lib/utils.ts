@@ -1,16 +1,20 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { currentLocale, intlLocale } from './i18n/locales';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('ar-IQ', {
+  // Dashboard / admin follow the platform language; storefronts keep Arabic numerals (they have their own language switch).
+  const appScreen = typeof window !== 'undefined' && /^\/(dashboard|admin)(\/|$)/.test(window.location.pathname);
+  const locale = appScreen ? currentLocale() : 'ar';
+  return new Intl.NumberFormat(intlLocale(locale), {
     style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount) + ' د.ع';
+  }).format(amount) + (locale === 'en' ? ' IQD' : ' د.ع');
 }
 
 export function formatDate(date: string | Date): string {

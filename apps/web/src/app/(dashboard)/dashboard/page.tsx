@@ -1,5 +1,6 @@
 'use client';
 
+import { intlLocale, useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FreeUsageCard } from '@/components/dashboard/PlanNudges';
@@ -30,7 +31,8 @@ const statusAr: Record<string, string> = {
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function DashboardOverview() {
-  useDocumentTitle('لوحة التحكم');
+  const t = useT();
+  useDocumentTitle(t("لوحة التحكم"));
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
   const isFree = plan === 'FREE';
   const [store, setStore] = useState<StoreData | null>(null);
@@ -66,10 +68,10 @@ export default function DashboardOverview() {
     <div className="px-4 py-16">
       <div className="max-w-md mx-auto text-center bz-card p-10">
         <ClayIcon name="store" size={96} className="mx-auto mb-5" />
-        <h2 className="bz-title-2 text-bz-ink mb-2">أنشئ متجرك الأول</h2>
-        <p className="text-sm text-bz-muted mb-7">ابدأ رحلتك التجارية الآن — يستغرق الأمر دقيقة واحدة فقط</p>
+        <h2 className="bz-title-2 text-bz-ink mb-2">{t("أنشئ متجرك الأول")}</h2>
+        <p className="text-sm text-bz-muted mb-7">{t("ابدأ رحلتك التجارية الآن — يستغرق الأمر دقيقة واحدة فقط")}</p>
         <Link href="/dashboard/settings" className="bz-btn w-full h-12">
-          <Plus className="h-5 w-5" strokeWidth={2.5} /> إنشاء متجر
+          <Plus className="h-5 w-5" strokeWidth={2.5} /> {' '}{t("إنشاء متجر")}
         </Link>
       </div>
     </div>
@@ -77,19 +79,19 @@ export default function DashboardOverview() {
 
   const stats: { label: string; value: string; icon: ClayIconName; hint: string }[] = [
     // Free plan: only the order count; the other indicators show as locked (data is not sent by the API).
-    { label: 'إجمالي المبيعات', value: data?.locked ? '🔒' : formatCurrency(data?.totalRevenue ?? 0), icon: 'wallet', hint: data?.locked ? 'في الباقة الاحترافية' : 'منذ إنشاء المتجر' },
-    { label: 'الطلبات', value: String(data?.totalOrders ?? 0), icon: 'cart', hint: 'كل الحالات' },
-    { label: 'الأكثر مبيعاً', value: data?.locked ? '🔒' : data?.topProducts?.[0]?.product?.name ?? '—', icon: 'box', hint: data?.locked ? 'في الباقة الاحترافية' : 'المنتج الأول' },
-    { label: 'وحدات مباعة', value: data?.locked ? '🔒' : String(data?.topProducts?.[0]?.totalSold ?? 0), icon: 'growth', hint: data?.locked ? 'في الباقة الاحترافية' : 'لأفضل منتج' },
+    { label: t("إجمالي المبيعات"), value: data?.locked ? '🔒' : formatCurrency(data?.totalRevenue ?? 0), icon: 'wallet', hint: data?.locked ? t("في الباقة الاحترافية") : t("منذ إنشاء المتجر") },
+    { label: t("الطلبات"), value: String(data?.totalOrders ?? 0), icon: 'cart', hint: t("كل الحالات") },
+    { label: t("الأكثر مبيعاً"), value: data?.locked ? '🔒' : data?.topProducts?.[0]?.product?.name ?? '—', icon: 'box', hint: data?.locked ? t("في الباقة الاحترافية") : t("المنتج الأول") },
+    { label: t("وحدات مباعة"), value: data?.locked ? '🔒' : String(data?.topProducts?.[0]?.totalSold ?? 0), icon: 'growth', hint: data?.locked ? t("في الباقة الاحترافية") : t("لأفضل منتج") },
   ];
 
   const quick: { label: string; href: string; icon: ClayIconName }[] = [
-    { label: 'إضافة منتج', href: '/dashboard/products', icon: 'box' },
-    { label: 'الطلبات', href: '/dashboard/orders', icon: 'cart' },
-    { label: 'كوبون خصم', href: '/dashboard/coupons', icon: 'coupon' },
-    { label: 'تصميم المتجر', href: '/dashboard/builder', icon: 'storefront' },
-    { label: 'التوصيل', href: '/dashboard/settings', icon: 'truck' },
-    { label: 'التسويق', href: '/dashboard/marketing', icon: 'megaphone' },
+    { label: t("إضافة منتج"), href: '/dashboard/products', icon: 'box' },
+    { label: t("الطلبات"), href: '/dashboard/orders', icon: 'cart' },
+    { label: t("كوبون خصم"), href: '/dashboard/coupons', icon: 'coupon' },
+    { label: t("تصميم المتجر"), href: '/dashboard/builder', icon: 'storefront' },
+    { label: t("التوصيل"), href: '/dashboard/settings', icon: 'truck' },
+    { label: t("التسويق"), href: '/dashboard/marketing', icon: 'megaphone' },
   ];
 
   return (
@@ -101,20 +103,22 @@ export default function DashboardOverview() {
         <div className="relative flex flex-wrap items-center gap-6">
           <div className="flex-1 min-w-[240px]">
             <p className="text-sm text-bz-brand-300 mb-1">
-              {new Date().toLocaleDateString('ar-IQ', { weekday: 'long', day: 'numeric', month: 'long' })}
+              {new Date().toLocaleDateString(intlLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}
             </p>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2">أهلاً بك في {store.name} 👋</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">{t("أهلاً بك في")}{' '}{store.name} 👋</h1>
             <div className="flex flex-wrap items-center gap-2 mb-5">
               {store.isPublished
-                ? <span className="bz-chip bg-white/10 text-white"><span className="h-2 w-2 rounded-full bg-bz-green" /> متجرك مفتوح · /store/{store.slug}</span>
-                : <span className="bz-chip bg-[#FEF3E2] text-[#B45309]"><AlertTriangle size={13} /> المتجر غير منشور بعد</span>}
+                ? <span className="bz-chip bg-white/10 text-white"><span className="h-2 w-2 rounded-full bg-bz-green" /> {' '}{t("متجرك مفتوح · /store/")}{store.slug}</span>
+                : <span className="bz-chip bg-[#FEF3E2] text-[#B45309]"><AlertTriangle size={13} /> {' '}{t("المتجر غير منشور بعد")}</span>}
             </div>
             <div className="flex flex-wrap gap-2">
               <Link href={`/store/${store.slug}`} target="_blank" className="bz-btn h-11">
-                زيارة المتجر <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
+                
+                {t("زيارة المتجر")}{' '}<ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
               </Link>
               <Link href="/dashboard/builder" className="bz-btn h-11 bg-white/10 hover:bg-white/15 shadow-none">
-                تخصيص التصميم
+                
+                {t("تخصيص التصميم")}
               </Link>
             </div>
           </div>
@@ -142,7 +146,7 @@ export default function DashboardOverview() {
 
       {/* Quick actions */}
       <section className="mb-6">
-        <h2 className="bz-headline text-bz-ink mb-3">إجراءات سريعة</h2>
+        <h2 className="bz-headline text-bz-ink mb-3">{t("إجراءات سريعة")}</h2>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
           {quick.map(q => (
             <Link key={q.label} href={q.href}
@@ -160,29 +164,29 @@ export default function DashboardOverview() {
         <section className="mb-6 bz-card p-5 flex flex-wrap items-center gap-4 bg-gradient-to-l from-bz-brand-50 to-white">
           <ClayIcon name="star" size={56} />
           <div className="flex-1 min-w-[220px]">
-            <p className="bz-headline text-bz-ink">أنت على الباقة المجانية</p>
-            <p className="text-sm text-bz-muted mt-0.5">الاحترافية: بِع أكثر، وقلّل الطلبات الراجعة — من 22,000 د.ع شهرياً</p>
+            <p className="bz-headline text-bz-ink">{t("أنت على الباقة المجانية")}</p>
+            <p className="text-sm text-bz-muted mt-0.5">{t("الاحترافية: بِع أكثر، وقلّل الطلبات الراجعة — من 15$ شهرياً")}</p>
             <div className="flex flex-wrap gap-2 mt-3">
-              {['طلبات ومنتجات بلا حد', 'تحليلات المبيعات', 'المحادثة مع الزبائن', 'السلال المتروكة'].map(label => (
+              {[t("طلبات ومنتجات بلا حد"), t("تحليلات المبيعات"), t("المحادثة مع الزبائن"), t("السلال المتروكة")].map(label => (
                 <span key={label} className="bz-chip bg-white border border-bz-line text-bz-ink-2"><Lock className="h-3 w-3 text-bz-muted" /> {label}</span>
               ))}
             </div>
           </div>
-          <Link href="/dashboard/upgrade" className="bz-btn">ترقية الباقة</Link>
+          <Link href="/dashboard/upgrade" className="bz-btn">{t("ترقية الباقة")}</Link>
         </section>
       )}
 
       <div className="grid lg:grid-cols-5 gap-6">
         <section className="bz-card lg:col-span-3 overflow-hidden">
           <div className="flex items-center justify-between px-5 h-14 border-b border-bz-line">
-            <h2 className="bz-headline text-bz-ink">آخر الطلبات</h2>
-            <Link href="/dashboard/orders" className="text-[13px] font-semibold text-bz-brand-600 hover:underline">عرض الكل</Link>
+            <h2 className="bz-headline text-bz-ink">{t("آخر الطلبات")}</h2>
+            <Link href="/dashboard/orders" className="text-[13px] font-semibold text-bz-brand-600 hover:underline">{t("عرض الكل")}</Link>
           </div>
           {data?.recentOrders?.length ? data.recentOrders.map((order, i) => (
             <Link key={order.id} href="/dashboard/orders"
               className={`flex items-center gap-3 px-5 py-3.5 hover:bg-bz-brand-50 transition-colors ${i > 0 ? 'border-t border-bz-line' : ''}`}>
               <span className="h-10 w-10 rounded-full bg-bz-bg flex items-center justify-center text-sm font-bold text-bz-ink-2 flex-shrink-0">
-                {order.customerName?.charAt(0) ?? '؟'}
+                {order.customerName?.charAt(0) ?? t("؟")}
               </span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-bz-ink truncate">{order.customerName}</p>
@@ -194,14 +198,14 @@ export default function DashboardOverview() {
           )) : (
             <div className="px-5 py-12 text-center">
               <ClayIcon name="cart" size={64} className="mx-auto mb-3 opacity-80" />
-              <p className="text-sm text-bz-muted">لا توجد طلبات بعد</p>
+              <p className="text-sm text-bz-muted">{t("لا توجد طلبات بعد")}</p>
             </div>
           )}
         </section>
 
         <section className="bz-card lg:col-span-2 overflow-hidden">
           <div className="flex items-center justify-between px-5 h-14 border-b border-bz-line">
-            <h2 className="bz-headline text-bz-ink">الأكثر مبيعاً</h2>
+            <h2 className="bz-headline text-bz-ink">{t("الأكثر مبيعاً")}</h2>
             <ClayIcon name="pie-chart" size={26} />
           </div>
           {data?.topProducts?.length ? (() => {
@@ -211,7 +215,7 @@ export default function DashboardOverview() {
                 <div className="flex items-center gap-3 mb-2">
                   <span className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-bz-brand text-white' : 'bg-bz-bg text-bz-ink-2'}`}>{i + 1}</span>
                   <span className="flex-1 text-sm font-semibold text-bz-ink truncate">{tp.product.name}</span>
-                  <span className="text-xs text-bz-muted tabular-nums">{tp.totalSold} وحدة</span>
+                  <span className="text-xs text-bz-muted tabular-nums">{tp.totalSold} {' '}{t("وحدة")}</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-bz-bg overflow-hidden">
                   <div className="h-full rounded-full bg-bz-brand" style={{ width: `${(tp.totalSold / max) * 100}%` }} />
@@ -219,7 +223,7 @@ export default function DashboardOverview() {
               </div>
             ));
           })() : (
-            <div className="px-5 py-12 text-center text-sm text-bz-muted">لا توجد بيانات مبيعات بعد</div>
+            <div className="px-5 py-12 text-center text-sm text-bz-muted">{t("لا توجد بيانات مبيعات بعد")}</div>
           )}
         </section>
       </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState, useRef } from 'react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
@@ -20,7 +21,8 @@ function toSlug(name: string) {
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function CategoriesPage() {
-  useDocumentTitle('التصنيفات');
+  const t = useT();
+  useDocumentTitle(t("التصنيفات"));
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
   const limit = getFeatureLimit(plan, 'categories') ?? 3;
 
@@ -45,7 +47,7 @@ export default function CategoriesPage() {
   useEffect(() => {
     api.get<{ success: boolean; data: Category[] }>('/api/categories')
       .then(r => setCategories(r.data ?? []))
-      .catch(() => toast.error('فشل تحميل التصنيفات'))
+      .catch(() => toast.error(t("فشل تحميل التصنيفات")))
       .finally(() => setLoading(false));
   }, []);
 
@@ -53,7 +55,7 @@ export default function CategoriesPage() {
     const name = newName.trim();
     if (!name) return;
     if (categories.length >= limit) {
-      toast.error(`وصلت للحد الأقصى (${limit} تصنيفات) في باقتك الحالية`);
+      toast.error(t("وصلت للحد الأقصى ({0} تصنيفات) في باقتك الحالية", [limit]));
       return;
     }
     setAdding(true);
@@ -64,10 +66,10 @@ export default function CategoriesPage() {
       setCategories(prev => [...prev, res.data].sort((a, b) => a.name.localeCompare(b.name, 'ar')));
       setNewName('');
       inputRef.current?.focus();
-      toast.success(`تم إضافة "${name}"`);
+      toast.success(t("تم إضافة \"{0}\"", [name]));
       track({ event: 'category_added' });
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل إضافة التصنيف');
+      toast.error(err instanceof Error ? err.message : t("فشل إضافة التصنيف"));
     } finally { setAdding(false); }
   };
 
@@ -89,21 +91,21 @@ export default function CategoriesPage() {
           .sort((a, b) => a.name.localeCompare(b.name, 'ar'))
       );
       setEditingId(null);
-      toast.success('تم تحديث التصنيف');
+      toast.success(t("تم تحديث التصنيف"));
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل التحديث');
+      toast.error(err instanceof Error ? err.message : t("فشل التحديث"));
     } finally { setSavingId(null); }
   };
 
   const handleDelete = async (cat: Category) => {
-    if (!confirm(`حذف تصنيف "${cat.name}"؟ ستُزال من جميع المنتجات المرتبطة به.`)) return;
+    if (!confirm(t("حذف تصنيف \"{0}\"؟ ستُزال من جميع المنتجات المرتبطة به.", [cat.name]))) return;
     setDeletingId(cat.id);
     try {
       await api.delete(`/api/categories/${cat.id}`);
       setCategories(prev => prev.filter(c => c.id !== cat.id));
-      toast.success(`تم حذف "${cat.name}"`);
+      toast.success(t("تم حذف \"{0}\"", [cat.name]));
     } catch {
-      toast.error('فشل حذف التصنيف');
+      toast.error(t("فشل حذف التصنيف"));
     } finally { setDeletingId(null); }
   };
 
@@ -124,8 +126,8 @@ export default function CategoriesPage() {
           <Tag className="h-5 w-5" style={{ color: B.a }} />
         </div>
         <div>
-          <h1 className="bz-large-title text-gray-900">التصنيفات</h1>
-          <p className="text-sm text-gray-500">تظهر في رأس متجرك وتُستخدم لتصنيف منتجاتك</p>
+          <h1 className="bz-large-title text-gray-900">{t("التصنيفات")}</h1>
+          <p className="text-sm text-gray-500">{t("تظهر في رأس متجرك وتُستخدم لتصنيف منتجاتك")}</p>
         </div>
         <div className="mr-auto flex items-center gap-2">
           <span className="text-sm font-semibold px-3 py-1 rounded-full" style={{ background: B.bg, color: B.p }}>
@@ -134,7 +136,8 @@ export default function CategoriesPage() {
           {plan === 'FREE' && (
             <Link href="/dashboard/upgrade" className="text-xs font-bold px-3 py-1.5 rounded-xl text-white transition hover:opacity-90"
               style={{ background: `linear-gradient(135deg, #8B5CF6, ${B.a})` }}>
-              زيادة الحد
+              
+              {t("زيادة الحد")}
             </Link>
           )}
         </div>
@@ -142,24 +145,24 @@ export default function CategoriesPage() {
 
       {/* Info banner */}
       <div className="rounded-2xl p-4 mb-6 text-sm leading-relaxed" style={{ background: B.soft, border: `1px solid ${B.border}` }}>
-        <p className="font-semibold mb-1" style={{ color: B.p }}>كيف تعمل التصنيفات؟</p>
+        <p className="font-semibold mb-1" style={{ color: B.p }}>{t("كيف تعمل التصنيفات؟")}</p>
         <ul className="space-y-1 text-gray-600 list-disc list-inside text-xs">
-          <li>تظهر التصنيفات كأزرار فلترة تحت شريط التنقل في متجرك</li>
-          <li>عند إضافة منتج يمكنك اختيار تصنيف له — يظهر كـ tag عليه</li>
-          <li>يستطيع الزبون الضغط على التصنيف لعرض منتجاته فقط</li>
+          <li>{t("تظهر التصنيفات كأزرار فلترة تحت شريط التنقل في متجرك")}</li>
+          <li>{t("عند إضافة منتج يمكنك اختيار تصنيف له — يظهر كـ tag عليه")}</li>
+          <li>{t("يستطيع الزبون الضغط على التصنيف لعرض منتجاته فقط")}</li>
         </ul>
       </div>
 
       {/* Add new */}
       <div className="rounded-2xl p-5 mb-4" style={{ background: '#fff', border: `1.5px solid ${B.border}`, boxShadow: '0 2px 12px rgba(67,46,84,.06)' }}>
-        <p className="text-sm font-bold mb-3" style={{ color: B.p }}>إضافة تصنيف جديد</p>
+        <p className="text-sm font-bold mb-3" style={{ color: B.p }}>{t("إضافة تصنيف جديد")}</p>
         <div className="flex gap-2">
           <input
             ref={inputRef}
             value={newName}
             onChange={e => setNewName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
-            placeholder="مثال: فساتين سهرة، سكين كير، ألعاب PS5…"
+            placeholder={t("مثال: فساتين سهرة، سكين كير، ألعاب PS5…")}
             disabled={atLimit || adding}
             style={{
               flex: 1, padding: '11px 14px', borderRadius: 10, border: `1.5px solid ${B.border}`,
@@ -181,14 +184,16 @@ export default function CategoriesPage() {
             }}
           >
             {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-            إضافة
+            
+            {t("إضافة")}
           </button>
         </div>
         {atLimit && (
           <p className="text-xs mt-2" style={{ color: B.a }}>
-            وصلت للحد الأقصى ({limit} تصنيفات) —{' '}
-            <Link href="/dashboard/upgrade" className="font-bold underline">ارفع باقتك</Link>
-            {' '}لإضافة المزيد
+            
+            {t("وصلت للحد الأقصى (")}{limit} {' '}{t("تصنيفات) —")}{' '}
+            <Link href="/dashboard/upgrade" className="font-bold underline">{t("ارفع باقتك")}</Link>
+            {' '}{t("لإضافة المزيد")}
           </p>
         )}
       </div>
@@ -197,8 +202,8 @@ export default function CategoriesPage() {
       {categories.length === 0 ? (
         <div className="rounded-2xl p-10 text-center" style={{ background: '#fff', border: `1.5px dashed ${B.border}` }}>
           <Tag className="h-10 w-10 mx-auto mb-3 opacity-30" style={{ color: B.p }} />
-          <p className="font-semibold text-gray-500">لا توجد تصنيفات بعد</p>
-          <p className="text-sm text-gray-400 mt-1">أضف تصنيفاً من الحقل أعلاه</p>
+          <p className="font-semibold text-gray-500">{t("لا توجد تصنيفات بعد")}</p>
+          <p className="text-sm text-gray-400 mt-1">{t("أضف تصنيفاً من الحقل أعلاه")}</p>
         </div>
       ) : (
         <div className="rounded-2xl overflow-hidden" style={{ background: '#fff', border: `1.5px solid ${B.border}`, boxShadow: '0 2px 12px rgba(67,46,84,.06)' }}>
@@ -256,7 +261,7 @@ export default function CategoriesPage() {
                     <button onClick={() => startEdit(cat)}
                       className="w-8 h-8 rounded-xl flex items-center justify-center transition hover:bg-purple-50"
                       style={{ border: `1px solid ${B.border}`, background: 'transparent', cursor: 'pointer', flexShrink: 0 }}
-                      title="تعديل الاسم">
+                      title={t("تعديل الاسم")}>
                       <Pencil className="h-3.5 w-3.5" style={{ color: B.p }} />
                     </button>
                     <button
@@ -264,7 +269,7 @@ export default function CategoriesPage() {
                       disabled={deletingId === cat.id}
                       className="w-8 h-8 rounded-xl flex items-center justify-center transition hover:bg-red-50"
                       style={{ border: '1px solid #F5A3A3', background: 'transparent', cursor: deletingId === cat.id ? 'not-allowed' : 'pointer', flexShrink: 0 }}
-                      title="حذف">
+                      title={t("حذف")}>
                       {deletingId === cat.id
                         ? <Loader2 className="h-3.5 w-3.5 animate-spin text-red-400" />
                         : <Trash2 className="h-3.5 w-3.5 text-red-400" />}
@@ -282,12 +287,14 @@ export default function CategoriesPage() {
         <div className="mt-5 rounded-2xl p-4 flex items-center gap-3" style={{ background: B.bg, border: `1px solid ${B.border}` }}>
           <Package className="h-4 w-4 flex-shrink-0" style={{ color: B.p }} />
           <p className="text-sm text-gray-600 flex-1">
-            يمكنك الآن تعيين هذه التصنيفات على منتجاتك
+            
+            {t("يمكنك الآن تعيين هذه التصنيفات على منتجاتك")}
           </p>
           <Link href="/dashboard/products"
             className="text-xs font-bold px-3 py-1.5 rounded-xl text-white"
             style={{ background: B.p }}>
-            إدارة المنتجات
+            
+            {t("إدارة المنتجات")}
           </Link>
         </div>
       )}

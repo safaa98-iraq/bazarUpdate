@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState, useCallback } from 'react';
 import { Sparkles, DollarSign, Zap, BarChart2, Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
@@ -51,7 +52,8 @@ const featureLabels: Record<string, string> = {
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function AdminAIPage() {
-  useDocumentTitle('تكلفة الذكاء الاصطناعي');
+  const t = useT();
+  useDocumentTitle(t("تكلفة الذكاء الاصطناعي"));
   const [costData, setCostData] = useState<CostData | null>(null);
   const [usageData, setUsageData] = useState<UsageResponse | null>(null);
   const [loadingCost, setLoadingCost] = useState(true);
@@ -64,7 +66,7 @@ export default function AdminAIPage() {
     try {
       const res = await api.get<{ success: boolean; data: CostData }>('/api/ai/admin/cost');
       setCostData(res.data);
-    } catch { toast.error('فشل تحميل بيانات التكلفة'); }
+    } catch { toast.error(t("فشل تحميل بيانات التكلفة")); }
     finally { setLoadingCost(false); }
   }, []);
 
@@ -75,7 +77,7 @@ export default function AdminAIPage() {
       const inputs: Record<string, string> = {};
       (res as unknown as UsageResponse).merchantStats?.forEach((s) => { inputs[s.merchantId] = ''; });
       setLimitInputs(inputs);
-    } catch { toast.error('فشل تحميل الاستخدام'); }
+    } catch { toast.error(t("فشل تحميل الاستخدام")); }
     finally { setLoadingUsage(false); }
   }, []);
 
@@ -83,21 +85,21 @@ export default function AdminAIPage() {
 
   const saveLimit = async (merchantId: string, limit: string) => {
     const n = parseInt(limit);
-    if (isNaN(n) || n < 0) { toast.error('حد غير صالح'); return; }
+    if (isNaN(n) || n < 0) { toast.error(t("حد غير صالح")); return; }
     setSavingLimits(p => ({ ...p, [merchantId]: true }));
     try {
       await api.patch(`/api/ai/admin/limits/${merchantId}`, { limit: n });
-      toast.success('تم تحديث الحد');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل'); }
+      toast.success(t("تم تحديث الحد"));
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل")); }
     finally { setSavingLimits(p => ({ ...p, [merchantId]: false })); }
   };
 
   const totalCostFormatted = costData ? `$${costData.totalCost.toFixed(4)}` : '—';
 
   const TABS = [
-    { key: 'cost', label: 'لوحة التكاليف' },
-    { key: 'usage', label: 'سجل الاستخدام' },
-    { key: 'limits', label: 'حدود التجار' },
+    { key: 'cost', label: t("لوحة التكاليف") },
+    { key: 'usage', label: t("سجل الاستخدام") },
+    { key: 'limits', label: t("حدود التجار") },
   ] as const;
 
   return (
@@ -107,18 +109,18 @@ export default function AdminAIPage() {
           <Sparkles size={22} color={B.s} />
         </div>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 800, color: B.p, margin: 0 }}>الذكاء الاصطناعي</h1>
-          <p style={{ fontSize: 13, color: '#5B6B7B', margin: 0 }}>مراقبة الاستخدام، تحديد الحدود، وتتبع التكاليف</p>
+          <h1 style={{ fontSize: 20, fontWeight: 800, color: B.p, margin: 0 }}>{t("الذكاء الاصطناعي")}</h1>
+          <p style={{ fontSize: 13, color: '#5B6B7B', margin: 0 }}>{t("مراقبة الاستخدام، تحديد الحدود، وتتبع التكاليف")}</p>
         </div>
       </div>
 
       {/* Summary Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 24 }}>
         {[
-          { label: 'إجمالي الطلبات', value: costData?.totalRequests ?? '—', icon: <Zap size={20} color={B.s} />, bg: '#EEF2F6' },
-          { label: 'إجمالي التوكنز', value: costData?.totalTokens?.toLocaleString('en') ?? '—', icon: <BarChart2 size={20} color="#20A9F4" />, bg: '#E3F5FE' },
-          { label: 'إجمالي التكلفة', value: totalCostFormatted, icon: <DollarSign size={20} color="#22B07D" />, bg: '#E2F7EE' },
-          { label: 'متوسط لكل طلب', value: costData && costData.totalRequests > 0 ? `$${(costData.totalCost / costData.totalRequests).toFixed(5)}` : '—', icon: <Sparkles size={20} color={B.a} />, bg: '#E3F5FE' },
+          { label: t("إجمالي الطلبات"), value: costData?.totalRequests ?? '—', icon: <Zap size={20} color={B.s} />, bg: '#EEF2F6' },
+          { label: t("إجمالي التوكنز"), value: costData?.totalTokens?.toLocaleString('en') ?? '—', icon: <BarChart2 size={20} color="#20A9F4" />, bg: '#E3F5FE' },
+          { label: t("إجمالي التكلفة"), value: totalCostFormatted, icon: <DollarSign size={20} color="#22B07D" />, bg: '#E2F7EE' },
+          { label: t("متوسط لكل طلب"), value: costData && costData.totalRequests > 0 ? `$${(costData.totalCost / costData.totalRequests).toFixed(5)}` : '—', icon: <Sparkles size={20} color={B.a} />, bg: '#E3F5FE' },
         ].map(({ label, value, icon, bg }) => (
           <div key={label} style={{ background: '#fff', borderRadius: 10, border: '1px solid #E6ECF1', padding: '16px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -150,20 +152,20 @@ export default function AdminAIPage() {
           ) : (
             <>
               <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E6ECF1', padding: 24 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: B.p, marginBottom: 16 }}>التكلفة اليومية — آخر 7 أيام</h3>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: B.p, marginBottom: 16 }}>{t("التكلفة اليومية — آخر 7 أيام")}</h3>
                 <ResponsiveContainer width="100%" height={220}>
                   <LineChart data={costData?.dailyCost ?? []}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#F6F8FA" />
                     <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${v.toFixed(3)}`} />
-                    <Tooltip formatter={(v: number) => [`$${v.toFixed(5)}`, 'تكلفة']} />
+                    <Tooltip formatter={(v: number) => [`$${v.toFixed(5)}`, t("تكلفة")]} />
                     <Line type="monotone" dataKey="cost" stroke={B.a} strokeWidth={2} dot={{ r: 4 }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
 
               <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E6ECF1', padding: 24 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: B.p, marginBottom: 16 }}>الاستخدام حسب الميزة</h3>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: B.p, marginBottom: 16 }}>{t("الاستخدام حسب الميزة")}</h3>
                 <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={costData?.byFeature.map(f => ({ ...f, label: featureLabels[f.feature] ?? f.feature })) ?? []}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#F6F8FA" />
@@ -197,14 +199,14 @@ export default function AdminAIPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
                 <tr style={{ background: '#F6F8FA', borderBottom: '1px solid #E6ECF1' }}>
-                  {['التاجر', 'الميزة', 'التوكنز', 'التكلفة', 'التاريخ'].map(h => (
+                  {[t("التاجر"), t("الميزة"), t("التوكنز"), t("التكلفة"), t("التاريخ")].map(h => (
                     <th key={h} style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {usageData?.data?.length === 0 ? (
-                  <tr><td colSpan={5} style={{ padding: '40px 16px', textAlign: 'center', color: '#A3B0BC' }}>لا يوجد استخدام للذكاء الاصطناعي بعد</td></tr>
+                  <tr><td colSpan={5} style={{ padding: '40px 16px', textAlign: 'center', color: '#A3B0BC' }}>{t("لا يوجد استخدام للذكاء الاصطناعي بعد")}</td></tr>
                 ) : usageData?.data?.map((log, idx) => (
                   <tr key={log.id} style={{ borderTop: '1px solid #F6F8FA', background: idx % 2 === 0 ? '#fff' : '#FFFFFF' }}>
                     <td style={{ padding: '12px 16px' }}>
@@ -231,7 +233,8 @@ export default function AdminAIPage() {
       {activeTab === 'limits' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div style={{ background: '#FEF9E3', border: '1px solid #FDE68A', borderRadius: 10, padding: '12px 16px', fontSize: 13, color: '#92400E' }}>
-            حدد عدد طلبات الذكاء الاصطناعي اليومية لكل تاجر. الحد الافتراضي هو 50 طلب/يوم. التغييرات تسري فوراً.
+            
+            {t("حدد عدد طلبات الذكاء الاصطناعي اليومية لكل تاجر. الحد الافتراضي هو 50 طلب/يوم. التغييرات تسري فوراً.")}
           </div>
           {loadingUsage ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 160 }}><Loader2 size={24} color={B.s} style={{ animation: 'spin 1s linear infinite' }} /></div>
@@ -240,14 +243,14 @@ export default function AdminAIPage() {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: '#F6F8FA', borderBottom: '1px solid #E6ECF1' }}>
-                    {['التاجر', 'الطلبات', 'التوكنز', 'التكلفة', 'الحد اليومي', ''].map(h => (
+                    {[t("التاجر"), t("الطلبات"), t("التوكنز"), t("التكلفة"), t("الحد اليومي"), ''].map(h => (
                       <th key={h} style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {usageData?.merchantStats?.length === 0 ? (
-                    <tr><td colSpan={6} style={{ padding: '40px 16px', textAlign: 'center', color: '#A3B0BC' }}>لا يوجد استخدام مسجّل</td></tr>
+                    <tr><td colSpan={6} style={{ padding: '40px 16px', textAlign: 'center', color: '#A3B0BC' }}>{t("لا يوجد استخدام مسجّل")}</td></tr>
                   ) : usageData?.merchantStats?.map((stat, idx) => (
                     <tr key={stat.merchantId} style={{ borderTop: '1px solid #F6F8FA', background: idx % 2 === 0 ? '#fff' : '#FFFFFF' }}>
                       <td style={{ padding: '12px 16px', fontWeight: 600, color: B.p, fontFamily: 'monospace', fontSize: 12 }}>{stat.merchantId.slice(-8)}</td>
@@ -272,7 +275,8 @@ export default function AdminAIPage() {
                           style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: B.a, color: '#fff', border: 'none', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', opacity: (savingLimits[stat.merchantId] || !limitInputs[stat.merchantId]) ? 0.5 : 1 }}
                         >
                           {savingLimits[stat.merchantId] ? <Loader2 size={12} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={12} />}
-                          حفظ
+                          
+                          {t("حفظ")}
                         </button>
                       </td>
                     </tr>

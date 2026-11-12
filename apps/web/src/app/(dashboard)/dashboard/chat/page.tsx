@@ -1,5 +1,6 @@
 'use client';
 
+import { intlLocale, useT } from '@/lib/i18n';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { MessageCircle, Send, Clock, CheckCheck, Search, Zap, X, Plus, User, Mail, Phone, Loader2 } from 'lucide-react';
@@ -43,7 +44,8 @@ interface QuickReply {
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function ChatPage() {
-  useDocumentTitle('المحادثات');
+  const t = useT();
+  useDocumentTitle(t("المحادثات"));
   const searchParams = useSearchParams();
   const targetConvId = searchParams.get('conversationId');
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
@@ -69,7 +71,7 @@ export default function ChatPage() {
     } catch (err: unknown) {
       // Swallow errors on background polling ticks, but surface the initial-load failure —
       // otherwise a broken endpoint just looks like an empty, permanently-loading inbox.
-      if (!loadedOnce.current) toast.error(err instanceof Error ? err.message : 'فشل تحميل المحادثات');
+      if (!loadedOnce.current) toast.error(err instanceof Error ? err.message : t("فشل تحميل المحادثات"));
     }
     finally { loadedOnce.current = true; setLoading(false); }
   }, []);
@@ -127,10 +129,10 @@ export default function ChatPage() {
     const text = msgText;
     setMsgText('');
     try {
-      await api.post(`/api/chat/conversations/${selectedConv.id}/messages`, { body: text, senderName: 'الدعم' });
+      await api.post(`/api/chat/conversations/${selectedConv.id}/messages`, { body: text, senderName: t("الدعم") });
       fetchMessages(selectedConv.id);
       fetchConversations();
-    } catch { toast.error('فشل إرسال الرسالة'); setMsgText(text); }
+    } catch { toast.error(t("فشل إرسال الرسالة")); setMsgText(text); }
     finally { setSending(false); }
   };
 
@@ -139,26 +141,26 @@ export default function ChatPage() {
       await api.patch(`/api/chat/conversations/${id}`, { status: 'closed' });
       setConversations(prev => prev.map(c => c.id === id ? { ...c, status: 'closed' } : c));
       if (selectedConv?.id === id) setSelectedConv(prev => prev ? { ...prev, status: 'closed' } : null);
-      toast.success('تم إغلاق المحادثة');
-    } catch { toast.error('فشل إغلاق المحادثة'); }
+      toast.success(t("تم إغلاق المحادثة"));
+    } catch { toast.error(t("فشل إغلاق المحادثة")); }
   };
 
   const addQuickReply = async () => {
     if (!newQR.title || !newQR.body) return;
     try {
       await api.post('/api/chat/quick-replies', newQR);
-      toast.success('تمت إضافة الرد السريع');
+      toast.success(t("تمت إضافة الرد السريع"));
       setNewQR({ title: '', body: '' });
       setShowNewQR(false);
       fetchQuickReplies();
-    } catch { toast.error('فشل الإضافة'); }
+    } catch { toast.error(t("فشل الإضافة")); }
   };
 
   const deleteQuickReply = async (id: string) => {
     try {
       await api.delete(`/api/chat/quick-replies/${id}`);
       setQuickReplies(prev => prev.filter(q => q.id !== id));
-    } catch { toast.error('فشل الحذف'); }
+    } catch { toast.error(t("فشل الحذف")); }
   };
 
   const filtered = conversations.filter(c =>
@@ -181,7 +183,7 @@ export default function ChatPage() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5" style={{ color: BRAND.accent }} />
-              <h1 className="font-bold text-base" style={{ color: BRAND.primary }}>المحادثات</h1>
+              <h1 className="font-bold text-base" style={{ color: BRAND.primary }}>{t("المحادثات")}</h1>
               {totalUnread > 0 && (
                 <span className="text-xs font-bold text-white px-1.5 py-0.5 rounded-full" style={{ background: BRAND.accent }}>
                   {totalUnread}
@@ -196,7 +198,7 @@ export default function ChatPage() {
           </div>
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ابحث في المحادثات…"
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t("ابحث في المحادثات…")}
               className="w-full pr-9 pl-3 py-2 rounded-xl border text-xs focus:outline-none"
               style={{ borderColor: '#E6ECF1' }} />
           </div>
@@ -209,7 +211,7 @@ export default function ChatPage() {
           ) : filtered.length === 0 ? (
             <div className="text-center py-12">
               <MessageCircle className="h-10 w-10 mx-auto mb-2 text-gray-200" />
-              <p className="text-sm text-gray-400">لا توجد محادثات</p>
+              <p className="text-sm text-gray-400">{t("لا توجد محادثات")}</p>
             </div>
           ) : filtered.map(conv => (
             <button key={conv.id} onClick={() => selectConversation(conv)}
@@ -227,7 +229,7 @@ export default function ChatPage() {
                   <div className="flex items-center justify-between gap-1">
                     <p className="font-semibold text-sm truncate" style={{ color: BRAND.primary }}>{conv.customerName}</p>
                     <span className="text-xs text-gray-400 flex-shrink-0">
-                      {conv.lastMessageAt ? new Date(conv.lastMessageAt).toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' }) : ''}
+                      {conv.lastMessageAt ? new Date(conv.lastMessageAt).toLocaleTimeString(intlLocale(), { hour: '2-digit', minute: '2-digit' }) : ''}
                     </span>
                   </div>
                   <div className="flex items-center justify-between gap-1">
@@ -238,7 +240,7 @@ export default function ChatPage() {
                     )}
                   </div>
                   <span className={`text-xs ${conv.status === 'open' ? 'text-emerald-500' : 'text-gray-400'}`}>
-                    {conv.status === 'open' ? '● مفتوحة' : '● مغلقة'}
+                    {conv.status === 'open' ? t("● مفتوحة") : t("● مغلقة")}
                   </span>
                 </div>
               </div>
@@ -259,7 +261,7 @@ export default function ChatPage() {
               </div>
               <div>
                 <p className="font-bold" style={{ color: BRAND.primary }}>{selectedConv.customerName}</p>
-                <p className="text-xs text-gray-400">{selectedConv.customerEmail ?? 'بدون بريد'}</p>
+                <p className="text-xs text-gray-400">{selectedConv.customerEmail ?? t("بدون بريد")}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -267,7 +269,8 @@ export default function ChatPage() {
                 <button onClick={() => closeConversation(selectedConv.id)}
                   className="px-3 py-1.5 text-xs font-bold rounded-xl border transition hover:bg-gray-50"
                   style={{ borderColor: '#E6ECF1', color: '#5B6B7B' }}>
-                  إغلاق المحادثة
+                  
+                  {t("إغلاق المحادثة")}
                 </button>
               )}
             </div>
@@ -276,7 +279,7 @@ export default function ChatPage() {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
             {messages.length === 0 && (
-              <div className="text-center py-10 text-gray-400 text-sm">لا توجد رسائل بعد</div>
+              <div className="text-center py-10 text-gray-400 text-sm">{t("لا توجد رسائل بعد")}</div>
             )}
             {messages.map(msg => (
               <div key={msg.id} className={`flex ${msg.senderType === 'agent' ? 'justify-end' : 'justify-start'}`}>
@@ -292,7 +295,7 @@ export default function ChatPage() {
                   <p>{msg.body}</p>
                   <div className="flex items-center gap-1 mt-1 justify-end">
                     <span className="text-xs opacity-60">
-                      {new Date(msg.createdAt).toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(msg.createdAt).toLocaleTimeString(intlLocale(), { hour: '2-digit', minute: '2-digit' })}
                     </span>
                     {msg.senderType === 'agent' && <CheckCheck className="h-3 w-3 opacity-60" />}
                   </div>
@@ -320,7 +323,7 @@ export default function ChatPage() {
             className="flex items-center gap-3 px-6 py-4 bg-white border-t"
             style={{ borderColor: '#E6ECF1' }}>
             <input value={msgText} onChange={e => setMsgText(e.target.value)}
-              placeholder={selectedConv.status === 'closed' ? 'المحادثة مغلقة' : 'اكتب رسالة…'}
+              placeholder={selectedConv.status === 'closed' ? t("المحادثة مغلقة") : t("اكتب رسالة…")}
               disabled={selectedConv.status === 'closed' || sending}
               className="flex-1 px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 disabled:bg-gray-50 disabled:text-gray-400"
               style={{ borderColor: '#E6ECF1' }} />
@@ -334,8 +337,8 @@ export default function ChatPage() {
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center" style={{ color: '#A3B0BC' }}>
           <MessageCircle className="h-16 w-16 mb-4 opacity-20" />
-          <p className="text-lg font-medium">اختر محادثة للبدء</p>
-          <p className="text-sm mt-1">ستظهر رسائل العملاء هنا</p>
+          <p className="text-lg font-medium">{t("اختر محادثة للبدء")}</p>
+          <p className="text-sm mt-1">{t("ستظهر رسائل العملاء هنا")}</p>
         </div>
       )}
 
@@ -343,7 +346,7 @@ export default function ChatPage() {
       {selectedConv && (
         <div className="w-64 flex flex-col bg-white border-r" style={{ borderColor: '#E6ECF1' }}>
           <div className="px-4 py-4 border-b" style={{ borderColor: '#E6ECF1' }}>
-            <h3 className="text-sm font-bold" style={{ color: BRAND.primary }}>بيانات العميل</h3>
+            <h3 className="text-sm font-bold" style={{ color: BRAND.primary }}>{t("بيانات العميل")}</h3>
           </div>
           <div className="p-4 space-y-4">
             <div className="flex items-center gap-3">
@@ -353,7 +356,7 @@ export default function ChatPage() {
               </div>
               <div>
                 <p className="font-bold text-sm" style={{ color: BRAND.primary }}>{selectedConv.customerName}</p>
-                <p className="text-xs text-gray-400">{selectedConv.status === 'open' ? 'نشط' : 'مغلق'}</p>
+                <p className="text-xs text-gray-400">{selectedConv.status === 'open' ? t("نشط") : t("مغلق")}</p>
               </div>
             </div>
 
@@ -373,13 +376,13 @@ export default function ChatPage() {
 
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <Clock className="h-3.5 w-3.5" style={{ color: BRAND.accent }} />
-              <span>منذ {selectedConv.updatedAt ? formatDate(selectedConv.updatedAt) : '—'}</span>
+              <span>{t("منذ")}{' '}{selectedConv.updatedAt ? formatDate(selectedConv.updatedAt) : '—'}</span>
             </div>
 
             <div className="pt-2 border-t" style={{ borderColor: '#F6F8FA' }}>
-              <p className="text-xs font-semibold mb-2" style={{ color: BRAND.secondary }}>الردود السريعة</p>
+              <p className="text-xs font-semibold mb-2" style={{ color: BRAND.secondary }}>{t("الردود السريعة")}</p>
               {quickReplies.length === 0 ? (
-                <p className="text-xs text-gray-400">لا توجد ردود سريعة</p>
+                <p className="text-xs text-gray-400">{t("لا توجد ردود سريعة")}</p>
               ) : quickReplies.map(qr => (
                 <button key={qr.id} onClick={() => setMsgText(qr.body)}
                   className="w-full text-right mb-1 px-2.5 py-1.5 rounded-lg text-xs hover:bg-purple-50 transition"
@@ -390,7 +393,7 @@ export default function ChatPage() {
               <button onClick={() => setShowQuickReplies(true)}
                 className="mt-1 text-xs flex items-center gap-1"
                 style={{ color: BRAND.accent }}>
-                <Plus className="h-3 w-3" /> إدارة الردود السريعة
+                <Plus className="h-3 w-3" /> {' '}{t("إدارة الردود السريعة")}
               </button>
             </div>
           </div>
@@ -402,7 +405,7 @@ export default function ChatPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
             <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#E6ECF1' }}>
-              <h2 className="font-bold" style={{ color: BRAND.primary }}>الردود السريعة</h2>
+              <h2 className="font-bold" style={{ color: BRAND.primary }}>{t("الردود السريعة")}</h2>
               <button onClick={() => setShowQuickReplies(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400">
                 <X className="h-4 w-4" />
               </button>
@@ -419,21 +422,21 @@ export default function ChatPage() {
                   </button>
                 </div>
               ))}
-              {quickReplies.length === 0 && <p className="text-sm text-gray-400 text-center py-4">لا توجد ردود سريعة بعد</p>}
+              {quickReplies.length === 0 && <p className="text-sm text-gray-400 text-center py-4">{t("لا توجد ردود سريعة بعد")}</p>}
             </div>
             {showNewQR ? (
               <div className="p-5 border-t space-y-3" style={{ borderColor: '#E6ECF1' }}>
                 <input value={newQR.title} onChange={e => setNewQR(n => ({ ...n, title: e.target.value }))}
-                  placeholder="عنوان الرد (مثال: شكراً لتواصلك)"
+                  placeholder={t("عنوان الرد (مثال: شكراً لتواصلك)")}
                   className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none"
                   style={{ borderColor: '#E6ECF1' }} />
                 <textarea value={newQR.body} onChange={e => setNewQR(n => ({ ...n, body: e.target.value }))}
-                  placeholder="نص الرد…" rows={3}
+                  placeholder={t("نص الرد…")} rows={3}
                   className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none resize-none"
                   style={{ borderColor: '#E6ECF1' }} />
                 <div className="flex gap-2">
-                  <button onClick={() => setShowNewQR(false)} className="flex-1 py-2 border rounded-xl text-sm text-gray-500 hover:bg-gray-50" style={{ borderColor: '#E6ECF1' }}>إلغاء</button>
-                  <button onClick={addQuickReply} className="flex-1 py-2 rounded-xl text-sm font-bold text-white" style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>حفظ</button>
+                  <button onClick={() => setShowNewQR(false)} className="flex-1 py-2 border rounded-xl text-sm text-gray-500 hover:bg-gray-50" style={{ borderColor: '#E6ECF1' }}>{t("إلغاء")}</button>
+                  <button onClick={addQuickReply} className="flex-1 py-2 rounded-xl text-sm font-bold text-white" style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>{t("حفظ")}</button>
                 </div>
               </div>
             ) : (
@@ -441,7 +444,7 @@ export default function ChatPage() {
                 <button onClick={() => setShowNewQR(true)}
                   className="w-full py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
                   style={{ background: `${BRAND.primary}10`, color: BRAND.primary }}>
-                  <Plus className="h-4 w-4" /> إضافة رد سريع
+                  <Plus className="h-4 w-4" /> {' '}{t("إضافة رد سريع")}
                 </button>
               </div>
             )}

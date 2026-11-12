@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -25,7 +26,8 @@ interface Merchant {
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function MerchantsPage() {
-  useDocumentTitle('التجار');
+  const t = useT();
+  useDocumentTitle(t("التجار"));
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export default function MerchantsPage() {
       setMerchants(res.data ?? []);
       setTotal(res.pagination?.total ?? 0);
     } catch {
-      toast.error('فشل تحميل التجار');
+      toast.error(t("فشل تحميل التجار"));
     } finally {
       setLoading(false);
     }
@@ -61,9 +63,9 @@ export default function MerchantsPage() {
     try {
       await api.patch(`/api/admin/merchants/${id}/${active ? 'activate' : 'deactivate'}`);
       setMerchants((prev) => prev.map((m) => m.id === id ? { ...m, isActive: active } : m));
-      toast.success(active ? 'تم تفعيل التاجر' : 'تم إيقاف التاجر');
+      toast.success(active ? t("تم تفعيل التاجر") : t("تم إيقاف التاجر"));
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل الإجراء');
+      toast.error(err instanceof Error ? err.message : t("فشل الإجراء"));
     } finally {
       setActingId(null);
     }
@@ -73,21 +75,21 @@ export default function MerchantsPage() {
     try {
       await api.patch(`/api/admin/merchants/${id}/plan`, { plan });
       setMerchants((prev) => prev.map((m) => m.id === id ? { ...m, plan } : m));
-      toast.success('تم تحديث الخطة');
+      toast.success(t("تم تحديث الخطة"));
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل تغيير الخطة');
+      toast.error(err instanceof Error ? err.message : t("فشل تغيير الخطة"));
     }
   };
 
   const deleteMerchant = async (id: string) => {
-    if (!confirm('هل تريد حذف هذا التاجر وكل بياناته نهائياً؟')) return;
+    if (!confirm(t("هل تريد حذف هذا التاجر وكل بياناته نهائياً؟"))) return;
     try {
       await api.delete(`/api/admin/merchants/${id}`);
       setMerchants((prev) => prev.filter((m) => m.id !== id));
       setTotal((t) => t - 1);
-      toast.success('تم حذف التاجر');
+      toast.success(t("تم حذف التاجر"));
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل الحذف');
+      toast.error(err instanceof Error ? err.message : t("فشل الحذف"));
     }
   };
 
@@ -95,8 +97,8 @@ export default function MerchantsPage() {
     <div style={{ padding: 32 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>التجار</h1>
-          <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{total} تاجر إجمالاً</p>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>{t("التجار")}</h1>
+          <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{total} {' '}{t("تاجر إجمالاً")}</p>
         </div>
       </div>
 
@@ -107,7 +109,7 @@ export default function MerchantsPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ابحث عن تاجر..."
+            placeholder={t("ابحث عن تاجر...")}
             style={{ width: '100%', padding: '9px 36px 9px 12px', border: '1.5px solid #E6ECF1', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none' }}
           />
         </div>
@@ -116,9 +118,9 @@ export default function MerchantsPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           style={{ padding: '9px 14px', border: '1.5px solid #E6ECF1', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', background: '#fff', color: B.p }}
         >
-          <option value="ALL">الكل</option>
-          <option value="ACTIVE">نشط</option>
-          <option value="INACTIVE">غير نشط</option>
+          <option value="ALL">{t("الكل")}</option>
+          <option value="ACTIVE">{t("نشط")}</option>
+          <option value="INACTIVE">{t("غير نشط")}</option>
         </select>
       </div>
 
@@ -127,7 +129,7 @@ export default function MerchantsPage() {
           {[1,2,3].map(i => <div key={i} style={{ height: 80, background: '#E6ECF1', borderRadius: 10, animation: 'pulse 1.5s infinite' }} />)}
         </div>
       ) : merchants.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '64px 0', color: '#A3B0BC', fontSize: 14 }}>لا يوجد تجار</div>
+        <div style={{ textAlign: 'center', padding: '64px 0', color: '#A3B0BC', fontSize: 14 }}>{t("لا يوجد تجار")}</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {merchants.map((m) => (
@@ -140,15 +142,15 @@ export default function MerchantsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                   <p style={{ fontWeight: 700, color: B.p, margin: 0, fontSize: 14 }}>{m.name}</p>
                   <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 10, background: m.isActive ? '#E2F7EE' : '#FDECEC', color: m.isActive ? '#22B07D' : '#F04F4F' }}>
-                    {m.isActive ? 'نشط' : 'موقوف'}
+                    {m.isActive ? t("نشط") : t("موقوف")}
                   </span>
                   <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 10, background: '#EEF2F6', color: PLAN_COLORS[m.plan] ?? B.p }}>
                     {PLAN_LABELS[m.plan] ?? m.plan}
                   </span>
                 </div>
-                <p style={{ fontSize: 12, color: '#5B6B7B', margin: '3px 0 0' }}>{m.email} · انضم {formatDate(m.createdAt)}</p>
+                <p style={{ fontSize: 12, color: '#5B6B7B', margin: '3px 0 0' }}>{m.email} {' '}{t("· انضم")}{' '}{formatDate(m.createdAt)}</p>
                 {m.store && (
-                  <p style={{ fontSize: 11, color: '#A3B0BC', margin: '2px 0 0' }}>المتجر: {m.store.name} (/store/{m.store.slug})</p>
+                  <p style={{ fontSize: 11, color: '#A3B0BC', margin: '2px 0 0' }}>{t("المتجر:")}{' '}{m.store.name} (/store/{m.store.slug})</p>
                 )}
               </div>
 
@@ -157,9 +159,9 @@ export default function MerchantsPage() {
                 onChange={(e) => changePlan(m.id, e.target.value)}
                 style={{ fontSize: 12, border: '1.5px solid #E6ECF1', borderRadius: 10, padding: '5px 10px', fontFamily: 'inherit', outline: 'none', background: '#fff', color: B.p }}
               >
-                <option value="FREE">مجاني</option>
-                <option value="PRO">احترافي</option>
-                <option value="ENTERPRISE">مؤسسي</option>
+                <option value="FREE">{t("مجاني")}</option>
+                <option value="PRO">{t("احترافي")}</option>
+                <option value="ENTERPRISE">{t("مؤسسي")}</option>
               </select>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -169,7 +171,7 @@ export default function MerchantsPage() {
                     disabled={actingId === m.id}
                     style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: '#F04F4F', background: '#FDECEC', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', opacity: actingId === m.id ? 0.5 : 1 }}
                   >
-                    <UserX size={13} /> إيقاف
+                    <UserX size={13} /> {' '}{t("إيقاف")}
                   </button>
                 ) : (
                   <button
@@ -177,7 +179,7 @@ export default function MerchantsPage() {
                     disabled={actingId === m.id}
                     style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: '#22B07D', background: '#E2F7EE', border: 'none', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', opacity: actingId === m.id ? 0.5 : 1 }}
                   >
-                    <UserCheck size={13} /> تفعيل
+                    <UserCheck size={13} /> {' '}{t("تفعيل")}
                   </button>
                 )}
                 <button

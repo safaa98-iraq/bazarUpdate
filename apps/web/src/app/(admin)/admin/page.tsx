@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
@@ -14,7 +15,8 @@ type AdminAnalyticsData = AnalyticsData;
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function AdminDashboard() {
-  useDocumentTitle('لوحة الإدارة');
+  const t = useT();
+  useDocumentTitle(t("لوحة الإدارة"));
   const [data, setData] = useState<AdminAnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,24 +39,24 @@ export default function AdminDashboard() {
   }
 
   const merchantPieData = [
-    { name: 'نشط', value: data?.activeMerchants ?? 0 },
-    { name: 'غير نشط', value: data?.inactiveMerchants ?? 0 },
+    { name: t("نشط"), value: data?.activeMerchants ?? 0 },
+    { name: t("غير نشط"), value: data?.inactiveMerchants ?? 0 },
   ];
 
   return (
     <div style={{ padding: 32 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, marginBottom: 28 }}>لوحة التحكم</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, marginBottom: 28 }}>{t("لوحة التحكم")}</h1>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 28 }}>
-        <StatCard title="إجمالي الإيرادات" value={formatCurrency(data?.totalRevenue ?? 0)} icon={<DollarSign size={20} color="#22B07D" />} bg="#E2F7EE" />
-        <StatCard title="إجمالي الطلبات" value={String(data?.totalOrders ?? 0)} icon={<ShoppingCart size={20} color="#20A9F4" />} bg="#E3F5FE" />
-        <StatCard title="التجار" value={String(data?.totalMerchants ?? 0)} icon={<Users size={20} color={B.s} />} bg="#EEF2F6" sub={`+${data?.newMerchantsThisMonth ?? 0} هذا الشهر`} />
-        <StatCard title="المتاجر النشطة" value={`${data?.activeStores ?? 0}/${data?.totalStores ?? 0}`} icon={<Store size={20} color={B.a} />} bg="#E3F5FE" />
+        <StatCard title={t("إجمالي الإيرادات")} value={formatCurrency(data?.totalRevenue ?? 0)} icon={<DollarSign size={20} color="#22B07D" />} bg="#E2F7EE" />
+        <StatCard title={t("إجمالي الطلبات")} value={String(data?.totalOrders ?? 0)} icon={<ShoppingCart size={20} color="#20A9F4" />} bg="#E3F5FE" />
+        <StatCard title={t("التجار")} value={String(data?.totalMerchants ?? 0)} icon={<Users size={20} color={B.s} />} bg="#EEF2F6" sub={t("+{0} هذا الشهر", [data?.newMerchantsThisMonth ?? 0])} />
+        <StatCard title={t("المتاجر النشطة")} value={`${data?.activeStores ?? 0}/${data?.totalStores ?? 0}`} icon={<Store size={20} color={B.a} />} bg="#E3F5FE" />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20, marginBottom: 20 }}>
         <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #E6ECF1' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 16 }}>الإيرادات (آخر 6 أشهر)</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 16 }}>{t("الإيرادات (آخر 6 أشهر)")}</h2>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={data?.revenueByMonth ?? []}>
               <XAxis dataKey="month" tick={{ fontSize: 11 }} />
@@ -66,7 +68,7 @@ export default function AdminDashboard() {
         </div>
 
         <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #E6ECF1' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 8 }}>حالة التجار</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 8 }}>{t("حالة التجار")}</h2>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <PieChart width={180} height={180}>
               <Pie data={merchantPieData} dataKey="value" cx={90} cy={90} innerRadius={55} outerRadius={80}>
@@ -76,15 +78,15 @@ export default function AdminDashboard() {
             </PieChart>
           </div>
           <div style={{ display: 'flex', gap: 16, fontSize: 13, marginTop: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: B.a, display: 'inline-block' }} /><span>نشط: {data?.activeMerchants ?? 0}</span></div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#E6ECF1', display: 'inline-block' }} /><span>غير نشط: {data?.inactiveMerchants ?? 0}</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: B.a, display: 'inline-block' }} /><span>{t("نشط:")}{' '}{data?.activeMerchants ?? 0}</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#E6ECF1', display: 'inline-block' }} /><span>{t("غير نشط:")}{' '}{data?.inactiveMerchants ?? 0}</span></div>
           </div>
         </div>
       </div>
 
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #E6ECF1' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p }}>أفضل المتاجر أداءً</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p }}>{t("أفضل المتاجر أداءً")}</h2>
           <TrendingUp size={16} color="#A3B0BC" />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -94,13 +96,13 @@ export default function AdminDashboard() {
                 <span style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#EEF2F6', color: B.p, borderRadius: '50%', fontSize: 11, fontWeight: 700 }}>{i + 1}</span>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontWeight: 600, color: B.p, margin: 0 }}>{s.storeName}</p>
-                  <p style={{ color: '#A3B0BC', fontSize: 11, margin: 0 }}>/store/{s.slug} · {s.totalOrders} طلب</p>
+                  <p style={{ color: '#A3B0BC', fontSize: 11, margin: 0 }}>/store/{s.slug} · {s.totalOrders} {' '}{t("طلب")}</p>
                 </div>
                 <span style={{ fontWeight: 700, color: B.p }}>{formatCurrency(s.totalRevenue ?? 0)}</span>
               </div>
             ))
           ) : (
-            <p style={{ color: '#A3B0BC', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>لا توجد بيانات متاجر بعد</p>
+            <p style={{ color: '#A3B0BC', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>{t("لا توجد بيانات متاجر بعد")}</p>
           )}
         </div>
       </div>

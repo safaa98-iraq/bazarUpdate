@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { LocaleRoot, DomTranslator } from '@/lib/i18n';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
 import { AdminEditorBanner } from '@/components/layout/AdminEditorBanner';
 import { useAuthStore } from '@/lib/stores/auth.store';
@@ -32,12 +33,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user || user.role !== 'SUPER_ADMIN') return null;
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#F6F8FA' }}>
+    <LocaleRoot className="flex min-h-screen" style={{ background: '#F6F8FA' }}>
+      <DomTranslator />
       <AdminSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminEditorBanner />
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
-    </div>
+    </LocaleRoot>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState, useCallback, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -86,6 +87,7 @@ const PAGE_LABELS: Record<PageKey, { icon: LucideIcon; label: string; desc: stri
 // ── Image Uploader (inline) ───────────────────────────────────────────────────
 
 function ImageField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const t = useT();
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -97,8 +99,8 @@ function ImageField({ label, value, onChange }: { label: string; value: string; 
       fd.append('images', files[0]);
       const res = await api.upload<{ success: boolean; data: { urls: string[] } }>('/api/upload', fd);
       onChange(res.data.urls[0]);
-      toast.success('تم رفع الصورة');
-    } catch { toast.error('فشل رفع الصورة'); }
+      toast.success(t("تم رفع الصورة"));
+    } catch { toast.error(t("فشل رفع الصورة")); }
     finally { setUploading(false); }
   };
 
@@ -122,7 +124,8 @@ function ImageField({ label, value, onChange }: { label: string; value: string; 
           className="px-3 py-2 rounded-xl border text-xs font-medium flex items-center gap-1 hover:bg-purple-50 transition"
           style={{ borderColor: BRAND.primary, color: BRAND.primary }}>
           {uploading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
-          رفع
+          
+          {t("رفع")}
         </button>
       </div>
       <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={e => handleFile(e.target.files)} />
@@ -135,12 +138,13 @@ function ImageField({ label, value, onChange }: { label: string; value: string; 
 function SectionPreview({ section, isSelected, onClick, storeTheme }: {
   section: BuilderSection; isSelected: boolean; onClick: () => void; storeTheme: string;
 }) {
+  const t = useT();
   const s = section.settings;
   if (!section.visible) return (
     <div onClick={onClick}
       className={`relative border-2 border-dashed rounded-lg mx-2 my-1 h-12 flex items-center justify-center cursor-pointer transition-all ${isSelected ? 'border-[#20A9F4]' : 'border-gray-200'}`}
       style={{ background: '#F6F8FA' }}>
-      <span className="text-xs text-gray-400 flex items-center gap-1.5"><EyeOff className="h-3 w-3" /> قسم مخفي</span>
+      <span className="text-xs text-gray-400 flex items-center gap-1.5"><EyeOff className="h-3 w-3" /> {' '}{t("قسم مخفي")}</span>
     </div>
   );
 
@@ -244,7 +248,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
         style={{ background: '#fff', padding: 16 }}>
         <p className="font-bold text-sm text-center mb-3" style={{ color: BRAND.primary }}>{String(s.title)}</p>
         <div className="grid grid-cols-3 gap-2">
-          {['الملابس', 'الإلكترونيات', 'المنزل'].map(c => (
+          {[t("الملابس"), t("الإلكترونيات"), t("المنزل")].map(c => (
             <div key={c} className="rounded-xl p-3 text-center" style={{ background: '#F6F8FA' }}>
               <div className="w-8 h-8 rounded-full mx-auto mb-1.5" style={{ background: `${BRAND.accent}30` }} />
               <p className="text-xs font-medium" style={{ color: BRAND.primary }}>{c}</p>
@@ -258,7 +262,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
         style={{ background: '#fff', padding: 16 }}>
         <p className="font-bold text-sm text-center mb-3" style={{ color: BRAND.primary }}>{String(s.title)}</p>
         <div className="grid grid-cols-3 gap-2">
-          {['ماركة 1', 'ماركة 2', 'ماركة 3'].map(b => (
+          {[t("ماركة 1"), t("ماركة 2"), t("ماركة 3")].map(b => (
             <div key={b} className="rounded-xl p-3 text-center" style={{ background: '#F6F8FA' }}>
               <div className="w-8 h-8 rounded-full mx-auto mb-1.5" style={{ background: `${BRAND.accent}30` }} />
               <p className="text-xs font-medium" style={{ color: BRAND.primary }}>{b}</p>
@@ -321,7 +325,7 @@ function SectionPreview({ section, isSelected, onClick, storeTheme }: {
         <div className="flex items-center justify-center rounded-lg" style={{ background: '#000', aspectRatio: String(s.aspectRatio ?? '16:9').replace(':', '/'), maxWidth: 320, margin: '0 auto' }}>
           <Video className="h-8 w-8 text-white opacity-50" />
         </div>
-        {!s.videoUrl && <p className="text-xs text-white/50 mt-2">أضف رابط الفيديو من الخصائص</p>}
+        {!s.videoUrl && <p className="text-xs text-white/50 mt-2">{t("أضف رابط الفيديو من الخصائص")}</p>}
       </div>
     );
     default: return null;
@@ -335,6 +339,7 @@ function PropertiesPanel({ section, onChange, onClose }: {
   onChange: (settings: Record<string, string | number | boolean>) => void;
   onClose: () => void;
 }) {
+  const t = useT();
   const s = section.settings;
   const set = (key: string, val: string | number | boolean) => onChange({ ...s, [key]: val });
 
@@ -413,61 +418,61 @@ function PropertiesPanel({ section, onChange, onClose }: {
 
       <div className="flex-1 overflow-y-auto p-4">
         {section.type === 'hero' && <>
-          {input('title', 'العنوان الرئيسي', 'text', 'عنوان جذاب لمتجرك')}
-          {input('subtitle', 'العنوان الفرعي', 'text', 'وصف قصير')}
-          {input('buttonText', 'نص الزر', 'text', 'تسوق الآن')}
-          {input('buttonUrl', 'رابط الزر', 'text', '#products')}
-          <ImageField label="صورة الخلفية" value={String(s.backgroundImage ?? '')} onChange={v => set('backgroundImage', v)} />
-          {s.backgroundImage && input('overlayOpacity', 'شفافية التغطية الداكنة (0-100)', 'number', '40')}
-          {!s.backgroundImage && colorPicker('backgroundColor', 'لون الخلفية')}
-          {select('height', 'ارتفاع القسم', [
-            { value: 'small', label: 'صغير' }, { value: 'medium', label: 'متوسط' },
-            { value: 'large', label: 'كبير' }, { value: 'fullscreen', label: 'شاشة كاملة' },
+          {input('title', t("العنوان الرئيسي"), 'text', t("عنوان جذاب لمتجرك"))}
+          {input('subtitle', t("العنوان الفرعي"), 'text', t("وصف قصير"))}
+          {input('buttonText', t("نص الزر"), 'text', t("تسوق الآن"))}
+          {input('buttonUrl', t("رابط الزر"), 'text', '#products')}
+          <ImageField label={t("صورة الخلفية")} value={String(s.backgroundImage ?? '')} onChange={v => set('backgroundImage', v)} />
+          {s.backgroundImage && input('overlayOpacity', t("شفافية التغطية الداكنة (0-100)"), 'number', '40')}
+          {!s.backgroundImage && colorPicker('backgroundColor', t("لون الخلفية"))}
+          {select('height', t("ارتفاع القسم"), [
+            { value: 'small', label: t("صغير") }, { value: 'medium', label: t("متوسط") },
+            { value: 'large', label: t("كبير") }, { value: 'fullscreen', label: t("شاشة كاملة") },
           ])}
-          {select('textAlign', 'محاذاة النص', [
-            { value: 'center', label: 'وسط' }, { value: 'right', label: 'يمين' }, { value: 'left', label: 'يسار' },
+          {select('textAlign', t("محاذاة النص"), [
+            { value: 'center', label: t("وسط") }, { value: 'right', label: t("يمين") }, { value: 'left', label: t("يسار") },
           ])}
         </>}
 
         {section.type === 'discount' && <>
-          {input('title', 'العنوان', 'text', 'عرض خاص لفترة محدودة!')}
-          {input('subtitle', 'الوصف', 'text', 'استخدم الكود أدناه')}
-          {input('couponCode', 'كود الخصم', 'text', 'SAVE20')}
-          {input('discountLabel', 'شارة الخصم', 'text', 'خصم 20%')}
-          {colorPicker('backgroundColor', 'لون الخلفية')}
-          {colorPicker('badgeColor', 'لون الشارة')}
-          {toggle('showTimer', 'إظهار عداد تنازلي')}
-          {s.showTimer && input('expiryHours', 'ينتهي خلال (ساعة)', 'number', '24')}
+          {input('title', t("العنوان"), 'text', t("عرض خاص لفترة محدودة!"))}
+          {input('subtitle', t("الوصف"), 'text', t("استخدم الكود أدناه"))}
+          {input('couponCode', t("كود الخصم"), 'text', 'SAVE20')}
+          {input('discountLabel', t("شارة الخصم"), 'text', t("خصم 20%"))}
+          {colorPicker('backgroundColor', t("لون الخلفية"))}
+          {colorPicker('badgeColor', t("لون الشارة"))}
+          {toggle('showTimer', t("إظهار عداد تنازلي"))}
+          {s.showTimer && input('expiryHours', t("ينتهي خلال (ساعة)"), 'number', '24')}
         </>}
 
         {section.type === 'features' && <>
-          {input('title', 'عنوان القسم', 'text', 'لماذا تختارنا؟')}
-          {select('columns', 'عدد الأعمدة', [
+          {input('title', t("عنوان القسم"), 'text', t("لماذا تختارنا؟"))}
+          {select('columns', t("عدد الأعمدة"), [
             { value: '2', label: '2' }, { value: '3', label: '3' }, { value: '4', label: '4' },
           ])}
           <div className="border-t border-[#E6ECF1] pt-4 mt-2">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="mb-4 p-3 rounded-xl" style={{ background: '#F6F8FA' }}>
-                <p className="text-xs font-bold mb-2" style={{ color: BRAND.primary }}>الميزة {i}</p>
-                {input(`feature${i}Icon`, 'أيقونة (إيموجي) — اختياري', 'text', '')}
-                {input(`feature${i}Title`, 'العنوان', 'text', 'ميزة مميزة')}
-                {input(`feature${i}Desc`, 'الوصف', 'text', 'وصف الميزة')}
+                <p className="text-xs font-bold mb-2" style={{ color: BRAND.primary }}>{t("الميزة")}{' '}{i}</p>
+                {input(`feature${i}Icon`, t("أيقونة (إيموجي) — اختياري"), 'text', '')}
+                {input(`feature${i}Title`, t("العنوان"), 'text', t("ميزة مميزة"))}
+                {input(`feature${i}Desc`, t("الوصف"), 'text', t("وصف الميزة"))}
               </div>
             ))}
           </div>
         </>}
 
         {section.type === 'testimonials' && <>
-          {input('title', 'عنوان القسم', 'text', 'ماذا يقول عملاؤنا')}
+          {input('title', t("عنوان القسم"), 'text', t("ماذا يقول عملاؤنا"))}
           <div className="border-t border-[#E6ECF1] pt-4 mt-2">
             {[1, 2, 3].map(i => (
               <div key={i} className="mb-4 p-3 rounded-xl" style={{ background: '#F6F8FA' }}>
-                <p className="text-xs font-bold mb-2" style={{ color: BRAND.primary }}>تقييم {i}</p>
-                {input(`review${i}Name`, 'اسم العميل', 'text', 'أحمد محمد')}
-                {textarea(`review${i}Text`, 'نص التقييم', 2)}
-                {select(`review${i}Stars`, 'التقييم', [
-                  { value: '5', label: '5 نجوم — ممتاز' }, { value: '4', label: '4 نجوم — جيد جداً' },
-                  { value: '3', label: '3 نجوم — جيد' },
+                <p className="text-xs font-bold mb-2" style={{ color: BRAND.primary }}>{t("تقييم")}{' '}{i}</p>
+                {input(`review${i}Name`, t("اسم العميل"), 'text', t("أحمد محمد"))}
+                {textarea(`review${i}Text`, t("نص التقييم"), 2)}
+                {select(`review${i}Stars`, t("التقييم"), [
+                  { value: '5', label: t("5 نجوم — ممتاز") }, { value: '4', label: t("4 نجوم — جيد جداً") },
+                  { value: '3', label: t("3 نجوم — جيد") },
                 ])}
               </div>
             ))}
@@ -475,86 +480,87 @@ function PropertiesPanel({ section, onChange, onClose }: {
         </>}
 
         {section.type === 'gallery' && <>
-          {input('title', 'عنوان القسم', 'text', 'معرض صورنا')}
-          {select('columns', 'عدد الأعمدة', [
+          {input('title', t("عنوان القسم"), 'text', t("معرض صورنا"))}
+          {select('columns', t("عدد الأعمدة"), [
             { value: '2', label: '2' }, { value: '3', label: '3' }, { value: '4', label: '4' },
           ])}
           <div className="border-t border-[#E6ECF1] pt-4 mt-2">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <ImageField key={i} label={`صورة ${i}`} value={String(s[`image${i}`] ?? '')} onChange={v => set(`image${i}`, v)} />
+              <ImageField key={i} label={t("صورة {0}", [i])} value={String(s[`image${i}`] ?? '')} onChange={v => set(`image${i}`, v)} />
             ))}
           </div>
         </>}
 
         {section.type === 'products' && <>
-          {input('title', 'عنوان القسم', 'text', 'منتجاتنا المميزة')}
-          {input('subtitle', 'وصف القسم', 'text', 'اختر من تشكيلتنا')}
-          {select('columns', 'عدد الأعمدة', [
-            { value: '2', label: '2 أعمدة' }, { value: '3', label: '3 أعمدة' },
-            { value: '4', label: '4 أعمدة' }, { value: '5', label: '5 أعمدة' },
+          {input('title', t("عنوان القسم"), 'text', t("منتجاتنا المميزة"))}
+          {input('subtitle', t("وصف القسم"), 'text', t("اختر من تشكيلتنا"))}
+          {select('columns', t("عدد الأعمدة"), [
+            { value: '2', label: t("2 أعمدة") }, { value: '3', label: t("3 أعمدة") },
+            { value: '4', label: t("4 أعمدة") }, { value: '5', label: t("5 أعمدة") },
           ])}
-          {select('limit', 'عدد المنتجات', [
+          {select('limit', t("عدد المنتجات"), [
             { value: '4', label: '4' }, { value: '8', label: '8' },
             { value: '12', label: '12' }, { value: '16', label: '16' },
           ])}
-          {toggle('showComparePrice', 'إظهار السعر القديم')}
-          {toggle('showAddToCart', 'إظهار زر إضافة للسلة')}
+          {toggle('showComparePrice', t("إظهار السعر القديم"))}
+          {toggle('showAddToCart', t("إظهار زر إضافة للسلة"))}
         </>}
 
         {section.type === 'categories' && <>
-          {input('title', 'عنوان القسم', 'text', 'تصفح حسب التصنيف')}
-          {select('style', 'نمط العرض', [
-            { value: 'grid', label: 'شبكة' }, { value: 'horizontal', label: 'أفقي' }, { value: 'cards', label: 'بطاقات' },
+          {input('title', t("عنوان القسم"), 'text', t("تصفح حسب التصنيف"))}
+          {select('style', t("نمط العرض"), [
+            { value: 'grid', label: t("شبكة") }, { value: 'horizontal', label: t("أفقي") }, { value: 'cards', label: t("بطاقات") },
           ])}
         </>}
 
         {section.type === 'brands' && <>
-          {input('title', 'عنوان القسم', 'text', 'تسوّق حسب الماركة')}
-          {select('limit', 'عدد الماركات المعروضة', [
+          {input('title', t("عنوان القسم"), 'text', t("تسوّق حسب الماركة"))}
+          {select('limit', t("عدد الماركات المعروضة"), [
             { value: '4', label: '4' }, { value: '6', label: '6' }, { value: '8', label: '8' }, { value: '12', label: '12' },
           ])}
           <p className="text-xs text-gray-400 mt-1">
-            يظهر هذا القسم الماركات التي أضفتها من صفحة{' '}
-            <a href="/dashboard/brands" target="_blank" rel="noreferrer" className="underline font-medium">الماركات</a>.
+            
+            {t("يظهر هذا القسم الماركات التي أضفتها من صفحة")}{' '}
+            <a href="/dashboard/brands" target="_blank" rel="noreferrer" className="underline font-medium">{t("الماركات")}</a>.
           </p>
         </>}
 
         {section.type === 'announcement' && <>
-          {textarea('text', 'نص الإعلان', 2)}
-          {input('link', 'رابط الإعلان (اختياري)', 'text', 'https://')}
-          {colorPicker('backgroundColor', 'لون الخلفية')}
-          {colorPicker('textColor', 'لون النص')}
-          {toggle('dismissible', 'قابل للإغلاق')}
+          {textarea('text', t("نص الإعلان"), 2)}
+          {input('link', t("رابط الإعلان (اختياري)"), 'text', 'https://')}
+          {colorPicker('backgroundColor', t("لون الخلفية"))}
+          {colorPicker('textColor', t("لون النص"))}
+          {toggle('dismissible', t("قابل للإغلاق"))}
         </>}
 
         {section.type === 'about' && <>
-          {input('title', 'العنوان', 'text', 'قصتنا')}
-          {textarea('content', 'النص', 4)}
-          <ImageField label="الصورة" value={String(s.imageUrl ?? '')} onChange={v => set('imageUrl', v)} />
-          {select('imagePosition', 'موضع الصورة', [
-            { value: 'right', label: 'يمين' }, { value: 'left', label: 'يسار' },
+          {input('title', t("العنوان"), 'text', t("قصتنا"))}
+          {textarea('content', t("النص"), 4)}
+          <ImageField label={t("الصورة")} value={String(s.imageUrl ?? '')} onChange={v => set('imageUrl', v)} />
+          {select('imagePosition', t("موضع الصورة"), [
+            { value: 'right', label: t("يمين") }, { value: 'left', label: t("يسار") },
           ])}
         </>}
 
         {section.type === 'newsletter' && <>
-          {input('title', 'العنوان', 'text', 'اشترك في نشرتنا')}
-          {input('subtitle', 'الوصف', 'text', 'احصل على أحدث العروض')}
-          {input('buttonText', 'نص الزر', 'text', 'اشترك الآن')}
-          {input('placeholder', 'نص حقل البريد', 'text', 'أدخل بريدك الإلكتروني')}
-          {colorPicker('backgroundColor', 'لون الخلفية')}
+          {input('title', t("العنوان"), 'text', t("اشترك في نشرتنا"))}
+          {input('subtitle', t("الوصف"), 'text', t("احصل على أحدث العروض"))}
+          {input('buttonText', t("نص الزر"), 'text', t("اشترك الآن"))}
+          {input('placeholder', t("نص حقل البريد"), 'text', t("أدخل بريدك الإلكتروني"))}
+          {colorPicker('backgroundColor', t("لون الخلفية"))}
         </>}
 
         {section.type === 'divider' && <>
-          {input('height', 'الارتفاع (px)', 'number', '40')}
-          {toggle('showLine', 'إظهار خط فاصل')}
-          {Boolean(s.showLine) && colorPicker('lineColor', 'لون الخط')}
+          {input('height', t("الارتفاع (px)"), 'number', '40')}
+          {toggle('showLine', t("إظهار خط فاصل"))}
+          {Boolean(s.showLine) && colorPicker('lineColor', t("لون الخط"))}
         </>}
 
         {section.type === 'video' && <>
-          {input('title', 'العنوان فوق الفيديو', 'text', 'شاهد متجرنا عن قرب')}
-          {input('videoUrl', 'رابط الفيديو (يوتيوب أو رابط MP4)', 'text', 'https://youtube.com/watch?v=...')}
-          {select('aspectRatio', 'نسبة العرض للارتفاع', [
-            { value: '16:9', label: '16:9 (أفقي)' }, { value: '9:16', label: '9:16 (ريلز/عمودي)' }, { value: '1:1', label: '1:1 (مربع)' },
+          {input('title', t("العنوان فوق الفيديو"), 'text', t("شاهد متجرنا عن قرب"))}
+          {input('videoUrl', t("رابط الفيديو (يوتيوب أو رابط MP4)"), 'text', 'https://youtube.com/watch?v=...')}
+          {select('aspectRatio', t("نسبة العرض للارتفاع"), [
+            { value: '16:9', label: t("16:9 (أفقي)") }, { value: '9:16', label: t("9:16 (ريلز/عمودي)") }, { value: '1:1', label: t("1:1 (مربع)") },
           ])}
         </>}
       </div>
@@ -565,38 +571,39 @@ function PropertiesPanel({ section, onChange, onClose }: {
 // ── Instructions Overlay ──────────────────────────────────────────────────────
 
 function InstructionsOverlay({ onClose }: { onClose: () => void }) {
+  const t = useT();
   const [step, setStep] = useState(0);
 
   const steps: { icon: LucideIcon; color: string; title: string; desc: string; tip: string | null }[] = [
     {
       icon: Palette, color: '#8B5CF6',
-      title: 'مرحباً بك في مصمم المتجر',
-      desc: 'هنا تتحكم في شكل متجرك بالكامل — بدون أي خبرة تقنية. فقط اضغط، وغيّر، وانشر!',
+      title: t("مرحباً بك في مصمم المتجر"),
+      desc: t("هنا تتحكم في شكل متجرك بالكامل — بدون أي خبرة تقنية. فقط اضغط، وغيّر، وانشر!"),
       tip: null,
     },
     {
       icon: Ruler, color: BRAND.primary,
-      title: 'الخطوة 1 — اختر قالباً جاهزاً',
-      desc: 'انتقل إلى تبويب "التصميم" في اليسار، واضغط على أحد القوالب الجاهزة. سيُعبئ متجرك فوراً بتصميم احترافي.',
-      tip: 'القالب الموصى به لنوع متجرك سيظهر أولاً',
+      title: t("الخطوة 1 — اختر قالباً جاهزاً"),
+      desc: t("انتقل إلى تبويب \"التصميم\" في اليسار، واضغط على أحد القوالب الجاهزة. سيُعبئ متجرك فوراً بتصميم احترافي."),
+      tip: t("القالب الموصى به لنوع متجرك سيظهر أولاً"),
     },
     {
       icon: Package, color: '#22B07D',
-      title: 'الخطوة 2 — أضف أو رتّب الأقسام',
-      desc: 'في تبويب "الأقسام"، اضغط "إضافة قسم" لإضافة بانر، منتجات، آراء العملاء وأكثر. استخدم أزرار الأسهم لترتيبها.',
-      tip: 'اضغط أي قسم في القائمة لتعديل نصوصه وألوانه من اليمين',
+      title: t("الخطوة 2 — أضف أو رتّب الأقسام"),
+      desc: t("في تبويب \"الأقسام\"، اضغط \"إضافة قسم\" لإضافة بانر، منتجات، آراء العملاء وأكثر. استخدم أزرار الأسهم لترتيبها."),
+      tip: t("اضغط أي قسم في القائمة لتعديل نصوصه وألوانه من اليمين"),
     },
     {
       icon: MousePointerClick, color: BRAND.accent,
-      title: 'الخطوة 3 — عدّل كل قسم',
-      desc: 'انقر على أي قسم في لوحة القائمة اليسرى → ستظهر لك لوحة الخصائص على اليمين. عدّل العناوين، الصور، الألوان، كل شيء.',
-      tip: 'زر العين يُخفي القسم مؤقتاً دون حذفه',
+      title: t("الخطوة 3 — عدّل كل قسم"),
+      desc: t("انقر على أي قسم في لوحة القائمة اليسرى → ستظهر لك لوحة الخصائص على اليمين. عدّل العناوين، الصور، الألوان، كل شيء."),
+      tip: t("زر العين يُخفي القسم مؤقتاً دون حذفه"),
     },
     {
       icon: Rocket, color: '#20A9F4',
-      title: 'الخطوة 4 — احفظ وانشر',
-      desc: 'بعد كل تعديل اضغط "حفظ" في أعلى الشاشة. عندما تكون راضياً اضغط "نشر" لتجعل متجرك مباشراً للزوار.',
-      tip: 'يمكنك معاينة المتجر في أي وقت بالضغط على زر "معاينة"',
+      title: t("الخطوة 4 — احفظ وانشر"),
+      desc: t("بعد كل تعديل اضغط \"حفظ\" في أعلى الشاشة. عندما تكون راضياً اضغط \"نشر\" لتجعل متجرك مباشراً للزوار."),
+      tip: t("يمكنك معاينة المتجر في أي وقت بالضغط على زر \"معاينة\""),
     },
   ];
 
@@ -648,25 +655,29 @@ function InstructionsOverlay({ onClose }: { onClose: () => void }) {
             <button onClick={() => setStep(s => s - 1)}
               className="flex-1 py-2.5 rounded-2xl text-sm font-semibold border transition hover:bg-gray-50"
               style={{ borderColor: '#E6ECF1', color: '#5B6B7B' }}>
-              السابق
+              
+              {t("السابق")}
             </button>
           )}
           {isLast ? (
             <button onClick={handleClose}
               className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white transition hover:opacity-90 flex items-center justify-center gap-1.5"
               style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-              ابدأ التصميم <Rocket className="h-4 w-4" />
+              
+              {t("ابدأ التصميم")}{' '}<Rocket className="h-4 w-4" />
             </button>
           ) : (
             <button onClick={() => setStep(s => s + 1)}
               className="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white transition hover:opacity-90"
               style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-              التالي ←
+              
+              {t("التالي ←")}
             </button>
           )}
         </div>
         <p className="text-center text-xs text-gray-400 pb-4 cursor-pointer hover:underline" onClick={handleClose}>
-          تخطي الدليل
+          
+          {t("تخطي الدليل")}
         </p>
       </div>
     </div>
@@ -676,7 +687,8 @@ function InstructionsOverlay({ onClose }: { onClose: () => void }) {
 // ── Main Builder Page ──────────────────────────────────────────────────────────
 
 function BuilderPageContent() {
-  useDocumentTitle('بناء المتجر');
+  const t = useT();
+  useDocumentTitle(t("بناء المتجر"));
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
   const searchParams = useSearchParams();
   const templateAppliedRef = useRef(false);
@@ -740,7 +752,7 @@ function BuilderPageContent() {
                 setStoreTheme(tpl.themeColor);
                 setStoreType(tplId);
                 api.patch('/api/stores/my', { theme: tpl.themeColor, storeType: tplId }).catch(() => {});
-                toast.success(`تم تطبيق قالب "${tpl.label}" تلقائياً — عدّله كما تحب ثم احفظ`);
+                toast.success(t("تم تطبيق قالب \"{0}\" تلقائياً — عدّله كما تحب ثم احفظ", [tpl.label]));
               }
             }
           }
@@ -756,7 +768,7 @@ function BuilderPageContent() {
   const markDirty = () => setIsDirty(true);
 
   const applyTemplate = async (template: StoreTemplate) => {
-    if (!confirm(`سيتم استبدال قسم الرئيسية بقالب "${template.label}". هل أنت متأكد؟`)) return;
+    if (!confirm(t("سيتم استبدال قسم الرئيسية بقالب \"{0}\". هل أنت متأكد؟", [template.label]))) return;
     setApplyingTemplate(template.id);
     const sections: BuilderSection[] = template.sections.map((s, i) => ({
       ...s, id: `${s.type}-tpl-${i}-${Date.now()}`,
@@ -768,7 +780,7 @@ function BuilderPageContent() {
     markDirty();
     await api.patch('/api/stores/my', { theme: template.themeColor }).catch(() => {});
     setApplyingTemplate(null);
-    toast.success(`تم تطبيق قالب "${template.label}" ✓`);
+    toast.success(t("تم تطبيق قالب \"{0}\" ✓", [template.label]));
   };
 
   const setSections = useCallback((updater: (prev: BuilderSection[]) => BuilderSection[]) => {
@@ -779,7 +791,7 @@ function BuilderPageContent() {
   const addSection = (type: SectionType) => {
     const st = SECTION_TYPES.find(s => s.type === type);
     if (st?.minPlan && PLAN_RANK[plan] < PLAN_RANK[st.minPlan]) {
-      toast.error(st.minPlan === 'ENTERPRISE' ? 'هذا القسم حصري لخطة الأعمال' : 'هذا القسم متاح في الخطة الاحترافية فما فوق');
+      toast.error(st.minPlan === 'ENTERPRISE' ? t("هذا القسم حصري لخطة الأعمال") : t("هذا القسم متاح في الخطة الاحترافية فما فوق"));
       return;
     }
     const newSection: BuilderSection = {
@@ -833,8 +845,8 @@ function BuilderPageContent() {
     try {
       const res = await api.patch<{ success: boolean; data: Store }>('/api/stores/my', { builderConfig: JSON.stringify({ ...pagesConfig, banners }) });
       setStore(s => s ? { ...s, builderEditCount: res.data.builderEditCount } : s);
-      setIsDirty(false); toast.success('تم الحفظ بنجاح ✓');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل الحفظ'); }
+      setIsDirty(false); toast.success(t("تم الحفظ بنجاح ✓"));
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل الحفظ")); }
     finally { setSaving(false); }
   };
 
@@ -844,9 +856,9 @@ function BuilderPageContent() {
       const res = await api.patch<{ success: boolean; data: Store }>('/api/stores/my', { builderConfig: JSON.stringify({ ...pagesConfig, banners }), isPublished: true });
       setStore(s => s ? { ...s, isPublished: true, builderEditCount: res.data.builderEditCount } : s);
       setIsDirty(false);
-      toast.success('تم النشر! متجرك الآن مباشر');
+      toast.success(t("تم النشر! متجرك الآن مباشر"));
       track({ event: 'builder_published' });
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل النشر'); }
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل النشر")); }
     finally { setPublishing(false); }
   };
 
@@ -863,15 +875,15 @@ function BuilderPageContent() {
             <ArrowRight className="h-4 w-4 text-gray-500" />
           </button>
           <div>
-            <p className="text-sm font-bold" style={{ color: BRAND.primary }}>{store?.name ?? 'متجري'}</p>
+            <p className="text-sm font-bold" style={{ color: BRAND.primary }}>{store?.name ?? t("متجري")}</p>
             <p className="text-xs flex items-center gap-1" style={{ color: store?.isPublished ? '#22B07D' : '#F59E0B' }}>
-              {store?.isPublished ? '● مباشر' : <><AlertTriangle className="h-3 w-3" /> غير منشور</>}
+              {store?.isPublished ? t("● مباشر") : <><AlertTriangle className="h-3 w-3" /> {' '}{t("غير منشور")}</>}
             </p>
           </div>
           <button onClick={() => { localStorage.removeItem('sb_builder_guided'); setShowInstructions(true); }}
             className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium hover:bg-gray-100 transition"
             style={{ color: BRAND.secondary }}>
-            <HelpCircle className="h-3.5 w-3.5" /> دليل الاستخدام
+            <HelpCircle className="h-3.5 w-3.5" /> {' '}{t("دليل الاستخدام")}
           </button>
         </div>
 
@@ -892,31 +904,32 @@ function BuilderPageContent() {
                 background: (store.builderEditCount ?? 0) >= FREE_PLAN_BUILDER_EDIT_LIMIT ? '#FDECEC' : '#F6F8FA',
                 color: (store.builderEditCount ?? 0) >= FREE_PLAN_BUILDER_EDIT_LIMIT ? '#F04F4F' : BRAND.secondary,
               }}>
-              {Math.max(0, FREE_PLAN_BUILDER_EDIT_LIMIT - (store.builderEditCount ?? 0))} تعديلات متبقية من أصل {FREE_PLAN_BUILDER_EDIT_LIMIT}
+              {Math.max(0, FREE_PLAN_BUILDER_EDIT_LIMIT - (store.builderEditCount ?? 0))} {' '}{t("تعديلات متبقية من أصل")}{' '}{FREE_PLAN_BUILDER_EDIT_LIMIT}
             </span>
           )}
           {isDirty && (
             <span className="text-xs px-2 py-1 rounded-full" style={{ background: '#FEF3E2', color: '#B45309' }}>
-              تغييرات غير محفوظة
+              
+              {t("تغييرات غير محفوظة")}
             </span>
           )}
           {store && (
             <a href={`/store/${store.slug}`} target="_blank" rel="noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl border border-[#E6ECF1] hover:bg-gray-50 transition"
               style={{ color: BRAND.secondary }}>
-              <Eye className="h-4 w-4" /> معاينة
+              <Eye className="h-4 w-4" /> {' '}{t("معاينة")}
             </a>
           )}
           <button onClick={save} disabled={saving || !isDirty}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl border transition disabled:opacity-40"
             style={{ borderColor: BRAND.primary, color: BRAND.primary }}>
-            {saving ? 'جارٍ الحفظ…' : 'حفظ'}
+            {saving ? t("جارٍ الحفظ…") : t("حفظ")}
           </button>
           <button onClick={publish} disabled={publishing}
             className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-bold rounded-xl text-white transition disabled:opacity-50"
             style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
             <Rocket className="h-4 w-4" />
-            {publishing ? 'جارٍ النشر…' : 'نشر'}
+            {publishing ? t("جارٍ النشر…") : t("نشر")}
           </button>
         </div>
       </header>
@@ -925,11 +938,11 @@ function BuilderPageContent() {
       {!store?.isPublished && sections.length < 3 && (
         <div className="flex items-center gap-4 px-4 py-2 text-xs border-b border-[#E6ECF1] flex-shrink-0 overflow-x-auto"
           style={{ background: '#FFF8F0' }}>
-          <span className="text-amber-600 font-semibold flex-shrink-0 flex items-center gap-1"><Lightbulb className="h-3.5 w-3.5" /> نصائح سريعة:</span>
+          <span className="text-amber-600 font-semibold flex-shrink-0 flex items-center gap-1"><Lightbulb className="h-3.5 w-3.5" /> {' '}{t("نصائح سريعة:")}</span>
           {[
-            '1. اختر قالباً من تبويب "التصميم"',
-            '2. اضغط أي قسم في القائمة لتعديله',
-            '3. اضغط "حفظ" ثم "نشر"',
+            t("1. اختر قالباً من تبويب \"التصميم\""),
+            t("2. اضغط أي قسم في القائمة لتعديله"),
+            t("3. اضغط \"حفظ\" ثم \"نشر\""),
           ].map((t, i) => (
             <span key={i} className="flex-shrink-0 px-2.5 py-1 rounded-full"
               style={{ background: '#FEF3E2', color: '#B45309' }}>{t}</span>
@@ -937,7 +950,8 @@ function BuilderPageContent() {
           <button onClick={() => setShowInstructions(true)}
             className="flex-shrink-0 mr-auto text-xs font-bold px-2.5 py-1 rounded-full transition hover:opacity-80"
             style={{ background: BRAND.primary, color: '#fff' }}>
-            دليل كامل
+            
+            {t("دليل كامل")}
           </button>
         </div>
       )}
@@ -949,10 +963,10 @@ function BuilderPageContent() {
         <aside className="w-72 flex flex-col flex-shrink-0 bg-white border-l border-[#E6ECF1] overflow-hidden">
           <div className="flex border-b border-[#E6ECF1]">
             {([
-              ['sections', Layers, 'الأقسام'],
-              ['theme', Palette, 'التصميم'],
-              ['pages', LayoutTemplate, 'الصفحات'],
-              ['banners', Megaphone, 'البانرات'],
+              ['sections', Layers, t("الأقسام")],
+              ['theme', Palette, t("التصميم")],
+              ['pages', LayoutTemplate, t("الصفحات")],
+              ['banners', Megaphone, t("البانرات")],
             ] as [LeftTab, React.ElementType, string][]).map(([tab, Icon, label]) => (
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className="flex-1 flex flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition border-b-2"
@@ -970,15 +984,17 @@ function BuilderPageContent() {
               {sections.length === 0 && (
                 <div className="mx-3 mt-3 rounded-2xl overflow-hidden border" style={{ borderColor: '#E3F5FE' }}>
                   <div className="px-3 py-2.5" style={{ background: '#F6F8FA' }}>
-                    <p className="text-xs font-bold mb-1 flex items-center gap-1.5" style={{ color: BRAND.accent }}><Rocket className="h-3.5 w-3.5" /> ابدأ من هنا</p>
+                    <p className="text-xs font-bold mb-1 flex items-center gap-1.5" style={{ color: BRAND.accent }}><Rocket className="h-3.5 w-3.5" /> {' '}{t("ابدأ من هنا")}</p>
                     <p className="text-xs text-gray-600 leading-relaxed">
-                      انتقل لتبويب <strong>التصميم</strong> واضغط على قالب جاهز — يملأ المتجر تلقائياً بكل الأقسام!
+                      
+                      {t("انتقل لتبويب")}{' '}<strong>{t("التصميم")}</strong> {' '}{t("واضغط على قالب جاهز — يملأ المتجر تلقائياً بكل الأقسام!")}
                     </p>
                   </div>
                   <button onClick={() => setActiveTab('theme')}
                     className="w-full py-2 text-xs font-bold transition hover:opacity-90"
                     style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)`, color: '#fff' }}>
-                    اختر قالباً الآن ←
+                    
+                    {t("اختر قالباً الآن ←")}
                   </button>
                 </div>
               )}
@@ -988,20 +1004,20 @@ function BuilderPageContent() {
                 style={{ background: `${BRAND.primary}10`, color: BRAND.primary }}>
                 <CurrentPageIcon className="h-4 w-4" />
                 <span className="flex-1">{PAGE_LABELS[currentPage].label}</span>
-                <span className="font-normal text-gray-400">الصفحة الحالية</span>
+                <span className="font-normal text-gray-400">{t("الصفحة الحالية")}</span>
               </div>
 
               <div className="p-3">
                 <button onClick={() => setShowAddPanel(p => !p)}
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border-2 border-dashed transition"
                   style={{ borderColor: BRAND.accent, color: BRAND.accent, background: showAddPanel ? `${BRAND.accent}10` : 'transparent' }}>
-                  <Plus className="h-4 w-4" /> أضف قسماً جديداً
+                  <Plus className="h-4 w-4" /> {' '}{t("أضف قسماً جديداً")}
                 </button>
               </div>
 
               {showAddPanel && (
                 <div className="px-3 pb-3">
-                  <p className="text-xs text-gray-400 mb-2 px-1">اضغط على أي قسم لإضافته مباشرة ↓</p>
+                  <p className="text-xs text-gray-400 mb-2 px-1">{t("اضغط على أي قسم لإضافته مباشرة ↓")}</p>
                   <div className="grid grid-cols-2 gap-2">
                     {SECTION_TYPES.map(st => {
                       const locked = !!st.minPlan && PLAN_RANK[plan] < PLAN_RANK[st.minPlan];
@@ -1032,8 +1048,8 @@ function BuilderPageContent() {
               {sections.length > 0 && (
                 <div className="px-3 pb-3 space-y-1.5">
                   <div className="flex items-center justify-between px-1 mb-2">
-                    <p className="text-xs font-bold" style={{ color: BRAND.secondary }}>أقسام الصفحة ({sections.length})</p>
-                    <p className="text-xs text-gray-400">اضغط لتعديل</p>
+                    <p className="text-xs font-bold" style={{ color: BRAND.secondary }}>{t("أقسام الصفحة (")}{sections.length})</p>
+                    <p className="text-xs text-gray-400">{t("اضغط لتعديل")}</p>
                   </div>
                   {sections.map((section, idx) => {
                     const typeInfo = SECTION_TYPES.find(t => t.type === section.type)!;
@@ -1054,28 +1070,28 @@ function BuilderPageContent() {
                             {typeInfo?.label}
                           </p>
                           {isSelected && (
-                            <p className="text-xs text-gray-400">← خصائصه على اليمين</p>
+                            <p className="text-xs text-gray-400">{t("← خصائصه على اليمين")}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-0.5">
                           <button type="button" onClick={e => { e.stopPropagation(); moveSection(section.id, -1); }}
                             disabled={idx === 0} className="p-1 rounded hover:bg-white transition disabled:opacity-30"
-                            title="تحريك لأعلى">
+                            title={t("تحريك لأعلى")}>
                             <ChevronUp className="h-3 w-3 text-gray-500" />
                           </button>
                           <button type="button" onClick={e => { e.stopPropagation(); moveSection(section.id, 1); }}
                             disabled={idx === sections.length - 1} className="p-1 rounded hover:bg-white transition disabled:opacity-30"
-                            title="تحريك لأسفل">
+                            title={t("تحريك لأسفل")}>
                             <ChevronDown className="h-3 w-3 text-gray-500" />
                           </button>
                           <button type="button" onClick={e => { e.stopPropagation(); toggleVisible(section.id); }}
                             className="p-1 rounded hover:bg-white transition"
-                            title={section.visible ? 'إخفاء القسم' : 'إظهار القسم'}>
+                            title={section.visible ? t("إخفاء القسم") : t("إظهار القسم")}>
                             {section.visible ? <Eye className="h-3 w-3 text-gray-500" /> : <EyeOff className="h-3 w-3" style={{ color: BRAND.accent }} />}
                           </button>
                           <button type="button" onClick={e => { e.stopPropagation(); removeSection(section.id); }}
                             className="p-1 rounded hover:bg-red-50 transition"
-                            title="حذف القسم">
+                            title={t("حذف القسم")}>
                             <Trash2 className="h-3 w-3 text-red-400" />
                           </button>
                         </div>
@@ -1087,7 +1103,7 @@ function BuilderPageContent() {
                   {isDirty && (
                     <div className="mt-3 px-3 py-2.5 rounded-xl text-xs text-center flex items-center justify-center gap-1.5"
                       style={{ background: '#FEF3E2', border: '1px solid #FBBF24', color: '#B45309' }}>
-                      <Save className="h-3.5 w-3.5 flex-shrink-0" /> لديك تغييرات غير محفوظة — اضغط <strong>حفظ</strong> أعلاه
+                      <Save className="h-3.5 w-3.5 flex-shrink-0" /> {' '}{t("لديك تغييرات غير محفوظة — اضغط")}{' '}<strong>{t("حفظ")}</strong> {' '}{t("أعلاه")}
                     </div>
                   )}
                 </div>
@@ -1099,8 +1115,8 @@ function BuilderPageContent() {
           {activeTab === 'theme' && (
             <div className="flex-1 overflow-y-auto p-4">
               {/* Quick-start Templates */}
-              <p className="text-xs font-bold mb-2" style={{ color: BRAND.secondary }}>قوالب جاهزة</p>
-              <p className="text-xs text-gray-400 mb-3 leading-relaxed">اختر قالباً لبدء تصميم متجرك بسرعة</p>
+              <p className="text-xs font-bold mb-2" style={{ color: BRAND.secondary }}>{t("قوالب جاهزة")}</p>
+              <p className="text-xs text-gray-400 mb-3 leading-relaxed">{t("اختر قالباً لبدء تصميم متجرك بسرعة")}</p>
               <div className="space-y-2 mb-5">
                 {STORE_TEMPLATES.map(tpl => {
                   const isMatch = tpl.storeTypes.includes(storeType);
@@ -1109,7 +1125,7 @@ function BuilderPageContent() {
                   const locked = plan === 'FREE' && tpl.id !== freeTpl.id;
                   return (
                     <button key={tpl.id}
-                      onClick={() => locked ? toast.error('كل القوالب متاحة في الباقة الاحترافية — ارفع باقتك من «الباقات والترقية»') : applyTemplate(tpl)}
+                      onClick={() => locked ? toast.error(t("كل القوالب متاحة في الباقة الاحترافية — ارفع باقتك من «الباقات والترقية»")) : applyTemplate(tpl)}
                       disabled={applyingTemplate === tpl.id}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border-2 text-right transition hover:border-opacity-70 disabled:opacity-50"
                       style={{ borderColor: isMatch ? tpl.themeColor : '#E6ECF1', background: isMatch ? `${tpl.themeColor}08` : 'white' }}>
@@ -1120,11 +1136,12 @@ function BuilderPageContent() {
                           {isMatch && (
                             <span className="text-xs px-1.5 py-0.5 rounded-full font-semibold"
                               style={{ background: `${tpl.themeColor}20`, color: tpl.themeColor }}>
-                              موصى
+                              
+                              {t("موصى")}
                             </span>
                           )}
                           {locked && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold bg-bz-bg text-bz-muted">🔒 الاحترافية</span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold bg-bz-bg text-bz-muted">{t("🔒 الاحترافية")}</span>
                           )}
                         </div>
                         <p className="text-xs text-gray-400 truncate">{tpl.desc}</p>
@@ -1135,7 +1152,7 @@ function BuilderPageContent() {
                 })}
               </div>
               <div className="h-px mb-4" style={{ background: '#E6ECF1' }} />
-              <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>لوحة الألوان</p>
+              <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>{t("لوحة الألوان")}</p>
               <div className="grid grid-cols-4 gap-2 mb-4">
                 {[BRAND.primary, BRAND.secondary, BRAND.accent, BRAND.light, '#17845C', '#0E8AD6', '#B45309', '#0f172a'].map(c => (
                   <button key={c} type="button" onClick={() => {
@@ -1149,7 +1166,7 @@ function BuilderPageContent() {
                   </button>
                 ))}
               </div>
-              <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>لون مخصص</label>
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("لون مخصص")}</label>
               <div className="flex items-center gap-2 mb-6">
                 <input type="color" value={storeTheme} onChange={e => {
                   setStoreTheme(e.target.value);
@@ -1157,9 +1174,9 @@ function BuilderPageContent() {
                   markDirty();
                 }} className="h-9 w-full rounded-xl border cursor-pointer" style={{ borderColor: '#E6ECF1' }} />
               </div>
-              <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>الخطوط</p>
+              <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>{t("الخطوط")}</p>
               <div className="space-y-2">
-                {[{ name: 'Cairo', label: 'القاهرة (افتراضي)' }, { name: 'Tajawal', label: 'تجول' }, { name: 'Almarai', label: 'المراعي' }].map(f => (
+                {[{ name: 'Cairo', label: t("القاهرة (افتراضي)") }, { name: 'Tajawal', label: t("تجول") }, { name: 'Almarai', label: t("المراعي") }].map(f => (
                   <button key={f.name} className="w-full text-right px-3 py-2.5 rounded-xl border-2 text-sm transition hover:border-[#20A9F4]"
                     style={{ borderColor: '#E6ECF1', fontFamily: f.name }}>
                     {f.label}
@@ -1170,9 +1187,9 @@ function BuilderPageContent() {
               <div className="mt-6 p-3 rounded-xl" style={{ background: `${BRAND.accent}10` }}>
                 <div className="flex items-center gap-2 mb-2">
                   <Info className="h-4 w-4 flex-shrink-0" style={{ color: BRAND.accent }} />
-                  <span className="text-xs font-bold" style={{ color: BRAND.accent }}>نصيحة</span>
+                  <span className="text-xs font-bold" style={{ color: BRAND.accent }}>{t("نصيحة")}</span>
                 </div>
-                <p className="text-xs text-gray-600 leading-relaxed">اختر لوناً يعبر عن هوية علامتك التجارية. يُطبَّق هذا اللون على الأزرار والروابط في المتجر.</p>
+                <p className="text-xs text-gray-600 leading-relaxed">{t("اختر لوناً يعبر عن هوية علامتك التجارية. يُطبَّق هذا اللون على الأزرار والروابط في المتجر.")}</p>
               </div>
             </div>
           )}
@@ -1180,7 +1197,7 @@ function BuilderPageContent() {
           {/* Pages Tab */}
           {activeTab === 'pages' && (
             <div className="flex-1 overflow-y-auto p-4">
-              <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>صفحات المتجر</p>
+              <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>{t("صفحات المتجر")}</p>
               {(Object.entries(PAGE_LABELS) as [PageKey, typeof PAGE_LABELS[PageKey]][]).map(([key, page]) => (
                 <button key={key} onClick={() => { setCurrentPage(key); setActiveTab('sections'); setSelectedId(null); }}
                   className="w-full flex items-start gap-3 px-3 py-3 rounded-xl mb-2 text-right transition"
@@ -1190,7 +1207,7 @@ function BuilderPageContent() {
                     <p className="text-xs font-bold" style={{ color: currentPage === key ? BRAND.primary : '#5B6B7B' }}>{page.label}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{page.desc}</p>
                     <p className="text-xs mt-1" style={{ color: BRAND.accent }}>
-                      {pagesConfig[key].length} قسم
+                      {pagesConfig[key].length} {' '}{t("قسم")}
                     </p>
                   </div>
                   {currentPage === key && <Check className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: BRAND.accent }} />}
@@ -1199,12 +1216,12 @@ function BuilderPageContent() {
 
               {/* Page tips */}
               <div className="mt-4 p-3 rounded-xl" style={{ background: `${BRAND.primary}08` }}>
-                <p className="text-xs font-bold mb-1.5 flex items-center gap-1.5" style={{ color: BRAND.primary }}><Lightbulb className="h-3.5 w-3.5" /> نصائح للصفحات</p>
+                <p className="text-xs font-bold mb-1.5 flex items-center gap-1.5" style={{ color: BRAND.primary }}><Lightbulb className="h-3.5 w-3.5" /> {' '}{t("نصائح للصفحات")}</p>
                 <ul className="text-xs text-gray-500 space-y-1 leading-relaxed">
-                  <li>• <strong>الرئيسية:</strong> أضف بطلاً وعروضاً وشهادات</li>
-                  <li>• <strong>المنتج:</strong> ميزات ومراجعات أسفل المنتج</li>
-                  <li>• <strong>السلة:</strong> رسائل تشجيع ونصائح للعميل</li>
-                  <li>• <strong>الدفع:</strong> ضمانات وشهادات أمان</li>
+                  <li>• <strong>{t("الرئيسية:")}</strong> {' '}{t("أضف بطلاً وعروضاً وشهادات")}</li>
+                  <li>• <strong>{t("المنتج:")}</strong> {' '}{t("ميزات ومراجعات أسفل المنتج")}</li>
+                  <li>• <strong>{t("السلة:")}</strong> {' '}{t("رسائل تشجيع ونصائح للعميل")}</li>
+                  <li>• <strong>{t("الدفع:")}</strong> {' '}{t("ضمانات وشهادات أمان")}</li>
                 </ul>
               </div>
             </div>
@@ -1214,7 +1231,7 @@ function BuilderPageContent() {
           {activeTab === 'banners' && (
             <div className="flex-1 overflow-y-auto p-4" dir="rtl">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-bold" style={{ color: BRAND.secondary }}>البانرات الإعلانية</p>
+                <p className="text-xs font-bold" style={{ color: BRAND.secondary }}>{t("البانرات الإعلانية")}</p>
                 <button
                   onClick={() => {
                     setEditingBannerId(null);
@@ -1223,7 +1240,7 @@ function BuilderPageContent() {
                   }}
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-white transition hover:opacity-90"
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-                  <Plus className="h-3 w-3" /> إضافة
+                  <Plus className="h-3 w-3" /> {' '}{t("إضافة")}
                 </button>
               </div>
 
@@ -1231,28 +1248,28 @@ function BuilderPageContent() {
               {showBannerForm && (
                 <div className="mb-4 p-3 rounded-xl border border-[#E6ECF1] bg-white space-y-2.5">
                   <p className="text-xs font-bold" style={{ color: BRAND.primary }}>
-                    {editingBannerId ? 'تعديل البانر' : 'بانر جديد'}
+                    {editingBannerId ? t("تعديل البانر") : t("بانر جديد")}
                   </p>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">العنوان</label>
+                    <label className="block text-xs text-gray-500 mb-1">{t("العنوان")}</label>
                     <input
                       value={bannerForm.title}
                       onChange={e => setBannerForm(f => ({ ...f, title: e.target.value }))}
-                      placeholder="مثال: خصم 20% على كل المنتجات"
+                      placeholder={t("مثال: خصم 20% على كل المنتجات")}
                       className="w-full text-xs px-3 py-2 rounded-xl border border-[#E6ECF1] focus:outline-none focus:border-[#20A9F4]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">نص فرعي (اختياري)</label>
+                    <label className="block text-xs text-gray-500 mb-1">{t("نص فرعي (اختياري)")}</label>
                     <input
                       value={bannerForm.subtitle}
                       onChange={e => setBannerForm(f => ({ ...f, subtitle: e.target.value }))}
-                      placeholder="مثال: استخدم الكود SAVE20"
+                      placeholder={t("مثال: استخدم الكود SAVE20")}
                       className="w-full text-xs px-3 py-2 rounded-xl border border-[#E6ECF1] focus:outline-none focus:border-[#20A9F4]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">رابط (اختياري)</label>
+                    <label className="block text-xs text-gray-500 mb-1">{t("رابط (اختياري)")}</label>
                     <input
                       value={bannerForm.link}
                       onChange={e => setBannerForm(f => ({ ...f, link: e.target.value }))}
@@ -1262,13 +1279,13 @@ function BuilderPageContent() {
                   </div>
                   <div className="flex gap-3">
                     <div className="flex-1">
-                      <label className="block text-xs text-gray-500 mb-1">لون الخلفية</label>
+                      <label className="block text-xs text-gray-500 mb-1">{t("لون الخلفية")}</label>
                       <input type="color" value={bannerForm.bgColor}
                         onChange={e => setBannerForm(f => ({ ...f, bgColor: e.target.value }))}
                         className="h-9 w-full rounded-xl border border-[#E6ECF1] cursor-pointer" />
                     </div>
                     <div className="flex-1">
-                      <label className="block text-xs text-gray-500 mb-1">لون النص</label>
+                      <label className="block text-xs text-gray-500 mb-1">{t("لون النص")}</label>
                       <input type="color" value={bannerForm.textColor}
                         onChange={e => setBannerForm(f => ({ ...f, textColor: e.target.value }))}
                         className="h-9 w-full rounded-xl border border-[#E6ECF1] cursor-pointer" />
@@ -1284,13 +1301,13 @@ function BuilderPageContent() {
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={() => {
-                        if (!bannerForm.title.trim()) { toast.error('أدخل عنوان البانر'); return; }
+                        if (!bannerForm.title.trim()) { toast.error(t("أدخل عنوان البانر")); return; }
                         if (editingBannerId) {
                           setBanners(bs => bs.map(b => b.id === editingBannerId ? { ...b, ...bannerForm } : b));
-                          toast.success('تم تحديث البانر');
+                          toast.success(t("تم تحديث البانر"));
                         } else {
                           setBanners(bs => [...bs, { id: `banner-${Date.now()}`, ...bannerForm, active: true }]);
-                          toast.success('تمت إضافة البانر');
+                          toast.success(t("تمت إضافة البانر"));
                         }
                         setShowBannerForm(false);
                         setEditingBannerId(null);
@@ -1298,12 +1315,13 @@ function BuilderPageContent() {
                       }}
                       className="flex-1 py-2 rounded-xl text-xs font-bold text-white transition hover:opacity-90"
                       style={{ background: BRAND.accent }}>
-                      {editingBannerId ? 'حفظ التعديلات' : 'إضافة البانر'}
+                      {editingBannerId ? t("حفظ التعديلات") : t("إضافة البانر")}
                     </button>
                     <button
                       onClick={() => { setShowBannerForm(false); setEditingBannerId(null); }}
                       className="px-3 py-2 rounded-xl text-xs font-medium border border-[#E6ECF1] hover:bg-gray-50 transition">
-                      إلغاء
+                      
+                      {t("إلغاء")}
                     </button>
                   </div>
                 </div>
@@ -1313,8 +1331,8 @@ function BuilderPageContent() {
               {banners.length === 0 ? (
                 <div className="text-center py-8 text-gray-400">
                   <Megaphone className="h-8 w-8 mx-auto mb-2 text-gray-200" />
-                  <p className="text-xs font-medium">لا توجد بانرات بعد</p>
-                  <p className="text-xs mt-1">اضغط &quot;إضافة&quot; لإنشاء بانر إعلاني</p>
+                  <p className="text-xs font-medium">{t("لا توجد بانرات بعد")}</p>
+                  <p className="text-xs mt-1">{t("اضغط \"إضافة\" لإنشاء بانر إعلاني")}</p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -1332,7 +1350,7 @@ function BuilderPageContent() {
                           className="flex-1 flex items-center gap-1.5 text-xs font-medium transition"
                           style={{ color: b.active ? '#22B07D' : '#A3B0BC' }}>
                           {b.active ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
-                          {b.active ? 'ظاهر' : 'مخفي'}
+                          {b.active ? t("ظاهر") : t("مخفي")}
                         </button>
                         <button
                           onClick={() => {
@@ -1355,8 +1373,8 @@ function BuilderPageContent() {
               )}
 
               <div className="mt-4 p-3 rounded-xl" style={{ background: `${BRAND.accent}10` }}>
-                <p className="text-xs font-bold mb-1 flex items-center gap-1.5" style={{ color: BRAND.accent }}><Lightbulb className="h-3.5 w-3.5" /> نصيحة</p>
-                <p className="text-xs text-gray-500 leading-relaxed">تظهر البانرات في شريط إعلاني أعلى متجرك. استخدمها للعروض والمناسبات والكوبونات.</p>
+                <p className="text-xs font-bold mb-1 flex items-center gap-1.5" style={{ color: BRAND.accent }}><Lightbulb className="h-3.5 w-3.5" /> {' '}{t("نصيحة")}</p>
+                <p className="text-xs text-gray-500 leading-relaxed">{t("تظهر البانرات في شريط إعلاني أعلى متجرك. استخدمها للعروض والمناسبات والكوبونات.")}</p>
               </div>
             </div>
           )}
@@ -1370,7 +1388,7 @@ function BuilderPageContent() {
             <div className="px-4 py-3 flex items-center justify-between border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg" style={{ background: storeTheme }} />
-                <span className="font-bold text-sm" style={{ color: BRAND.primary }}>{store?.name ?? 'متجري'}</span>
+                <span className="font-bold text-sm" style={{ color: BRAND.primary }}>{store?.name ?? t("متجري")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-5 w-24 rounded-lg" style={{ background: '#F6F8FA' }} />
@@ -1386,7 +1404,8 @@ function BuilderPageContent() {
               <span className="text-xs font-semibold" style={{ color: BRAND.secondary }}>{PAGE_LABELS[currentPage].label}</span>
               {currentPage !== 'home' && (
                 <span className="mr-auto text-xs px-2 py-0.5 rounded-full" style={{ background: `${BRAND.accent}15`, color: BRAND.accent }}>
-                  أقسام إضافية
+                  
+                  {t("أقسام إضافية")}
                 </span>
               )}
             </div>
@@ -1396,8 +1415,8 @@ function BuilderPageContent() {
               {sections.length === 0 ? (
                 <div className="py-20 text-center text-gray-400">
                   <Tag className="h-10 w-10 mx-auto mb-3 text-gray-200" />
-                  <p className="text-sm font-medium">لا توجد أقسام في هذه الصفحة</p>
-                  <p className="text-xs mt-1">اضغط &quot;إضافة قسم&quot; من القائمة اليسرى</p>
+                  <p className="text-sm font-medium">{t("لا توجد أقسام في هذه الصفحة")}</p>
+                  <p className="text-xs mt-1">{t("اضغط \"إضافة قسم\" من القائمة اليسرى")}</p>
                 </div>
               ) : sections.map(section => (
                 <div key={section.id} onClick={e => { e.stopPropagation(); setSelectedId(section.id); }}>
@@ -1411,7 +1430,7 @@ function BuilderPageContent() {
 
             {/* Footer preview */}
             <div className="px-4 py-4 mt-2 border-t border-gray-100 text-center">
-              <p className="text-xs text-gray-400">مدعوم بـ <span style={{ color: BRAND.accent }}>بناء المتجر</span></p>
+              <p className="text-xs text-gray-400">{t("مدعوم بـ")}{' '}<span style={{ color: BRAND.accent }}>{t("بناء المتجر")}</span></p>
             </div>
           </div>
         </main>
@@ -1434,7 +1453,8 @@ function BuilderPageContent() {
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg text-sm font-medium"
             style={{ background: BRAND.primary, color: 'white' }}>
             <Settings2 className="h-4 w-4" />
-            انقر على أي قسم لتعديل خصائصه
+            
+            {t("انقر على أي قسم لتعديل خصائصه")}
           </div>
         </div>
       )}

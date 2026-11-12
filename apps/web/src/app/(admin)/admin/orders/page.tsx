@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
@@ -29,7 +30,8 @@ const STATUS_STYLES: Record<string, { bg: string; color: string; label: string }
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function AdminOrdersPage() {
-  useDocumentTitle('كل الطلبات');
+  const t = useT();
+  useDocumentTitle(t("كل الطلبات"));
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ export default function AdminOrdersPage() {
       setOrders(res.data ?? []);
       setTotal(res.pagination?.total ?? 0);
     } catch {
-      toast.error('فشل تحميل الطلبات');
+      toast.error(t("فشل تحميل الطلبات"));
     } finally {
       setLoading(false);
     }
@@ -73,7 +75,7 @@ export default function AdminOrdersPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      toast.error('فشل التصدير');
+      toast.error(t("فشل التصدير"));
     } finally {
       setDownloading(false);
     }
@@ -91,8 +93,8 @@ export default function AdminOrdersPage() {
     <div style={{ padding: 32 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>جميع الطلبات</h1>
-          <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{total} طلب في جميع المتاجر</p>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>{t("جميع الطلبات")}</h1>
+          <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{total} {' '}{t("طلب في جميع المتاجر")}</p>
         </div>
         <button
           onClick={exportCsv}
@@ -100,7 +102,7 @@ export default function AdminOrdersPage() {
           style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 16px', background: '#fff', border: `1.5px solid #E6ECF1`, borderRadius: 10, fontSize: 13, fontWeight: 600, color: B.p, cursor: 'pointer', fontFamily: 'inherit', opacity: downloading ? 0.7 : 1 }}
         >
           <Download size={15} />
-          {downloading ? 'جارٍ التصدير...' : 'تصدير CSV'}
+          {downloading ? t("جارٍ التصدير...") : t("تصدير CSV")}
         </button>
       </div>
 
@@ -110,7 +112,7 @@ export default function AdminOrdersPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ابحث عن طلب..."
+            placeholder={t("ابحث عن طلب...")}
             style={{ width: '100%', padding: '9px 36px 9px 12px', border: '1.5px solid #E6ECF1', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none' }}
           />
         </div>
@@ -119,12 +121,12 @@ export default function AdminOrdersPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           style={{ padding: '9px 14px', border: '1.5px solid #E6ECF1', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', background: '#fff', color: B.p }}
         >
-          <option value="ALL">كل الحالات</option>
-          <option value="PENDING">قيد الانتظار</option>
-          <option value="PAID">مدفوع</option>
-          <option value="SHIPPED">تم الشحن</option>
-          <option value="DELIVERED">تم التسليم</option>
-          <option value="CANCELLED">ملغي</option>
+          <option value="ALL">{t("كل الحالات")}</option>
+          <option value="PENDING">{t("قيد الانتظار")}</option>
+          <option value="PAID">{t("مدفوع")}</option>
+          <option value="SHIPPED">{t("تم الشحن")}</option>
+          <option value="DELIVERED">{t("تم التسليم")}</option>
+          <option value="CANCELLED">{t("ملغي")}</option>
         </select>
       </div>
 
@@ -133,18 +135,18 @@ export default function AdminOrdersPage() {
           {[1,2,3].map(i => <div key={i} style={{ height: 56, background: '#E6ECF1', borderRadius: 10 }} />)}
         </div>
       ) : filteredOrders.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '64px 0', color: '#A3B0BC', fontSize: 14 }}>لا يوجد طلبات</div>
+        <div style={{ textAlign: 'center', padding: '64px 0', color: '#A3B0BC', fontSize: 14 }}>{t("لا يوجد طلبات")}</div>
       ) : (
         <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E6ECF1', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
               <tr style={{ borderBottom: '1px solid #E6ECF1', background: '#F6F8FA' }}>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>رقم الطلب</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>العميل</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>المتجر</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>المجموع</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>الحالة</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>التاريخ</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("رقم الطلب")}</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("العميل")}</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("المتجر")}</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("المجموع")}</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("الحالة")}</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("التاريخ")}</th>
               </tr>
             </thead>
             <tbody>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { apiFetch } from '@/lib/api';
@@ -8,10 +9,11 @@ import type { ArticlePublic } from '@storebuilder/types';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function EditArticlePage() {
+  const t = useT();
   const { id } = useParams() as { id: string };
   const [article, setArticle] = useState<ArticlePublic | null>(null);
   const [loading, setLoading] = useState(true);
-  useDocumentTitle(article ? `تعديل: ${article.title}` : 'تعديل مقالة');
+  useDocumentTitle(article ? t("تعديل: {0}", [article.title]) : t("تعديل مقالة"));
 
   useEffect(() => {
     apiFetch<{ success: boolean; data: ArticlePublic }>(`/api/articles/admin/${id}`)
@@ -28,7 +30,7 @@ export default function EditArticlePage() {
   );
 
   if (!article) return (
-    <div className="p-8 text-center text-gray-400">المقال غير موجود</div>
+    <div className="p-8 text-center text-gray-400">{t("المقال غير موجود")}</div>
   );
 
   return <ArticleEditorForm article={article} />;

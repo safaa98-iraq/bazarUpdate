@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
@@ -46,7 +47,8 @@ const ACTION_LABELS: Record<string, string> = {
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function AdminLogsPage() {
-  useDocumentTitle('سجل النشاطات');
+  const t = useT();
+  useDocumentTitle(t("سجل النشاطات"));
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -62,7 +64,7 @@ export default function AdminLogsPage() {
       setLogs(res.data ?? []);
       setTotal(res.pagination?.total ?? 0);
     } catch {
-      toast.error('فشل تحميل السجل');
+      toast.error(t("فشل تحميل السجل"));
     } finally {
       setLoading(false);
     }
@@ -76,8 +78,8 @@ export default function AdminLogsPage() {
   return (
     <div style={{ padding: 32 }}>
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>سجل المراقبة</h1>
-        <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{total} إجراء مسجّل</p>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>{t("سجل المراقبة")}</h1>
+        <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{total} {' '}{t("إجراء مسجّل")}</p>
       </div>
 
       <div style={{ position: 'relative', marginBottom: 20 }}>
@@ -85,7 +87,7 @@ export default function AdminLogsPage() {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="فلتر حسب نوع الإجراء..."
+          placeholder={t("فلتر حسب نوع الإجراء...")}
           style={{ width: '100%', padding: '9px 36px 9px 12px', border: '1.5px solid #E6ECF1', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none' }}
         />
       </div>
@@ -95,7 +97,7 @@ export default function AdminLogsPage() {
           {[1,2,3,4,5].map(i => <div key={i} style={{ height: 56, background: '#E6ECF1', borderRadius: 10 }} />)}
         </div>
       ) : logs.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '64px 0', color: '#A3B0BC', fontSize: 14 }}>لا يوجد سجلات</div>
+        <div style={{ textAlign: 'center', padding: '64px 0', color: '#A3B0BC', fontSize: 14 }}>{t("لا يوجد سجلات")}</div>
       ) : (
         <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E6ECF1', overflow: 'hidden' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>

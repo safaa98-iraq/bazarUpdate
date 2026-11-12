@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Pencil, Trash2, Eye, EyeOff, Sparkles, Search, Loader2, X, Upload, Download, Image as ImageIcon, Package } from 'lucide-react';
 import { toast } from 'sonner';
@@ -84,6 +85,7 @@ function SpecsEditor({ specs, attributes, onChange }: {
   attributes: ProductAttributePublic[];
   onChange: (specs: ProductSpec[]) => void;
 }) {
+  const t = useT();
   const [draftValue, setDraftValue] = useState<Record<number, string>>({});
 
   const updateSpec = (i: number, patch: Partial<ProductSpec>) =>
@@ -108,23 +110,24 @@ function SpecsEditor({ specs, attributes, onChange }: {
       const res = await api.upload<{ success: boolean; data: { urls: string[] } }>('/api/upload', fd);
       const url = res.data.urls[0];
       if (url) updateValue(i, vi, { image: url });
-    } catch { toast.error('فشل رفع الصورة'); }
+    } catch { toast.error(t("فشل رفع الصورة")); }
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <label className="block text-xs font-semibold" style={{ color: BRAND.primary }}>مواصفات المنتج</label>
+        <label className="block text-xs font-semibold" style={{ color: BRAND.primary }}>{t("مواصفات المنتج")}</label>
         <button type="button"
           onClick={() => onChange([...specs, { name: '', values: [] }])}
           className="text-xs font-bold flex items-center gap-1" style={{ color: BRAND.accent }}>
-          <Plus className="h-3.5 w-3.5" /> إضافة مواصفة
+          <Plus className="h-3.5 w-3.5" /> {' '}{t("إضافة مواصفة")}
         </button>
       </div>
 
       {specs.length === 0 && (
         <p className="text-xs text-gray-400 mb-1">
-          أضف أي مواصفة تريدها (مثل: اللون، الحجم…) وأدخل عدة قيم فرعية لكل مواصفة، مع صورة اختيارية لكل قيمة.
+          
+          {t("أضف أي مواصفة تريدها (مثل: اللون، الحجم…) وأدخل عدة قيم فرعية لكل مواصفة، مع صورة اختيارية لكل قيمة.")}
         </p>
       )}
 
@@ -140,7 +143,7 @@ function SpecsEditor({ specs, attributes, onChange }: {
                 value={spec.name}
                 onChange={e => updateSpec(i, { name: e.target.value })}
                 list="spec-attr-names"
-                placeholder="اسم المواصفة (مثال: اللون)"
+                placeholder={t("اسم المواصفة (مثال: اللون)")}
                 className="flex-1 min-w-0 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 transition"
                 style={{ borderColor: '#E6ECF1' }}
               />
@@ -173,7 +176,7 @@ function SpecsEditor({ specs, attributes, onChange }: {
               value={draftValue[i] ?? ''}
               onChange={e => setDraftValue(d => ({ ...d, [i]: e.target.value }))}
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addValue(i); } }}
-              placeholder="اكتب قيمة فرعية واضغط Enter (مثال: أحمر)"
+              placeholder={t("اكتب قيمة فرعية واضغط Enter (مثال: أحمر)")}
               className="w-full px-3 py-1.5 rounded-lg border text-xs focus:outline-none focus:ring-2 transition"
               style={{ borderColor: '#E6ECF1' }}
             />
@@ -185,6 +188,7 @@ function SpecsEditor({ specs, attributes, onChange }: {
 }
 
 function ImageUploader({ images, onChange }: { images: string[]; onChange: (imgs: string[]) => void }) {
+  const t = useT();
   const [uploading, setUploading] = useState(false);
 
   const handleFiles = async (files: FileList | null) => {
@@ -195,14 +199,14 @@ function ImageUploader({ images, onChange }: { images: string[]; onChange: (imgs
       Array.from(files).slice(0, 6).forEach(f => fd.append('images', f));
       const res = await api.upload<{ success: boolean; data: { urls: string[] } }>('/api/upload', fd);
       onChange([...images, ...res.data.urls].slice(0, 6));
-      toast.success('تم رفع الصور بنجاح');
-    } catch { toast.error('فشل رفع الصور'); }
+      toast.success(t("تم رفع الصور بنجاح"));
+    } catch { toast.error(t("فشل رفع الصور")); }
     finally { setUploading(false); }
   };
 
   return (
     <div>
-      <label className="block text-xs font-semibold mb-2" style={{ color: BRAND.primary }}>صور المنتج</label>
+      <label className="block text-xs font-semibold mb-2" style={{ color: BRAND.primary }}>{t("صور المنتج")}</label>
       <div className="grid grid-cols-3 gap-2 mb-2">
         {images.map((url, i) => (
           <div key={i} className="relative aspect-square rounded-xl overflow-hidden border" style={{ borderColor: '#E6ECF1' }}>
@@ -211,7 +215,7 @@ function ImageUploader({ images, onChange }: { images: string[]; onChange: (imgs
               className="absolute top-1 left-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition">
               <X className="h-3 w-3" />
             </button>
-            {i === 0 && <span className="absolute bottom-1 right-1 text-xs px-1.5 py-0.5 rounded-full text-white font-bold" style={{ background: BRAND.accent }}>رئيسية</span>}
+            {i === 0 && <span className="absolute bottom-1 right-1 text-xs px-1.5 py-0.5 rounded-full text-white font-bold" style={{ background: BRAND.accent }}>{t("رئيسية")}</span>}
           </div>
         ))}
         {images.length < 6 && (
@@ -219,7 +223,7 @@ function ImageUploader({ images, onChange }: { images: string[]; onChange: (imgs
             style={{ borderColor: BRAND.light }}>
             {uploading ? <Loader2 className="h-5 w-5 animate-spin" style={{ color: BRAND.accent }} /> : <>
               <Upload className="h-5 w-5 mb-1" style={{ color: BRAND.accent }} />
-              <span className="text-xs font-medium" style={{ color: BRAND.accent }}>رفع صورة</span>
+              <span className="text-xs font-medium" style={{ color: BRAND.accent }}>{t("رفع صورة")}</span>
             </>}
             <input type="file" accept="image/*" multiple className="hidden" disabled={uploading}
               onChange={e => handleFiles(e.target.files)} />
@@ -229,7 +233,7 @@ function ImageUploader({ images, onChange }: { images: string[]; onChange: (imgs
       {images.length === 0 && (
         <div className="flex items-center gap-2 mt-1">
           <div className="flex-1 h-px" style={{ background: '#E6ECF1' }} />
-          <span className="text-xs text-gray-400">أو أدخل رابط صورة</span>
+          <span className="text-xs text-gray-400">{t("أو أدخل رابط صورة")}</span>
           <div className="flex-1 h-px" style={{ background: '#E6ECF1' }} />
         </div>
       )}
@@ -245,7 +249,7 @@ function ImageUploader({ images, onChange }: { images: string[]; onChange: (imgs
           }
         }}
       />
-      <p className="text-xs text-gray-400 mt-1">اضغط Enter لإضافة الرابط • حتى 6 صور</p>
+      <p className="text-xs text-gray-400 mt-1">{t("اضغط Enter لإضافة الرابط • حتى 6 صور")}</p>
     </div>
   );
 }
@@ -254,6 +258,7 @@ interface VariantDraft { options: { key: string; value: string }[]; sku: string;
 const emptyVariantDraft: VariantDraft = { options: [{ key: 'اللون', value: '' }, { key: 'المقاس', value: '' }], sku: '', price: '', stock: '0', isActive: true };
 
 function VariantsEditor({ productId, basePrice }: { productId: string; basePrice: string }) {
+  const t = useT();
   const [variants, setVariants] = useState<ProductVariantPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -265,7 +270,7 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
     try {
       const res = await api.get<{ success: boolean; data: ProductVariantPublic[] }>(`/api/products/${productId}/variants`);
       setVariants(res.data ?? []);
-    } catch { toast.error('فشل تحميل المتغيرات'); }
+    } catch { toast.error(t("فشل تحميل المتغيرات")); }
     finally { setLoading(false); }
   }, [productId]);
 
@@ -289,7 +294,7 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
   const submitDraft = async () => {
     const options: Record<string, string> = {};
     for (const o of draft.options) { if (o.key.trim() && o.value.trim()) options[o.key.trim()] = o.value.trim(); }
-    if (Object.keys(options).length === 0) { toast.error('أضف خاصية واحدة على الأقل (مثل اللون أو المقاس)'); return; }
+    if (Object.keys(options).length === 0) { toast.error(t("أضف خاصية واحدة على الأقل (مثل اللون أو المقاس)")); return; }
     setSaving(true);
     try {
       const body = {
@@ -301,56 +306,56 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
       if (editingVariantId) {
         const res = await api.patch<{ success: boolean; data: ProductVariantPublic }>(`/api/products/${productId}/variants/${editingVariantId}`, body);
         setVariants(prev => prev.map(v => v.id === editingVariantId ? res.data : v));
-        toast.success('تم تحديث المتغير');
+        toast.success(t("تم تحديث المتغير"));
       } else {
         const res = await api.post<{ success: boolean; data: ProductVariantPublic }>(`/api/products/${productId}/variants`, body);
         setVariants(prev => [...prev, res.data]);
-        toast.success('تمت إضافة المتغير');
+        toast.success(t("تمت إضافة المتغير"));
       }
       resetDraft();
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل الحفظ'); }
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل الحفظ")); }
     finally { setSaving(false); }
   };
 
   const deleteVariant = async (id: string) => {
-    if (!confirm('حذف هذا المتغير؟')) return;
+    if (!confirm(t("حذف هذا المتغير؟"))) return;
     try {
       await api.delete(`/api/products/${productId}/variants/${id}`);
       setVariants(prev => prev.filter(v => v.id !== id));
       if (editingVariantId === id) resetDraft();
-      toast.success('تم حذف المتغير');
-    } catch { toast.error('فشل الحذف'); }
+      toast.success(t("تم حذف المتغير"));
+    } catch { toast.error(t("فشل الحذف")); }
   };
 
   const toggleActive = async (v: ProductVariantPublic) => {
     try {
       const res = await api.patch<{ success: boolean; data: ProductVariantPublic }>(`/api/products/${productId}/variants/${v.id}`, { isActive: !v.isActive });
       setVariants(prev => prev.map(x => x.id === v.id ? res.data : x));
-    } catch { toast.error('فشل التحديث'); }
+    } catch { toast.error(t("فشل التحديث")); }
   };
 
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-xs text-gray-400 mb-3">أضف مزيجاً من الخصائص (مثل اللون والمقاس) لكل نسخة من المنتج، مع مخزون وسعر منفصلين إذا احتجت</p>
+        <p className="text-xs text-gray-400 mb-3">{t("أضف مزيجاً من الخصائص (مثل اللون والمقاس) لكل نسخة من المنتج، مع مخزون وسعر منفصلين إذا احتجت")}</p>
 
         {loading ? (
           <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin" style={{ color: BRAND.accent }} /></div>
         ) : variants.length === 0 ? (
-          <p className="text-sm text-gray-400 py-2">لا توجد متغيرات بعد</p>
+          <p className="text-sm text-gray-400 py-2">{t("لا توجد متغيرات بعد")}</p>
         ) : (
           <div className="space-y-2 mb-4">
             {variants.map(v => (
               <div key={v.id} className="flex items-center gap-2 px-3 py-2.5 rounded-xl border" style={{ borderColor: '#E6ECF1' }}>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate" style={{ color: BRAND.primary }}>
-                    {Object.entries(v.options).map(([k, val]) => `${k}: ${val}`).join('، ')}
+                    {Object.entries(v.options).map(([k, val]) => `${k}: ${val}`).join(t("، "))}
                   </p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {v.sku ? `SKU: ${v.sku} · ` : ''}المخزون: {v.stock}{v.price !== null ? ` · السعر: ${formatCurrency(v.price)}` : ` · السعر الأساسي (${formatCurrency(Number(basePrice) || 0)})`}
+                    {v.sku ? `SKU: ${v.sku} · ` : ''}{t("المخزون:")}{' '}{v.stock}{v.price !== null ? t(" · السعر: {0}", [formatCurrency(v.price)]) : t(" · السعر الأساسي ({0})", [formatCurrency(Number(basePrice) || 0)])}
                   </p>
                 </div>
-                <button type="button" onClick={() => toggleActive(v)} title={v.isActive ? 'إخفاء' : 'إظهار'}
+                <button type="button" onClick={() => toggleActive(v)} title={v.isActive ? t("إخفاء") : t("إظهار")}
                   className="p-1.5 rounded-lg hover:bg-gray-50 transition flex-shrink-0" style={{ color: v.isActive ? BRAND.accent : '#A3B0BC' }}>
                   {v.isActive ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 </button>
@@ -367,12 +372,12 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
       </div>
 
       <div className="rounded-xl border p-4 space-y-3" style={{ borderColor: '#E6ECF1', background: '#F6F8FA' }}>
-        <p className="text-xs font-bold" style={{ color: BRAND.primary }}>{editingVariantId ? 'تعديل المتغير' : 'متغير جديد'}</p>
+        <p className="text-xs font-bold" style={{ color: BRAND.primary }}>{editingVariantId ? t("تعديل المتغير") : t("متغير جديد")}</p>
         {draft.options.map((o, i) => (
           <div key={i} className="flex gap-2">
-            <input value={o.key} onChange={e => updateOption(i, { key: e.target.value })} placeholder="الخاصية (مثال: اللون)"
+            <input value={o.key} onChange={e => updateOption(i, { key: e.target.value })} placeholder={t("الخاصية (مثال: اللون)")}
               className="w-1/3 px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} />
-            <input value={o.value} onChange={e => updateOption(i, { value: e.target.value })} placeholder="القيمة (مثال: أحمر)"
+            <input value={o.value} onChange={e => updateOption(i, { value: e.target.value })} placeholder={t("القيمة (مثال: أحمر)")}
               className="flex-1 px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} />
             {draft.options.length > 1 && (
               <button type="button" onClick={() => removeOptionRow(i)} className="p-2 text-gray-400 hover:text-red-500 transition flex-shrink-0">
@@ -381,14 +386,14 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
             )}
           </div>
         ))}
-        <button type="button" onClick={addOptionRow} className="text-xs font-bold" style={{ color: BRAND.accent }}>+ إضافة خاصية</button>
+        <button type="button" onClick={addOptionRow} className="text-xs font-bold" style={{ color: BRAND.accent }}>{t("+ إضافة خاصية")}</button>
 
         <div className="grid grid-cols-3 gap-2">
-          <input value={draft.sku} onChange={e => setDraft(d => ({ ...d, sku: e.target.value }))} placeholder="SKU (اختياري)"
+          <input value={draft.sku} onChange={e => setDraft(d => ({ ...d, sku: e.target.value }))} placeholder={t("SKU (اختياري)")}
             className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} />
-          <input type="number" min="0" step="0.01" value={draft.price} onChange={e => setDraft(d => ({ ...d, price: e.target.value }))} placeholder="سعر مختلف (اختياري)"
+          <input type="number" min="0" step="0.01" value={draft.price} onChange={e => setDraft(d => ({ ...d, price: e.target.value }))} placeholder={t("سعر مختلف (اختياري)")}
             className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} />
-          <input type="number" min="0" value={draft.stock} onChange={e => setDraft(d => ({ ...d, stock: e.target.value }))} placeholder="المخزون"
+          <input type="number" min="0" value={draft.stock} onChange={e => setDraft(d => ({ ...d, stock: e.target.value }))} placeholder={t("المخزون")}
             className="px-3 py-2 rounded-lg border text-sm bg-white focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} />
         </div>
 
@@ -396,14 +401,15 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
           {editingVariantId && (
             <button type="button" onClick={resetDraft}
               className="px-4 py-2 rounded-lg text-xs font-bold border bg-white hover:bg-gray-50 transition" style={{ borderColor: '#E6ECF1', color: '#5B6B7B' }}>
-              إلغاء
+              
+              {t("إلغاء")}
             </button>
           )}
           <button type="button" onClick={submitDraft} disabled={saving}
             className="flex-1 py-2 rounded-lg text-xs font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
             style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
             {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            {editingVariantId ? 'حفظ التعديل' : 'إضافة المتغير'}
+            {editingVariantId ? t("حفظ التعديل") : t("إضافة المتغير")}
           </button>
         </div>
       </div>
@@ -414,7 +420,8 @@ function VariantsEditor({ productId, basePrice }: { productId: string; basePrice
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function ProductsPage() {
-  useDocumentTitle('المنتجات');
+  const t = useT();
+  useDocumentTitle(t("المنتجات"));
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
   const productLimit = getFeatureLimit(plan, 'products');
   const canAddMore = productLimit === null || productLimit === undefined;
@@ -454,7 +461,7 @@ export default function ProductsPage() {
         const sRes = await api.get<{ success: boolean; data: { storeType?: string } }>('/api/stores/my');
         if (sRes.data?.storeType) setStoreType(sRes.data.storeType);
       } catch { /* no store yet */ }
-    } catch { toast.error('فشل تحميل المنتجات'); }
+    } catch { toast.error(t("فشل تحميل المنتجات")); }
     finally { setLoading(false); }
   }, [search]);
 
@@ -468,15 +475,15 @@ export default function ProductsPage() {
       const res = await fetch(`${API_URL}/api/products/export/csv`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.ok) throw new Error('فشل التصدير');
+      if (!res.ok) throw new Error(t("فشل التصدير"));
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url; a.download = 'products.csv';
       document.body.appendChild(a); a.click(); a.remove();
       URL.revokeObjectURL(url);
-      toast.success('تم تصدير المنتجات ✓');
-    } catch { toast.error('فشل تصدير المنتجات'); }
+      toast.success(t("تم تصدير المنتجات ✓"));
+    } catch { toast.error(t("فشل تصدير المنتجات")); }
     finally { setExporting(false); }
   };
 
@@ -487,10 +494,10 @@ export default function ProductsPage() {
       const fd = new FormData();
       fd.append('file', files[0]);
       const res = await api.upload<{ success: boolean; data: { created: number; updated: number; failed: number; total: number } }>('/api/products/import/csv', fd);
-      toast.success(`تم الاستيراد: ${res.data.created} جديد، ${res.data.updated} محدّث${res.data.failed ? `، ${res.data.failed} فشل` : ''}`);
+      toast.success(t("تم الاستيراد: {0} جديد، {1} محدّث{2}", [res.data.created, res.data.updated, res.data.failed ? `، ${res.data.failed} فشل` : '']));
       fetchAll();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل الاستيراد');
+      toast.error(err instanceof Error ? err.message : t("فشل الاستيراد"));
     } finally {
       setImporting(false);
       if (importInputRef.current) importInputRef.current.value = '';
@@ -586,29 +593,29 @@ export default function ProductsPage() {
       let productId = editingId;
       if (editingId) {
         await api.patch(`/api/products/${editingId}`, body);
-        toast.success('تم تحديث المنتج');
+        toast.success(t("تم تحديث المنتج"));
         track({ event: 'product_edited' });
       } else {
         const created = await api.post<{ success: boolean; data: ProductPublic }>('/api/products', body);
         productId = created.data.id;
-        toast.success('تم إنشاء المنتج');
+        toast.success(t("تم إنشاء المنتج"));
         track({ event: 'product_added' });
       }
       if (productId) await saveSpecs(productId);
       setShowModal(false); fetchAll();
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل الحفظ'); }
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل الحفظ")); }
     finally { setSaving(false); }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
-    try { await api.delete(`/api/products/${id}`); toast.success('تم الحذف'); fetchAll(); }
-    catch { toast.error('فشل الحذف'); }
+    if (!confirm(t("هل أنت متأكد من حذف هذا المنتج؟"))) return;
+    try { await api.delete(`/api/products/${id}`); toast.success(t("تم الحذف")); fetchAll(); }
+    catch { toast.error(t("فشل الحذف")); }
   };
 
   const handleToggle = async (p: ProductPublic) => {
     try { await api.patch(`/api/products/${p.id}`, { isActive: !p.isActive }); fetchAll(); }
-    catch { toast.error('فشل التحديث'); }
+    catch { toast.error(t("فشل التحديث")); }
   };
 
   const catName = (id: string) => categories.find(c => c.id === id)?.name ?? '';
@@ -622,12 +629,12 @@ export default function ProductsPage() {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs font-semibold" style={{ color: atProductLimit ? '#C93636' : '#B45309' }}>
-                {plan === 'FREE' ? 'منتجات الخطة المجانية' : 'حد المنتجات في خطتك الحالية'}: {products.length} / {productLimit}
+                {plan === 'FREE' ? t("منتجات الخطة المجانية") : t("حد المنتجات في خطتك الحالية")}: {products.length} / {productLimit}
               </span>
               <a href="/dashboard/settings?tab=billing"
                 className="text-xs font-bold px-2.5 py-1 rounded-lg text-white flex items-center gap-1"
                 style={{ background: '#20A9F4' }}>
-                <Sparkles className="h-3 w-3" /> ارفع للـ PRO
+                <Sparkles className="h-3 w-3" /> {' '}{t("ارفع للـ PRO")}
               </a>
             </div>
             <div className="h-1.5 rounded-full" style={{ background: '#E6ECF1' }}>
@@ -640,8 +647,8 @@ export default function ProductsPage() {
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="bz-large-title text-gray-900">المنتجات</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{products.length} منتج في متجرك</p>
+          <h1 className="bz-large-title text-gray-900">{t("المنتجات")}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{products.length} {' '}{t("منتج في متجرك")}</p>
         </div>
         <div className="flex items-center gap-2">
           <input ref={importInputRef} type="file" accept=".csv" className="hidden"
@@ -649,24 +656,24 @@ export default function ProductsPage() {
           <button onClick={() => importInputRef.current?.click()} disabled={importing}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-bold border transition hover:bg-gray-50 disabled:opacity-50"
             style={{ borderColor: '#E6ECF1', color: BRAND.primary }}>
-            {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />} استيراد Excel
+            {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />} {' '}{t("استيراد Excel")}
           </button>
           <button onClick={handleExport} disabled={exporting || products.length === 0}
             className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-bold border transition hover:bg-gray-50 disabled:opacity-50"
             style={{ borderColor: '#E6ECF1', color: BRAND.primary }}>
-            {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />} تصدير
+            {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />} {' '}{t("تصدير")}
           </button>
           <button onClick={openNew} disabled={atProductLimit}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
             style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-            <Plus className="h-4 w-4" /> إضافة منتج
+            <Plus className="h-4 w-4" /> {' '}{t("إضافة منتج")}
           </button>
         </div>
       </div>
 
       <div className="relative mb-4">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ابحث بالاسم أو رقم الموديل…"
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t("ابحث بالاسم أو رقم الموديل…")}
           className="w-full pr-10 pl-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 bg-white"
           style={{ borderColor: '#E6ECF1' }} />
       </div>
@@ -680,7 +687,7 @@ export default function ProductsPage() {
           <table className="w-full text-sm">
             <thead className="border-b" style={{ background: '#F6F8FA' }}>
               <tr>
-                {['المنتج', 'التصنيف', 'السعر', 'المخزون', 'الحالة', 'الإجراءات'].map(h => (
+                {[t("المنتج"), t("التصنيف"), t("السعر"), t("المخزون"), t("الحالة"), t("الإجراءات")].map(h => (
                   <th key={h} className="px-4 py-3 font-semibold text-right" style={{ color: BRAND.primary }}>{h}</th>
                 ))}
               </tr>
@@ -692,8 +699,8 @@ export default function ProductsPage() {
                     <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: '#F6F8FA' }}>
                       <ImageIcon className="h-7 w-7 text-gray-300" />
                     </div>
-                    <p className="text-gray-400">لا توجد منتجات بعد</p>
-                    <button onClick={openNew} className="text-sm font-medium" style={{ color: BRAND.accent }}>+ أضف أول منتج</button>
+                    <p className="text-gray-400">{t("لا توجد منتجات بعد")}</p>
+                    <button onClick={openNew} className="text-sm font-medium" style={{ color: BRAND.accent }}>{t("+ أضف أول منتج")}</button>
                   </div>
                 </td></tr>
               ) : products.map(p => (
@@ -730,7 +737,7 @@ export default function ProductsPage() {
                   <td className="px-4 py-3">
                     <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${p.isActive ? 'text-emerald-700' : 'text-gray-500'}`}
                       style={{ background: p.isActive ? '#E2F7EE' : '#F6F8FA' }}>
-                      {p.isActive ? 'نشط' : 'مخفي'}
+                      {p.isActive ? t("نشط") : t("مخفي")}
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -758,7 +765,7 @@ export default function ProductsPage() {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
             <div className="sticky top-0 bg-white px-6 py-4 border-b border-[#E6ECF1] flex items-center justify-between z-10">
               <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>
-                {editingId ? 'تعديل المنتج' : 'إضافة منتج جديد'}
+                {editingId ? t("تعديل المنتج") : t("إضافة منتج جديد")}
               </h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-400">
                 <X className="h-5 w-5" />
@@ -766,7 +773,7 @@ export default function ProductsPage() {
             </div>
 
             <div className="flex border-b border-[#E6ECF1] px-6">
-              {([['basic', 'المعلومات الأساسية'], ...(editingId ? [['variants', 'المتغيرات']] : []), ['seo', 'SEO والبحث']] as [string, string][]).map(([tab, label]) => (
+              {([['basic', t("المعلومات الأساسية")], ...(editingId ? [['variants', t("المتغيرات")]] : []), ['seo', t("SEO والبحث")]] as [string, string][]).map(([tab, label]) => (
                 <button key={tab} onClick={() => setActiveTab(tab as 'basic' | 'variants' | 'seo')}
                   className="px-4 py-3 text-sm font-medium border-b-2 transition"
                   style={{
@@ -781,40 +788,40 @@ export default function ProductsPage() {
                 <ImageUploader images={form.images} onChange={imgs => setForm(f => ({ ...f, images: imgs }))} />
 
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>اسم المنتج *</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("اسم المنتج *")}</label>
                   <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
-                    style={{ borderColor: '#E6ECF1' }} placeholder="مثال: حذاء رياضي مريح" />
+                    style={{ borderColor: '#E6ECF1' }} placeholder={t("مثال: حذاء رياضي مريح")} />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>الوصف</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("الوصف")}</label>
                   <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                    rows={4} placeholder="وصف تفصيلي للمنتج…"
+                    rows={4} placeholder={t("وصف تفصيلي للمنتج…")}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 resize-none transition"
                     style={{ borderColor: '#E6ECF1' }} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>السعر *</label>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("السعر *")}</label>
                     <input type="number" min="0" step="0.01" value={form.price} required
                       onChange={e => setForm({ ...form, price: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
                       style={{ borderColor: '#E6ECF1' }} placeholder="0.00" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>سعر المقارنة (شطب)</label>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("سعر المقارنة (شطب)")}</label>
                     <input type="number" min="0" step="0.01" value={form.comparePrice}
                       onChange={e => setForm({ ...form, comparePrice: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
-                      style={{ borderColor: '#E6ECF1' }} placeholder="السعر قبل الخصم" />
+                      style={{ borderColor: '#E6ECF1' }} placeholder={t("السعر قبل الخصم")} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>الكمية والوحدة</label>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("الكمية والوحدة")}</label>
                     <div className="flex gap-2">
                       <input type="number" min="0" value={form.stock}
                         onChange={e => setForm({ ...form, stock: e.target.value })}
@@ -830,11 +837,11 @@ export default function ProductsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>التصنيف</label>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("التصنيف")}</label>
                     <select value={form.categoryId} onChange={e => setForm({ ...form, categoryId: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 bg-white transition"
                       style={{ borderColor: '#E6ECF1' }}>
-                      <option value="">بدون تصنيف</option>
+                      <option value="">{t("بدون تصنيف")}</option>
                       {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
                   </div>
@@ -842,24 +849,25 @@ export default function ProductsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>الماركة</label>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("الماركة")}</label>
                     {brandsList.length > 0 ? (
                       <select value={form.brandId} onChange={e => setForm({ ...form, brandId: e.target.value })}
                         className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 bg-white transition"
                         style={{ borderColor: '#E6ECF1' }}>
-                        <option value="">بدون ماركة</option>
+                        <option value="">{t("بدون ماركة")}</option>
                         {brandsList.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                       </select>
                     ) : (
                       <a href="/dashboard/brands" className="block px-3 py-2.5 rounded-xl border text-xs text-gray-400 hover:text-gray-600 transition"
                         style={{ borderColor: '#E6ECF1' }}>
-                        أضف ماركات من هنا أولاً
+                        
+                        {t("أضف ماركات من هنا أولاً")}
                       </a>
                     )}
                   </div>
                   {editingModelNumber && (
                     <div>
-                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>رقم الموديل</label>
+                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("رقم الموديل")}</label>
                       <div className="px-3 py-2.5 rounded-xl border text-sm bg-gray-50 text-gray-500 font-mono" style={{ borderColor: '#E6ECF1', direction: 'ltr', textAlign: 'right' }}>
                         {editingModelNumber}
                       </div>
@@ -870,25 +878,27 @@ export default function ProductsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                      نهاية العرض (اختياري)
+                      
+                      {t("نهاية العرض (اختياري)")}
                     </label>
                     <input type="datetime-local" value={form.saleEndsAt}
                       onChange={e => setForm({ ...form, saleEndsAt: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
                       style={{ borderColor: '#E6ECF1' }} />
-                    <p className="text-xs text-gray-400 mt-1">يظهر عدّاد تنازلي بصفحة المنتج حتى هذا الموعد</p>
+                    <p className="text-xs text-gray-400 mt-1">{t("يظهر عدّاد تنازلي بصفحة المنتج حتى هذا الموعد")}</p>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                    دليل المقاسات (اختياري)
+                    
+                    {t("دليل المقاسات (اختياري)")}
                   </label>
                   <textarea value={form.sizeGuide} onChange={e => setForm({ ...form, sizeGuide: e.target.value })}
-                    rows={4} placeholder="مثال: S: 36-38 / M: 40-42 / L: 44-46 ..."
+                    rows={4} placeholder={t("مثال: S: 36-38 / M: 40-42 / L: 44-46 ...")}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition resize-none"
                     style={{ borderColor: '#E6ECF1' }} />
-                  <p className="text-xs text-gray-400 mt-1">إذا تركته فارغاً سيُستخدم دليل المقاسات العام للمتجر (من الإعدادات) إن وُجد</p>
+                  <p className="text-xs text-gray-400 mt-1">{t("إذا تركته فارغاً سيُستخدم دليل المقاسات العام للمتجر (من الإعدادات) إن وُجد")}</p>
                 </div>
 
                 <SpecsEditor specs={form.specs} attributes={attributes} onChange={specs => setForm(f => ({ ...f, specs }))} />
@@ -900,19 +910,19 @@ export default function ProductsPage() {
 
               {activeTab === 'seo' && (
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold" style={{ color: BRAND.primary }}>إعدادات SEO</h3>
+                  <h3 className="text-sm font-bold" style={{ color: BRAND.primary }}>{t("إعدادات SEO")}</h3>
                   <div>
-                    <div className="flex justify-between mb-1"><label className="text-xs text-gray-500">عنوان SEO</label><span className="text-xs text-gray-400">{form.seoTitle.length}/60</span></div>
+                    <div className="flex justify-between mb-1"><label className="text-xs text-gray-500">{t("عنوان SEO")}</label><span className="text-xs text-gray-400">{form.seoTitle.length}/60</span></div>
                     <input value={form.seoTitle} onChange={e => setForm({ ...form, seoTitle: e.target.value })} maxLength={60}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} />
                   </div>
                   <div>
-                    <div className="flex justify-between mb-1"><label className="text-xs text-gray-500">وصف SEO</label><span className="text-xs text-gray-400">{form.seoDescription.length}/160</span></div>
+                    <div className="flex justify-between mb-1"><label className="text-xs text-gray-500">{t("وصف SEO")}</label><span className="text-xs text-gray-400">{form.seoDescription.length}/160</span></div>
                     <textarea value={form.seoDescription} onChange={e => setForm({ ...form, seoDescription: e.target.value })} maxLength={160} rows={3}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none resize-none transition" style={{ borderColor: '#E6ECF1' }} />
                   </div>
                   <div>
-                    <label className="text-xs text-gray-500 block mb-1">رابط URL</label>
+                    <label className="text-xs text-gray-500 block mb-1">{t("رابط URL")}</label>
                     <input value={form.seoSlug} onChange={e => setForm({ ...form, seoSlug: e.target.value })}
                       className="w-full px-3 py-2.5 rounded-xl border text-sm font-mono focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} placeholder="product-url-slug" />
                   </div>
@@ -923,13 +933,14 @@ export default function ProductsPage() {
                 <button type="button" onClick={() => setShowModal(false)}
                   className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 transition text-gray-600"
                   style={{ borderColor: '#E6ECF1' }}>
-                  إلغاء
+                  
+                  {t("إلغاء")}
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {saving ? 'جارٍ الحفظ…' : editingId ? 'حفظ التغييرات' : 'إنشاء المنتج'}
+                  {saving ? t("جارٍ الحفظ…") : editingId ? t("حفظ التغييرات") : t("إنشاء المنتج")}
                 </button>
               </div>
             </form>

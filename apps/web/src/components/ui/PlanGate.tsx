@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { Lock, Zap } from 'lucide-react';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import { canUseFeature, getFeature, Plan, PLAN_LABELS, planAtLeast } from '@/lib/plan-features';
@@ -14,6 +15,7 @@ interface PlanGateProps {
 const UPGRADE_HREF = '/dashboard/settings?tab=billing';
 
 function UpgradeCard({ hint, minPlan }: { hint: string; minPlan: Plan }) {
+  const t = useT();
   return (
     <div className="relative rounded-2xl border-2 border-dashed overflow-hidden"
       style={{ borderColor: '#C2CDD8', background: '#F6F8FA' }}>
@@ -23,14 +25,15 @@ function UpgradeCard({ hint, minPlan }: { hint: string; minPlan: Plan }) {
           <Lock className="h-5 w-5" style={{ color: '#8B5CF6' }} />
         </div>
         <div>
-          <p className="font-bold text-sm mb-1" style={{ color: '#0B3550' }}>ميزة {PLAN_LABELS[minPlan]}</p>
+          <p className="font-bold text-sm mb-1" style={{ color: '#0B3550' }}>{t("ميزة")}{' '}{PLAN_LABELS[minPlan]}</p>
           <p className="text-xs text-gray-500 leading-relaxed max-w-xs">{hint}</p>
         </div>
         <a href={UPGRADE_HREF}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
           style={{ background: 'linear-gradient(135deg, #20A9F4, #0E8AD6)' }}>
           <Zap className="h-3.5 w-3.5" />
-          ارفع خطتك
+          
+          {t("ارفع خطتك")}
         </a>
       </div>
     </div>
@@ -38,6 +41,7 @@ function UpgradeCard({ hint, minPlan }: { hint: string; minPlan: Plan }) {
 }
 
 function OverlayLock({ hint, minPlan }: { hint: string; minPlan: Plan }) {
+  const t = useT();
   return (
     <div className="relative rounded-2xl overflow-hidden">
       <div className="absolute inset-0 z-10 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-2 p-4"
@@ -47,7 +51,8 @@ function OverlayLock({ hint, minPlan }: { hint: string; minPlan: Plan }) {
         <a href={UPGRADE_HREF}
           className="px-3 py-1.5 rounded-lg text-xs font-bold text-white transition hover:opacity-90"
           style={{ background: '#20A9F4' }}>
-          ارفع خطتك
+          
+          {t("ارفع خطتك")}
         </a>
       </div>
     </div>
@@ -55,6 +60,7 @@ function OverlayLock({ hint, minPlan }: { hint: string; minPlan: Plan }) {
 }
 
 export function PlanBanner({ feature }: { feature: string }) {
+  const t = useT();
   const user = useAuthStore(s => s.user);
   const plan = (user?.plan ?? 'FREE') as Plan;
   const f = getFeature(feature);
@@ -68,20 +74,22 @@ export function PlanBanner({ feature }: { feature: string }) {
       <a href={UPGRADE_HREF}
         className="text-xs font-bold px-3 py-1.5 rounded-lg text-white transition hover:opacity-90"
         style={{ background: '#F59E0B' }}>
-        ارفع الآن
+        
+        {t("ارفع الآن")}
       </a>
     </div>
   );
 }
 
 export function PlanGate({ feature, children, fallback, mode = 'replace' }: PlanGateProps) {
+  const t = useT();
   const user = useAuthStore(s => s.user);
   const plan = (user?.plan ?? 'FREE') as Plan;
 
   if (canUseFeature(plan, feature)) return <>{children}</>;
 
   const f = getFeature(feature);
-  const hint = f?.upgradeHint ?? 'ارفع خطتك للوصول إلى هذه الميزة';
+  const hint = f?.upgradeHint ?? t("ارفع خطتك للوصول إلى هذه الميزة");
   const minPlan = f?.minPlan ?? 'PRO';
 
   if (fallback) return <>{fallback}</>;

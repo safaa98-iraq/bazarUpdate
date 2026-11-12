@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { Code2, Loader2, Eye, MousePointerClick, ShoppingBag, ToggleLeft, ToggleRight } from 'lucide-react';
 import { toast } from 'sonner';
@@ -11,7 +12,8 @@ const B = { p: '#0B3550', s: '#32506A', a: '#20A9F4', soft: '#E3F5FE' };
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function AdminWidgetPage() {
-  useDocumentTitle('الودجت المضمّن');
+  const t = useT();
+  useDocumentTitle(t("الودجت المضمّن"));
   const [stats, setStats] = useState<WidgetStat[]>([]);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<Record<string, boolean>>({});
@@ -25,7 +27,7 @@ export default function AdminWidgetPage() {
     try {
       const res = await api.get<{ success: boolean; data: WidgetStat[] }>('/api/widget/admin/stats');
       setStats(res.data ?? []);
-    } catch { toast.error('فشل تحميل إحصائيات الويدجت'); }
+    } catch { toast.error(t("فشل تحميل إحصائيات الويدجت")); }
     finally { setLoading(false); }
   };
 
@@ -37,8 +39,8 @@ export default function AdminWidgetPage() {
     try {
       await api.patch(`/api/widget/admin/stores/${storeId}`, { widgetEnabled: !current });
       setStats(prev => prev.map(s => s.storeId === storeId ? { ...s, widgetEnabled: !current } : s));
-      toast.success((!current) ? 'تم تفعيل الويدجت' : 'تم إيقاف الويدجت');
-    } catch { toast.error('فشل التحديث'); }
+      toast.success((!current) ? t("تم تفعيل الويدجت") : t("تم إيقاف الويدجت"));
+    } catch { toast.error(t("فشل التحديث")); }
     finally { setToggling(p => ({ ...p, [storeId]: false })); }
   };
 
@@ -56,18 +58,18 @@ export default function AdminWidgetPage() {
           <Code2 size={22} color={B.s} />
         </div>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 800, color: B.p, margin: 0 }}>إعدادات الويدجت</h1>
-          <p style={{ fontSize: 13, color: '#5B6B7B', margin: 0 }}>إدارة ويدجتات التجارة المدمجة عبر جميع المتاجر</p>
+          <h1 style={{ fontSize: 20, fontWeight: 800, color: B.p, margin: 0 }}>{t("إعدادات الويدجت")}</h1>
+          <p style={{ fontSize: 13, color: '#5B6B7B', margin: 0 }}>{t("إدارة ويدجتات التجارة المدمجة عبر جميع المتاجر")}</p>
         </div>
       </div>
 
       {/* Summary cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 24 }}>
         {[
-          { label: 'ويدجتات نشطة', value: totals.enabled, icon: <Code2 size={20} color={B.s} />, bg: '#EEF2F6' },
-          { label: 'المشاهدات', value: totals.impressions.toLocaleString('en'), icon: <Eye size={20} color="#20A9F4" />, bg: '#E3F5FE' },
-          { label: 'النقرات', value: totals.clicks.toLocaleString('en'), icon: <MousePointerClick size={20} color="#F59E0B" />, bg: '#FEF3E2' },
-          { label: 'التحويلات', value: totals.conversions.toLocaleString('en'), icon: <ShoppingBag size={20} color="#22B07D" />, bg: '#E2F7EE' },
+          { label: t("ويدجتات نشطة"), value: totals.enabled, icon: <Code2 size={20} color={B.s} />, bg: '#EEF2F6' },
+          { label: t("المشاهدات"), value: totals.impressions.toLocaleString('en'), icon: <Eye size={20} color="#20A9F4" />, bg: '#E3F5FE' },
+          { label: t("النقرات"), value: totals.clicks.toLocaleString('en'), icon: <MousePointerClick size={20} color="#F59E0B" />, bg: '#FEF3E2' },
+          { label: t("التحويلات"), value: totals.conversions.toLocaleString('en'), icon: <ShoppingBag size={20} color="#22B07D" />, bg: '#E2F7EE' },
         ].map(({ label, value, icon, bg }) => (
           <div key={label} style={{ background: '#fff', borderRadius: 10, border: '1px solid #E6ECF1', padding: '16px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -88,8 +90,8 @@ export default function AdminWidgetPage() {
             {((totals.conversions / totals.clicks) * 100).toFixed(1)}%
           </div>
           <div>
-            <p style={{ fontWeight: 700, color: B.p, margin: 0 }}>متوسط معدل التحويل</p>
-            <p style={{ fontSize: 13, color: '#5B6B7B', margin: 0 }}>{totals.conversions} طلب من {totals.clicks} نقرة عبر جميع الويدجتات</p>
+            <p style={{ fontWeight: 700, color: B.p, margin: 0 }}>{t("متوسط معدل التحويل")}</p>
+            <p style={{ fontSize: 13, color: '#5B6B7B', margin: 0 }}>{totals.conversions} {' '}{t("طلب من")}{' '}{totals.clicks} {' '}{t("نقرة عبر جميع الويدجتات")}</p>
           </div>
         </div>
       )}
@@ -104,14 +106,14 @@ export default function AdminWidgetPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
               <tr style={{ background: '#F6F8FA', borderBottom: '1px solid #E6ECF1' }}>
-                {['المتجر', 'الرابط', 'المشاهدات', 'النقرات', 'التحويلات', 'معدل CVR', 'الويدجت'].map(h => (
+                {[t("المتجر"), t("الرابط"), t("المشاهدات"), t("النقرات"), t("التحويلات"), t("معدل CVR"), t("الويدجت")].map(h => (
                   <th key={h} style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {stats.length === 0 ? (
-                <tr><td colSpan={7} style={{ padding: '40px 16px', textAlign: 'center', color: '#A3B0BC' }}>لا يوجد متاجر</td></tr>
+                <tr><td colSpan={7} style={{ padding: '40px 16px', textAlign: 'center', color: '#A3B0BC' }}>{t("لا يوجد متاجر")}</td></tr>
               ) : stats.map((s, idx) => {
                 const cvr = s.clicks > 0 ? ((s.conversions / s.clicks) * 100).toFixed(1) : '—';
                 return (
@@ -155,7 +157,7 @@ export default function AdminWidgetPage() {
                           <ToggleLeft size={24} color="#A3B0BC" />
                         )}
                         <span style={{ fontSize: 12, fontWeight: 600, color: s.widgetEnabled ? B.a : '#A3B0BC' }}>
-                          {s.widgetEnabled ? 'مفعّل' : 'موقوف'}
+                          {s.widgetEnabled ? t("مفعّل") : t("موقوف")}
                         </span>
                       </button>
                     </td>
@@ -169,9 +171,9 @@ export default function AdminWidgetPage() {
 
       {/* Integration guide */}
       <div style={{ marginTop: 24, background: B.p, borderRadius: 10, padding: 20, fontSize: 13 }}>
-        <p style={{ color: 'rgba(255,255,255,.5)', fontFamily: 'monospace', marginBottom: 8 }}>{'<!-- مثال على كود التضمين -->'}</p>
+        <p style={{ color: 'rgba(255,255,255,.5)', fontFamily: 'monospace', marginBottom: 8 }}>{t("<!-- مثال على كود التضمين -->")}</p>
         <pre style={{ color: '#86EFAC', fontFamily: 'monospace', fontSize: 12, lineHeight: 1.6, overflowX: 'auto', margin: 0 }}>{`<div data-storebuilder data-store="your-slug" data-theme="light"></div>\n<script src="${origin}/widget.js"></script>`}</pre>
-        <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 12, marginTop: 12, marginBottom: 0 }}>يحصل التجار على كود التضمين الخاص بهم من لوحة التحكم → إعدادات الويدجت.</p>
+        <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 12, marginTop: 12, marginBottom: 0 }}>{t("يحصل التجار على كود التضمين الخاص بهم من لوحة التحكم → إعدادات الويدجت.")}</p>
       </div>
     </div>
   );

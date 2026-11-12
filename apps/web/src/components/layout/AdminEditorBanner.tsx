@@ -1,9 +1,11 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEditorStore } from '@/lib/stores/editor.store';
 import { PenSquare, X } from 'lucide-react';
 
 export function AdminEditorBanner() {
+  const t = useT();
   const { isEditorMode, editingStore, exitEditorMode } = useEditorStore();
 
   if (!isEditorMode || !editingStore) return null;
@@ -13,14 +15,15 @@ export function AdminEditorBanner() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <PenSquare size={15} />
         <span>
-          أنت تعدّل متجر <strong>{editingStore.name}</strong> كمشرف — كل التغييرات مسجّلة
+          
+          {t("أنت تعدّل متجر")}{' '}<strong>{editingStore.name}</strong> {' '}{t("كمشرف — كل التغييرات مسجّلة")}
         </span>
       </div>
       <button
         onClick={exitEditorMode}
         style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', background: 'rgba(255,255,255,.2)', border: 'none', borderRadius: 10, cursor: 'pointer', color: '#fff', fontSize: 12, fontFamily: 'inherit' }}
       >
-        <X size={13} /> خروج
+        <X size={13} /> {' '}{t("خروج")}
       </button>
     </div>
   );

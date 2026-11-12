@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import { FilePlus2, Plus, Trash2, Loader2, X, Send, Package } from 'lucide-react';
 import { toast } from 'sonner';
@@ -13,7 +14,8 @@ const BRAND = { primary: '#0B3550', accent: '#20A9F4', border: '#E3F5FE', bg: '#
 interface DraftLine { productId: string; quantity: number }
 
 export default function DraftOrdersPage() {
-  useDocumentTitle('طلبات يدوية');
+  const t = useT();
+  useDocumentTitle(t("طلبات يدوية"));
   const [orders, setOrders] = useState<OrderPublic[]>([]);
   const [products, setProducts] = useState<ProductPublic[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +35,7 @@ export default function DraftOrdersPage() {
       ]);
       setOrders(ordersRes.data ?? []);
       setProducts(productsRes.data ?? []);
-    } catch { toast.error('فشل تحميل البيانات'); }
+    } catch { toast.error(t("فشل تحميل البيانات")); }
     finally { setLoading(false); }
   }, []);
 
@@ -59,8 +61,8 @@ export default function DraftOrdersPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName.trim()) { toast.error('اسم الزبون مطلوب'); return; }
-    if (!lines.length) { toast.error('أضف منتجاً واحداً على الأقل'); return; }
+    if (!customerName.trim()) { toast.error(t("اسم الزبون مطلوب")); return; }
+    if (!lines.length) { toast.error(t("أضف منتجاً واحداً على الأقل")); return; }
     setSaving(true);
     try {
       await api.post('/api/orders', {
@@ -70,24 +72,24 @@ export default function DraftOrdersPage() {
         shippingAddress: {},
         items: lines.map(l => ({ productId: l.productId, quantity: l.quantity })),
       });
-      toast.success('تم إنشاء الطلب كمسودة ✓');
+      toast.success(t("تم إنشاء الطلب كمسودة ✓"));
       resetForm();
       setShowModal(false);
       fetchAll();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل الإنشاء');
+      toast.error(err instanceof Error ? err.message : t("فشل الإنشاء"));
     } finally { setSaving(false); }
   };
 
   const publish = async (id: string) => {
-    if (!confirm('نشر هذا الطلب سينقص الكمية من المخزون ويجعله طلباً فعلياً. متابعة؟')) return;
+    if (!confirm(t("نشر هذا الطلب سينقص الكمية من المخزون ويجعله طلباً فعلياً. متابعة؟"))) return;
     setPublishingId(id);
     try {
       await api.post(`/api/orders/${id}/publish`);
-      toast.success('تم نشر الطلب ✓');
+      toast.success(t("تم نشر الطلب ✓"));
       fetchAll();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل النشر');
+      toast.error(err instanceof Error ? err.message : t("فشل النشر"));
     } finally { setPublishingId(null); }
   };
 
@@ -95,13 +97,13 @@ export default function DraftOrdersPage() {
     <div className="p-6 max-w-4xl" dir="rtl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="bz-large-title text-gray-900">طلبات يدوية</h1>
-          <p className="text-sm text-gray-500 mt-0.5">سجّل طلباً وصلك عبر الهاتف أو انستغرام، وانشره لاحقاً لينقص من المخزون</p>
+          <h1 className="bz-large-title text-gray-900">{t("طلبات يدوية")}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{t("سجّل طلباً وصلك عبر الهاتف أو انستغرام، وانشره لاحقاً لينقص من المخزون")}</p>
         </div>
         <button onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
           style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-          <Plus className="h-4 w-4" /> طلب جديد
+          <Plus className="h-4 w-4" /> {' '}{t("طلب جديد")}
         </button>
       </div>
 
@@ -110,7 +112,7 @@ export default function DraftOrdersPage() {
       ) : orders.length === 0 ? (
         <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: BRAND.border }}>
           <FilePlus2 className="h-12 w-12 mx-auto mb-4 text-gray-200" />
-          <p className="font-medium text-gray-400 mb-1">لا توجد طلبات يدوية بعد</p>
+          <p className="font-medium text-gray-400 mb-1">{t("لا توجد طلبات يدوية بعد")}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -122,14 +124,15 @@ export default function DraftOrdersPage() {
                     <span className="font-bold text-sm" style={{ color: BRAND.primary }}>{o.customerName}</span>
                     {o.customerPhone && <span className="text-xs text-gray-400" dir="ltr">{o.customerPhone}</span>}
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">{o.items.length} منتج · {formatCurrency(o.total)}</p>
+                  <p className="text-xs text-gray-500 mt-1">{o.items.length} {' '}{t("منتج ·")}{' '}{formatCurrency(o.total)}</p>
                   {o.draftNote && <p className="text-xs text-gray-400 mt-0.5">{o.draftNote}</p>}
                 </div>
                 <button onClick={() => publish(o.id)} disabled={publishingId === o.id}
                   className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white transition disabled:opacity-60"
                   style={{ background: BRAND.primary }}>
                   {publishingId === o.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
-                  نشر الطلب
+                  
+                  {t("نشر الطلب")}
                 </button>
               </div>
             </div>
@@ -141,18 +144,18 @@ export default function DraftOrdersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white" style={{ borderColor: BRAND.border }}>
-              <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>طلب يدوي جديد</h2>
+              <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>{t("طلب يدوي جديد")}</h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400"><X className="h-5 w-5" /></button>
             </div>
             <form onSubmit={handleCreate} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>اسم الزبون *</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("اسم الزبون *")}</label>
                   <input value={customerName} required onChange={e => setCustomerName(e.target.value)}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>رقم الهاتف</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("رقم الهاتف")}</label>
                   <input value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} dir="ltr"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
@@ -160,14 +163,14 @@ export default function DraftOrdersPage() {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-xs font-semibold" style={{ color: BRAND.primary }}>المنتجات</label>
+                  <label className="block text-xs font-semibold" style={{ color: BRAND.primary }}>{t("المنتجات")}</label>
                   <button type="button" onClick={addLine} className="text-xs font-bold flex items-center gap-1" style={{ color: BRAND.accent }}>
-                    <Plus className="h-3 w-3" /> إضافة منتج
+                    <Plus className="h-3 w-3" /> {' '}{t("إضافة منتج")}
                   </button>
                 </div>
                 {lines.length === 0 ? (
                   <div className="flex items-center justify-center gap-2 py-6 text-xs text-gray-400 border-2 border-dashed rounded-xl" style={{ borderColor: BRAND.border }}>
-                    <Package className="h-4 w-4" /> لا توجد منتجات مضافة
+                    <Package className="h-4 w-4" /> {' '}{t("لا توجد منتجات مضافة")}
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -188,26 +191,27 @@ export default function DraftOrdersPage() {
                   </div>
                 )}
                 {lines.length > 0 && (
-                  <p className="text-xs text-left mt-2 font-bold" style={{ color: BRAND.primary }}>الإجمالي: {formatCurrency(total)}</p>
+                  <p className="text-xs text-left mt-2 font-bold" style={{ color: BRAND.primary }}>{t("الإجمالي:")}{' '}{formatCurrency(total)}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>ملاحظة داخلية (اختياري)</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("ملاحظة داخلية (اختياري)")}</label>
                 <input value={draftNote} onChange={e => setDraftNote(e.target.value)}
-                  placeholder="مثال: طلب عبر انستغرام"
+                  placeholder={t("مثال: طلب عبر انستغرام")}
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
               </div>
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
                   className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 transition text-gray-600" style={{ borderColor: BRAND.border }}>
-                  إلغاء
+                  
+                  {t("إلغاء")}
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-                  {saving && <Loader2 className="h-4 w-4 animate-spin" />} حفظ كمسودة
+                  {saving && <Loader2 className="h-4 w-4 animate-spin" />} {' '}{t("حفظ كمسودة")}
                 </button>
               </div>
             </form>

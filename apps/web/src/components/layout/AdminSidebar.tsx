@@ -1,5 +1,7 @@
 'use client';
 
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useT } from '@/lib/i18n';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -31,6 +33,7 @@ const links = [
 ];
 
 export function AdminSidebar() {
+  const t = useT();
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
@@ -48,8 +51,8 @@ export function AdminSidebar() {
             <ClayIcon name="shield-check" size={28} />
           </span>
           <div className="leading-tight">
-            <p className="text-lg font-bold text-bz-ink">بازار</p>
-            <p className="text-[11px] text-bz-muted">لوحة الإدارة العليا</p>
+            <p className="text-lg font-bold text-bz-ink">{t("بازار")}</p>
+            <p className="text-[11px] text-bz-muted">{t("لوحة الإدارة العليا")}</p>
           </div>
         </div>
         <NotificationBell variant="light" />
@@ -83,9 +86,10 @@ export function AdminSidebar() {
           </span>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-bold text-bz-ink truncate">{user?.name}</p>
-            <p className="text-[11px] text-bz-muted">مشرف عام</p>
+            <p className="text-[11px] text-bz-muted">{t("مشرف عام")}</p>
           </div>
-          <button onClick={handleLogout} title="تسجيل الخروج" aria-label="تسجيل الخروج"
+          <LanguageSwitcher compact className="text-bz-muted text-xs" />
+          <button onClick={handleLogout} title={t("تسجيل الخروج")} aria-label={t("تسجيل الخروج")}
             className="h-9 w-9 rounded-full flex items-center justify-center text-bz-muted hover:bg-[#FDECEC] hover:text-bz-red">
             <LogOut size={16} />
           </button>

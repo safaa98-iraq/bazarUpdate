@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -22,7 +23,8 @@ const STATUS_CLS: Record<string, string> = {
 };
 
 export default function ShippingPage() {
-  useDocumentTitle('الشحن والبوالص');
+  const t = useT();
+  useDocumentTitle(t("الشحن والبوالص"));
   const [rows, setRows] = useState<Row[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [form, setForm] = useState({ senderName: '', senderPhone: '', pickupAddress: '' });
@@ -40,7 +42,7 @@ export default function ShippingPage() {
   }, []);
 
   const save = async () => {
-    try { await api.put('/api/stores/my/features/shipping', form); toast.success('تم حفظ إعدادات الشحن'); }
+    try { await api.put('/api/stores/my/features/shipping', form); toast.success(t("تم حفظ إعدادات الشحن")); }
     catch (e) { toast.error((e as Error).message); }
   };
   const setStatus = async (row: Row, status: ShipmentStatus) => {
@@ -52,11 +54,11 @@ export default function ShippingPage() {
     <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-12 max-w-6xl">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="bz-large-title">الشحن والبوالص</h1>
-          <p className="text-sm text-bz-muted mt-1">أنشئ البوليصة من صفحة الطلب، اطبعها وسلّمها لمندوب التوصيل، وحدّث حالة كل شحنة بنفسك — والزبون يتابعها من رابط التتبع.</p>
+          <h1 className="bz-large-title">{t("الشحن والبوالص")}</h1>
+          <p className="text-sm text-bz-muted mt-1">{t("أنشئ البوليصة من صفحة الطلب، اطبعها وسلّمها لمندوب التوصيل، وحدّث حالة كل شحنة بنفسك — والزبون يتابعها من رابط التتبع.")}</p>
         </div>
         <div className="flex gap-2">
-          {selected.length > 0 && <a href={`/dashboard/shipping/print?orders=${selected.join(',')}`} target="_blank" className="bz-btn bz-btn-outline"><Printer className="h-4 w-4" /> طباعة {selected.length}</a>}
+          {selected.length > 0 && <a href={`/dashboard/shipping/print?orders=${selected.join(',')}`} target="_blank" className="bz-btn bz-btn-outline"><Printer className="h-4 w-4" /> {' '}{t("طباعة")}{' '}{selected.length}</a>}
         </div>
       </div>
 
@@ -65,16 +67,16 @@ export default function ShippingPage() {
           <div className="flex flex-wrap gap-2 mb-3">
             {['', 'CREATED', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED', 'RETURNED'].map(s => (
               <button key={s} onClick={() => setFilter(s)} className={`bz-chip border ${filter === s ? 'bg-bz-ink text-white border-bz-ink' : 'bg-white border-bz-line text-bz-ink-2'}`}>
-                {s ? SHIPMENT_STATUS_LABELS[s as ShipmentStatus] : 'الكل'}
+                {s ? SHIPMENT_STATUS_LABELS[s as ShipmentStatus] : t("الكل")}
               </button>
             ))}
           </div>
           {rows.length === 0 ? (
             <div className="bz-card p-10 text-center">
               <ClayIcon name="truck" size={84} className="mx-auto mb-3" />
-              <p className="bz-headline">لا توجد شحنات بعد</p>
-              <p className="text-sm text-bz-muted mt-1 mb-4">افتح أي طلب واضغط «إنشاء وطباعة البوليصة».</p>
-              <Link href="/dashboard/orders" className="bz-btn">الذهاب إلى الطلبات</Link>
+              <p className="bz-headline">{t("لا توجد شحنات بعد")}</p>
+              <p className="text-sm text-bz-muted mt-1 mb-4">{t("افتح أي طلب واضغط «إنشاء وطباعة البوليصة».")}</p>
+              <Link href="/dashboard/orders" className="bz-btn">{t("الذهاب إلى الطلبات")}</Link>
             </div>
           ) : (
             <div className="bz-card overflow-hidden">
@@ -90,8 +92,8 @@ export default function ShippingPage() {
                   <select value={r.status} onChange={e => setStatus(r, e.target.value as ShipmentStatus)} className={`h-8 px-2 text-xs font-semibold border-0 rounded-full ${STATUS_CLS[r.status]}`}>
                     {(Object.keys(SHIPMENT_STATUS_LABELS) as ShipmentStatus[]).map(s => <option key={s} value={s}>{SHIPMENT_STATUS_LABELS[s]}</option>)}
                   </select>
-                  <a title="البوليصة" href={`/dashboard/shipping/print?orders=${r.orderId}`} target="_blank" className="h-8 w-8 rounded-full hover:bg-bz-bg flex items-center justify-center text-bz-muted"><Printer className="h-4 w-4" /></a>
-                  {settings && <a title="صفحة التتبع" href={`/store/${settings.slug}/track/${r.trackingCode}`} target="_blank" className="h-8 w-8 rounded-full hover:bg-bz-bg flex items-center justify-center text-bz-muted"><ExternalLink className="h-4 w-4" /></a>}
+                  <a title={t("البوليصة")} href={`/dashboard/shipping/print?orders=${r.orderId}`} target="_blank" className="h-8 w-8 rounded-full hover:bg-bz-bg flex items-center justify-center text-bz-muted"><Printer className="h-4 w-4" /></a>
+                  {settings && <a title={t("صفحة التتبع")} href={`/store/${settings.slug}/track/${r.trackingCode}`} target="_blank" className="h-8 w-8 rounded-full hover:bg-bz-bg flex items-center justify-center text-bz-muted"><ExternalLink className="h-4 w-4" /></a>}
                 </div>
               ))}
             </div>
@@ -99,13 +101,13 @@ export default function ShippingPage() {
         </section>
 
         <aside className="bz-card p-5 h-fit">
-          <div className="flex items-center gap-3 mb-4"><ClayIcon name="truck" size={40} /><h2 className="bz-headline">بيانات المرسل على البوليصة</h2></div>
+          <div className="flex items-center gap-3 mb-4"><ClayIcon name="truck" size={40} /><h2 className="bz-headline">{t("بيانات المرسل على البوليصة")}</h2></div>
           <div className="space-y-2">
-            <input placeholder="اسم المرسل (افتراضياً اسم المتجر)" className="w-full h-10 px-3 border border-bz-line text-sm" value={form.senderName} onChange={e => setForm({ ...form, senderName: e.target.value })} />
-            <input dir="ltr" placeholder="هاتف المرسل" className="w-full h-10 px-3 border border-bz-line text-sm" value={form.senderPhone} onChange={e => setForm({ ...form, senderPhone: e.target.value })} />
-            <input placeholder="عنوان الاستلام" className="w-full h-10 px-3 border border-bz-line text-sm" value={form.pickupAddress} onChange={e => setForm({ ...form, pickupAddress: e.target.value })} />
+            <input placeholder={t("اسم المرسل (افتراضياً اسم المتجر)")} className="w-full h-10 px-3 border border-bz-line text-sm" value={form.senderName} onChange={e => setForm({ ...form, senderName: e.target.value })} />
+            <input dir="ltr" placeholder={t("هاتف المرسل")} className="w-full h-10 px-3 border border-bz-line text-sm" value={form.senderPhone} onChange={e => setForm({ ...form, senderPhone: e.target.value })} />
+            <input placeholder={t("عنوان الاستلام")} className="w-full h-10 px-3 border border-bz-line text-sm" value={form.pickupAddress} onChange={e => setForm({ ...form, pickupAddress: e.target.value })} />
           </div>
-          <button onClick={save} className="bz-btn w-full mt-4"><Save className="h-4 w-4" /> حفظ</button>
+          <button onClick={save} className="bz-btn w-full mt-4"><Save className="h-4 w-4" /> {' '}{t("حفظ")}</button>
         </aside>
       </div>
     </div>

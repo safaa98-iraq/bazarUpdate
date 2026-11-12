@@ -52,3 +52,15 @@ export function detectLocale(h: HeaderGetter): Locale {
   if (first) return prefersKurdish ? 'ckb' : 'en';
   return DEFAULT_LOCALE;
 }
+
+/** The visitor's saved language, read from the cookie in the browser ('ar' on the server). */
+export function currentLocale(): Locale {
+  if (typeof document === 'undefined') return 'ar';
+  const m = document.cookie.match(new RegExp(`(?:^|; )${LOCALE_COOKIE}=([^;]+)`));
+  return m && isLocale(m[1]) ? m[1] : 'ar';
+}
+
+/** Intl locale for dates and numbers in app screens. */
+export function intlLocale(locale: Locale = currentLocale()): string {
+  return locale === 'en' ? 'en-US' : locale === 'ckb' ? 'ckb-IQ' : 'ar-IQ';
+}

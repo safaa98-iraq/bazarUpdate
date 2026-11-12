@@ -1,5 +1,6 @@
 'use client';
 
+import { intlLocale, useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { apiFetch } from '@/lib/api';
@@ -28,7 +29,8 @@ const FILTERS: { value: MerchantIssueType | 'ALL'; label: string }[] = [
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function MerchantIssuesPage() {
-  useDocumentTitle('تجار بحاجة متابعة');
+  const t = useT();
+  useDocumentTitle(t("تجار بحاجة متابعة"));
   const [issues, setIssues] = useState<MerchantIssue[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<MerchantIssueType | 'ALL'>('ALL');
@@ -59,8 +61,8 @@ export default function MerchantIssuesPage() {
           <AlertTriangle className="h-5 w-5" style={{ color: '#B45309' }} />
         </div>
         <div>
-          <h1 className="bz-large-title text-gray-900">تجار بحاجة متابعة</h1>
-          <p className="text-sm text-gray-500">إشارات تلقائية على تجار قد يحتاجون دعماً — لا مبيعات، بلا منتجات، دفع معلّق، أو متجر موقوف</p>
+          <h1 className="bz-large-title text-gray-900">{t("تجار بحاجة متابعة")}</h1>
+          <p className="text-sm text-gray-500">{t("إشارات تلقائية على تجار قد يحتاجون دعماً — لا مبيعات، بلا منتجات، دفع معلّق، أو متجر موقوف")}</p>
         </div>
       </div>
 
@@ -78,7 +80,7 @@ export default function MerchantIssuesPage() {
       {filtered.length === 0 ? (
         <div className="rounded-2xl p-10 text-center bg-white border-2 border-dashed" style={{ borderColor: B.border }}>
           <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-30" style={{ color: B.p }} />
-          <p className="font-semibold text-gray-500">لا توجد إشارات حالياً — كل شيء يبدو بخير</p>
+          <p className="font-semibold text-gray-500">{t("لا توجد إشارات حالياً — كل شيء يبدو بخير")}</p>
         </div>
       ) : (
         <div className="rounded-2xl overflow-hidden bg-white border" style={{ borderColor: B.border }}>
@@ -97,18 +99,19 @@ export default function MerchantIssuesPage() {
                     <span className="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: meta.bg, color: meta.color }}>{meta.label}</span>
                   </div>
                   <p className="text-xs text-gray-400 truncate">{issue.detail}{issue.storeName ? ` — ${issue.storeName}` : ''}</p>
-                  <p className="text-xs text-gray-300">{new Date(issue.since).toLocaleDateString('ar-IQ')}</p>
+                  <p className="text-xs text-gray-300">{new Date(issue.since).toLocaleDateString(intlLocale())}</p>
                 </div>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
                   {issue.merchantPhone && (
                     <a href={`tel:${issue.merchantPhone}`}
-                      className="w-8 h-8 rounded-xl flex items-center justify-center border transition hover:bg-green-50" style={{ borderColor: B.border }} title="اتصال">
+                      className="w-8 h-8 rounded-xl flex items-center justify-center border transition hover:bg-green-50" style={{ borderColor: B.border }} title={t("اتصال")}>
                       <Phone size={14} className="text-bz-brand" />
                     </a>
                   )}
                   <Link href="/admin/merchants" title={issue.merchantEmail}
                     className="text-xs font-bold px-3 py-1.5 rounded-xl transition" style={{ background: B.bg, color: B.p }}>
-                    عرض
+                    
+                    {t("عرض")}
                   </Link>
                 </div>
               </div>

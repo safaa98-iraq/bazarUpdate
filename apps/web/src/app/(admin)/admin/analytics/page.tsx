@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
@@ -15,7 +16,8 @@ const B = { p: '#0B3550', s: '#32506A', a: '#20A9F4', soft: '#E3F5FE' };
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function AdminAnalyticsPage() {
-  useDocumentTitle('التحليلات');
+  const t = useT();
+  useDocumentTitle(t("التحليلات"));
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,22 +39,22 @@ export default function AdminAnalyticsPage() {
   return (
     <div style={{ padding: 32 }}>
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>التحليلات</h1>
-        <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>نظرة عامة على أداء المنصة</p>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: B.p, margin: 0 }}>{t("التحليلات")}</h1>
+        <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{t("نظرة عامة على أداء المنصة")}</p>
       </div>
 
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 28 }}>
-        <KpiCard title="إجمالي الإيرادات" value={formatCurrency(data?.totalRevenue ?? 0)} icon={<DollarSign size={20} color="#22B07D" />} bg="#E2F7EE" />
-        <KpiCard title="إجمالي التجار" value={String(data?.totalMerchants ?? 0)} icon={<Users size={20} color={B.s} />} bg="#EEF2F6" />
-        <KpiCard title="المتاجر النشطة" value={String(data?.activeStores ?? 0)} icon={<Store size={20} color="#20A9F4" />} bg="#E3F5FE" />
-        <KpiCard title="تجار جدد" value={`+${data?.newMerchantsThisMonth ?? 0}`} icon={<TrendingUp size={20} color={B.a} />} bg="#E3F5FE" sub="هذا الشهر" />
+        <KpiCard title={t("إجمالي الإيرادات")} value={formatCurrency(data?.totalRevenue ?? 0)} icon={<DollarSign size={20} color="#22B07D" />} bg="#E2F7EE" />
+        <KpiCard title={t("إجمالي التجار")} value={String(data?.totalMerchants ?? 0)} icon={<Users size={20} color={B.s} />} bg="#EEF2F6" />
+        <KpiCard title={t("المتاجر النشطة")} value={String(data?.activeStores ?? 0)} icon={<Store size={20} color="#20A9F4" />} bg="#E3F5FE" />
+        <KpiCard title={t("تجار جدد")} value={`+${data?.newMerchantsThisMonth ?? 0}`} icon={<TrendingUp size={20} color={B.a} />} bg="#E3F5FE" sub={t("هذا الشهر")} />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
         {/* Revenue by month */}
         <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #E6ECF1' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 16 }}>الإيرادات الشهرية</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 16 }}>{t("الإيرادات الشهرية")}</h2>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={data?.revenueByMonth ?? []}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F6F8FA" />
@@ -66,7 +68,7 @@ export default function AdminAnalyticsPage() {
 
         {/* Top stores bar */}
         <div style={{ background: '#fff', borderRadius: 10, padding: 24, border: '1px solid #E6ECF1' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 16 }}>أفضل 5 متاجر بالإيرادات</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, marginBottom: 16 }}>{t("أفضل 5 متاجر بالإيرادات")}</h2>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={data?.topStores ?? []} layout="vertical">
               <XAxis type="number" tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}`} />
@@ -81,15 +83,15 @@ export default function AdminAnalyticsPage() {
       {/* Top stores table */}
       <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E6ECF1', overflow: 'hidden' }}>
         <div style={{ padding: '16px 24px', borderBottom: '1px solid #E6ECF1' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, margin: 0 }}>أفضل المتاجر أداءً</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 700, color: B.p, margin: 0 }}>{t("أفضل المتاجر أداءً")}</h2>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr style={{ background: '#F6F8FA' }}>
               <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>#</th>
-              <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>المتجر</th>
-              <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>الطلبات</th>
-              <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>الإيرادات</th>
+              <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("المتجر")}</th>
+              <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("الطلبات")}</th>
+              <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: B.p, fontSize: 12 }}>{t("الإيرادات")}</th>
             </tr>
           </thead>
           <tbody>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useState, useEffect } from 'react';
 import {
   Store, Package, DollarSign, ShoppingCart, CheckCircle, XCircle, Clock,
@@ -32,7 +33,8 @@ type Tab = 'applications' | 'listings' | 'commissions' | 'analytics';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function AdminMarketplacePage() {
-  useDocumentTitle('إدارة السوق');
+  const t = useT();
+  useDocumentTitle(t("إدارة السوق"));
   const [tab, setTab] = useState<Tab>('applications');
   const [applications, setApplications] = useState<Application[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
@@ -71,7 +73,7 @@ export default function AdminMarketplacePage() {
   }
 
   async function handleReject(id: string) {
-    const reason = window.prompt('سبب الرفض (اختياري):');
+    const reason = window.prompt(t("سبب الرفض (اختياري):"));
     await apiFetch(`/api/marketplace/admin/applications/${id}/reject`, { method: 'POST', body: JSON.stringify({ reason }) });
     load();
   }
@@ -105,17 +107,17 @@ export default function AdminMarketplacePage() {
   }
 
   const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
-    { key: 'applications', label: 'طلبات الانضمام', icon: Store },
-    { key: 'listings', label: 'المنتجات', icon: Package },
-    { key: 'commissions', label: 'العمولات', icon: DollarSign },
-    { key: 'analytics', label: 'الإحصائيات', icon: BarChart2 },
+    { key: 'applications', label: t("طلبات الانضمام"), icon: Store },
+    { key: 'listings', label: t("المنتجات"), icon: Package },
+    { key: 'commissions', label: t("العمولات"), icon: DollarSign },
+    { key: 'analytics', label: t("الإحصائيات"), icon: BarChart2 },
   ];
 
   return (
     <div style={{ padding: 32 }} dir="rtl">
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#0B3550', margin: 0 }}>إدارة السوق الموحد</h1>
-        <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>مراجعة الطلبات والمنتجات وضبط العمولات</p>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#0B3550', margin: 0 }}>{t("إدارة السوق الموحد")}</h1>
+        <p style={{ fontSize: 13, color: '#5B6B7B', margin: '4px 0 0' }}>{t("مراجعة الطلبات والمنتجات وضبط العمولات")}</p>
       </div>
 
       {/* Tabs */}
@@ -139,7 +141,7 @@ export default function AdminMarketplacePage() {
                   appStatus === s ? 'text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
                 style={appStatus === s ? { background: '#0B3550' } : {}}>
-                {s === 'pending' ? 'قيد الانتظار' : s === 'approved' ? 'مُعتمد' : 'مرفوض'}
+                {s === 'pending' ? t("قيد الانتظار") : s === 'approved' ? t("مُعتمد") : t("مرفوض")}
               </button>
             ))}
             <button onClick={() => load()} className="mr-auto flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
@@ -152,7 +154,7 @@ export default function AdminMarketplacePage() {
               {[1, 2, 3].map(i => <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />)}
             </div>
           ) : applications.length === 0 ? (
-            <div className="py-12 text-center text-gray-400 text-sm">لا توجد طلبات</div>
+            <div className="py-12 text-center text-gray-400 text-sm">{t("لا توجد طلبات")}</div>
           ) : (
             <div className="space-y-3">
               {applications.map(app => (
@@ -171,11 +173,11 @@ export default function AdminMarketplacePage() {
                     <div className="flex gap-2">
                       <button onClick={() => handleApprove(app.id)}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100">
-                        <CheckCircle className="h-3.5 w-3.5" /> قبول
+                        <CheckCircle className="h-3.5 w-3.5" /> {' '}{t("قبول")}
                       </button>
                       <button onClick={() => handleReject(app.id)}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100">
-                        <XCircle className="h-3.5 w-3.5" /> رفض
+                        <XCircle className="h-3.5 w-3.5" /> {' '}{t("رفض")}
                       </button>
                     </div>
                   )}
@@ -183,7 +185,7 @@ export default function AdminMarketplacePage() {
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
                       appStatus === 'approved' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'
                     }`}>
-                      {appStatus === 'approved' ? 'مُعتمد' : 'مرفوض'}
+                      {appStatus === 'approved' ? t("مُعتمد") : t("مرفوض")}
                     </span>
                   )}
                 </div>
@@ -205,11 +207,11 @@ export default function AdminMarketplacePage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 text-right">
-                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">المنتج</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">المتجر</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">السعر</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">الحالة</th>
-                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">إجراءات</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">{t("المنتج")}</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">{t("المتجر")}</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">{t("السعر")}</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">{t("الحالة")}</th>
+                    <th className="px-4 py-3 text-xs font-semibold text-gray-500">{t("إجراءات")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -231,12 +233,12 @@ export default function AdminMarketplacePage() {
                           l.approvalStatus === 'pending' ? 'bg-yellow-50 text-yellow-600' :
                           'bg-red-50 text-red-500'
                         }`}>
-                          {l.approvalStatus === 'approved' ? 'مُعتمد' : l.approvalStatus === 'pending' ? 'قيد المراجعة' : 'مرفوض'}
+                          {l.approvalStatus === 'approved' ? t("مُعتمد") : l.approvalStatus === 'pending' ? t("قيد المراجعة") : t("مرفوض")}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <button onClick={() => toggleFeatured(l)} title={l.isFeatured ? 'إلغاء التمييز' : 'تمييز'}
+                          <button onClick={() => toggleFeatured(l)} title={l.isFeatured ? t("إلغاء التمييز") : t("تمييز")}
                             className={`h-7 w-7 rounded-lg flex items-center justify-center transition ${l.isFeatured ? 'bg-yellow-50 text-yellow-500' : 'hover:bg-gray-100 text-gray-400'}`}>
                             {l.isFeatured ? <Star className="h-3.5 w-3.5" /> : <StarOff className="h-3.5 w-3.5" />}
                           </button>
@@ -260,16 +262,16 @@ export default function AdminMarketplacePage() {
       {/* Commissions */}
       {tab === 'commissions' && (
         <div className="max-w-lg">
-          <p className="text-sm text-gray-500 mb-4">حدد نسبة عمولة المنصة لكل فئة من المنتجات. استخدم <strong>all</strong> للعمولة العامة.</p>
+          <p className="text-sm text-gray-500 mb-4">{t("حدد نسبة عمولة المنصة لكل فئة من المنتجات. استخدم")}{' '}<strong>all</strong> {' '}{t("للعمولة العامة.")}</p>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
             {commissions.length === 0 ? (
-              <div className="py-8 text-center text-gray-400 text-sm">لا توجد قواعد عمولة</div>
+              <div className="py-8 text-center text-gray-400 text-sm">{t("لا توجد قواعد عمولة")}</div>
             ) : (
               <table className="w-full text-sm">
                 <thead><tr className="border-b border-gray-100 text-right">
-                  <th className="px-4 py-3 text-xs font-semibold text-gray-500">الفئة</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-gray-500">النسبة</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-gray-500">{t("الفئة")}</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-gray-500">{t("النسبة")}</th>
                 </tr></thead>
                 <tbody className="divide-y divide-gray-50">
                   {commissions.map(c => (
@@ -285,16 +287,16 @@ export default function AdminMarketplacePage() {
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
             <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-              <Settings className="h-4 w-4" /> إضافة / تعديل عمولة
+              <Settings className="h-4 w-4" /> {' '}{t("إضافة / تعديل عمولة")}
             </h3>
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">الفئة</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">{t("الفئة")}</label>
                 <input value={newCommCategory} onChange={e => setNewCommCategory(e.target.value)}
-                  placeholder="all أو إلكترونيات..." className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 outline-none" />
+                  placeholder={t("all أو إلكترونيات...")} className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 outline-none" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">النسبة %</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">{t("النسبة %")}</label>
                 <input value={newCommRate} onChange={e => setNewCommRate(e.target.value)}
                   type="number" min={0} max={100} placeholder="10"
                   className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 outline-none" />
@@ -303,7 +305,8 @@ export default function AdminMarketplacePage() {
             <button onClick={saveCommission}
               className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
               style={{ background: '#0B3550' }}>
-              حفظ
+              
+              {t("حفظ")}
             </button>
           </div>
         </div>
@@ -314,10 +317,10 @@ export default function AdminMarketplacePage() {
         <div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: 'إجمالي الطلبات', value: analytics.totalOrders, icon: ShoppingCart, fmt: (v: number) => v.toLocaleString('en') },
-              { label: 'إجمالي الإيرادات', value: analytics.totalRevenue, icon: TrendingUp, fmt: formatCurrency },
-              { label: 'عدد العملاء', value: analytics.uniqueCustomers, icon: Store, fmt: (v: number) => v.toLocaleString('en') },
-              { label: 'متوسط قيمة الطلب', value: analytics.avgOrderValue, icon: BarChart2, fmt: formatCurrency },
+              { label: t("إجمالي الطلبات"), value: analytics.totalOrders, icon: ShoppingCart, fmt: (v: number) => v.toLocaleString('en') },
+              { label: t("إجمالي الإيرادات"), value: analytics.totalRevenue, icon: TrendingUp, fmt: formatCurrency },
+              { label: t("عدد العملاء"), value: analytics.uniqueCustomers, icon: Store, fmt: (v: number) => v.toLocaleString('en') },
+              { label: t("متوسط قيمة الطلب"), value: analytics.avgOrderValue, icon: BarChart2, fmt: formatCurrency },
             ].map(card => (
               <div key={card.label} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -330,9 +333,9 @@ export default function AdminMarketplacePage() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-            <h3 className="text-sm font-bold text-gray-700 mb-4">إيرادات آخر 30 يوم</h3>
+            <h3 className="text-sm font-bold text-gray-700 mb-4">{t("إيرادات آخر 30 يوم")}</h3>
             {analytics.revenueByDay.length === 0 ? (
-              <p className="text-sm text-gray-400 py-4">لا توجد بيانات</p>
+              <p className="text-sm text-gray-400 py-4">{t("لا توجد بيانات")}</p>
             ) : (
               <div className="flex items-end gap-1 h-32">
                 {analytics.revenueByDay.map((d, i) => {

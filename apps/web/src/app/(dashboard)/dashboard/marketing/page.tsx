@@ -1,5 +1,6 @@
 'use client';
 
+import { intlLocale, useT } from '@/lib/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import {
   Plus, Trash2, Copy, Tag, Loader2, X, ToggleLeft, ToggleRight, Zap,
@@ -29,6 +30,7 @@ const emptyCouponForm: CouponForm = {
 };
 
 function CouponsTab() {
+  const t = useT();
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
   const couponLimit = getFeatureLimit(plan, 'coupons');
   const [coupons, setCoupons] = useState<CouponPublic[]>([]);
@@ -41,7 +43,7 @@ function CouponsTab() {
     try {
       const res = await api.get<{ success: boolean; data: CouponPublic[] }>('/api/coupons');
       setCoupons(res.data ?? []);
-    } catch { toast.error('فشل تحميل الكوبونات'); }
+    } catch { toast.error(t("فشل تحميل الكوبونات")); }
     finally { setLoading(false); }
   }, []);
 
@@ -58,9 +60,9 @@ function CouponsTab() {
         maxUses: form.maxUses ? parseInt(form.maxUses) : undefined,
         expiresAt: form.expiresAt || undefined,
       });
-      toast.success('تم إنشاء الكوبون ✓');
+      toast.success(t("تم إنشاء الكوبون ✓"));
       setShowModal(false); setForm(emptyCouponForm); fetchCoupons();
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل الحفظ'); }
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل الحفظ")); }
     finally { setSaving(false); }
   };
 
@@ -68,16 +70,16 @@ function CouponsTab() {
     try {
       await api.patch(`/api/coupons/${c.id}`, { isActive: !c.isActive });
       fetchCoupons();
-    } catch { toast.error('فشل التحديث'); }
+    } catch { toast.error(t("فشل التحديث")); }
   };
 
   const deleteCoupon = async (id: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذا الكوبون؟')) return;
-    try { await api.delete(`/api/coupons/${id}`); toast.success('تم الحذف'); fetchCoupons(); }
-    catch { toast.error('فشل الحذف'); }
+    if (!confirm(t("هل أنت متأكد من حذف هذا الكوبون؟"))) return;
+    try { await api.delete(`/api/coupons/${id}`); toast.success(t("تم الحذف")); fetchCoupons(); }
+    catch { toast.error(t("فشل الحذف")); }
   };
 
-  const copyCode = (code: string) => { navigator.clipboard.writeText(code); toast.success(`تم نسخ الكود: ${code}`); };
+  const copyCode = (code: string) => { navigator.clipboard.writeText(code); toast.success(t("تم نسخ الكود: {0}", [code])); };
 
   const generateCode = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -95,28 +97,28 @@ function CouponsTab() {
           <Zap className="h-4 w-4 flex-shrink-0" style={{ color: atLimit ? '#F04F4F' : '#F59E0B' }} />
           <p className="text-sm flex-1" style={{ color: atLimit ? '#C93636' : '#B45309' }}>
             {couponLimit === 0
-              ? 'أكواد الخصم غير متاحة في الخطة المجانية'
-              : `خطة ${PLAN_LABELS[plan]}: ${coupons.length} / ${couponLimit} كوبون`}
-            {atLimit && ' — ارفع خطتك للمزيد'}
+              ? t("أكواد الخصم غير متاحة في الخطة المجانية")
+              : t("خطة {0}: {1} / {2} كوبون", [PLAN_LABELS[plan], coupons.length, couponLimit])}
+            {atLimit && t(" — ارفع خطتك للمزيد")}
           </p>
-          {atLimit && <a href="/dashboard/upgrade" className="text-xs font-bold px-3 py-1.5 rounded-xl text-white" style={{ background: '#20A9F4' }}>ارفع الآن</a>}
+          {atLimit && <a href="/dashboard/upgrade" className="text-xs font-bold px-3 py-1.5 rounded-xl text-white" style={{ background: '#20A9F4' }}>{t("ارفع الآن")}</a>}
         </div>
       )}
 
       <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-gray-500">{coupons.length} كوبون • {totalSavings} استخدام إجمالي</p>
+        <p className="text-sm text-gray-500">{coupons.length} {' '}{t("كوبون •")}{' '}{totalSavings} {' '}{t("استخدام إجمالي")}</p>
         <button onClick={() => { setForm(emptyCouponForm); setShowModal(true); }} disabled={atLimit}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
           style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-          <Plus className="h-4 w-4" /> إنشاء كوبون
+          <Plus className="h-4 w-4" /> {' '}{t("إنشاء كوبون")}
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'إجمالي الكوبونات', value: coupons.length, color: BRAND.primary },
-          { label: 'كوبونات نشطة', value: coupons.filter(c => c.isActive).length, color: '#22B07D' },
-          { label: 'إجمالي الاستخدامات', value: totalSavings, color: BRAND.accent },
+          { label: t("إجمالي الكوبونات"), value: coupons.length, color: BRAND.primary },
+          { label: t("كوبونات نشطة"), value: coupons.filter(c => c.isActive).length, color: '#22B07D' },
+          { label: t("إجمالي الاستخدامات"), value: totalSavings, color: BRAND.accent },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl border p-4" style={{ borderColor: BRAND.border }}>
             <p className="text-xs text-gray-500 mb-1">{s.label}</p>
@@ -130,16 +132,16 @@ function CouponsTab() {
       ) : coupons.length === 0 ? (
         <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: BRAND.border }}>
           <Tag className="h-12 w-12 mx-auto mb-4 text-gray-200" />
-          <p className="font-medium text-gray-400 mb-1">لا توجد كوبونات بعد</p>
-          <p className="text-sm text-gray-400 mb-6">أنشئ كوبون خصم لتشجيع العملاء على الشراء</p>
+          <p className="font-medium text-gray-400 mb-1">{t("لا توجد كوبونات بعد")}</p>
+          <p className="text-sm text-gray-400 mb-6">{t("أنشئ كوبون خصم لتشجيع العملاء على الشراء")}</p>
           <button onClick={() => setShowModal(true)} className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
-            style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>إنشاء أول كوبون</button>
+            style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>{t("إنشاء أول كوبون")}</button>
         </div>
       ) : (
         <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: BRAND.border }}>
           <table className="w-full text-sm">
             <thead className="border-b" style={{ background: '#F6F8FA' }}>
-              <tr>{['الكود', 'الخصم', 'الحد الأدنى', 'الاستخدام', 'الانتهاء', 'الحالة', 'إجراءات'].map(h => (
+              <tr>{[t("الكود"), t("الخصم"), t("الحد الأدنى"), t("الاستخدام"), t("الانتهاء"), t("الحالة"), t("إجراءات")].map(h => (
                 <th key={h} className="px-4 py-3 text-right font-semibold" style={{ color: BRAND.primary }}>{h}</th>
               ))}</tr>
             </thead>
@@ -155,15 +157,15 @@ function CouponsTab() {
                         <button onClick={() => copyCode(c.code)} className="p-1 rounded-lg hover:bg-gray-100 transition text-gray-400"><Copy className="h-3.5 w-3.5" /></button>
                       </div>
                     </td>
-                    <td className="px-4 py-3"><span className="font-bold" style={{ color: BRAND.accent }}>{c.discountType === 'percent' ? `${c.discountValue}%` : `${c.discountValue} د.ع`}</span></td>
-                    <td className="px-4 py-3 text-gray-500">{c.minOrderAmount ? `${c.minOrderAmount} د.ع` : '—'}</td>
+                    <td className="px-4 py-3"><span className="font-bold" style={{ color: BRAND.accent }}>{c.discountType === 'percent' ? `${c.discountValue}%` : t("{0} د.ع", [c.discountValue])}</span></td>
+                    <td className="px-4 py-3 text-gray-500">{c.minOrderAmount ? t("{0} د.ع", [c.minOrderAmount]) : '—'}</td>
                     <td className="px-4 py-3"><span style={{ color: isExhausted ? '#F04F4F' : 'inherit' }}>{c.usedCount}{c.maxUses ? ` / ${c.maxUses}` : ''}</span></td>
                     <td className="px-4 py-3 text-gray-500">
-                      {c.expiresAt ? <span style={{ color: isExpired ? '#F04F4F' : 'inherit' }}>{isExpired ? 'منتهي' : formatDate(c.expiresAt)}</span> : '—'}
+                      {c.expiresAt ? <span style={{ color: isExpired ? '#F04F4F' : 'inherit' }}>{isExpired ? t("منتهي") : formatDate(c.expiresAt)}</span> : '—'}
                     </td>
                     <td className="px-4 py-3">
                       <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: c.isActive && !isExpired && !isExhausted ? '#E2F7EE' : '#F6F8FA', color: c.isActive && !isExpired && !isExhausted ? '#17845C' : '#5B6B7B' }}>
-                        {isExpired ? 'منتهي' : isExhausted ? 'مستنفد' : c.isActive ? 'نشط' : 'موقوف'}
+                        {isExpired ? t("منتهي") : isExhausted ? t("مستنفد") : c.isActive ? t("نشط") : t("موقوف")}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -184,60 +186,60 @@ function CouponsTab() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: BRAND.border }}>
-              <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>إنشاء كوبون خصم</h2>
+              <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>{t("إنشاء كوبون خصم")}</h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400"><X className="h-5 w-5" /></button>
             </div>
             <form onSubmit={handleSave} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>كود الخصم *</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("كود الخصم *")}</label>
                 <div className="flex gap-2">
                   <input value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value.toUpperCase() }))} required
-                    placeholder="مثال: WELCOME20" className="flex-1 px-3 py-2.5 rounded-xl border text-sm focus:outline-none font-mono" style={{ borderColor: BRAND.border }} />
-                  <button type="button" onClick={generateCode} className="px-3 py-2.5 rounded-xl border text-xs font-medium hover:bg-gray-50" style={{ borderColor: BRAND.border }}>عشوائي</button>
+                    placeholder={t("مثال: WELCOME20")} className="flex-1 px-3 py-2.5 rounded-xl border text-sm focus:outline-none font-mono" style={{ borderColor: BRAND.border }} />
+                  <button type="button" onClick={generateCode} className="px-3 py-2.5 rounded-xl border text-xs font-medium hover:bg-gray-50" style={{ borderColor: BRAND.border }}>{t("عشوائي")}</button>
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-2" style={{ color: BRAND.primary }}>نوع الخصم</label>
+                <label className="block text-xs font-semibold mb-2" style={{ color: BRAND.primary }}>{t("نوع الخصم")}</label>
                 <div className="grid grid-cols-2 gap-2">
-                  {(['percent', 'fixed'] as const).map(t => (
-                    <button key={t} type="button" onClick={() => setForm(f => ({ ...f, discountType: t }))}
+                  {(['percent', 'fixed'] as const).map(opt => (
+                    <button key={opt} type="button" onClick={() => setForm(f => ({ ...f, discountType: opt }))}
                       className="p-3 rounded-xl border-2 text-sm font-medium transition"
-                      style={{ borderColor: form.discountType === t ? BRAND.accent : BRAND.border, background: form.discountType === t ? `${BRAND.accent}10` : 'white', color: form.discountType === t ? BRAND.accent : '#32506A' }}>
-                      {t === 'percent' ? 'نسبة مئوية %' : 'مبلغ ثابت د.ع'}
+                      style={{ borderColor: form.discountType === opt ? BRAND.accent : BRAND.border, background: form.discountType === opt ? `${BRAND.accent}10` : 'white', color: form.discountType === opt ? BRAND.accent : '#32506A' }}>
+                      {opt === 'percent' ? t("نسبة مئوية %") : t("مبلغ ثابت د.ع")}
                     </button>
                   ))}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>قيمة الخصم *</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("قيمة الخصم *")}</label>
                   <input type="number" min="0" step="0.01" value={form.discountValue} onChange={e => setForm(f => ({ ...f, discountValue: e.target.value }))} required
                     placeholder={form.discountType === 'percent' ? '20' : '5000'}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>الحد الأدنى للطلب</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("الحد الأدنى للطلب")}</label>
                   <input type="number" min="0" value={form.minOrderAmount} onChange={e => setForm(f => ({ ...f, minOrderAmount: e.target.value }))}
-                    placeholder="اختياري" className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
+                    placeholder={t("اختياري")} className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>عدد الاستخدامات</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("عدد الاستخدامات")}</label>
                   <input type="number" min="1" value={form.maxUses} onChange={e => setForm(f => ({ ...f, maxUses: e.target.value }))}
-                    placeholder="غير محدود" className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
+                    placeholder={t("غير محدود")} className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>تاريخ الانتهاء</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("تاريخ الانتهاء")}</label>
                   <input type="date" value={form.expiresAt} onChange={e => setForm(f => ({ ...f, expiresAt: e.target.value }))}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 text-gray-600" style={{ borderColor: BRAND.border }}>إلغاء</button>
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 text-gray-600" style={{ borderColor: BRAND.border }}>{t("إلغاء")}</button>
                 <button type="submit" disabled={saving} className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2"
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-                  {saving && <Loader2 className="h-4 w-4 animate-spin" />}{saving ? 'جارٍ الحفظ…' : 'إنشاء الكوبون'}
+                  {saving && <Loader2 className="h-4 w-4 animate-spin" />}{saving ? t("جارٍ الحفظ…") : t("إنشاء الكوبون")}
                 </button>
               </div>
             </form>
@@ -282,6 +284,7 @@ function PlatformIcon({ platform, size = 16 }: { platform?: string | null; size?
 }
 
 function AffiliatesTab() {
+  const t = useT();
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
   const [affiliates, setAffiliates] = useState<AffiliatePublic[]>([]);
   const [loading, setLoading] = useState(true);
@@ -298,7 +301,7 @@ function AffiliatesTab() {
     try {
       const res = await api.get<{ success: boolean; data: AffiliatePublic[] }>('/api/affiliates');
       setAffiliates(res.data ?? []);
-    } catch { toast.error('فشل تحميل المؤثرين'); }
+    } catch { toast.error(t("فشل تحميل المؤثرين")); }
     finally { setLoading(false); }
   }, []);
   useEffect(() => { fetchAffiliates(); }, [fetchAffiliates]);
@@ -321,22 +324,22 @@ function AffiliatesTab() {
         platform: form.platform, handle: form.handle || undefined,
         followerCount: form.followerCount ? Number(form.followerCount) : undefined,
         commissionType: form.commissionType, commissionRate: Number(form.commissionRate), notes: form.notes || undefined };
-      if (editingId) { await api.patch(`/api/affiliates/${editingId}`, body); toast.success('تم التحديث'); }
-      else { const res = await api.post<{ success: boolean; data: AffiliatePublic }>('/api/affiliates', body); setAffiliates(p => [res.data, ...p]); toast.success('تمت إضافة المؤثر'); }
+      if (editingId) { await api.patch(`/api/affiliates/${editingId}`, body); toast.success(t("تم التحديث")); }
+      else { const res = await api.post<{ success: boolean; data: AffiliatePublic }>('/api/affiliates', body); setAffiliates(p => [res.data, ...p]); toast.success(t("تمت إضافة المؤثر")); }
       setShowModal(false); fetchAffiliates();
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل الحفظ'); }
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل الحفظ")); }
     finally { setSaving(false); }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('سيتم حذف المؤثر وجميع كوباتاته. هل تريد المتابعة؟')) return;
-    try { await api.delete(`/api/affiliates/${id}`); setAffiliates(p => p.filter(a => a.id !== id)); toast.success('تم الحذف'); }
-    catch { toast.error('فشل الحذف'); }
+    if (!confirm(t("سيتم حذف المؤثر وجميع كوباتاته. هل تريد المتابعة؟"))) return;
+    try { await api.delete(`/api/affiliates/${id}`); setAffiliates(p => p.filter(a => a.id !== id)); toast.success(t("تم الحذف")); }
+    catch { toast.error(t("فشل الحذف")); }
   };
 
   const handleToggle = async (a: AffiliatePublic) => {
     try { await api.patch(`/api/affiliates/${a.id}`, { isActive: !a.isActive }); setAffiliates(p => p.map(af => af.id === a.id ? { ...af, isActive: !af.isActive } : af)); }
-    catch { toast.error('فشل التحديث'); }
+    catch { toast.error(t("فشل التحديث")); }
   };
 
   const handleCreateCoupon = async (e: React.FormEvent) => {
@@ -349,8 +352,8 @@ function AffiliatesTab() {
         maxUses: couponForm.maxUses ? Number(couponForm.maxUses) : undefined,
         expiresAt: couponForm.expiresAt || undefined,
       });
-      toast.success('تم إنشاء كود الخصم'); setShowCouponModal(null); setCouponForm(emptyAffCoupon); fetchAffiliates();
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل إنشاء الكود'); }
+      toast.success(t("تم إنشاء كود الخصم")); setShowCouponModal(null); setCouponForm(emptyAffCoupon); fetchAffiliates();
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل إنشاء الكود")); }
     finally { setSavingCoupon(false); }
   };
 
@@ -360,18 +363,18 @@ function AffiliatesTab() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-gray-500">{affiliates.filter(a => a.isActive).length} مؤثر نشط</p>
+        <p className="text-sm text-gray-500">{affiliates.filter(a => a.isActive).length} {' '}{t("مؤثر نشط")}</p>
         <button onClick={openNew} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:opacity-90 transition"
           style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-          <Plus className="h-4 w-4" /> إضافة مؤثر
+          <Plus className="h-4 w-4" /> {' '}{t("إضافة مؤثر")}
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'إجمالي المؤثرين', value: affiliates.length, icon: TrendingUp, color: BRAND.secondary },
-          { label: 'طلبات من المؤثرين', value: `${totalOrders} طلب`, icon: ShoppingBag, color: BRAND.accent },
-          { label: 'عمولات مستحقة', value: formatCurrency(totalEarned), icon: DollarSign, color: '#22B07D' },
+          { label: t("إجمالي المؤثرين"), value: affiliates.length, icon: TrendingUp, color: BRAND.secondary },
+          { label: t("طلبات من المؤثرين"), value: t("{0} طلب", [totalOrders]), icon: ShoppingBag, color: BRAND.accent },
+          { label: t("عمولات مستحقة"), value: formatCurrency(totalEarned), icon: DollarSign, color: '#22B07D' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl p-4 border" style={{ borderColor: BRAND.border }}>
             <div className="flex items-center gap-2 mb-2">
@@ -390,8 +393,8 @@ function AffiliatesTab() {
       ) : affiliates.length === 0 ? (
         <div className="bg-white rounded-2xl border p-12 text-center" style={{ borderColor: BRAND.border }}>
           <div className="mb-3 flex justify-center"><Handshake size={48} style={{ color: BRAND.accent }} /></div>
-          <p className="text-gray-400 mb-2">لا يوجد مؤثرون بعد</p>
-          <button onClick={openNew} className="text-sm font-medium" style={{ color: BRAND.accent }}>+ أضف أول مؤثر</button>
+          <p className="text-gray-400 mb-2">{t("لا يوجد مؤثرون بعد")}</p>
+          <button onClick={openNew} className="text-sm font-medium" style={{ color: BRAND.accent }}>{t("+ أضف أول مؤثر")}</button>
         </div>
       ) : (
         <div className="space-y-3">
@@ -411,11 +414,11 @@ function AffiliatesTab() {
                   <div className="flex items-center gap-2">
                     <p className="font-bold" style={{ color: BRAND.primary }}>{aff.name}</p>
                     {aff.handle && <span className="text-xs text-gray-400">@{aff.handle}</span>}
-                    {!aff.isActive && <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">معطّل</span>}
+                    {!aff.isActive && <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">{t("معطّل")}</span>}
                   </div>
                   <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-500">
                     {aff.email && <span>{aff.email}</span>}
-                    {aff.followerCount && <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {aff.followerCount.toLocaleString('ar')}</span>}
+                    {aff.followerCount && <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {aff.followerCount.toLocaleString(intlLocale())}</span>}
                     {aff.couponCode && <span className="flex items-center gap-1" style={{ color: BRAND.secondary }}><Tag className="h-3 w-3" />{aff.couponCode}</span>}
                   </div>
                 </div>
@@ -423,19 +426,19 @@ function AffiliatesTab() {
                   <p className="text-lg font-bold" style={{ color: BRAND.accent }}>
                     {aff.commissionType === 'percent' ? `${aff.commissionRate}%` : formatCurrency(aff.commissionRate)}
                   </p>
-                  <p className="text-xs text-gray-400">عمولة</p>
+                  <p className="text-xs text-gray-400">{t("عمولة")}</p>
                 </div>
                 <div className="text-center px-3 flex-shrink-0">
                   <p className="font-bold" style={{ color: BRAND.primary }}>{aff.totalOrders}</p>
-                  <p className="text-xs text-gray-400">طلب</p>
+                  <p className="text-xs text-gray-400">{t("طلب")}</p>
                 </div>
                 <div className="text-center px-3 flex-shrink-0">
                   <p className="font-bold text-emerald-600">{formatCurrency(Number(aff.totalEarned))}</p>
-                  <p className="text-xs text-gray-400">عمولة</p>
+                  <p className="text-xs text-gray-400">{t("عمولة")}</p>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button onClick={() => { setShowCouponModal(aff.id); setCouponForm({ ...emptyAffCoupon, code: aff.name.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0,6) + Math.floor(Math.random()*90+10) }); }}
-                    className="p-1.5 rounded-lg hover:bg-purple-50 transition" style={{ color: BRAND.secondary }} title="إنشاء كود خصم">
+                    className="p-1.5 rounded-lg hover:bg-purple-50 transition" style={{ color: BRAND.secondary }} title={t("إنشاء كود خصم")}>
                     <Tag className="h-4 w-4" />
                   </button>
                   <button onClick={() => openEdit(aff)} className="p-1.5 rounded-lg hover:bg-purple-50 transition" style={{ color: BRAND.secondary }}>
@@ -454,7 +457,7 @@ function AffiliatesTab() {
               </div>
               {expandedId === aff.id && aff.notes && (
                 <div className="px-4 pb-4"><div className="rounded-xl p-3 text-xs text-gray-600" style={{ background: '#F6F8FA' }}>
-                  <p className="font-semibold mb-1" style={{ color: BRAND.secondary }}>ملاحظات</p><p>{aff.notes}</p>
+                  <p className="font-semibold mb-1" style={{ color: BRAND.secondary }}>{t("ملاحظات")}</p><p>{aff.notes}</p>
                 </div></div>
               )}
             </div>
@@ -467,18 +470,18 @@ function AffiliatesTab() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: BRAND.border }}>
-              <h2 className="font-bold text-lg" style={{ color: BRAND.primary }}>{editingId ? 'تعديل المؤثر' : 'إضافة مؤثر جديد'}</h2>
+              <h2 className="font-bold text-lg" style={{ color: BRAND.primary }}>{editingId ? t("تعديل المؤثر") : t("إضافة مؤثر جديد")}</h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400"><X className="h-5 w-5" /></button>
             </div>
             <form onSubmit={handleSave} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>الاسم *</label>
-                  <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required placeholder="اسم المؤثر"
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("الاسم *")}</label>
+                  <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required placeholder={t("اسم المؤثر")}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>المنصة</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("المنصة")}</label>
                   <select value={form.platform} onChange={e => setForm(f => ({ ...f, platform: e.target.value }))}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none bg-white" style={{ borderColor: BRAND.border }}>
                     {PLATFORMS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
@@ -487,55 +490,55 @@ function AffiliatesTab() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>@الحساب</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("@الحساب")}</label>
                   <input value={form.handle} onChange={e => setForm(f => ({ ...f, handle: e.target.value }))} placeholder="@username"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>المتابعون</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("المتابعون")}</label>
                   <input type="number" min="0" value={form.followerCount} onChange={e => setForm(f => ({ ...f, followerCount: e.target.value }))} placeholder="50000"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>البريد الإلكتروني</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("البريد الإلكتروني")}</label>
                   <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="email@example.com"
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>رقم الهاتف</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("رقم الهاتف")}</label>
                   <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+9647..."
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-2" style={{ color: BRAND.primary }}>نوع العمولة</label>
+                <label className="block text-xs font-semibold mb-2" style={{ color: BRAND.primary }}>{t("نوع العمولة")}</label>
                 <div className="grid grid-cols-2 gap-2 mb-2">
-                  {(['percent', 'fixed'] as const).map(t => (
-                    <button key={t} type="button" onClick={() => setForm(f => ({ ...f, commissionType: t }))}
+                  {(['percent', 'fixed'] as const).map(opt => (
+                    <button key={opt} type="button" onClick={() => setForm(f => ({ ...f, commissionType: opt }))}
                       className="p-3 rounded-xl border-2 transition"
-                      style={{ borderColor: form.commissionType === t ? BRAND.accent : BRAND.border, background: form.commissionType === t ? `${BRAND.accent}10` : 'white' }}>
-                      <p className="text-sm font-bold" style={{ color: form.commissionType === t ? BRAND.accent : '#32506A' }}>{t === 'percent' ? 'نسبة مئوية %' : 'مبلغ ثابت د.ع'}</p>
+                      style={{ borderColor: form.commissionType === opt ? BRAND.accent : BRAND.border, background: form.commissionType === opt ? `${BRAND.accent}10` : 'white' }}>
+                      <p className="text-sm font-bold" style={{ color: form.commissionType === opt ? BRAND.accent : '#32506A' }}>{opt === 'percent' ? t("نسبة مئوية %") : t("مبلغ ثابت د.ع")}</p>
                     </button>
                   ))}
                 </div>
                 <div className="flex items-center gap-2">
                   <input type="number" min="0" step="0.01" value={form.commissionRate} onChange={e => setForm(f => ({ ...f, commissionRate: e.target.value }))}
                     className="flex-1 px-3 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
-                  <span className="text-sm text-gray-500">{form.commissionType === 'percent' ? '%' : 'د.ع'}</span>
+                  <span className="text-sm text-gray-500">{form.commissionType === 'percent' ? '%' : t("د.ع")}</span>
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>ملاحظات</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("ملاحظات")}</label>
                 <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2}
                   className="w-full px-3 py-2 rounded-xl border text-sm focus:outline-none resize-none" style={{ borderColor: BRAND.border }} />
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 text-gray-600" style={{ borderColor: BRAND.border }}>إلغاء</button>
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 text-gray-600" style={{ borderColor: BRAND.border }}>{t("إلغاء")}</button>
                 <button type="submit" disabled={saving} className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2"
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-                  {saving && <Loader2 className="h-4 w-4 animate-spin" />}{saving ? 'جارٍ الحفظ…' : editingId ? 'حفظ التغييرات' : 'إضافة المؤثر'}
+                  {saving && <Loader2 className="h-4 w-4 animate-spin" />}{saving ? t("جارٍ الحفظ…") : editingId ? t("حفظ التغييرات") : t("إضافة المؤثر")}
                 </button>
               </div>
             </form>
@@ -548,34 +551,34 @@ function AffiliatesTab() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: BRAND.border }}>
-              <h2 className="font-bold text-lg" style={{ color: BRAND.primary }}>إنشاء كود خصم للمؤثر</h2>
+              <h2 className="font-bold text-lg" style={{ color: BRAND.primary }}>{t("إنشاء كود خصم للمؤثر")}</h2>
               <button onClick={() => setShowCouponModal(null)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400"><X className="h-5 w-5" /></button>
             </div>
             <form onSubmit={handleCreateCoupon} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>كود الخصم *</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("كود الخصم *")}</label>
                 <input value={couponForm.code} onChange={e => setCouponForm(f => ({ ...f, code: e.target.value.toUpperCase() }))} required
                   className="w-full px-3 py-2.5 rounded-xl border text-sm font-mono focus:outline-none" style={{ borderColor: BRAND.border }} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>نوع الخصم</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("نوع الخصم")}</label>
                   <select value={couponForm.discountType} onChange={e => setCouponForm(f => ({ ...f, discountType: e.target.value as 'percent' | 'fixed' }))}
                     className="w-full px-3 py-2.5 rounded-xl border text-sm bg-white focus:outline-none" style={{ borderColor: BRAND.border }}>
-                    <option value="percent">نسبة %</option><option value="fixed">مبلغ ثابت</option>
+                    <option value="percent">{t("نسبة %")}</option><option value="fixed">{t("مبلغ ثابت")}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>القيمة *</label>
+                  <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("القيمة *")}</label>
                   <input type="number" min="0" step="0.01" value={couponForm.discountValue} onChange={e => setCouponForm(f => ({ ...f, discountValue: e.target.value }))} required
                     className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowCouponModal(null)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium text-gray-600" style={{ borderColor: BRAND.border }}>إلغاء</button>
+                <button type="button" onClick={() => setShowCouponModal(null)} className="flex-1 py-2.5 border rounded-xl text-sm font-medium text-gray-600" style={{ borderColor: BRAND.border }}>{t("إلغاء")}</button>
                 <button type="submit" disabled={savingCoupon} className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2"
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-                  {savingCoupon && <Loader2 className="h-4 w-4 animate-spin" />}{savingCoupon ? 'جارٍ الإنشاء…' : 'إنشاء الكود'}
+                  {savingCoupon && <Loader2 className="h-4 w-4 animate-spin" />}{savingCoupon ? t("جارٍ الإنشاء…") : t("إنشاء الكود")}
                 </button>
               </div>
             </form>
@@ -596,23 +599,24 @@ const TABS: { key: TabKey; label: string; icon: LucideIcon }[] = [
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function MarketingPage() {
-  useDocumentTitle('التسويق');
+  const t = useT();
+  useDocumentTitle(t("التسويق"));
   const [tab, setTab] = useState<TabKey>('coupons');
 
   return (
     <div className="p-6 max-w-5xl" dir="rtl">
       <div className="mb-6">
-        <h1 className="bz-large-title text-gray-900">التسويق</h1>
-        <p className="text-sm text-gray-500 mt-0.5">كوبونات الخصم والمسوقون بالعمولة</p>
+        <h1 className="bz-large-title text-gray-900">{t("التسويق")}</h1>
+        <p className="text-sm text-gray-500 mt-0.5">{t("كوبونات الخصم والمسوقون بالعمولة")}</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6 border-b" style={{ borderColor: BRAND.border }}>
-        {TABS.map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)}
+        {TABS.map(opt => (
+          <button key={opt.key} onClick={() => setTab(opt.key)}
             className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition -mb-px"
-            style={{ borderBottomColor: tab === t.key ? BRAND.accent : 'transparent', color: tab === t.key ? BRAND.accent : '#A3B0BC' }}>
-            <t.icon size={16} />{t.label}
+            style={{ borderBottomColor: tab === opt.key ? BRAND.accent : 'transparent', color: tab === opt.key ? BRAND.accent : '#A3B0BC' }}>
+            <opt.icon size={16} />{t(opt.label)}
           </button>
         ))}
       </div>

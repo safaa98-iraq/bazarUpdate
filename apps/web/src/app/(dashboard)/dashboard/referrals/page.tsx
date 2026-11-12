@@ -1,5 +1,6 @@
 'use client';
 
+import { intlLocale, useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
@@ -13,7 +14,8 @@ const B = { p: '#0B3550', a: '#20A9F4', border: '#E6ECF1', bg: '#F6F8FA' };
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function ReferralsPage() {
-  useDocumentTitle('ادعُ واربح');
+  const t = useT();
+  useDocumentTitle(t("ادعُ واربح"));
   const [stats, setStats] = useState<ReferralStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -23,7 +25,7 @@ export default function ReferralsPage() {
   useEffect(() => {
     api.get<{ success: boolean; data: ReferralStats }>('/api/auth/referrals')
       .then(r => setStats(r.data))
-      .catch(() => toast.error('فشل تحميل بيانات الإحالة'))
+      .catch(() => toast.error(t("فشل تحميل بيانات الإحالة")))
       .finally(() => setLoading(false));
   }, []);
 
@@ -31,7 +33,7 @@ export default function ReferralsPage() {
     if (!stats) return;
     navigator.clipboard.writeText(stats.referralLink);
     setCopied(true);
-    toast.success('تم نسخ رابط الدعوة');
+    toast.success(t("تم نسخ رابط الدعوة"));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -50,58 +52,58 @@ export default function ReferralsPage() {
           <Gift className="h-5 w-5" style={{ color: B.a }} />
         </div>
         <div>
-          <h1 className="bz-large-title text-gray-900">ادعُ تجاراً واربح</h1>
-          <p className="text-sm text-gray-500">اربح شهراً مجانياً عن كل تاجر تدعوه يشترك بخطة مدفوعة ويجدّدها مرتين</p>
+          <h1 className="bz-large-title text-gray-900">{t("ادعُ تجاراً واربح")}</h1>
+          <p className="text-sm text-gray-500">{t("اربح شهراً مجانياً عن كل تاجر تدعوه يشترك بخطة مدفوعة ويجدّدها مرتين")}</p>
         </div>
       </div>
 
       <div className="rounded-2xl p-6 mb-5 text-white" style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-        <p className="text-sm opacity-80 mb-1">رابط دعوتك الخاص</p>
+        <p className="text-sm opacity-80 mb-1">{t("رابط دعوتك الخاص")}</p>
         <div className="flex items-center gap-2 bg-white/10 rounded-xl p-3">
           <span className="flex-1 text-sm font-mono truncate" dir="ltr">{stats.referralLink}</span>
           <button onClick={copyLink} className="w-9 h-9 flex-shrink-0 rounded-lg flex items-center justify-center bg-white/15 hover:bg-white/25 transition">
             {copied ? <Check size={15} /> : <Copy size={15} />}
           </button>
         </div>
-        <p className="text-xs opacity-70 mt-2">أو شارك كودك مباشرة: <span className="font-mono font-bold">{stats.referralCode}</span></p>
+        <p className="text-xs opacity-70 mt-2">{t("أو شارك كودك مباشرة:")}{' '}<span className="font-mono font-bold">{stats.referralCode}</span></p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-white rounded-2xl border p-5 text-center" style={{ borderColor: B.border }}>
           <Users size={20} className="mx-auto mb-2" style={{ color: B.a }} />
           <p className="text-2xl font-bold" style={{ color: B.p }}>{stats.totalReferred}</p>
-          <p className="text-xs text-gray-400">تاجر مدعو</p>
+          <p className="text-xs text-gray-400">{t("تاجر مدعو")}</p>
         </div>
         <div className="bg-white rounded-2xl border p-5 text-center" style={{ borderColor: B.border }}>
           <Gift size={20} className="mx-auto mb-2" style={{ color: B.a }} />
           <p className="text-2xl font-bold" style={{ color: B.p }}>{stats.freeMonthsCredit}</p>
-          <p className="text-xs text-gray-400">شهر مجاني مكتسب</p>
+          <p className="text-xs text-gray-400">{t("شهر مجاني مكتسب")}</p>
         </div>
       </div>
 
       <div className="rounded-2xl p-4 mb-6 text-sm leading-relaxed" style={{ background: B.bg, border: `1px solid ${B.border}` }}>
-        <p className="font-semibold mb-1" style={{ color: B.p }}>كيف يعمل؟</p>
+        <p className="font-semibold mb-1" style={{ color: B.p }}>{t("كيف يعمل؟")}</p>
         <ul className="space-y-1 text-gray-600 list-disc list-inside text-xs">
-          <li>شارك رابطك مع تجار تعرفهم</li>
-          <li>عندما يسجّلون عبر رابطك ويشتركون بخطة مدفوعة، ثم يجدّدونها للمرة الثانية، تربح أنت شهراً مجانياً</li>
-          <li>لا حد لعدد التجار الذين يمكنك دعوتهم</li>
+          <li>{t("شارك رابطك مع تجار تعرفهم")}</li>
+          <li>{t("عندما يسجّلون عبر رابطك ويشتركون بخطة مدفوعة، ثم يجدّدونها للمرة الثانية، تربح أنت شهراً مجانياً")}</li>
+          <li>{t("لا حد لعدد التجار الذين يمكنك دعوتهم")}</li>
         </ul>
       </div>
 
       {stats.referrals.length > 0 && (
         <div className="rounded-2xl overflow-hidden bg-white border" style={{ borderColor: B.border }}>
           <div className="px-5 py-3 border-b" style={{ borderColor: B.border }}>
-            <p className="text-sm font-bold" style={{ color: B.p }}>التجار الذين دعوتهم</p>
+            <p className="text-sm font-bold" style={{ color: B.p }}>{t("التجار الذين دعوتهم")}</p>
           </div>
           {stats.referrals.map((r, i) => (
             <div key={i} className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: i < stats.referrals.length - 1 ? `1px solid ${B.border}` : 'none' }}>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm" style={{ color: B.p }}>{r.name}</p>
-                <p className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={11} /> {new Date(r.joinedAt).toLocaleDateString('ar-IQ')}</p>
+                <p className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={11} /> {new Date(r.joinedAt).toLocaleDateString(intlLocale())}</p>
               </div>
               <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: B.bg, color: B.p }}>{PLAN_LABELS[r.plan]}</span>
               {r.rewardGiven && (
-                <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: '#E2F7EE', color: '#17845C' }}>مكتمل</span>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: '#E2F7EE', color: '#17845C' }}>{t("مكتمل")}</span>
               )}
             </div>
           ))}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -47,7 +48,8 @@ const emptyForm: BannerForm = {
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function BannersPage() {
-  useDocumentTitle('البانرات الإعلانية');
+  const t = useT();
+  useDocumentTitle(t("البانرات الإعلانية"));
   const plan = (useAuthStore(s => s.user?.plan) ?? 'FREE') as Plan;
   const bannerLimit = getFeatureLimit(plan, 'banners');
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -68,9 +70,9 @@ export default function BannersPage() {
       fd.append('images', files[0]);
       const res = await api.upload<{ success: boolean; data: { urls: string[] } }>('/api/upload', fd);
       setForm(f => ({ ...f, imageUrl: res.data.urls[0] }));
-      toast.success('تم رفع الصورة');
+      toast.success(t("تم رفع الصورة"));
     } catch {
-      toast.error('فشل رفع الصورة');
+      toast.error(t("فشل رفع الصورة"));
     } finally {
       setUploading(false);
     }
@@ -81,7 +83,7 @@ export default function BannersPage() {
       const res = await api.get<{ success: boolean; data: Banner[] }>('/api/banners');
       setBanners(res.data ?? []);
     } catch {
-      toast.error('فشل تحميل البانرات');
+      toast.error(t("فشل تحميل البانرات"));
     } finally {
       setLoading(false);
     }
@@ -124,17 +126,17 @@ export default function BannersPage() {
     try {
       if (editingId) {
         await api.patch(`/api/banners/${editingId}`, payload);
-        toast.success('تم تعديل البانر ✓');
+        toast.success(t("تم تعديل البانر ✓"));
       } else {
         await api.post('/api/banners', payload);
-        toast.success('تم إضافة البانر ✓');
+        toast.success(t("تم إضافة البانر ✓"));
       }
       setShowModal(false);
       setForm(emptyForm);
       setEditingId(null);
       fetchBanners();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل الحفظ');
+      toast.error(err instanceof Error ? err.message : t("فشل الحفظ"));
     } finally {
       setSaving(false);
     }
@@ -144,20 +146,20 @@ export default function BannersPage() {
     try {
       await api.patch(`/api/banners/${b.id}`, { ...b, isActive: !b.isActive });
       fetchBanners();
-      toast.success(b.isActive ? 'تم إخفاء البانر' : 'تم تفعيل البانر');
+      toast.success(b.isActive ? t("تم إخفاء البانر") : t("تم تفعيل البانر"));
     } catch {
-      toast.error('فشل التحديث');
+      toast.error(t("فشل التحديث"));
     }
   };
 
   const deleteBanner = async (id: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذا البانر؟')) return;
+    if (!confirm(t("هل أنت متأكد من حذف هذا البانر؟"))) return;
     try {
       await api.delete(`/api/banners/${id}`);
-      toast.success('تم الحذف');
+      toast.success(t("تم الحذف"));
       fetchBanners();
     } catch {
-      toast.error('فشل الحذف');
+      toast.error(t("فشل الحذف"));
     }
   };
 
@@ -168,16 +170,16 @@ export default function BannersPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="bz-large-title text-gray-900">البانرات الإعلانية</h1>
+          <h1 className="bz-large-title text-gray-900">{t("البانرات الإعلانية")}</h1>
           <p className="text-sm text-gray-500 mt-0.5">
-            {banners.length} بانر{bannerLimit != null ? ` من أصل ${bannerLimit}` : ''} • {activeBanners} نشط
+            {banners.length} {' '}{t("بانر")}{bannerLimit != null ? t(" من أصل {0}", [bannerLimit]) : ''} • {activeBanners} {' '}{t("نشط")}
           </p>
         </div>
         {atLimit ? (
           <Link href="/dashboard/settings?tab=billing"
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition hover:opacity-90"
             style={{ background: BRAND.bg, color: BRAND.primary }}>
-            <Lock className="h-4 w-4" /> بلغت الحد الأقصى — ارفع خطتك
+            <Lock className="h-4 w-4" /> {' '}{t("بلغت الحد الأقصى — ارفع خطتك")}
           </Link>
         ) : (
           <button
@@ -185,7 +187,7 @@ export default function BannersPage() {
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
             style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}
           >
-            <Plus className="h-4 w-4" /> إضافة بانر
+            <Plus className="h-4 w-4" /> {' '}{t("إضافة بانر")}
           </button>
         )}
       </div>
@@ -193,9 +195,9 @@ export default function BannersPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'إجمالي البانرات', value: banners.length, color: BRAND.primary },
-          { label: 'بانرات نشطة', value: activeBanners, color: '#22B07D' },
-          { label: 'بانرات مخفية', value: banners.length - activeBanners, color: '#A3B0BC' },
+          { label: t("إجمالي البانرات"), value: banners.length, color: BRAND.primary },
+          { label: t("بانرات نشطة"), value: activeBanners, color: '#22B07D' },
+          { label: t("بانرات مخفية"), value: banners.length - activeBanners, color: '#A3B0BC' },
         ].map(stat => (
           <div key={stat.label} className="bg-white rounded-2xl border p-4" style={{ borderColor: BRAND.border }}>
             <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
@@ -212,14 +214,15 @@ export default function BannersPage() {
       ) : banners.length === 0 ? (
         <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: BRAND.border }}>
           <Megaphone className="h-12 w-12 mx-auto mb-4 text-gray-200" />
-          <p className="font-medium text-gray-400 mb-1">لا توجد بانرات بعد</p>
-          <p className="text-sm text-gray-400 mb-6">أضف بانراً إعلانياً لعرضه في متجرك</p>
+          <p className="font-medium text-gray-400 mb-1">{t("لا توجد بانرات بعد")}</p>
+          <p className="text-sm text-gray-400 mb-6">{t("أضف بانراً إعلانياً لعرضه في متجرك")}</p>
           <button
             onClick={openCreate}
             className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
             style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}
           >
-            إضافة أول بانر
+            
+            {t("إضافة أول بانر")}
           </button>
         </div>
       ) : (
@@ -257,7 +260,8 @@ export default function BannersPage() {
                     className="text-xs font-semibold px-3 py-1 rounded-full border border-current opacity-70 flex-shrink-0"
                     style={{ color: b.imageUrl ? BRAND.primary : b.textColor }}
                   >
-                    عرض
+                    
+                    {t("عرض")}
                   </span>
                 )}
               </div>
@@ -272,7 +276,7 @@ export default function BannersPage() {
                       color: b.isActive ? '#17845C' : '#A3B0BC',
                     }}
                   >
-                    {b.isActive ? 'نشط' : 'مخفي'}
+                    {b.isActive ? t("نشط") : t("مخفي")}
                   </span>
                   <div className="flex items-center gap-1.5 text-xs text-gray-400">
                     <span
@@ -286,7 +290,7 @@ export default function BannersPage() {
                   <button
                     onClick={() => toggleActive(b)}
                     className="p-2 rounded-lg hover:bg-white transition"
-                    title={b.isActive ? 'إخفاء البانر' : 'إظهار البانر'}
+                    title={b.isActive ? t("إخفاء البانر") : t("إظهار البانر")}
                   >
                     {b.isActive
                       ? <Eye className="h-4 w-4" style={{ color: '#22B07D' }} />
@@ -295,14 +299,14 @@ export default function BannersPage() {
                   <button
                     onClick={() => openEdit(b)}
                     className="p-2 rounded-lg hover:bg-white transition"
-                    title="تعديل"
+                    title={t("تعديل")}
                   >
                     <Pencil className="h-4 w-4" style={{ color: BRAND.primary }} />
                   </button>
                   <button
                     onClick={() => deleteBanner(b.id)}
                     className="p-2 rounded-lg hover:bg-red-50 transition"
-                    title="حذف"
+                    title={t("حذف")}
                   >
                     <Trash2 className="h-4 w-4 text-red-400" />
                   </button>
@@ -322,7 +326,7 @@ export default function BannersPage() {
               style={{ borderColor: BRAND.border }}
             >
               <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>
-                {editingId ? 'تعديل البانر' : 'إضافة بانر جديد'}
+                {editingId ? t("تعديل البانر") : t("إضافة بانر جديد")}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -336,13 +340,14 @@ export default function BannersPage() {
               {/* Title */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                  عنوان البانر *
+                  
+                  {t("عنوان البانر *")}
                 </label>
                 <input
                   value={form.title}
                   onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                   required
-                  placeholder="مثال: تخفيضات الصيف 50%"
+                  placeholder={t("مثال: تخفيضات الصيف 50%")}
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition"
                   style={{ borderColor: BRAND.border }}
                 />
@@ -351,12 +356,13 @@ export default function BannersPage() {
               {/* Subtitle */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                  نص فرعي (اختياري)
+                  
+                  {t("نص فرعي (اختياري)")}
                 </label>
                 <input
                   value={form.subtitle}
                   onChange={e => setForm(f => ({ ...f, subtitle: e.target.value }))}
-                  placeholder="مثال: على جميع المنتجات حتى نهاية الشهر"
+                  placeholder={t("مثال: على جميع المنتجات حتى نهاية الشهر")}
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none transition"
                   style={{ borderColor: BRAND.border }}
                 />
@@ -365,11 +371,12 @@ export default function BannersPage() {
               {/* Image */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                  صورة البانر (تظهر في متجرك كصورة قابلة للضغط)
+                  
+                  {t("صورة البانر (تظهر في متجرك كصورة قابلة للضغط)")}
                 </label>
                 {form.imageUrl ? (
                   <div className="relative rounded-xl overflow-hidden mb-2" style={{ height: 110 }}>
-                    <Image src={form.imageUrl} alt="معاينة" fill className="object-cover" />
+                    <Image src={form.imageUrl} alt={t("معاينة")} fill className="object-cover" />
                     <button type="button" onClick={() => setForm(f => ({ ...f, imageUrl: '' }))}
                       className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center">
                       <X className="h-3 w-3" />
@@ -380,7 +387,7 @@ export default function BannersPage() {
                     className="w-full h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-1.5 text-gray-400 hover:bg-purple-50 transition mb-2"
                     style={{ borderColor: BRAND.border }}>
                     {uploading ? <Loader2 className="h-5 w-5 animate-spin" style={{ color: BRAND.accent }} /> : <ImageIcon className="h-5 w-5" />}
-                    <span className="text-xs font-medium flex items-center gap-1"><Upload className="h-3 w-3" /> رفع صورة</span>
+                    <span className="text-xs font-medium flex items-center gap-1"><Upload className="h-3 w-3" /> {' '}{t("رفع صورة")}</span>
                   </button>
                 )}
                 <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={e => handleImageUpload(e.target.files)} />
@@ -390,7 +397,8 @@ export default function BannersPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                    لون الخلفية
+                    
+                    {t("لون الخلفية")}
                   </label>
                   <div className="flex items-center gap-2">
                     <input
@@ -410,7 +418,8 @@ export default function BannersPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                    لون النص
+                    
+                    {t("لون النص")}
                   </label>
                   <div className="flex items-center gap-2">
                     <input
@@ -433,7 +442,8 @@ export default function BannersPage() {
               {/* Link URL */}
               <div>
                 <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>
-                  رابط البانر (اختياري)
+                  
+                  {t("رابط البانر (اختياري)")}
                 </label>
                 <input
                   value={form.linkUrl}
@@ -449,8 +459,8 @@ export default function BannersPage() {
               {/* isActive toggle */}
               <div className="flex items-center justify-between py-1">
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: BRAND.primary }}>تفعيل البانر</p>
-                  <p className="text-xs text-gray-400">سيظهر البانر في متجرك فور الحفظ</p>
+                  <p className="text-sm font-semibold" style={{ color: BRAND.primary }}>{t("تفعيل البانر")}</p>
+                  <p className="text-xs text-gray-400">{t("سيظهر البانر في متجرك فور الحفظ")}</p>
                 </div>
                 <button
                   type="button"
@@ -468,7 +478,7 @@ export default function BannersPage() {
               {/* Live Preview */}
               {form.title && (
                 <div>
-                  <p className="text-xs font-semibold mb-1.5 text-gray-400">معاينة</p>
+                  <p className="text-xs font-semibold mb-1.5 text-gray-400">{t("معاينة")}</p>
                   <div
                     className="rounded-xl px-4 py-3"
                     style={{ background: form.bgColor }}
@@ -490,7 +500,8 @@ export default function BannersPage() {
                   className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 transition text-gray-600"
                   style={{ borderColor: BRAND.border }}
                 >
-                  إلغاء
+                  
+                  {t("إلغاء")}
                 </button>
                 <button
                   type="submit"
@@ -499,7 +510,7 @@ export default function BannersPage() {
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}
                 >
                   {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {saving ? 'جارٍ الحفظ…' : editingId ? 'حفظ التعديلات' : 'إضافة البانر'}
+                  {saving ? t("جارٍ الحفظ…") : editingId ? t("حفظ التعديلات") : t("إضافة البانر")}
                 </button>
               </div>
             </form>

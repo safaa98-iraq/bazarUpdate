@@ -1,5 +1,7 @@
 'use client';
 
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useT } from '@/lib/i18n';
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -63,7 +65,7 @@ const sections: NavSection[] = [
     links: [
       { href: '/dashboard/branches', label: 'الفروع والمخازن', desc: 'وزّع المخزون على الفروع وحوّل الطلبات للأقرب', icon: 'location', perm: 'branches', feature: 'branches' },
       { href: '/dashboard/staff',    label: 'الموظفون',        desc: 'حسابات للموظفين بصلاحيات محددة', icon: 'shield-lock', perm: 'owner', feature: 'staff' },
-      { href: '/dashboard/languages', label: 'لغات المتجر',    desc: 'واجهة المتجر بالعربية والكردية', icon: 'chat', perm: 'settings', feature: 'languages' },
+      { href: '/dashboard/languages', label: 'لغات المتجر',    desc: 'واجهة المتجر بالعربية والإنكليزية والكردية', icon: 'chat', perm: 'settings', feature: 'languages' },
       { href: '/dashboard/settings', label: 'الإعدادات',        desc: 'اسم المتجر، العملة، الشعار، والرابط',   icon: 'settings', perm: 'settings' },
       { href: '/dashboard/upgrade',  label: 'الباقات والترقية', desc: 'قارن الباقات وارفع خطتك بضغطة واحدة', icon: 'star', perm: 'owner' },
     ],
@@ -94,20 +96,22 @@ function isActive(pathname: string, link: NavLink) {
 }
 
 function Brand({ onClick }: { onClick?: () => void }) {
+  const t = useT();
   return (
     <Link href="/dashboard" onClick={onClick} className="flex items-center gap-2.5">
       <span className="h-10 w-10 rounded-xl bg-bz-brand-100 flex items-center justify-center">
         <ClayIcon name="store" size={30} />
       </span>
       <span className="leading-tight">
-        <span className="block text-lg font-bold text-bz-ink">بازار</span>
-        <span className="block text-[11px] text-bz-muted">لوحة التاجر</span>
+        <span className="block text-lg font-bold text-bz-ink">{t("بازار")}</span>
+        <span className="block text-[11px] text-bz-muted">{t("لوحة التاجر")}</span>
       </span>
     </Link>
   );
 }
 
 function SidebarContent({ onClose }: { onClose?: () => void }) {
+  const t = useT();
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
@@ -125,7 +129,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       <div className="flex items-center justify-between px-5 h-16 border-b border-bz-line flex-shrink-0">
         <Brand onClick={onClose} />
         {onClose && (
-          <button onClick={onClose} aria-label="إغلاق"
+          <button onClick={onClose} aria-label={t("إغلاق")}
             className="h-9 w-9 rounded-full bg-bz-bg text-bz-muted flex items-center justify-center hover:text-bz-ink">
             <X className="h-4 w-4" />
           </button>
@@ -146,7 +150,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                     key={link.href}
                     href={locked ? '/dashboard/upgrade' : link.href}
                     onClick={onClose}
-                    title={locked ? `${link.desc} — متاح في باقة ${needs ? PLAN_LABELS[needs] : 'أعلى'}` : link.desc}
+                    title={locked ? t("{0} — متاح في باقة {1}", [link.desc, needs ? PLAN_LABELS[needs] : 'أعلى']) : link.desc}
                     className={cn(
                       'relative flex items-center gap-3 rounded-xl px-3 h-11 text-[14px] transition-colors',
                       active
@@ -177,21 +181,22 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
             <span className="bz-blob w-24 h-24 bg-bz-brand -top-8 -left-8" />
             <ClayIcon name="star" size={34} className="relative" />
             <span className="relative flex-1 min-w-0">
-              <span className="block text-[13px] font-bold">ارفع باقتك</span>
-              <span className="block text-[11px] text-white/70 truncate">منتجات غير محدودة وتحليلات متقدمة</span>
+              <span className="block text-[13px] font-bold">{t("ارفع باقتك")}</span>
+              <span className="block text-[11px] text-white/70 truncate">{t("منتجات غير محدودة وتحليلات متقدمة")}</span>
             </span>
             <ChevronLeft className="relative h-4 w-4 text-bz-brand-300" />
           </Link>
         )}
         <div className="flex items-center gap-3 rounded-xl px-2 py-1.5">
           <span className="h-9 w-9 rounded-full bg-bz-brand-100 text-bz-brand-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
-            {user?.name?.charAt(0)?.toUpperCase() ?? 'م'}
+            {user?.name?.charAt(0)?.toUpperCase() ?? t("م")}
           </span>
           <span className="flex-1 min-w-0">
             <span className="block text-[13px] font-bold text-bz-ink truncate">{user?.name}</span>
-            <span className="block text-[11px] text-bz-muted truncate">{staff ? 'حساب موظف' : `باقة ${PLAN_LABELS[plan]}`}</span>
+            <span className="block text-[11px] text-bz-muted truncate">{staff ? t("حساب موظف") : t("باقة {0}", [t(PLAN_LABELS[plan])])}</span>
           </span>
-          <button onClick={handleLogout} title="تسجيل الخروج" aria-label="تسجيل الخروج"
+          <LanguageSwitcher compact className="text-bz-muted text-xs" />
+          <button onClick={handleLogout} title={t("تسجيل الخروج")} aria-label={t("تسجيل الخروج")}
             className="h-9 w-9 rounded-full flex items-center justify-center text-bz-muted hover:bg-[#FDECEC] hover:text-bz-red">
             <LogOut className="h-4 w-4" />
           </button>
@@ -203,20 +208,21 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
 /** Desktop top bar: page title, search, store link and notifications. */
 export function DashboardTopbar() {
+  const t = useT();
   const pathname = usePathname();
   const current = allLinks.find((l) => isActive(pathname, l));
   return (
     <header className="hidden lg:flex sticky top-0 z-30 h-16 items-center gap-4 px-8 bz-bar border-b border-bz-line print:hidden">
       <div className="flex items-center gap-2 text-[13px] text-bz-muted">
-        <Link href="/dashboard" className="hover:text-bz-ink">بازار</Link>
+        <Link href="/dashboard" className="hover:text-bz-ink">{t("بازار")}</Link>
         {current && current.href !== '/dashboard' && (<><ChevronLeft className="h-3.5 w-3.5" /><span className="font-semibold text-bz-ink">{current.label}</span></>)}
       </div>
       <label className="bz-search flex-1 max-w-md mr-auto">
         <Search className="h-4 w-4 flex-shrink-0" />
-        <input placeholder="ابحث عن طلب أو منتج أو عميل…" className="flex-1 bg-transparent text-sm text-bz-ink placeholder:text-bz-muted outline-none !border-0 !shadow-none !p-0" />
+        <input placeholder={t("ابحث عن طلب أو منتج أو عميل…")} className="flex-1 bg-transparent text-sm text-bz-ink placeholder:text-bz-muted outline-none !border-0 !shadow-none !p-0" />
       </label>
       <Link href="/dashboard/products" className="bz-btn h-10 px-5 text-[13px]">
-        <Plus className="h-4 w-4" strokeWidth={2.5} /> إضافة منتج
+        <Plus className="h-4 w-4" strokeWidth={2.5} /> {' '}{t("إضافة منتج")}
       </Link>
       <span className="h-10 w-10 rounded-full border border-bz-line bg-white flex items-center justify-center">
         <NotificationBell variant="light" />
@@ -226,6 +232,7 @@ export function DashboardTopbar() {
 }
 
 export function DashboardSidebar() {
+  const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const staff = (useAuthStore((st) => st.user) as { staff?: StaffSession | null } | null)?.staff ?? null;
@@ -235,7 +242,7 @@ export function DashboardSidebar() {
     <>
       {/* Mobile: top bar */}
       <header className="lg:hidden fixed top-0 inset-x-0 z-40 h-14 flex items-center justify-between px-4 bz-bar border-b border-bz-line">
-        <button onClick={() => setMenuOpen(true)} aria-label="القائمة"
+        <button onClick={() => setMenuOpen(true)} aria-label={t("القائمة")}
           className="h-10 w-10 rounded-xl border border-bz-line bg-white flex items-center justify-center text-bz-ink">
           <Menu className="h-5 w-5" />
         </button>
@@ -262,7 +269,8 @@ export function DashboardSidebar() {
         })}
         <button onClick={() => setMenuOpen(true)} className="flex-1 flex flex-col items-center gap-1 pt-2 text-[11px] font-medium text-bz-muted">
           <span className="h-9 w-12 rounded-full flex items-center justify-center"><ClayIcon name="settings" size={26} /></span>
-          المزيد
+          
+          {t("المزيد")}
         </button>
       </nav>
 

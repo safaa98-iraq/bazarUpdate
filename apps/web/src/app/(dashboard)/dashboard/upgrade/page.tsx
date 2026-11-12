@@ -1,6 +1,6 @@
 'use client';
 
-import { useT, LocaleRoot } from '@/lib/i18n';
+import { intlLocale, useT, LocaleRoot } from '@/lib/i18n';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Loader2, X, Clock, CheckCircle2, XCircle, Crown, Check, Minus, Building2, Smartphone, Sparkles, CreditCard } from 'lucide-react';
@@ -169,7 +169,7 @@ function PayModal({ plan, cycle, config, onClose, onDone }: {
 function SubscriptionCard({ s, onPayNextInstallment }: { s: Status; onPayNextInstallment: () => void }) {
   const t = useT();
   const cfg = PLAN_CONFIGS[s.plan];
-  const expires = s.planExpiresAt ? new Date(s.planExpiresAt).toLocaleDateString('ar-IQ', { year: 'numeric', month: 'long', day: 'numeric' }) : null;
+  const expires = s.planExpiresAt ? new Date(s.planExpiresAt).toLocaleDateString(intlLocale(), { year: 'numeric', month: 'long', day: 'numeric' }) : null;
   return (
     <div className="bz-card p-5 flex flex-wrap items-center gap-4">
       <div className="h-12 w-12 rounded-2xl bg-bz-brand-50 flex items-center justify-center"><Crown className="h-6 w-6 text-bz-brand" /></div>

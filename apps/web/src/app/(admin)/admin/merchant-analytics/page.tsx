@@ -1,5 +1,6 @@
 'use client';
 
+import { intlLocale, useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import {
@@ -72,7 +73,8 @@ function KpiCard({ title, value, sub, icon, bg }: {
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function MerchantAnalyticsPage() {
-  useDocumentTitle('تحليلات التجار');
+  const t = useT();
+  useDocumentTitle(t("تحليلات التجار"));
   const [data, setData] = useState<TrackData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -93,8 +95,8 @@ export default function MerchantAnalyticsPage() {
   if (error || !data) return (
     <div className="p-8 text-center">
       <AlertTriangle className="h-12 w-12 mx-auto mb-3 text-amber-400" />
-      <p className="font-bold" style={{ color: B.p }}>لا توجد بيانات بعد</p>
-      <p className="text-sm text-gray-500 mt-1">ستظهر البيانات بعد بدء نشاط التجار</p>
+      <p className="font-bold" style={{ color: B.p }}>{t("لا توجد بيانات بعد")}</p>
+      <p className="text-sm text-gray-500 mt-1">{t("ستظهر البيانات بعد بدء نشاط التجار")}</p>
     </div>
   );
 
@@ -112,36 +114,36 @@ export default function MerchantAnalyticsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="bz-large-title text-gray-900">تحليلات سلوك التجار</h1>
-        <p className="text-sm text-gray-500 mt-1">تتبع كيف يبنون متاجرهم وأين يتوقفون</p>
+        <h1 className="bz-large-title text-gray-900">{t("تحليلات سلوك التجار")}</h1>
+        <p className="text-sm text-gray-500 mt-1">{t("تتبع كيف يبنون متاجرهم وأين يتوقفون")}</p>
       </div>
 
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
-          title="إجمالي التجار"
+          title={t("إجمالي التجار")}
           value={data.funnel[0]?.count ?? 0}
           icon={<Users className="h-5 w-5" style={{ color: B.s }} />}
           bg="#EEF2F6"
         />
         <KpiCard
-          title="أكملوا الإعداد"
+          title={t("أكملوا الإعداد")}
           value={`${data.funnel[data.funnel.length - 1]?.count ?? 0}`}
-          sub={`${funnelWithPct[funnelWithPct.length-1]?.pct ?? 0}% من المسجلين`}
+          sub={t("{0}% من المسجلين", [funnelWithPct[funnelWithPct.length-1]?.pct ?? 0])}
           icon={<Activity className="h-5 w-5" style={{ color: '#22B07D' }} />}
           bg="#E2F7EE"
         />
         <KpiCard
-          title="خاملون +7 أيام"
+          title={t("خاملون +7 أيام")}
           value={data.staleMerchants}
-          sub="لديهم متجر، لم يدخلوا"
+          sub={t("لديهم متجر، لم يدخلوا")}
           icon={<TrendingDown className="h-5 w-5" style={{ color: B.a }} />}
           bg="#E3F5FE"
         />
         <KpiCard
-          title="نشاط أمس"
+          title={t("نشاط أمس")}
           value={data.dailyActive.at(-1)?.merchants ?? 0}
-          sub="تاجر نشط"
+          sub={t("تاجر نشط")}
           icon={<Activity className="h-5 w-5" style={{ color: '#20A9F4' }} />}
           bg="#E3F5FE"
         />
@@ -149,8 +151,8 @@ export default function MerchantAnalyticsPage() {
 
       {/* Funnel */}
       <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${B.border}` }}>
-        <h2 className="font-bold mb-1" style={{ color: B.p }}>قمع بناء المتجر</h2>
-        <p className="text-xs text-gray-400 mb-5">كم تاجراً أتمّ كل خطوة من خطوات الإعداد</p>
+        <h2 className="font-bold mb-1" style={{ color: B.p }}>{t("قمع بناء المتجر")}</h2>
+        <p className="text-xs text-gray-400 mb-5">{t("كم تاجراً أتمّ كل خطوة من خطوات الإعداد")}</p>
         <div className="space-y-3">
           {funnelWithPct.map((step, i) => (
             <div key={step.step}>
@@ -163,12 +165,12 @@ export default function MerchantAnalyticsPage() {
                   <span className="text-sm font-medium" style={{ color: B.p }}>{step.step}</span>
                   {step.dropped > 0 && (
                     <span className="text-xs text-red-400">
-                      ↓ {step.dropped} تركوا هنا
+                      ↓ {step.dropped} {' '}{t("تركوا هنا")}
                     </span>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-bold" style={{ color: B.p }}>{step.count.toLocaleString('ar')}</span>
+                  <span className="text-sm font-bold" style={{ color: B.p }}>{step.count.toLocaleString(intlLocale())}</span>
                   <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                     style={{
                       background: step.pct > 60 ? '#E2F7EE' : step.pct > 30 ? '#FEF3E2' : '#FDECEC',
@@ -194,8 +196,8 @@ export default function MerchantAnalyticsPage() {
 
         {/* Drop-off Problems */}
         <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${B.border}` }}>
-          <h2 className="font-bold mb-1" style={{ color: B.p }}>نقاط التوقف</h2>
-          <p className="text-xs text-gray-400 mb-4">تجار عالقون في هذه المرحلة</p>
+          <h2 className="font-bold mb-1" style={{ color: B.p }}>{t("نقاط التوقف")}</h2>
+          <p className="text-xs text-gray-400 mb-4">{t("تجار عالقون في هذه المرحلة")}</p>
           <div className="space-y-3">
             {data.dropOff.map(row => (
               <div key={row.label} className="flex items-center gap-3 p-3 rounded-xl"
@@ -207,7 +209,7 @@ export default function MerchantAnalyticsPage() {
                 <div className="flex-1">
                   <p className="text-sm font-semibold" style={{ color: B.p }}>{row.label}</p>
                 </div>
-                <span className="text-lg font-bold" style={{ color: B.a }}>{row.count.toLocaleString('ar')}</span>
+                <span className="text-lg font-bold" style={{ color: B.a }}>{row.count.toLocaleString(intlLocale())}</span>
               </div>
             ))}
           </div>
@@ -215,8 +217,8 @@ export default function MerchantAnalyticsPage() {
 
         {/* Daily Active */}
         <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${B.border}` }}>
-          <h2 className="font-bold mb-1" style={{ color: B.p }}>النشاط اليومي</h2>
-          <p className="text-xs text-gray-400 mb-4">عدد التجار النشطين يومياً (آخر 14 يوم)</p>
+          <h2 className="font-bold mb-1" style={{ color: B.p }}>{t("النشاط اليومي")}</h2>
+          <p className="text-xs text-gray-400 mb-4">{t("عدد التجار النشطين يومياً (آخر 14 يوم)")}</p>
           {data.dailyActive.length > 0 ? (
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={data.dailyActive} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
@@ -225,8 +227,8 @@ export default function MerchantAnalyticsPage() {
                   tickFormatter={d => d.slice(5)} />
                 <YAxis tick={{ fontSize: 10, fill: '#A3B0BC' }} allowDecimals={false} />
                 <Tooltip
-                  formatter={(v: number) => [v, 'تاجر']}
-                  labelFormatter={l => `يوم ${l}`}
+                  formatter={(v: number) => [v, t("تاجر")]}
+                  labelFormatter={l => t("يوم {0}", [l])}
                   contentStyle={{ borderRadius: 10, border: `1px solid ${B.border}`, fontSize: 12 }}
                 />
                 <Line type="monotone" dataKey="merchants" stroke={B.a} strokeWidth={2} dot={false} />
@@ -234,7 +236,8 @@ export default function MerchantAnalyticsPage() {
             </ResponsiveContainer>
           ) : (
             <div className="h-40 flex items-center justify-center text-gray-400 text-sm">
-              لا يوجد نشاط مسجّل بعد
+              
+              {t("لا يوجد نشاط مسجّل بعد")}
             </div>
           )}
         </div>
@@ -242,8 +245,8 @@ export default function MerchantAnalyticsPage() {
 
       {/* Feature Usage */}
       <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${B.border}` }}>
-        <h2 className="font-bold mb-1" style={{ color: B.p }}>استخدام الميزات</h2>
-        <p className="text-xs text-gray-400 mb-5">أكثر الإجراءات التي يقوم بها التجار (آخر 30 يوم)</p>
+        <h2 className="font-bold mb-1" style={{ color: B.p }}>{t("استخدام الميزات")}</h2>
+        <p className="text-xs text-gray-400 mb-5">{t("أكثر الإجراءات التي يقوم بها التجار (آخر 30 يوم)")}</p>
         {data.featureUsage.length > 0 ? (
           <div className="space-y-2">
             {data.featureUsage.slice(0, 12).map((row, i) => {
@@ -258,8 +261,8 @@ export default function MerchantAnalyticsPage() {
                         {EVENT_LABELS[row.event] ?? row.event}
                       </span>
                       <div className="flex items-center gap-3 flex-shrink-0">
-                        <span className="text-xs text-gray-400">{row.merchants} تاجر</span>
-                        <span className="text-xs font-bold" style={{ color: B.a }}>{row.uses.toLocaleString('ar')}</span>
+                        <span className="text-xs text-gray-400">{row.merchants} {' '}{t("تاجر")}</span>
+                        <span className="text-xs font-bold" style={{ color: B.a }}>{row.uses.toLocaleString(intlLocale())}</span>
                       </div>
                     </div>
                     <div className="h-1.5 rounded-full" style={{ background: '#F6F8FA' }}>
@@ -273,7 +276,8 @@ export default function MerchantAnalyticsPage() {
           </div>
         ) : (
           <div className="py-10 text-center text-gray-400 text-sm">
-            لا توجد بيانات بعد — ستظهر بعد تفاعل التجار مع اللوحة
+            
+            {t("لا توجد بيانات بعد — ستظهر بعد تفاعل التجار مع اللوحة")}
           </div>
         )}
       </div>
@@ -281,8 +285,8 @@ export default function MerchantAnalyticsPage() {
       {/* Top Pages */}
       {data.topPages.length > 0 && (
         <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${B.border}` }}>
-          <h2 className="font-bold mb-1" style={{ color: B.p }}>الصفحات الأكثر زيارة</h2>
-          <p className="text-xs text-gray-400 mb-5">آخر 30 يوم</p>
+          <h2 className="font-bold mb-1" style={{ color: B.p }}>{t("الصفحات الأكثر زيارة")}</h2>
+          <p className="text-xs text-gray-400 mb-5">{t("آخر 30 يوم")}</p>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart
               data={data.topPages.map(r => ({ ...r, name: PAGE_LABELS[r.page] ?? r.page }))}
@@ -292,7 +296,7 @@ export default function MerchantAnalyticsPage() {
               <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#A3B0BC' }} angle={-20} textAnchor="end" />
               <YAxis tick={{ fontSize: 10, fill: '#A3B0BC' }} allowDecimals={false} />
               <Tooltip
-                formatter={(v: number) => [v, 'زيارة']}
+                formatter={(v: number) => [v, t("زيارة")]}
                 contentStyle={{ borderRadius: 10, border: `1px solid ${B.border}`, fontSize: 12 }}
               />
               <Bar dataKey="visits" radius={[6, 6, 0, 0]}>

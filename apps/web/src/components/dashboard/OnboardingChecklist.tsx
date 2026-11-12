@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
@@ -72,6 +73,7 @@ const STEPS: {
 ];
 
 export function OnboardingChecklist() {
+  const t = useT();
   const [status, setStatus] = useState<OnboardingStatus | null>(null);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -106,7 +108,7 @@ export function OnboardingChecklist() {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <p className="font-bold text-sm" style={{ color: B.p }}>
-              {completed === 0 ? 'ابدأ ببناء متجرك' : `أكملت ${completed} من ${total} خطوات`}
+              {completed === 0 ? t("ابدأ ببناء متجرك") : t("أكملت {0} من {1} خطوات", [completed, total])}
             </p>
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
               style={{ background: `${B.a}15`, color: B.a }}>
@@ -149,7 +151,7 @@ export function OnboardingChecklist() {
                     </p>
                     {isNext && (
                       <span className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
-                        style={{ background: B.a }}>التالي</span>
+                        style={{ background: B.a }}>{t("التالي")}</span>
                     )}
                   </div>
                   {!done && (

@@ -1,4 +1,5 @@
 'use client';
+import { intlLocale, useT } from '@/lib/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
 import { PLAN_CONFIGS } from '@storebuilder/types';
@@ -22,11 +23,12 @@ const CYCLE_AR: Record<string, string> = { MONTHLY: 'شهري', YEARLY: 'سنو�
 
 /** What this request pays for: cycle, installment, amount and how it was paid. */
 function RequestPrice({ r, align = 'left' }: { r: { cycle?: string; installment?: number | null; method?: string | null; priceNote?: string | null; amount: number | string }; align?: 'left' | 'right' }) {
+  const t = useT();
   return (
     <div style={{ textAlign: align, fontSize: 12, lineHeight: 1.7 }}>
-      <div style={{ fontWeight: 900, fontSize: 16, color: '#0B3550' }}>{Number(r.amount).toLocaleString('en')} د.ع</div>
-      <div style={{ color: '#32506A', fontWeight: 700 }}>{CYCLE_AR[r.cycle ?? 'MONTHLY'] ?? r.cycle}{r.installment ? ` — الدفعة ${r.installment} من 3` : ''}</div>
-      <div style={{ color: '#7A8A99' }}>{r.method === 'ZAINCASH' ? 'ZainCash' : 'تحويل مصرفي'}</div>
+      <div style={{ fontWeight: 900, fontSize: 16, color: '#0B3550' }}>{Number(r.amount).toLocaleString('en')} {' '}{t("د.ع")}</div>
+      <div style={{ color: '#32506A', fontWeight: 700 }}>{CYCLE_AR[r.cycle ?? 'MONTHLY'] ?? r.cycle}{r.installment ? t(" — الدفعة {0} من 3", [r.installment]) : ''}</div>
+      <div style={{ color: '#7A8A99' }}>{r.method === 'ZAINCASH' ? 'ZainCash' : t("تحويل مصرفي")}</div>
       {r.priceNote && <div style={{ color: '#22B07D', fontWeight: 600 }}>{r.priceNote}</div>}
     </div>
   );
@@ -51,6 +53,7 @@ interface PayRequest {
 }
 
 function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () => void; onDone: () => void }) {
+  const t = useT();
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState<'approve' | 'reject' | null>(null);
   const [showProof, setShowProof] = useState(false);
@@ -59,10 +62,10 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
     setLoading(action === 'APPROVE' ? 'approve' : 'reject');
     try {
       await api.patch(`/api/billing/admin/requests/${req.id}`, { action, adminNote: note || undefined });
-      toast.success(action === 'APPROVE' ? '✓ تم الموافقة وترقية خطة المستخدم' : '✓ تم رفض الطلب');
+      toast.success(action === 'APPROVE' ? t("✓ تم الموافقة وترقية خطة المستخدم") : t("✓ تم رفض الطلب"));
       onDone();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل الإجراء');
+      toast.error(err instanceof Error ? err.message : t("فشل الإجراء"));
     } finally { setLoading(null); }
   };
 
@@ -72,7 +75,7 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(10,5,20,.7)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: C.bgAlt, borderRadius: 10, width: '100%', maxWidth: 520, boxShadow: '0 40px 100px rgba(0,0,0,.3)', overflow: 'hidden' }}>
         <div style={{ background: `linear-gradient(135deg,${C.p},${C.s})`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ color: '#fff', fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 16 }}>مراجعة طلب الدفع</div>
+          <div style={{ color: '#fff', fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 16 }}>{t("مراجعة طلب الدفع")}</div>
           <button onClick={onClose} style={{ background: 'rgba(255,255,255,.15)', border: 'none', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}>
             <X size={15} />
           </button>
@@ -92,7 +95,8 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
                     style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 6, color: '#25D366', fontSize: 12, fontWeight: 700, textDecoration: 'none', background: '#F0FBF6', padding: '3px 10px', borderRadius: 99, border: '1px solid #BDEFD9' }}
                   >
                     <Phone size={14} />
-                    الهاتف: {req.user.phone}
+                    
+                    {t("الهاتف:")}{' '}{req.user.phone}
                   </a>
                 )}
               </div>
@@ -107,7 +111,7 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
 
           {/* Transaction ref */}
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 6 }}>رقم المرجع البنكي</label>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 6 }}>{t("رقم المرجع البنكي")}</label>
             <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 10, padding: '10px 14px', fontFamily: 'monospace', fontSize: 14, color: C.text, letterSpacing: '.5px', userSelect: 'all' }}>
               {req.txRef}
             </div>
@@ -116,14 +120,14 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
           {/* Proof image */}
           {proofSrc && (
             <div style={{ marginBottom: 16 }}>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 6 }}>صورة الإيصال</label>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 6 }}>{t("صورة الإيصال")}</label>
               {showProof ? (
                 <div style={{ position: 'relative', width: '100%', height: 200, borderRadius: 10, overflow: 'hidden', cursor: 'pointer' }} onClick={() => window.open(proofSrc, '_blank')}>
                   <Image src={proofSrc} alt="proof" fill style={{ objectFit: 'cover' }} unoptimized />
                 </div>
               ) : (
                 <button onClick={() => setShowProof(true)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 10, cursor: 'pointer', fontSize: 13, color: C.p, fontFamily: 'inherit', fontWeight: 600 }}>
-                  <Eye size={15} /> عرض صورة الإيصال
+                  <Eye size={15} /> {' '}{t("عرض صورة الإيصال")}
                 </button>
               )}
             </div>
@@ -132,19 +136,21 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
           {!proofSrc && (
             <div style={{ marginBottom: 16, background: '#FEF9E3', border: '1px solid #FDE047', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#713F12', display: 'flex', alignItems: 'center', gap: 6 }}>
               <AlertTriangle size={14} />
-              المستخدم لم يرفع صورة إيصال — تحقق يدوياً من حسابك البنكي
+              
+              {t("المستخدم لم يرفع صورة إيصال — تحقق يدوياً من حسابك البنكي")}
             </div>
           )}
 
           {/* Date */}
           <div style={{ fontSize: 12, color: C.muted, marginBottom: 20 }}>
-            تاريخ الطلب: {new Date(req.createdAt).toLocaleString('ar-IQ')}
+            
+            {t("تاريخ الطلب:")}{' '}{new Date(req.createdAt).toLocaleString(intlLocale())}
           </div>
 
           {/* Admin note */}
           <div style={{ marginBottom: 20 }}>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 6 }}>ملاحظة للمستخدم (اختياري عند الرفض)</label>
-            <textarea value={note} onChange={e => setNote(e.target.value)} rows={2} placeholder="سبب الرفض أو أي ملاحظة..."
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 6 }}>{t("ملاحظة للمستخدم (اختياري عند الرفض)")}</label>
+            <textarea value={note} onChange={e => setNote(e.target.value)} rows={2} placeholder={t("سبب الرفض أو أي ملاحظة...")}
               style={{ width: '100%', padding: '10px 14px', background: C.bg, border: `1.5px solid ${C.border}`, borderRadius: 10, fontSize: 13, fontFamily: 'inherit', color: C.text, outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
           </div>
 
@@ -153,12 +159,14 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
             <button onClick={() => act('APPROVE')} disabled={!!loading}
               style={{ flex: 1, padding: '13px 0', background: loading === 'approve' ? 'rgba(5,150,105,.4)' : '#22B07D', color: '#fff', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
               {loading === 'approve' ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Check size={16} />}
-              موافقة وترقية
+              
+              {t("موافقة وترقية")}
             </button>
             <button onClick={() => act('REJECT')} disabled={!!loading}
               style={{ flex: 1, padding: '13px 0', background: loading === 'reject' ? 'rgba(220,38,38,.35)' : '#F04F4F', color: '#fff', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit' }}>
               {loading === 'reject' ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <X size={16} />}
-              رفض
+              
+              {t("رفض")}
             </button>
           </div>
         </div>
@@ -170,7 +178,8 @@ function ActionModal({ req, onClose, onDone }: { req: PayRequest; onClose: () =>
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function AdminPaymentsPage() {
-  useDocumentTitle('طلبات الدفع');
+  const t = useT();
+  useDocumentTitle(t("طلبات الدفع"));
   const [requests, setRequests] = useState<PayRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'PENDING' | 'ALL' | 'APPROVED' | 'REJECTED'>('PENDING');
@@ -181,7 +190,7 @@ export default function AdminPaymentsPage() {
     try {
       const res = await api.get<{ success: boolean; data: PayRequest[] }>(`/api/billing/admin/requests?status=${filter}`);
       setRequests(res.data ?? []);
-    } catch { toast.error('فشل تحميل الطلبات'); }
+    } catch { toast.error(t("فشل تحميل الطلبات")); }
     finally { setLoading(false); }
   }, [filter]);
 
@@ -199,22 +208,24 @@ export default function AdminPaymentsPage() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 28 }}>
         <div>
           <h1 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 900, fontSize: 'clamp(20px, 3vw, 28px)', color: C.text, margin: '0 0 4px' }}>
-            طلبات الدفع
+            
+            {t("طلبات الدفع")}
             {pendingCount > 0 && filter === 'PENDING' && (
               <span style={{ marginRight: 12, background: C.a, color: '#fff', fontSize: 13, fontWeight: 700, padding: '2px 12px', borderRadius: 99 }}>{pendingCount}</span>
             )}
           </h1>
-          <p style={{ fontSize: 14, color: C.muted, margin: 0 }}>راجع طلبات الترقية وتحقق من مدفوعات QR</p>
+          <p style={{ fontSize: 14, color: C.muted, margin: 0 }}>{t("راجع طلبات الترقية وتحقق من مدفوعات QR")}</p>
         </div>
         <button onClick={load} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: C.bg, border: `1.5px solid ${C.border}`, borderRadius: 10, cursor: 'pointer', fontSize: 13, color: C.p, fontFamily: 'inherit', fontWeight: 600 }}>
           <RefreshCw size={15} />
-          تحديث
+          
+          {t("تحديث")}
         </button>
       </div>
 
       {/* Filter tabs */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
-        {([['PENDING', 'قيد المراجعة'], ['APPROVED', 'مقبول'], ['REJECTED', 'مرفوض'], ['ALL', 'الكل']] as const).map(([key, label]) => (
+        {([['PENDING', t("قيد المراجعة")], ['APPROVED', t("مقبول")], ['REJECTED', t("مرفوض")], ['ALL', t("الكل")]] as const).map(([key, label]) => (
           <button key={key} onClick={() => setFilter(key)}
             style={{ padding: '8px 18px', borderRadius: 10, border: `1.5px solid ${filter === key ? C.p : C.border}`, background: filter === key ? C.p : 'transparent', color: filter === key ? '#fff' : C.muted, fontWeight: 600, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s' }}>
             {label}
@@ -229,7 +240,7 @@ export default function AdminPaymentsPage() {
       ) : requests.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 0', color: C.muted }}>
           <Clock size={48} strokeWidth={1} color={C.border} style={{ marginBottom: 16 }} />
-          <div style={{ fontSize: 16, fontWeight: 600 }}>لا توجد طلبات {filter === 'PENDING' ? 'معلقة' : ''}</div>
+          <div style={{ fontSize: 16, fontWeight: 600 }}>{t("لا توجد طلبات")}{' '}{filter === 'PENDING' ? t("معلقة") : ''}</div>
         </div>
       ) : (
         <div style={{ background: C.bgAlt, border: `1.5px solid ${C.border}`, borderRadius: 10, overflow: 'hidden' }}>
@@ -237,7 +248,7 @@ export default function AdminPaymentsPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
                 <tr style={{ background: C.bg }}>
-                  {['المستخدم', 'الخطة المطلوبة', 'رقم المرجع', 'إيصال', 'الحالة', 'التاريخ', 'إجراء'].map(h => (
+                  {[t("المستخدم"), t("الخطة المطلوبة"), t("رقم المرجع"), t("إيصال"), t("الحالة"), t("التاريخ"), t("إجراء")].map(h => (
                     <th key={h} style={{ padding: '14px 16px', textAlign: 'right', color: C.muted, fontWeight: 600, whiteSpace: 'nowrap', fontSize: 12 }}>{h}</th>
                   ))}
                 </tr>
@@ -269,7 +280,7 @@ export default function AdminPaymentsPage() {
                         {r.proofUrl ? (
                           <a href={r.proofUrl.startsWith('http') ? r.proofUrl : `http://localhost:4000${r.proofUrl}`} target="_blank" rel="noreferrer"
                             style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: C.p, fontWeight: 600, fontSize: 12, textDecoration: 'none' }}>
-                            <Eye size={13} /> عرض
+                            <Eye size={13} /> {' '}{t("عرض")}
                           </a>
                         ) : <span style={{ color: C.muted, fontSize: 12 }}>—</span>}
                       </td>
@@ -280,15 +291,16 @@ export default function AdminPaymentsPage() {
                         {r.adminNote && <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>{r.adminNote}</div>}
                       </td>
                       <td style={{ padding: '14px 16px', color: C.muted, whiteSpace: 'nowrap', fontSize: 12 }}>
-                        {new Date(r.createdAt).toLocaleDateString('ar-IQ')}
+                        {new Date(r.createdAt).toLocaleDateString(intlLocale())}
                       </td>
                       <td style={{ padding: '14px 16px' }}>
                         {r.status === 'PENDING' ? (
                           <button onClick={() => setSelected(r)}
                             style={{ padding: '7px 14px', background: C.p, color: '#fff', border: 'none', borderRadius: 10, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
-                            مراجعة
+                            
+                            {t("مراجعة")}
                           </button>
-                        ) : <span style={{ fontSize: 12, color: C.muted }}>تمت المعالجة</span>}
+                        ) : <span style={{ fontSize: 12, color: C.muted }}>{t("تمت المعالجة")}</span>}
                       </td>
                     </tr>
                   );
@@ -301,12 +313,12 @@ export default function AdminPaymentsPage() {
 
       {/* Instructions for admin */}
       <div style={{ marginTop: 28, background: '#FEF9E3', border: '1px solid #FDE047', borderRadius: 10, padding: '16px 20px', fontSize: 13, color: '#713F12', lineHeight: 1.8 }}>
-        <div style={{ fontWeight: 700, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}><Lightbulb size={14} /> كيف تتحقق من الدفع؟</div>
+        <div style={{ fontWeight: 700, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}><Lightbulb size={14} /> {' '}{t("كيف تتحقق من الدفع؟")}</div>
         <ol style={{ margin: 0, paddingRight: 20, lineHeight: 2 }}>
-          <li>افتح تطبيق بنكك وتحقق من وجود حوالة بالمبلغ المطلوب</li>
-          <li>طابق رقم المرجع الذي أرسله المستخدم مع رقم العملية في حسابك</li>
-          <li>اضغط &quot;موافقة وترقية&quot; إذا تطابقت البيانات — سيتم تفعيل خطته فوراً</li>
-          <li>اضغط &quot;رفض&quot; مع ذكر السبب إذا لم تجد الحوالة</li>
+          <li>{t("افتح تطبيق بنكك وتحقق من وجود حوالة بالمبلغ المطلوب")}</li>
+          <li>{t("طابق رقم المرجع الذي أرسله المستخدم مع رقم العملية في حسابك")}</li>
+          <li>{t("اضغط \"موافقة وترقية\" إذا تطابقت البيانات — سيتم تفعيل خطته فوراً")}</li>
+          <li>{t("اضغط \"رفض\" مع ذكر السبب إذا لم تجد الحوالة")}</li>
         </ol>
       </div>
     </div>

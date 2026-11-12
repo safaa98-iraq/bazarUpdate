@@ -1,5 +1,6 @@
 'use client';
 
+import { intlLocale, useT } from '@/lib/i18n';
 import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
@@ -46,20 +47,21 @@ function PlanBadge({ plan }: { plan: 'FREE' | 'PRO' | 'ENTERPRISE' }) {
 }
 
 function DaysChip({ days, plan }: { days: number | null; plan: string }) {
+  const t = useT();
   if (plan === 'FREE' || days === null) return <span className="text-xs text-gray-400">—</span>;
   if (days < 0) return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-600">
-      <XCircle className="h-3 w-3" /> منتهي
+      <XCircle className="h-3 w-3" /> {' '}{t("منتهي")}
     </span>
   );
   if (days <= 7) return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
-      <AlertTriangle className="h-3 w-3" /> {days} يوم
+      <AlertTriangle className="h-3 w-3" /> {days} {' '}{t("يوم")}
     </span>
   );
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
-      <CheckCircle2 className="h-3 w-3" /> {days} يوم
+      <CheckCircle2 className="h-3 w-3" /> {days} {' '}{t("يوم")}
     </span>
   );
 }
@@ -76,6 +78,7 @@ function ConfirmModal({
   open: boolean; title: string; message: string; confirmLabel: string; danger?: boolean;
   onConfirm: () => void; onClose: () => void; loading: boolean;
 }) {
+  const t = useT();
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" dir="rtl">
@@ -84,7 +87,7 @@ function ConfirmModal({
         <p className="text-sm text-gray-600 mb-6 leading-relaxed">{message}</p>
         <div className="flex gap-3">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border text-sm font-medium hover:bg-gray-50 transition"
-            style={{ borderColor: B.border }}>إلغاء</button>
+            style={{ borderColor: B.border }}>{t("إلغاء")}</button>
           <button onClick={onConfirm} disabled={loading}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
             style={{ background: danger ? '#F04F4F' : `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
@@ -100,7 +103,8 @@ function ConfirmModal({
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function SubscriptionsPage() {
-  useDocumentTitle('الاشتراكات');
+  const t = useT();
+  useDocumentTitle(t("الاشتراكات"));
   const [data, setData] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -118,7 +122,7 @@ export default function SubscriptionsPage() {
     try {
       const r = await api.get<{ success: boolean; data: Subscription[] }>('/api/billing/admin/subscriptions');
       setData(r.data ?? []);
-    } catch { toast.error('فشل تحميل البيانات'); }
+    } catch { toast.error(t("فشل تحميل البيانات")); }
     finally { setLoading(false); }
   }, []);
 
@@ -130,15 +134,15 @@ export default function SubscriptionsPage() {
       // Paid plans set from here need a duration: monthly, yearly, lifetime, or open-ended.
       let cycle: string | undefined;
       if (plan !== 'FREE') {
-        const answer = window.prompt('مدة الاشتراك: اكتب 1 لشهري، 2 لسنوي، 3 لأبدي، أو اتركه فارغاً بدون تاريخ انتهاء', '2');
+        const answer = window.prompt(t("مدة الاشتراك: اكتب 1 لشهري، 2 لسنوي، 3 لأبدي، أو اتركه فارغاً بدون تاريخ انتهاء"), '2');
         if (answer === null) { setActionLoading(null); setConfirm(null); return; }
         cycle = ({ '1': 'MONTHLY', '2': 'YEARLY', '3': 'LIFETIME' } as Record<string, string>)[answer.trim()] ?? 'NONE';
       }
       await api.patch(`/api/billing/admin/subscriptions/${userId}`, { plan, cycle });
-      toast.success('تم تغيير الخطة بنجاح');
+      toast.success(t("تم تغيير الخطة بنجاح"));
       await load();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل التغيير');
+      toast.error(err instanceof Error ? err.message : t("فشل التغيير"));
     } finally {
       setActionLoading(null);
       setConfirm(null);
@@ -174,25 +178,26 @@ export default function SubscriptionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="bz-large-title text-gray-900">إدارة الاشتراكات</h1>
-          <p className="text-sm text-gray-500 mt-0.5">تواريخ الاشتراك، ترقية وإلغاء الخطط</p>
+          <h1 className="bz-large-title text-gray-900">{t("إدارة الاشتراكات")}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{t("تواريخ الاشتراك، ترقية وإلغاء الخطط")}</p>
         </div>
         <button onClick={load} disabled={loading}
           className="flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium hover:bg-gray-50 transition disabled:opacity-50"
           style={{ borderColor: B.border }}>
           <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} style={{ color: B.p }} />
-          تحديث
+          
+          {t("تحديث")}
         </button>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
         {[
-          { label: 'إجمالي التجار', value: total, icon: Users, color: B.p, bg: '#EEF2F6' },
-          { label: 'خطة احترافية', value: proCount, icon: Zap, color: '#8B5CF6', bg: '#F1ECFE' },
-          { label: 'خطة أعمال', value: entCount, icon: Crown, color: '#F59E0B', bg: '#FEF3E2' },
-          { label: 'تنتهي خلال 7 أيام', value: expiring, icon: Clock, color: '#F59E0B', bg: '#FEF9E3' },
-          { label: 'منتهية الصلاحية', value: expired, icon: AlertTriangle, color: '#F04F4F', bg: '#FDECEC' },
+          { label: t("إجمالي التجار"), value: total, icon: Users, color: B.p, bg: '#EEF2F6' },
+          { label: t("خطة احترافية"), value: proCount, icon: Zap, color: '#8B5CF6', bg: '#F1ECFE' },
+          { label: t("خطة أعمال"), value: entCount, icon: Crown, color: '#F59E0B', bg: '#FEF3E2' },
+          { label: t("تنتهي خلال 7 أيام"), value: expiring, icon: Clock, color: '#F59E0B', bg: '#FEF9E3' },
+          { label: t("منتهية الصلاحية"), value: expired, icon: AlertTriangle, color: '#F04F4F', bg: '#FDECEC' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="bg-white rounded-2xl p-4 border" style={{ borderColor: B.border }}>
             <div className="flex items-center justify-between">
@@ -213,7 +218,7 @@ export default function SubscriptionsPage() {
         <div className="relative flex-1 min-w-48">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="ابحث بالاسم أو البريد أو رقم الهاتف…"
+            placeholder={t("ابحث بالاسم أو البريد أو رقم الهاتف…")}
             className="w-full pr-9 pl-4 py-2 rounded-xl border text-sm focus:outline-none bg-white"
             style={{ borderColor: B.border }} />
         </div>
@@ -226,12 +231,12 @@ export default function SubscriptionsPage() {
                 background: planFilter === p ? B.a : 'white',
                 color: planFilter === p ? '#fff' : '#5B6B7B',
               }}>
-              {p === 'ALL' ? 'الكل' : PLAN_META[p].label}
+              {p === 'ALL' ? t("الكل") : PLAN_META[p].label}
             </button>
           ))}
         </div>
         <div className="flex gap-2">
-          {([['ALL', 'الكل'], ['EXPIRING', 'تنتهي قريباً'], ['EXPIRED', 'منتهية']] as const).map(([v, l]) => (
+          {([['ALL', t("الكل")], ['EXPIRING', t("تنتهي قريباً")], ['EXPIRED', t("منتهية")]] as const).map(([v, l]) => (
             <button key={v} onClick={() => setStatusFilter(v)}
               className="px-3 py-1.5 rounded-xl text-xs font-semibold border transition"
               style={{
@@ -255,7 +260,7 @@ export default function SubscriptionsPage() {
           <table className="w-full text-sm">
             <thead style={{ background: B.soft }}>
               <tr>
-                {['التاجر', 'الخطة', 'تاريخ التسجيل', 'بداية الاشتراك', 'انتهاء الاشتراك', 'المتبقي', 'الإجراءات'].map(h => (
+                {[t("التاجر"), t("الخطة"), t("تاريخ التسجيل"), t("بداية الاشتراك"), t("انتهاء الاشتراك"), t("المتبقي"), t("الإجراءات")].map(h => (
                   <th key={h} className="px-4 py-3 text-right text-xs font-bold" style={{ color: B.p }}>{h}</th>
                 ))}
               </tr>
@@ -264,7 +269,8 @@ export default function SubscriptionsPage() {
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center text-sm text-gray-400">
-                    لا توجد نتائج مطابقة
+                    
+                    {t("لا توجد نتائج مطابقة")}
                   </td>
                 </tr>
               ) : filtered.map(row => {
@@ -292,10 +298,10 @@ export default function SubscriptionsPage() {
                         </div>
                       </div>
                       {!row.isActive && (
-                        <span className="mt-1 inline-block text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-600">موقوف</span>
+                        <span className="mt-1 inline-block text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-600">{t("موقوف")}</span>
                       )}
                       {row.hasPendingRequest && (
-                        <span className="mt-1 inline-block text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 mr-1">طلب معلق</span>
+                        <span className="mt-1 inline-block text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 mr-1">{t("طلب معلق")}</span>
                       )}
                     </td>
 
@@ -318,7 +324,7 @@ export default function SubscriptionsPage() {
                           <p className="text-xs text-gray-700">{fmt(row.planChangedAt)}</p>
                           {row.lastPayment && (
                             <p className="text-xs text-gray-400 mt-0.5">
-                              {Number(row.lastPayment.amount).toLocaleString('ar')} {row.lastPayment.currency}
+                              {Number(row.lastPayment.amount).toLocaleString(intlLocale())} {row.lastPayment.currency}
                             </p>
                           )}
                         </div>
@@ -350,7 +356,7 @@ export default function SubscriptionsPage() {
                             disabled={isLoading}
                             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hover:opacity-90 disabled:opacity-50"
                             style={{ background: `${PLAN_META[upgrade].bg}`, color: PLAN_META[upgrade].color }}
-                            title={`ترقية إلى ${PLAN_META[upgrade].label}`}>
+                            title={t("ترقية إلى {0}", [PLAN_META[upgrade].label])}>
                             <ArrowUpCircle className="h-3.5 w-3.5" />
                             {PLAN_META[upgrade].label}
                           </button>
@@ -361,9 +367,9 @@ export default function SubscriptionsPage() {
                             disabled={isLoading}
                             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hover:opacity-90 disabled:opacity-50"
                             style={{ background: '#FDECEC', color: '#C93636' }}
-                            title={`تخفيض إلى ${PLAN_META[downgrade].label}`}>
+                            title={t("تخفيض إلى {0}", [PLAN_META[downgrade].label])}>
                             {isLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowDownCircle className="h-3.5 w-3.5" />}
-                            {downgrade === 'FREE' ? 'إلغاء' : PLAN_META[downgrade].label}
+                            {downgrade === 'FREE' ? t("إلغاء") : PLAN_META[downgrade].label}
                           </button>
                         )}
                         {row.plan === 'FREE' && !upgrade && (
@@ -379,7 +385,8 @@ export default function SubscriptionsPage() {
 
           {filtered.length > 0 && (
             <div className="px-4 py-3 border-t text-xs text-gray-400" style={{ borderColor: B.border }}>
-              عرض {filtered.length} من أصل {data.length} تاجر
+              
+              {t("عرض")}{' '}{filtered.length} {' '}{t("من أصل")}{' '}{data.length} {' '}{t("تاجر")}
             </div>
           )}
         </div>
@@ -388,13 +395,13 @@ export default function SubscriptionsPage() {
       {/* Confirm modal */}
       <ConfirmModal
         open={confirm?.open ?? false}
-        title={confirm ? `${confirm.targetPlan === 'FREE' ? 'إلغاء الاشتراك' : 'تغيير الخطة'}` : ''}
+        title={confirm ? `${confirm.targetPlan === 'FREE' ? t("إلغاء الاشتراك") : t("تغيير الخطة")}` : ''}
         message={confirm
           ? confirm.targetPlan === 'FREE'
-            ? `سيتم إلغاء اشتراك "${confirm.name}" وتحويله إلى الخطة المجانية فوراً. هل أنت متأكد؟`
-            : `سيتم ترقية "${confirm.name}" من خطة ${PLAN_META[confirm.current as keyof typeof PLAN_META]?.label ?? confirm.current} إلى خطة ${PLAN_META[confirm.targetPlan].label} فوراً.`
+            ? t("سيتم إلغاء اشتراك \"{0}\" وتحويله إلى الخطة المجانية فوراً. هل أنت متأكد؟", [confirm.name])
+            : t("سيتم ترقية \"{0}\" من خطة {1} إلى خطة {2} فوراً.", [confirm.name, PLAN_META[confirm.current as keyof typeof PLAN_META]?.label ?? confirm.current, PLAN_META[confirm.targetPlan].label])
           : ''}
-        confirmLabel={confirm?.targetPlan === 'FREE' ? 'إلغاء الاشتراك' : 'تأكيد الترقية'}
+        confirmLabel={confirm?.targetPlan === 'FREE' ? t("إلغاء الاشتراك") : t("تأكيد الترقية")}
         danger={confirm?.targetPlan === 'FREE'}
         onConfirm={() => confirm && applyPlan(confirm.userId, confirm.targetPlan)}
         onClose={() => setConfirm(null)}

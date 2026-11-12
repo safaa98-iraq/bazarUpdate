@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import { Percent, Plus, Trash2, Eye, EyeOff, Loader2, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -33,7 +34,8 @@ function describe(p: PromotionPublic): string {
 }
 
 export default function PromotionsPage() {
-  useDocumentTitle('العروض التلقائية');
+  const t = useT();
+  useDocumentTitle(t("العروض التلقائية"));
   const [promos, setPromos] = useState<PromotionPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -44,7 +46,7 @@ export default function PromotionsPage() {
     try {
       const res = await api.get<{ success: boolean; data: PromotionPublic[] }>('/api/promotions');
       setPromos(res.data ?? []);
-    } catch { toast.error('فشل تحميل العروض'); }
+    } catch { toast.error(t("فشل تحميل العروض")); }
     finally { setLoading(false); }
   }, []);
 
@@ -52,7 +54,7 @@ export default function PromotionsPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim()) { toast.error('اسم العرض مطلوب'); return; }
+    if (!form.name.trim()) { toast.error(t("اسم العرض مطلوب")); return; }
     setSaving(true);
     try {
       const config = form.type === 'BOGO'
@@ -62,12 +64,12 @@ export default function PromotionsPage() {
             { minQty: Number(form.tier2Qty), discountPercent: Number(form.tier2Percent) },
           ].filter(t => t.minQty > 0) };
       await api.post('/api/promotions', { type: form.type, name: form.name.trim(), scope: 'ALL', config });
-      toast.success('تم إنشاء العرض ✓');
+      toast.success(t("تم إنشاء العرض ✓"));
       setForm(emptyForm);
       setShowModal(false);
       fetchPromos();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل الإنشاء');
+      toast.error(err instanceof Error ? err.message : t("فشل الإنشاء"));
     } finally { setSaving(false); }
   };
 
@@ -75,29 +77,29 @@ export default function PromotionsPage() {
     try {
       await api.patch(`/api/promotions/${p.id}`, { isActive: !p.isActive });
       fetchPromos();
-    } catch { toast.error('فشل التحديث'); }
+    } catch { toast.error(t("فشل التحديث")); }
   };
 
   const deletePromo = async (id: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذا العرض؟')) return;
+    if (!confirm(t("هل أنت متأكد من حذف هذا العرض؟"))) return;
     try {
       await api.delete(`/api/promotions/${id}`);
-      toast.success('تم الحذف');
+      toast.success(t("تم الحذف"));
       fetchPromos();
-    } catch { toast.error('فشل الحذف'); }
+    } catch { toast.error(t("فشل الحذف")); }
   };
 
   return (
     <div className="p-6 max-w-4xl" dir="rtl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="bz-large-title text-gray-900">عروض تلقائية</h1>
-          <p className="text-sm text-gray-500 mt-0.5">اشترِ واحصل على آخر، أو خصم متدرج حسب الكمية — يُطبّق تلقائياً على كل السلة دون كود</p>
+          <h1 className="bz-large-title text-gray-900">{t("عروض تلقائية")}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{t("اشترِ واحصل على آخر، أو خصم متدرج حسب الكمية — يُطبّق تلقائياً على كل السلة دون كود")}</p>
         </div>
         <button onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
           style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-          <Plus className="h-4 w-4" /> عرض جديد
+          <Plus className="h-4 w-4" /> {' '}{t("عرض جديد")}
         </button>
       </div>
 
@@ -106,7 +108,7 @@ export default function PromotionsPage() {
       ) : promos.length === 0 ? (
         <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: BRAND.border }}>
           <Percent className="h-12 w-12 mx-auto mb-4 text-gray-200" />
-          <p className="font-medium text-gray-400 mb-1">لا توجد عروض بعد</p>
+          <p className="font-medium text-gray-400 mb-1">{t("لا توجد عروض بعد")}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -119,10 +121,10 @@ export default function PromotionsPage() {
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-sm" style={{ color: BRAND.primary }}>{p.name}</span>
                   <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: BRAND.bg, color: BRAND.primary }}>
-                    {p.type === 'BOGO' ? 'اشترِ واحصل' : 'خصم متدرج'}
+                    {p.type === 'BOGO' ? t("اشترِ واحصل") : t("خصم متدرج")}
                   </span>
                   <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: p.isActive ? '#E2F7EE' : '#F6F8FA', color: p.isActive ? '#17845C' : '#A3B0BC' }}>
-                    {p.isActive ? 'نشط' : 'موقوف'}
+                    {p.isActive ? t("نشط") : t("موقوف")}
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">{describe(p)}</p>
@@ -144,24 +146,24 @@ export default function PromotionsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm">
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: BRAND.border }}>
-              <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>عرض جديد</h2>
+              <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>{t("عرض جديد")}</h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400"><X className="h-5 w-5" /></button>
             </div>
             <form onSubmit={handleCreate} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>اسم العرض *</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("اسم العرض *")}</label>
                 <input value={form.name} required onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  placeholder="مثال: عرض نهاية الأسبوع"
+                  placeholder={t("مثال: عرض نهاية الأسبوع")}
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>نوع العرض</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("نوع العرض")}</label>
                 <div className="flex gap-2">
-                  {(['BOGO', 'TIERED'] as const).map(t => (
-                    <button key={t} type="button" onClick={() => setForm(f => ({ ...f, type: t }))}
+                  {(['BOGO', 'TIERED'] as const).map(opt => (
+                    <button key={opt} type="button" onClick={() => setForm(f => ({ ...f, type: opt }))}
                       className="flex-1 py-2 rounded-xl text-xs font-bold border-2 transition"
-                      style={{ borderColor: form.type === t ? BRAND.accent : BRAND.border, color: form.type === t ? BRAND.accent : '#5B6B7B' }}>
-                      {t === 'BOGO' ? 'اشترِ واحصل' : 'خصم متدرج'}
+                      style={{ borderColor: form.type === opt ? BRAND.accent : BRAND.border, color: form.type === opt ? BRAND.accent : '#5B6B7B' }}>
+                      {opt === 'BOGO' ? t("اشترِ واحصل") : t("خصم متدرج")}
                     </button>
                   ))}
                 </div>
@@ -170,17 +172,17 @@ export default function PromotionsPage() {
               {form.type === 'BOGO' ? (
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>اشترِ</label>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("اشترِ")}</label>
                     <input type="number" min={1} value={form.buyQty} onChange={e => setForm(f => ({ ...f, buyQty: e.target.value }))}
                       className="w-full px-2 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>واحصل على</label>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("واحصل على")}</label>
                     <input type="number" min={1} value={form.getQty} onChange={e => setForm(f => ({ ...f, getQty: e.target.value }))}
                       className="w-full px-2 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>خصم %</label>
+                    <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("خصم %")}</label>
                     <input type="number" min={1} max={100} value={form.getDiscountPercent} onChange={e => setForm(f => ({ ...f, getDiscountPercent: e.target.value }))}
                       className="w-full px-2 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                   </div>
@@ -189,41 +191,42 @@ export default function PromotionsPage() {
                 <div className="space-y-2">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>من (قطعة)</label>
+                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("من (قطعة)")}</label>
                       <input type="number" min={1} value={form.tier1Qty} onChange={e => setForm(f => ({ ...f, tier1Qty: e.target.value }))}
                         className="w-full px-2 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>خصم %</label>
+                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("خصم %")}</label>
                       <input type="number" min={1} max={100} value={form.tier1Percent} onChange={e => setForm(f => ({ ...f, tier1Percent: e.target.value }))}
                         className="w-full px-2 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>من (قطعة)</label>
+                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("من (قطعة)")}</label>
                       <input type="number" min={1} value={form.tier2Qty} onChange={e => setForm(f => ({ ...f, tier2Qty: e.target.value }))}
                         className="w-full px-2 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>خصم %</label>
+                      <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("خصم %")}</label>
                       <input type="number" min={1} max={100} value={form.tier2Percent} onChange={e => setForm(f => ({ ...f, tier2Percent: e.target.value }))}
                         className="w-full px-2 py-2 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
                     </div>
                   </div>
-                  <p className="text-xs text-gray-400">يُطبَّق أعلى مستوى تصله كمية سلة الزبون</p>
+                  <p className="text-xs text-gray-400">{t("يُطبَّق أعلى مستوى تصله كمية سلة الزبون")}</p>
                 </div>
               )}
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
                   className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 transition text-gray-600" style={{ borderColor: BRAND.border }}>
-                  إلغاء
+                  
+                  {t("إلغاء")}
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-                  {saving && <Loader2 className="h-4 w-4 animate-spin" />} إنشاء
+                  {saving && <Loader2 className="h-4 w-4 animate-spin" />} {' '}{t("إنشاء")}
                 </button>
               </div>
             </form>

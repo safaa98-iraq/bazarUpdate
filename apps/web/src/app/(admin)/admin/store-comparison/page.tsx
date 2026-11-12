@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -32,7 +33,8 @@ function KpiCard({ title, value, sub, icon }: { title: string; value: string | n
 }
 
 function GrowthBadge({ pct }: { pct: number | null }) {
-  if (pct === null) return <span className="text-xs text-gray-400 flex items-center gap-1"><Minus className="h-3 w-3" /> لا يوجد سجل</span>;
+  const t = useT();
+  if (pct === null) return <span className="text-xs text-gray-400 flex items-center gap-1"><Minus className="h-3 w-3" /> {' '}{t("لا يوجد سجل")}</span>;
   const positive = pct > 0;
   const flat = pct === 0;
   return (
@@ -45,7 +47,8 @@ function GrowthBadge({ pct }: { pct: number | null }) {
 }
 
 export default function StoreComparisonPage() {
-  useDocumentTitle('مقارنة المتاجر');
+  const t = useT();
+  useDocumentTitle(t("مقارنة المتاجر"));
   const [rows, setRows] = useState<StoreComparisonRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -108,27 +111,27 @@ export default function StoreComparisonPage() {
     <div className="p-6 max-w-7xl space-y-6" dir="rtl">
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: B.p }}>
-          <GitCompare className="h-6 w-6" style={{ color: B.a }} /> مقارنة أداء المتاجر
+          <GitCompare className="h-6 w-6" style={{ color: B.a }} /> {' '}{t("مقارنة أداء المتاجر")}
         </h1>
-        <p className="text-sm text-gray-500 mt-1">قارن الإيرادات والنمو والنشاط بين متاجر التجار</p>
+        <p className="text-sm text-gray-500 mt-1">{t("قارن الإيرادات والنمو والنشاط بين متاجر التجار")}</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard title="إجمالي المتاجر" value={totals.stores} icon={<StoreIcon className="h-5 w-5" style={{ color: B.s }} />} />
-        <KpiCard title="إجمالي الإيرادات" value={formatCurrency(totals.revenue)} icon={<TrendingUp className="h-5 w-5" style={{ color: '#22B07D' }} />} />
-        <KpiCard title="متاجر في نمو" value={totals.growing} sub="مقارنة بالشهر الماضي" icon={<TrendingUp className="h-5 w-5" style={{ color: '#22B07D' }} />} />
-        <KpiCard title="متاجر في تراجع" value={totals.declining} sub="مقارنة بالشهر الماضي" icon={<TrendingDown className="h-5 w-5" style={{ color: '#F04F4F' }} />} />
+        <KpiCard title={t("إجمالي المتاجر")} value={totals.stores} icon={<StoreIcon className="h-5 w-5" style={{ color: B.s }} />} />
+        <KpiCard title={t("إجمالي الإيرادات")} value={formatCurrency(totals.revenue)} icon={<TrendingUp className="h-5 w-5" style={{ color: '#22B07D' }} />} />
+        <KpiCard title={t("متاجر في نمو")} value={totals.growing} sub={t("مقارنة بالشهر الماضي")} icon={<TrendingUp className="h-5 w-5" style={{ color: '#22B07D' }} />} />
+        <KpiCard title={t("متاجر في تراجع")} value={totals.declining} sub={t("مقارنة بالشهر الماضي")} icon={<TrendingDown className="h-5 w-5" style={{ color: '#F04F4F' }} />} />
       </div>
 
       {topByRevenue.length > 0 && (
         <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${B.border}` }}>
-          <h2 className="font-bold mb-1" style={{ color: B.p }}>الأعلى إيراداً</h2>
-          <p className="text-xs text-gray-400 mb-5">أفضل 8 متاجر حسب إجمالي الإيرادات</p>
+          <h2 className="font-bold mb-1" style={{ color: B.p }}>{t("الأعلى إيراداً")}</h2>
+          <p className="text-xs text-gray-400 mb-5">{t("أفضل 8 متاجر حسب إجمالي الإيرادات")}</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={topByRevenue} margin={{ top: 5, right: 5, bottom: 20, left: -10 }}>
               <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#A3B0BC' }} angle={-20} textAnchor="end" />
               <YAxis tick={{ fontSize: 10, fill: '#A3B0BC' }} />
-              <Tooltip formatter={(v: number) => [formatCurrency(v), 'الإيراد']} contentStyle={{ borderRadius: 10, border: `1px solid ${B.border}`, fontSize: 12 }} />
+              <Tooltip formatter={(v: number) => [formatCurrency(v), t("الإيراد")]} contentStyle={{ borderRadius: 10, border: `1px solid ${B.border}`, fontSize: 12 }} />
               <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
                 {topByRevenue.map((_, i) => <Cell key={i} fill={i === 0 ? B.a : i < 3 ? B.p : B.s} />)}
               </Bar>
@@ -141,28 +144,28 @@ export default function StoreComparisonPage() {
         <div className="p-4 border-b flex items-center gap-3" style={{ borderColor: B.border }}>
           <div className="relative flex-1 max-w-xs">
             <Search className="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ابحث باسم المتجر أو التاجر…"
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t("ابحث باسم المتجر أو التاجر…")}
               className="w-full pr-9 pl-3 py-2 rounded-xl border text-sm focus:outline-none transition" style={{ borderColor: '#E6ECF1' }} />
           </div>
-          <span className="text-xs text-gray-400 mr-auto">{filtered.length} من {rows.length} متجر</span>
+          <span className="text-xs text-gray-400 mr-auto">{filtered.length} {' '}{t("من")}{' '}{rows.length} {' '}{t("متجر")}</span>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="py-16 text-center text-gray-400 text-sm">لا توجد نتائج مطابقة</div>
+          <div className="py-16 text-center text-gray-400 text-sm">{t("لا توجد نتائج مطابقة")}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b" style={{ borderColor: B.border, background: B.soft }}>
-                  <th className="px-3 py-2.5 text-right text-xs font-bold text-gray-500">المتجر</th>
-                  {th('المنتجات', 'productCount')}
-                  {th('الطلبات', 'totalOrders')}
-                  {th('الإيراد الكلي', 'totalRevenue')}
-                  {th('متوسط الطلب', 'avgOrderValue')}
-                  {th('النمو الشهري', 'growthPercent')}
-                  <th className="px-3 py-2.5 text-center text-xs font-bold text-gray-500">التصنيف الأكثر مبيعاً</th>
-                  {th('تاريخ الإنشاء', 'createdAt')}
-                  <th className="px-3 py-2.5 text-center text-xs font-bold text-gray-500">الحالة</th>
+                  <th className="px-3 py-2.5 text-right text-xs font-bold text-gray-500">{t("المتجر")}</th>
+                  {th(t("المنتجات"), 'productCount')}
+                  {th(t("الطلبات"), 'totalOrders')}
+                  {th(t("الإيراد الكلي"), 'totalRevenue')}
+                  {th(t("متوسط الطلب"), 'avgOrderValue')}
+                  {th(t("النمو الشهري"), 'growthPercent')}
+                  <th className="px-3 py-2.5 text-center text-xs font-bold text-gray-500">{t("التصنيف الأكثر مبيعاً")}</th>
+                  {th(t("تاريخ الإنشاء"), 'createdAt')}
+                  <th className="px-3 py-2.5 text-center text-xs font-bold text-gray-500">{t("الحالة")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -182,7 +185,7 @@ export default function StoreComparisonPage() {
                     <td className="px-3 py-3 text-center">
                       <span className="text-xs px-2.5 py-1 rounded-full font-semibold"
                         style={{ background: r.isActive ? '#E2F7EE' : '#FDECEC', color: r.isActive ? '#17845C' : '#C93636' }}>
-                        {r.isActive ? 'نشط' : 'موقوف'}
+                        {r.isActive ? t("نشط") : t("موقوف")}
                       </span>
                     </td>
                   </tr>

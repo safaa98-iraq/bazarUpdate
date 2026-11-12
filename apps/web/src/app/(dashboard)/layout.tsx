@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { LocaleRoot, DomTranslator } from '@/lib/i18n';
 import { DashboardSidebar, DashboardTopbar } from '@/components/layout/DashboardSidebar';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import { PlanBanner, UpgradeErrorListener } from '@/components/dashboard/PlanNudges';
@@ -32,7 +33,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user || user.role !== 'MERCHANT') return null;
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#F6F8FA' }}>
+    <LocaleRoot className="flex min-h-screen" style={{ background: '#F6F8FA' }}>
+      <DomTranslator />
       <div className="print:hidden contents">
         <DashboardSidebar />
       </div>
@@ -42,6 +44,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <UpgradeErrorListener />
         {children}
       </main>
-    </div>
+    </LocaleRoot>
   );
 }

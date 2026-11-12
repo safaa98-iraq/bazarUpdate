@@ -1,4 +1,5 @@
 'use client';
+import { useT } from '@/lib/i18n';
 import { OrderFulfillment } from '@/components/dashboard/OrderFulfillment';
 import { useAuthStore } from '@/lib/stores/auth.store';
 import type { WarehousePublic, StaffSession } from '@storebuilder/types';
@@ -54,10 +55,11 @@ function formatAddress(shippingAddress: Record<string, unknown>) {
 }
 
 function SpecsSummary({ specs }: { specs?: ProductSpecPublic[] }) {
+  const t = useT();
   if (!specs || specs.length === 0) return null;
   return (
     <p className="text-xs text-gray-400 print:text-gray-600 mt-0.5">
-      {specs.map(s => `${s.name}: ${s.values.map(v => v.value).join('، ')}`).join(' · ')}
+      {specs.map(s => `${s.name}: ${s.values.map(v => v.value).join(t("، "))}`).join(' · ')}
     </p>
   );
 }
@@ -76,15 +78,16 @@ function AddressBlock({ shippingAddress }: { shippingAddress: Record<string, unk
 }
 
 function PrintableInvoice({ order, storeName }: { order: OrderPublic; storeName: string }) {
+  const t = useT();
   return (
     <div className="hidden print:block p-10" dir="rtl">
       <div className="flex items-start justify-between border-b-2 border-gray-800 pb-4 mb-6">
         <div>
           <h1 className="bz-large-title text-gray-900">{storeName}</h1>
-          <p className="text-sm text-gray-500 mt-1">فاتورة / إيصال طلب</p>
+          <p className="text-sm text-gray-500 mt-1">{t("فاتورة / إيصال طلب")}</p>
         </div>
         <div className="text-left">
-          <p className="text-sm text-gray-700">طلب #{order.id.slice(-8).toUpperCase()}</p>
+          <p className="text-sm text-gray-700">{t("طلب #")}{order.id.slice(-8).toUpperCase()}</p>
           <p className="text-sm text-gray-500">{formatDateTime(order.createdAt)}</p>
           <p className="text-sm font-bold mt-1">{STATUS_AR[order.status] ?? order.status}</p>
         </div>
@@ -92,13 +95,13 @@ function PrintableInvoice({ order, storeName }: { order: OrderPublic; storeName:
 
       <div className="grid grid-cols-2 gap-8 mb-8">
         <div>
-          <p className="text-xs font-bold text-gray-500 mb-2">بيانات الزبون</p>
+          <p className="text-xs font-bold text-gray-500 mb-2">{t("بيانات الزبون")}</p>
           <p className="text-sm text-gray-900 font-medium">{order.customerName}</p>
           {order.customerPhone && <p className="text-sm text-gray-700">{order.customerPhone}</p>}
           <p className="text-sm text-gray-700">{order.customerEmail}</p>
         </div>
         <div>
-          <p className="text-xs font-bold text-gray-500 mb-2">عنوان الشحن</p>
+          <p className="text-xs font-bold text-gray-500 mb-2">{t("عنوان الشحن")}</p>
           <p className="text-sm text-gray-700 leading-relaxed">
             <AddressBlock shippingAddress={order.shippingAddress} />
           </p>
@@ -108,10 +111,10 @@ function PrintableInvoice({ order, storeName }: { order: OrderPublic; storeName:
       <table className="w-full text-sm mb-6 border-collapse">
         <thead>
           <tr className="border-b-2 border-gray-800">
-            <th className="text-right py-2">المنتج</th>
-            <th className="text-center py-2">الكمية</th>
-            <th className="text-center py-2">السعر</th>
-            <th className="text-left py-2">الإجمالي</th>
+            <th className="text-right py-2">{t("المنتج")}</th>
+            <th className="text-center py-2">{t("الكمية")}</th>
+            <th className="text-center py-2">{t("السعر")}</th>
+            <th className="text-left py-2">{t("الإجمالي")}</th>
           </tr>
         </thead>
         <tbody>
@@ -132,11 +135,11 @@ function PrintableInvoice({ order, storeName }: { order: OrderPublic; storeName:
       <div className="flex justify-end">
         <div className="w-56">
           <div className="flex justify-between py-2 border-t-2 border-gray-800 text-base font-bold">
-            <span>الإجمالي</span>
+            <span>{t("الإجمالي")}</span>
             <span>{formatCurrency(order.total)}</span>
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            {order.stripePaymentId ? 'مدفوع إلكترونياً' : 'الدفع عند الاستلام'}
+            {order.stripePaymentId ? t("مدفوع إلكترونياً") : t("الدفع عند الاستلام")}
           </p>
         </div>
       </div>
@@ -145,27 +148,28 @@ function PrintableInvoice({ order, storeName }: { order: OrderPublic; storeName:
 }
 
 function PrintableShippingLabel({ order, storeName }: { order: OrderPublic; storeName: string }) {
+  const t = useT();
   const addr = formatAddress(order.shippingAddress);
   return (
     <div className="hidden print:flex print:flex-col p-10 justify-between" style={{ minHeight: '100vh' }} dir="rtl">
       <div>
         <div className="flex items-center justify-between border-b-2 border-gray-800 pb-3 mb-6">
           <span className="text-lg font-bold text-gray-900">{storeName}</span>
-          <span className="text-sm text-gray-500">بوليصة شحن</span>
+          <span className="text-sm text-gray-500">{t("بوليصة شحن")}</span>
         </div>
-        <p className="text-xs font-bold text-gray-500 mb-1">إلى</p>
+        <p className="text-xs font-bold text-gray-500 mb-1">{t("إلى")}</p>
         <p className="text-2xl font-bold text-gray-900 mb-2">{order.customerName}</p>
         {order.customerPhone && <p className="text-xl text-gray-800 mb-3" dir="ltr">{order.customerPhone}</p>}
         <p className="text-lg text-gray-800 leading-relaxed"><AddressBlock shippingAddress={order.shippingAddress} /></p>
-        {addr.notes && <p className="text-sm text-gray-500 mt-2">ملاحظة: {addr.notes}</p>}
+        {addr.notes && <p className="text-sm text-gray-500 mt-2">{t("ملاحظة:")}{' '}{addr.notes}</p>}
       </div>
       <div className="border-t-2 border-gray-800 pt-4 flex items-center justify-between">
-        <span className="text-sm text-gray-500">رقم الطلب</span>
+        <span className="text-sm text-gray-500">{t("رقم الطلب")}</span>
         <span className="text-xl font-mono font-bold text-gray-900">#{order.id.slice(-8).toUpperCase()}</span>
       </div>
       <div className="flex items-center justify-between mt-2">
-        <span className="text-sm text-gray-500">الدفع</span>
-        <span className="text-base font-bold text-gray-900">{order.stripePaymentId ? 'مدفوع إلكترونياً' : `الدفع عند الاستلام — ${formatCurrency(order.total)}`}</span>
+        <span className="text-sm text-gray-500">{t("الدفع")}</span>
+        <span className="text-base font-bold text-gray-900">{order.stripePaymentId ? t("مدفوع إلكترونياً") : t("الدفع عند الاستلام — {0}", [formatCurrency(order.total)])}</span>
       </div>
     </div>
   );
@@ -174,7 +178,8 @@ function PrintableShippingLabel({ order, storeName }: { order: OrderPublic; stor
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 export default function OrdersPage() {
-  useDocumentTitle('الطلبات');
+  const t = useT();
+  useDocumentTitle(t("الطلبات"));
   const searchParams = useSearchParams();
   const highlightId = searchParams.get('highlight');
   const [orders, setOrders] = useState<OrderPublic[]>([]);
@@ -183,7 +188,7 @@ export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [expandedId, setExpandedId] = useState<string | null>(highlightId);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [storeName, setStoreName] = useState('متجري');
+  const [storeName, setStoreName] = useState(t("متجري"));
   const [printOrder, setPrintOrder] = useState<OrderPublic | null>(null);
   const [printLabelOrder, setPrintLabelOrder] = useState<OrderPublic | null>(null);
   const [branches, setBranches] = useState<WarehousePublic[]>([]);
@@ -200,7 +205,7 @@ export default function OrdersPage() {
       const res = await api.get<{ success: boolean; data: OrderPublic[]; pagination: { total: number } }>(`/api/orders${params}`);
       setOrders(res.data ?? []);
       setTotal(res.pagination?.total ?? 0);
-    } catch { toast.error('فشل تحميل الطلبات'); }
+    } catch { toast.error(t("فشل تحميل الطلبات")); }
     finally { setLoading(false); }
   }, [statusFilter, branchFilter]);
 
@@ -233,9 +238,9 @@ export default function OrdersPage() {
     try {
       const res = await api.patch<{ success: boolean; data: OrderPublic }>(`/api/orders/${orderId}/status`, { status });
       setOrders(prev => prev.map(o => o.id === orderId ? res.data : o));
-      toast.success(`تم تحديث حالة الطلب إلى: ${STATUS_AR[status]}`);
+      toast.success(t("تم تحديث حالة الطلب إلى: {0}", [STATUS_AR[status]]));
       track({ event: 'order_status_updated', meta: { status } });
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'فشل التحديث'); }
+    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : t("فشل التحديث")); }
     finally { setUpdatingId(null); }
   };
 
@@ -247,11 +252,11 @@ export default function OrdersPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="bz-large-title text-gray-900">الطلبات</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{total} طلب إجمالي</p>
+          <h1 className="bz-large-title text-gray-900">{t("الطلبات")}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{total} {' '}{t("طلب إجمالي")}</p>
         </div>
         <div className="text-left">
-          <p className="text-xs text-gray-400">إجمالي الإيرادات</p>
+          <p className="text-xs text-gray-400">{t("إجمالي الإيرادات")}</p>
           <p className="text-xl font-bold" style={{ color: BRAND.accent }}>{formatCurrency(totalRevenue)}</p>
         </div>
       </div>
@@ -279,7 +284,7 @@ export default function OrdersPage() {
       <div className="flex flex-wrap gap-2 -mt-3 mb-6">
         {branches.length > 0 && !staffSession?.warehouseId && (
           <select value={branchFilter} onChange={e => setBranchFilter(e.target.value)} className="h-9 px-3 border border-bz-line text-sm">
-            <option value="">كل الفروع</option>
+            <option value="">{t("كل الفروع")}</option>
             {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
           </select>
         )}
@@ -293,8 +298,8 @@ export default function OrdersPage() {
       ) : orders.length === 0 ? (
         <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: '#E6ECF1' }}>
           <ShoppingBag className="h-12 w-12 mx-auto mb-4 text-gray-200" />
-          <p className="font-medium text-gray-400 mb-1">لا توجد طلبات بعد</p>
-          <p className="text-sm text-gray-400">ستظهر هنا طلبات عملائك فور ورودها</p>
+          <p className="font-medium text-gray-400 mb-1">{t("لا توجد طلبات بعد")}</p>
+          <p className="text-sm text-gray-400">{t("ستظهر هنا طلبات عملائك فور ورودها")}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -329,7 +334,7 @@ export default function OrdersPage() {
                   {/* Items count */}
                   <div className="hidden sm:flex items-center gap-1 text-xs text-gray-500">
                     <Package className="h-3.5 w-3.5" />
-                    {order.items?.length ?? 0} منتج
+                    {order.items?.length ?? 0} {' '}{t("منتج")}
                   </div>
 
                   {/* Status badge */}
@@ -348,12 +353,12 @@ export default function OrdersPage() {
                 {isExpanded && (
                   <div className="px-5 pb-5 border-t border-[#F6F8FA]">
                     <div className="flex items-center justify-between mt-4 mb-1">
-                      <p className="text-xs font-bold" style={{ color: BRAND.secondary }}>تفاصيل الطلب</p>
+                      <p className="text-xs font-bold" style={{ color: BRAND.secondary }}>{t("تفاصيل الطلب")}</p>
                       <div className="flex items-center gap-2">
                         <button onClick={() => setPrintOrder(order)}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition hover:bg-gray-50"
                           style={{ borderColor: BRAND.light, color: BRAND.primary }}>
-                          <Printer className="h-3.5 w-3.5" /> طباعة الفاتورة
+                          <Printer className="h-3.5 w-3.5" /> {' '}{t("طباعة الفاتورة")}
                         </button>
                       </div>
                     </div>
@@ -368,7 +373,7 @@ export default function OrdersPage() {
                     <div className="grid sm:grid-cols-2 gap-6 mt-3">
                       {/* Items */}
                       <div>
-                        <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>المنتجات</p>
+                        <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>{t("المنتجات")}</p>
                         <div className="space-y-2">
                           {order.items.map(item => (
                             <div key={item.id} className="flex items-center gap-3">
@@ -388,7 +393,7 @@ export default function OrdersPage() {
                             </div>
                           ))}
                           <div className="pt-2 border-t border-[#F6F8FA] flex justify-between font-bold text-sm">
-                            <span style={{ color: BRAND.primary }}>الإجمالي</span>
+                            <span style={{ color: BRAND.primary }}>{t("الإجمالي")}</span>
                             <span style={{ color: BRAND.accent }}>{formatCurrency(order.total)}</span>
                           </div>
                         </div>
@@ -396,7 +401,7 @@ export default function OrdersPage() {
 
                       {/* Customer + shipping + actions */}
                       <div>
-                        <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>بيانات الزبون</p>
+                        <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>{t("بيانات الزبون")}</p>
                         <div className="space-y-1.5 mb-4 p-3 rounded-xl text-sm" style={{ background: '#F6F8FA' }}>
                           <div className="flex items-center gap-2 text-gray-700">
                             <User className="h-3.5 w-3.5 flex-shrink-0" style={{ color: BRAND.accent }} />
@@ -414,11 +419,11 @@ export default function OrdersPage() {
                           </div>
                           <div className="flex items-center gap-2 text-gray-700">
                             <CreditCard className="h-3.5 w-3.5 flex-shrink-0" style={{ color: BRAND.accent }} />
-                            {order.stripePaymentId ? 'مدفوع إلكترونياً' : 'الدفع عند الاستلام'}
+                            {order.stripePaymentId ? t("مدفوع إلكترونياً") : t("الدفع عند الاستلام")}
                           </div>
                         </div>
 
-                        <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>عنوان الشحن</p>
+                        <p className="text-xs font-bold mb-3" style={{ color: BRAND.secondary }}>{t("عنوان الشحن")}</p>
                         <div className="flex items-start gap-2 mb-5 p-3 rounded-xl" style={{ background: '#F6F8FA' }}>
                           <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: BRAND.accent }} />
                           <p className="text-sm text-gray-600 leading-relaxed">
@@ -429,7 +434,7 @@ export default function OrdersPage() {
                         {/* Status update */}
                         {nextStatuses.length > 0 && (
                           <div>
-                            <p className="text-xs font-bold mb-2" style={{ color: BRAND.secondary }}>تحديث الحالة</p>
+                            <p className="text-xs font-bold mb-2" style={{ color: BRAND.secondary }}>{t("تحديث الحالة")}</p>
                             <div className="flex flex-wrap gap-2">
                               {nextStatuses.map(s => (
                                 <button key={s} onClick={() => updateStatus(order.id, s)}
@@ -450,7 +455,7 @@ export default function OrdersPage() {
                         {order.status === 'DELIVERED' && (
                           <div className="flex items-center gap-2 mt-3 px-3 py-2 rounded-xl" style={{ background: '#E2F7EE' }}>
                             <ChevronLeft className="h-4 w-4" style={{ color: '#17845C' }} />
-                            <span className="text-xs font-medium" style={{ color: '#17845C' }}>تم تسليم هذا الطلب بنجاح</span>
+                            <span className="text-xs font-medium" style={{ color: '#17845C' }}>{t("تم تسليم هذا الطلب بنجاح")}</span>
                           </div>
                         )}
                       </div>

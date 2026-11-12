@@ -1,11 +1,13 @@
 'use client';
 
+import { useT } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { Sparkles, Zap } from 'lucide-react';
 import { api } from '@/lib/api';
 import { AICredits } from '@storebuilder/types';
 
 export function AICreditsWidget() {
+  const t = useT();
   const [credits, setCredits] = useState<AICredits | null>(null);
 
   useEffect(() => {
@@ -25,11 +27,11 @@ export function AICreditsWidget() {
         <div className="h-7 w-7 rounded-lg bg-indigo-100 flex items-center justify-center">
           <Sparkles className="h-4 w-4 text-indigo-600" />
         </div>
-        <span className="text-sm font-medium text-gray-700">رصيد الذكاء الاصطناعي</span>
+        <span className="text-sm font-medium text-gray-700">{t("رصيد الذكاء الاصطناعي")}</span>
       </div>
       <div className="flex items-end justify-between mb-2">
         <span className="text-2xl font-bold text-indigo-700">{credits.remaining}</span>
-        <span className="text-xs text-gray-500">من {credits.limit} طلب/يوم</span>
+        <span className="text-xs text-gray-500">{t("من")}{' '}{credits.limit} {' '}{t("طلب/يوم")}</span>
       </div>
       <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
         <div
@@ -40,7 +42,8 @@ export function AICreditsWidget() {
       {credits.remaining === 0 && (
         <p className="mt-2 text-xs text-red-600 flex items-center gap-1">
           <Zap className="h-3 w-3" />
-          تم استنفاد الرصيد اليومي. يتجدد الرصيد منتصف الليل.
+          
+          {t("تم استنفاد الرصيد اليومي. يتجدد الرصيد منتصف الليل.")}
         </p>
       )}
     </div>

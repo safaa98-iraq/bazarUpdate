@@ -1,4 +1,5 @@
 'use client';
+import { useT } from '@/lib/i18n';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -26,6 +27,7 @@ interface Notif {
 interface ApprovalDetailProps { notif: Notif; onClose: () => void; }
 
 function ApprovalModal({ notif, onClose }: ApprovalDetailProps) {
+  const t = useT();
   const plan = notif.meta.plan as string ?? 'PRO';
   const planAr = notif.meta.planAr as string ?? '';
   const features = (notif.meta.features as string[]) ?? [];
@@ -33,10 +35,10 @@ function ApprovalModal({ notif, onClose }: ApprovalDetailProps) {
   const color = PLAN_COLORS[plan] ?? C.p;
 
   const ONBOARDING: { icon: LucideIcon; title: string; desc: string; href: string }[] = [
-    { icon: Store, title: 'خصص متجرك', desc: 'اختر قالباً واضبط الألوان والشعار', href: '/dashboard/settings' },
-    { icon: Package, title: 'أضف منتجاتك', desc: 'أضف منتجات غير محدودة مع الصور والوصف', href: '/dashboard/products' },
-    { icon: Tag, title: 'أنشئ كوبونات', desc: 'فعّل الخصومات لجذب المزيد من العملاء', href: '/dashboard/coupons' },
-    { icon: BarChart3, title: 'تابع التحليلات', desc: 'راقب المبيعات والزيارات في الوقت الفعلي', href: '/dashboard/analytics' },
+    { icon: Store, title: t("خصص متجرك"), desc: t("اختر قالباً واضبط الألوان والشعار"), href: '/dashboard/settings' },
+    { icon: Package, title: t("أضف منتجاتك"), desc: t("أضف منتجات غير محدودة مع الصور والوصف"), href: '/dashboard/products' },
+    { icon: Tag, title: t("أنشئ كوبونات"), desc: t("فعّل الخصومات لجذب المزيد من العملاء"), href: '/dashboard/coupons' },
+    { icon: BarChart3, title: t("تابع التحليلات"), desc: t("راقب المبيعات والزيارات في الوقت الفعلي"), href: '/dashboard/analytics' },
   ];
 
   return (
@@ -58,10 +60,12 @@ function ApprovalModal({ notif, onClose }: ApprovalDetailProps) {
           </div>
           <div style={{ marginBottom: 8, display: 'flex', justifyContent: 'center', color: '#fff' }}><PartyPopper size={30} /></div>
           <h2 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 900, fontSize: 22, color: '#fff', margin: '0 0 6px' }}>
-            مرحباً بك في خطة {planAr}!
+            
+            {t("مرحباً بك في خطة")}{' '}{planAr}!
           </h2>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,.8)', margin: 0 }}>
-            تم تفعيل حسابك — استمتع بالمزايا الجديدة
+            
+            {t("تم تفعيل حسابك — استمتع بالمزايا الجديدة")}
           </p>
         </div>
 
@@ -70,7 +74,8 @@ function ApprovalModal({ notif, onClose }: ApprovalDetailProps) {
           <div style={{ marginBottom: 28 }}>
             <div style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 15, color: C.text, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#05966915', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><Sparkles size={12} color="#22B07D" /></span>
-              المزايا المفعّلة الآن
+              
+              {t("المزايا المفعّلة الآن")}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {features.map(f => (
@@ -87,7 +92,7 @@ function ApprovalModal({ notif, onClose }: ApprovalDetailProps) {
           {/* Onboarding steps */}
           <div style={{ marginBottom: 24 }}>
             <div style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 15, color: C.text, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Rocket size={15} color={color} /> ابدأ الآن — خطواتك الأولى
+              <Rocket size={15} color={color} /> {' '}{t("ابدأ الآن — خطواتك الأولى")}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {ONBOARDING.map(({ icon: StepIcon, title, desc, href }, i) => (
@@ -114,7 +119,8 @@ function ApprovalModal({ notif, onClose }: ApprovalDetailProps) {
             onClick={onClose}
             style={{ width: '100%', padding: '14px 0', background: `linear-gradient(135deg,${color},${color}cc)`, color: '#fff', border: 'none', borderRadius: 10, fontWeight: 800, fontSize: 15, cursor: 'pointer', fontFamily: 'inherit', boxShadow: `0 8px 24px ${color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
           >
-            ابدأ الآن <Rocket size={16} />
+            
+            {t("ابدأ الآن")}{' '}<Rocket size={16} />
           </button>
         </div>
       </div>
@@ -178,6 +184,7 @@ function NotifItem({ n, onClick }: { n: Notif; onClick: (n: Notif) => void }) {
 }
 
 export function NotificationBell({ variant = 'dark' }: { variant?: 'dark' | 'light' }) {
+  const t = useT();
   const router = useRouter();
   const { token } = useAuthStore();
   const [open, setOpen] = useState(false);
@@ -247,7 +254,7 @@ export function NotificationBell({ variant = 'dark' }: { variant?: 'dark' | 'lig
           style={{ position: 'relative', background: 'transparent', border: 'none', cursor: 'pointer', padding: 6, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', color: iconColor, transition: 'all .15s' }}
           onMouseEnter={e => { e.currentTarget.style.background = variant === 'dark' ? 'rgba(255,255,255,.12)' : 'rgba(120,120,128,.12)'; e.currentTarget.style.color = variant === 'dark' ? '#fff' : C.p; }}
           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = iconColor; }}
-          title="الإشعارات"
+          title={t("الإشعارات")}
         >
           <Bell size={19} strokeWidth={1.75} />
           {unread > 0 && (
@@ -263,14 +270,14 @@ export function NotificationBell({ variant = 'dark' }: { variant?: 'dark' | 'lig
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: `1px solid ${C.border}`, background: C.bg }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Bell size={15} color={C.p} />
-                <span style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 14, color: C.text }}>الإشعارات</span>
+                <span style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 14, color: C.text }}>{t("الإشعارات")}</span>
                 {unread > 0 && (
-                  <span style={{ background: C.a, color: '#fff', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 99 }}>{unread} جديد</span>
+                  <span style={{ background: C.a, color: '#fff', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 99 }}>{unread} {' '}{t("جديد")}</span>
                 )}
               </div>
               {unread > 0 && (
                 <button onClick={markAllRead} style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 11, color: C.p, fontFamily: 'inherit', fontWeight: 600, padding: '4px 8px', borderRadius: 6 }}>
-                  <CheckCheck size={13} /> قراءة الكل
+                  <CheckCheck size={13} /> {' '}{t("قراءة الكل")}
                 </button>
               )}
             </div>
@@ -280,7 +287,7 @@ export function NotificationBell({ variant = 'dark' }: { variant?: 'dark' | 'lig
               {notifications.length === 0 ? (
                 <div style={{ padding: '40px 20px', textAlign: 'center' }}>
                   <Bell size={32} color={C.border} strokeWidth={1} style={{ marginBottom: 10 }} />
-                  <div style={{ fontSize: 13, color: C.muted }}>لا توجد إشعارات</div>
+                  <div style={{ fontSize: 13, color: C.muted }}>{t("لا توجد إشعارات")}</div>
                 </div>
               ) : (
                 notifications.map(n => <NotifItem key={n.id} n={n} onClick={handleNotifClick} />)

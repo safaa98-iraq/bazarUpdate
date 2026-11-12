@@ -1,5 +1,6 @@
 'use client';
 
+import { intlLocale, useT } from '@/lib/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import { Gift, Plus, Trash2, Eye, EyeOff, Loader2, X, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
@@ -11,7 +12,8 @@ import type { GiftCardPublic } from '@storebuilder/types';
 const BRAND = { primary: '#0B3550', accent: '#20A9F4', border: '#E3F5FE', bg: '#F6F8FA' };
 
 export default function GiftCardsPage() {
-  useDocumentTitle('بطاقات الهدايا');
+  const t = useT();
+  useDocumentTitle(t("بطاقات الهدايا"));
   const [cards, setCards] = useState<GiftCardPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -23,7 +25,7 @@ export default function GiftCardsPage() {
     try {
       const res = await api.get<{ success: boolean; data: GiftCardPublic[] }>('/api/gift-cards');
       setCards(res.data ?? []);
-    } catch { toast.error('فشل تحميل بطاقات الهدايا'); }
+    } catch { toast.error(t("فشل تحميل بطاقات الهدايا")); }
     finally { setLoading(false); }
   }, []);
 
@@ -31,7 +33,7 @@ export default function GiftCardsPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.initialValue || Number(form.initialValue) <= 0) { toast.error('أدخل قيمة صحيحة للبطاقة'); return; }
+    if (!form.initialValue || Number(form.initialValue) <= 0) { toast.error(t("أدخل قيمة صحيحة للبطاقة")); return; }
     setSaving(true);
     try {
       await api.post('/api/gift-cards', {
@@ -40,12 +42,12 @@ export default function GiftCardsPage() {
         recipientEmail: form.recipientEmail || undefined,
         note: form.note || undefined,
       });
-      toast.success('تم إصدار بطاقة الهدايا ✓');
+      toast.success(t("تم إصدار بطاقة الهدايا ✓"));
       setForm({ initialValue: '', expiresAt: '', recipientEmail: '', note: '' });
       setShowModal(false);
       fetchCards();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل الإصدار');
+      toast.error(err instanceof Error ? err.message : t("فشل الإصدار"));
     } finally { setSaving(false); }
   };
 
@@ -53,22 +55,22 @@ export default function GiftCardsPage() {
     try {
       await api.patch(`/api/gift-cards/${c.id}`, { isActive: !c.isActive });
       fetchCards();
-    } catch { toast.error('فشل التحديث'); }
+    } catch { toast.error(t("فشل التحديث")); }
   };
 
   const deleteCard = async (id: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذه البطاقة؟')) return;
+    if (!confirm(t("هل أنت متأكد من حذف هذه البطاقة؟"))) return;
     try {
       await api.delete(`/api/gift-cards/${id}`);
-      toast.success('تم الحذف');
+      toast.success(t("تم الحذف"));
       fetchCards();
-    } catch { toast.error('فشل الحذف'); }
+    } catch { toast.error(t("فشل الحذف")); }
   };
 
   const copyCode = (code: string, id: string) => {
     navigator.clipboard.writeText(code);
     setCopiedId(id);
-    toast.success('تم نسخ الكود');
+    toast.success(t("تم نسخ الكود"));
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -76,13 +78,13 @@ export default function GiftCardsPage() {
     <div className="p-6 max-w-4xl" dir="rtl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="bz-large-title text-gray-900">بطاقات الهدايا</h1>
-          <p className="text-sm text-gray-500 mt-0.5">أصدر بطاقة برصيد معيّن يستخدمها الزبون كخصم عند الدفع</p>
+          <h1 className="bz-large-title text-gray-900">{t("بطاقات الهدايا")}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{t("أصدر بطاقة برصيد معيّن يستخدمها الزبون كخصم عند الدفع")}</p>
         </div>
         <button onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
           style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-          <Plus className="h-4 w-4" /> إصدار بطاقة
+          <Plus className="h-4 w-4" /> {' '}{t("إصدار بطاقة")}
         </button>
       </div>
 
@@ -91,7 +93,7 @@ export default function GiftCardsPage() {
       ) : cards.length === 0 ? (
         <div className="bg-white rounded-2xl border p-16 text-center" style={{ borderColor: BRAND.border }}>
           <Gift className="h-12 w-12 mx-auto mb-4 text-gray-200" />
-          <p className="font-medium text-gray-400 mb-1">لا توجد بطاقات هدايا بعد</p>
+          <p className="font-medium text-gray-400 mb-1">{t("لا توجد بطاقات هدايا بعد")}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -107,17 +109,18 @@ export default function GiftCardsPage() {
                     {copiedId === c.id ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
                   </button>
                   <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: c.isActive ? '#E2F7EE' : '#F6F8FA', color: c.isActive ? '#17845C' : '#A3B0BC' }}>
-                    {c.isActive ? 'نشطة' : 'موقوفة'}
+                    {c.isActive ? t("نشطة") : t("موقوفة")}
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  الرصيد المتبقي: <span className="font-bold" style={{ color: BRAND.primary }}>{formatCurrency(c.remainingBalance)}</span> من أصل {formatCurrency(c.initialValue)}
-                  {c.expiresAt && <> · تنتهي {new Date(c.expiresAt).toLocaleDateString('ar-IQ')}</>}
+                  
+                  {t("الرصيد المتبقي:")}{' '}<span className="font-bold" style={{ color: BRAND.primary }}>{formatCurrency(c.remainingBalance)}</span> {' '}{t("من أصل")}{' '}{formatCurrency(c.initialValue)}
+                  {c.expiresAt && <> {' '}{t("· تنتهي")}{' '}{new Date(c.expiresAt).toLocaleDateString(intlLocale())}</>}
                 </p>
                 {c.note && <p className="text-xs text-gray-400 mt-0.5">{c.note}</p>}
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
-                <button onClick={() => toggleActive(c)} className="p-2 rounded-lg hover:bg-white transition" title={c.isActive ? 'إيقاف' : 'تفعيل'}>
+                <button onClick={() => toggleActive(c)} className="p-2 rounded-lg hover:bg-white transition" title={c.isActive ? t("إيقاف") : t("تفعيل")}>
                   {c.isActive ? <Eye className="h-4 w-4" style={{ color: '#22B07D' }} /> : <EyeOff className="h-4 w-4 text-gray-400" />}
                 </button>
                 <button onClick={() => deleteCard(c.id)} className="p-2 rounded-lg hover:bg-red-50 transition">
@@ -133,41 +136,42 @@ export default function GiftCardsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" dir="rtl">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm">
             <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: BRAND.border }}>
-              <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>إصدار بطاقة هدايا</h2>
+              <h2 className="text-lg font-bold" style={{ color: BRAND.primary }}>{t("إصدار بطاقة هدايا")}</h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400"><X className="h-5 w-5" /></button>
             </div>
             <form onSubmit={handleCreate} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>قيمة البطاقة (د.ع) *</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("قيمة البطاقة (د.ع) *")}</label>
                 <input type="number" min={1} value={form.initialValue} required
                   onChange={e => setForm(f => ({ ...f, initialValue: e.target.value }))}
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} placeholder="25000" />
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>تنتهي في (اختياري)</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("تنتهي في (اختياري)")}</label>
                 <input type="date" value={form.expiresAt} onChange={e => setForm(f => ({ ...f, expiresAt: e.target.value }))}
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>بريد المستلم (اختياري)</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("بريد المستلم (اختياري)")}</label>
                 <input type="email" value={form.recipientEmail} onChange={e => setForm(f => ({ ...f, recipientEmail: e.target.value }))}
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} dir="ltr" />
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>ملاحظة (اختياري)</label>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: BRAND.primary }}>{t("ملاحظة (اختياري)")}</label>
                 <input value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))}
-                  placeholder="مثال: تعويض عن تأخير الشحن"
+                  placeholder={t("مثال: تعويض عن تأخير الشحن")}
                   className="w-full px-3 py-2.5 rounded-xl border text-sm focus:outline-none" style={{ borderColor: BRAND.border }} />
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
                   className="flex-1 py-2.5 border rounded-xl text-sm font-medium hover:bg-gray-50 transition text-gray-600" style={{ borderColor: BRAND.border }}>
-                  إلغاء
+                  
+                  {t("إلغاء")}
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center justify-center gap-2"
                   style={{ background: `linear-gradient(135deg, #20A9F4, #0E8AD6)` }}>
-                  {saving && <Loader2 className="h-4 w-4 animate-spin" />} إصدار
+                  {saving && <Loader2 className="h-4 w-4 animate-spin" />} {' '}{t("إصدار")}
                 </button>
               </div>
             </form>
