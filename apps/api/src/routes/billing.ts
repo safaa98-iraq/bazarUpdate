@@ -1,9 +1,10 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { verifyToken, requireRole } from '../middleware/auth';
 import prisma from '@storebuilder/database';
-import { PLAN_CONFIGS, PLAN_ORDER, LIFETIME_SEATS, LIFETIME_INSTALLMENTS, type PlanKey, type PlanConfig } from '@storebuilder/types';
-import { quote, applyApprovedPayment, lifetimeSeatsLeft, daysLeft } from '../lib/billing';
+import { PLAN_CONFIGS, PLAN_ORDER, LIFETIME_SEATS, LIFETIME_INSTALLMENTS, BILLING_CURRENCY, USD_TO_IQD, formatUSD, type PlanKey, type PlanConfig } from '@storebuilder/types';
+import { quote, lifetimeSeatsLeft, daysLeft, settlePaymentRequest } from '../lib/billing';
 import { ordersThisMonth } from '../lib/limits';
+import { activeGateway, gatewayPriceId } from '../lib/paymentGateway';
 import { randomBytes } from 'crypto';
 const createId = () => randomBytes(12).toString('hex');
 
@@ -91,6 +92,9 @@ router.get('/payment-config', (_req, res) => {
       instructions:  process.env.PAYMENT_INSTRUCTIONS   ?? 'حوّل المبلغ بالتحويل المصرفي أو ZainCash، ثم اضغط "دفعت الآن".',
       zainCashNumber: process.env.PAYMENT_ZAINCASH_NUMBER ?? null,
       zainCashName:   process.env.PAYMENT_ZAINCASH_NAME ?? null,
+      currency: BILLING_CURRENCY,
+      usdToIqd: USD_TO_IQD,
+      gateway: activeGateway() ? { enabled: true, label: activeGateway()!.label, test: activeGateway()!.key === 'test' } : { enabled: false },
     },
   });
 });
@@ -103,7 +107,8 @@ router.get('/status', verifyToken, async (req: Request, res: Response, next: Nex
       select: { plan: true, billingCycle: true, planExpiresAt: true, planChangedAt: true, trialUsed: true, legacyPricing: true, lifetimeTarget: true, lifetimeInstallmentsPaid: true, lifetimeTotal: true, freeMonthsCredit: true },
     });
     const pending = await prisma.paymentRequest.findFirst({
-      where: { userId: req.user!.userId, status: 'PENDING' },
+      // An unfinished online checkout is not "waiting for review"
+      where: { userId: req.user!.userId, status: 'PENDING', OR: [{ method: null }, { method: { not: 'GATEWAY' } }] },
       orderBy: { createdAt: 'desc' },
       select: { id: true, planTarget: true, cycle: true, installment: true, amount: true, status: true, createdAt: true },
     });
@@ -176,7 +181,7 @@ router.post('/pay-request', verifyToken, async (req: Request, res: Response, nex
     const { plan, cycle = 'MONTHLY', installments, method, txRef } = req.body as { plan: string; cycle?: string; installments?: number; method?: string; txRef?: string };
     if (!['MONTHLY', 'YEARLY', 'LIFETIME'].includes(cycle)) { res.status(400).json({ success: false, error: 'مدة غير صالحة' }); return; }
 
-    const existing = await prisma.paymentRequest.findFirst({ where: { userId: req.user!.userId, status: 'PENDING' } });
+    const existing = await prisma.paymentRequest.findFirst({ where: { userId: req.user!.userId, status: 'PENDING', OR: [{ method: null }, { method: { not: 'GATEWAY' } }] } });
     if (existing) {
       res.status(409).json({ success: false, error: 'لديك طلب دفع معلق بالفعل — يرجى الانتظار حتى تتم المراجعة.' });
       return;
@@ -188,7 +193,7 @@ router.post('/pay-request', verifyToken, async (req: Request, res: Response, nex
     const request = await prisma.paymentRequest.create({
       data: {
         userId: req.user!.userId, planTarget: q.plan, cycle: q.cycle, installment: q.installment ?? null,
-        amount: q.amount, currency: 'IQD', status: 'PENDING',
+        amount: q.amount, currency: BILLING_CURRENCY, status: 'PENDING',
         method: method === 'ZAINCASH' ? 'ZAINCASH' : 'BANK',
         txRef: typeof txRef === 'string' ? txRef.slice(0, 255) : null,
         priceNote: q.note?.slice(0, 255) ?? null,
@@ -198,11 +203,67 @@ router.post('/pay-request', verifyToken, async (req: Request, res: Response, nex
     const cycleAr: Record<string, string> = { MONTHLY: 'شهري', YEARLY: 'سنوي', LIFETIME: 'أبدي', LIFETIME_INSTALLMENT: `أبدي — دفعة ${q.installment}/${LIFETIME_INSTALLMENTS}`, LIFETIME_UPGRADE: 'ترقية أبدي' };
     await notifyAdmins(
       `💳 طلب ترقية جديد`,
-      `${merchant?.name ?? 'تاجر'} يطلب ${PLAN_NAMES[q.plan as PlanKey]} (${cycleAr[q.cycle]}) — ${q.amount.toLocaleString()} د.ع`,
-      { requestId: request.id, merchantName: merchant?.name, merchantEmail: merchant?.email, plan: q.plan, cycle: q.cycle, amount: q.amount, currency: 'IQD' },
+      `${merchant?.name ?? 'تاجر'} يطلب ${PLAN_NAMES[q.plan as PlanKey]} (${cycleAr[q.cycle]}) — ${formatUSD(q.amount)}`,
+      { requestId: request.id, merchantName: merchant?.name, merchantEmail: merchant?.email, plan: q.plan, cycle: q.cycle, amount: q.amount, currency: BILLING_CURRENCY },
     );
 
     res.status(201).json({ success: true, data: { ...request, amount: q.amount } });
+  } catch (err) { next(err); }
+});
+
+// POST /api/billing/checkout — pay online through the payment gateway: { plan, cycle, installments? }
+router.post('/checkout', verifyToken, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (req.user!.staffId) { res.status(403).json({ success: false, error: 'الاشتراك لصاحب المتجر فقط' }); return; }
+    const gateway = activeGateway();
+    if (!gateway) { res.status(503).json({ success: false, error: 'الدفع الإلكتروني غير متاح حالياً — استخدم التحويل' }); return; }
+    const { plan, cycle = 'MONTHLY', installments } = req.body as { plan: string; cycle?: string; installments?: number };
+    if (!['MONTHLY', 'YEARLY', 'LIFETIME'].includes(cycle)) { res.status(400).json({ success: false, error: 'مدة غير صالحة' }); return; }
+
+    // A manual transfer waiting for review blocks a second purchase; an abandoned online checkout does not.
+    const manualPending = await prisma.paymentRequest.findFirst({ where: { userId: req.user!.userId, status: 'PENDING', OR: [{ method: null }, { method: { not: 'GATEWAY' } }] } });
+    if (manualPending) { res.status(409).json({ success: false, error: 'لديك طلب دفع معلق بالفعل — يرجى الانتظار حتى تتم المراجعة.' }); return; }
+    await prisma.paymentRequest.updateMany({ where: { userId: req.user!.userId, status: 'PENDING', method: 'GATEWAY' }, data: { status: 'CANCELLED' } });
+
+    const q = await quote(req.user!.userId, plan as PlanKey, cycle as 'MONTHLY' | 'YEARLY' | 'LIFETIME', installments === 3 ? 3 : 1);
+    const user = await prisma.user.findUnique({ where: { id: req.user!.userId }, select: { id: true, email: true, name: true } });
+    const request = await prisma.paymentRequest.create({
+      data: {
+        userId: req.user!.userId, planTarget: q.plan, cycle: q.cycle, installment: q.installment ?? null,
+        amount: q.amount, currency: BILLING_CURRENCY, status: 'PENDING', method: 'GATEWAY', priceNote: q.note?.slice(0, 255) ?? null,
+      },
+    });
+    const appUrl = (process.env.APP_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+    const apiUrl = (process.env.API_URL ?? `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
+    const { redirectUrl, providerRef } = await gateway.createCheckout({
+      requestId: request.id, amount: q.amount, currency: BILLING_CURRENCY, plan: q.plan, cycle: q.cycle,
+      installment: q.installment ?? null, priceId: gatewayPriceId(q.plan, q.cycle),
+      description: `Bazar ${q.plan} ${q.cycle}${q.installment ? ` ${q.installment}/${LIFETIME_INSTALLMENTS}` : ''}`,
+      customer: { id: user!.id, email: user!.email, name: user!.name },
+      successUrl: `${appUrl}/dashboard/upgrade?paid=${request.id}`,
+      cancelUrl: `${appUrl}/dashboard/upgrade?cancelled=${request.id}`,
+      webhookUrl: `${apiUrl}/api/billing/gateway/webhook`,
+    });
+    if (providerRef) await prisma.paymentRequest.update({ where: { id: request.id }, data: { txRef: providerRef } });
+    res.status(201).json({ success: true, data: { requestId: request.id, redirectUrl, amount: q.amount, currency: BILLING_CURRENCY } });
+  } catch (err) { next(err); }
+});
+
+// POST /api/billing/gateway/webhook — the gateway reports a payment result (raw body, see app.ts)
+router.post('/gateway/webhook', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const gateway = activeGateway();
+    if (!gateway) { res.status(404).json({ success: false }); return; }
+    const result = await gateway.parseWebhook(req);
+    if (!result) { res.status(400).json({ success: false, error: 'invalid webhook' }); return; }
+    const pr = await prisma.paymentRequest.findUnique({ where: { id: result.requestId }, select: { method: true, status: true } });
+    if (!pr || pr.method !== 'GATEWAY') { res.status(404).json({ success: false }); return; }
+    if (pr.status === 'PENDING') {
+      await settlePaymentRequest(result.requestId, result.paid, {
+        adminNote: result.paid ? 'دُفع عبر بوابة الدفع' : 'لم يكتمل الدفع عبر البوابة', providerRef: result.providerRef ?? null,
+      });
+    }
+    res.json({ success: true, data: { status: result.paid ? 'APPROVED' : 'REJECTED' } });
   } catch (err) { next(err); }
 });
 
@@ -241,60 +302,7 @@ router.patch('/admin/requests/:id', verifyToken, requireRole('SUPER_ADMIN'), asy
     if (!payReq) { res.status(404).json({ success: false, error: 'الطلب غير موجود' }); return; }
     if (payReq.status !== 'PENDING') { res.status(409).json({ success: false, error: 'الطلب تمت معالجته بالفعل' }); return; }
 
-    const newStatus = action === 'APPROVE' ? 'APPROVED' : 'REJECTED';
-
-    await prisma.paymentRequest.update({
-      where: { id: req.params.id },
-      data: { status: newStatus, adminNote: adminNote ?? null, reviewedBy: req.user!.userId, reviewedAt: new Date() },
-    });
-
-    if (action === 'APPROVE') {
-      await applyApprovedPayment(payReq);
-      await notifyUser(
-        payReq.userId,
-        'PLAN_APPROVED',
-        'تمت الموافقة على خطتك!',
-        `تم تفعيل خطة ${PLAN_NAMES[payReq.planTarget as PlanKey]} بنجاح — استمتع بالمزايا الجديدة`,
-        { plan: payReq.planTarget, planAr: PLAN_NAMES[payReq.planTarget as PlanKey], features: PLAN_FEATURES[payReq.planTarget as PlanKey] ?? [] },
-      );
-
-      // Referral reward: after a referred merchant's 2nd approved paid payment,
-      // grant their referrer one free month (once per referral).
-      const referredUser = await prisma.user.findUnique({
-        where: { id: payReq.userId },
-        select: { referredById: true, referralRewardGiven: true },
-      });
-      if (referredUser?.referredById && !referredUser.referralRewardGiven) {
-        const approvedCount = await prisma.paymentRequest.count({
-          where: { userId: payReq.userId, status: 'APPROVED' },
-        });
-        if (approvedCount >= 2) {
-          await prisma.user.update({
-            where: { id: payReq.userId },
-            data: { referralRewardGiven: true },
-          });
-          await prisma.user.update({
-            where: { id: referredUser.referredById },
-            data: { freeMonthsCredit: { increment: 1 } },
-          });
-          await notifyUser(
-            referredUser.referredById,
-            'REFERRAL_REWARD',
-            'ربحت شهراً مجانياً!',
-            'أحد التجار الذين دعوتهم جدّد اشتراكه للمرة الثانية — أضفنا لك شهراً مجانياً إلى رصيدك.',
-            { freeMonthsCredit: 1 },
-          );
-        }
-      }
-    } else {
-      await notifyUser(
-        payReq.userId,
-        'PLAN_REJECTED',
-        'لم يتم تأكيد الدفع',
-        adminNote ?? 'لم نتمكن من التحقق من عملية الدفع. يرجى التواصل مع الدعم أو المحاولة مجدداً.',
-        { plan: payReq.planTarget, adminNote },
-      );
-    }
+    await settlePaymentRequest(payReq.id, action === 'APPROVE', { reviewedBy: req.user!.userId, adminNote: adminNote ?? null });
 
     res.json({ success: true, message: action === 'APPROVE' ? 'تم الموافقة وترقية الخطة' : 'تم رفض الطلب' });
   } catch (err) { next(err); }

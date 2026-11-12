@@ -5,6 +5,7 @@ import { useAuthStore } from '@/lib/stores/auth.store';
 import { api } from '@/lib/api';
 import { AuthResponse } from '@storebuilder/types';
 import { toast } from 'sonner';
+import { useT } from '@/lib/i18n';
 
 declare global {
   interface Window {
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export function GoogleSignInButton({ onSuccess, label = 'المتابعة مع Google' }: Props) {
+  const t = useT();
   const router = useRouter();
   const loginStore = useAuthStore(s => s.login);
   const btnRef = useRef<HTMLDivElement>(null);
@@ -98,7 +100,7 @@ export function GoogleSignInButton({ onSuccess, label = 'المتابعة مع G
         title="أضف NEXT_PUBLIC_GOOGLE_CLIENT_ID في ملف .env.local"
       >
         <GoogleIcon size={18} muted />
-        {label} <span style={{ fontSize: 11 }}>(غير مُهيَّأ)</span>
+        {label} <span style={{ fontSize: 11 }}>{t('(غير مُهيَّأ)')}</span>
       </button>
     );
   }

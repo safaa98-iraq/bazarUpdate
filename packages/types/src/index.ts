@@ -199,13 +199,11 @@ export const BILLING_CYCLE_DAYS: Record<Exclude<BillingCycle, 'LIFETIME'>, numbe
 export interface PlanConfig {
   key: PlanKey;
   nameAr: string;
-  /** Monthly price in USD (reference only, sold in IQD). */
+  /** Monthly price in USD. */
   price: number;
-  /** Monthly price in IQD. */
-  priceIQD: number;
-  /** IQD price actually charged per billing cycle (after CYCLE_DISCOUNT_PERCENT). */
+  /** USD price actually charged per billing cycle. */
   prices: Record<BillingCycle, number>;
-  /** IQD price before the yearly/lifetime discount (shown struck through). */
+  /** USD price before the yearly/lifetime discount (shown struck through). */
   listPrices: Record<BillingCycle, number>;
   products: number;
   ordersPerMonth: number;
@@ -247,19 +245,14 @@ export const LIFETIME_SEATS = 100;
 export const LIFETIME_INSTALLMENTS = 3;
 /** Merchants who subscribed before the 2026-11 pricing get this % off lifetime. */
 export const LEGACY_LIFETIME_DISCOUNT_PERCENT = 10;
-/** Current promotion on yearly and lifetime payments (prices already include it). */
-export const CYCLE_DISCOUNT_PERCENT: Partial<Record<BillingCycle, number>> = { YEARLY: 35, LIFETIME: 48 };
-/** Apply a % discount and round to the nearest 1,000 IQD. */
-const discounted = (v: number, pct = 0) => Math.round((v * (100 - pct)) / 100 / 1000) * 1000;
-function cyclePrices(list: Record<BillingCycle, number>): { prices: Record<BillingCycle, number>; listPrices: Record<BillingCycle, number> } {
-  return {
-    listPrices: list,
-    prices: {
-      MONTHLY: discounted(list.MONTHLY, CYCLE_DISCOUNT_PERCENT.MONTHLY),
-      YEARLY: discounted(list.YEARLY, CYCLE_DISCOUNT_PERCENT.YEARLY),
-      LIFETIME: discounted(list.LIFETIME, CYCLE_DISCOUNT_PERCENT.LIFETIME),
-    },
-  };
+/** Subscriptions are sold in US dollars. */
+export const BILLING_CURRENCY = 'USD';
+/** Reference rate for showing the dinar equivalent of a manual transfer (official rate, Oct 2026). */
+export const USD_TO_IQD = 1520;
+/** "$15", "$0.50", "$1,234" */
+export function formatUSD(v: number): string {
+  const whole = Number.isInteger(v);
+  return '$' + v.toLocaleString('en-US', { minimumFractionDigits: whole ? 0 : 2, maximumFractionDigits: 2 });
 }
 
 /** Payment refund window (days). */
@@ -270,8 +263,8 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
     key: 'FREE',
     nameAr: 'المجانية',
     price: 0,
-    priceIQD: 0,
-    ...cyclePrices({ MONTHLY: 0, YEARLY: 0, LIFETIME: 0 }),
+    prices: { MONTHLY: 0, YEARLY: 0, LIFETIME: 0 },
+    listPrices: { MONTHLY: 0, YEARLY: 0, LIFETIME: 0 },
     products: 30,
     ordersPerMonth: 50,
     categories: 3,
@@ -292,9 +285,9 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
   PRO: {
     key: 'PRO',
     nameAr: 'الاحترافية',
-    price: 14,
-    priceIQD: 22000,
-    ...cyclePrices({ MONTHLY: 22000, YEARLY: 189000, LIFETIME: 623000 }),
+    price: 15,
+    prices: { MONTHLY: 15, YEARLY: 79, LIFETIME: 209 },
+    listPrices: { MONTHLY: 15, YEARLY: 122, LIFETIME: 399 },
     products: -1,
     ordersPerMonth: -1,
     categories: 20,
@@ -324,9 +317,9 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
   ENTERPRISE: {
     key: 'ENTERPRISE',
     nameAr: 'الأعمال',
-    price: 26,
-    priceIQD: 39000,
-    ...cyclePrices({ MONTHLY: 39000, YEARLY: 389000, LIFETIME: 750000 }),
+    price: 25,
+    prices: { MONTHLY: 25, YEARLY: 165, LIFETIME: 249 },
+    listPrices: { MONTHLY: 25, YEARLY: 254, LIFETIME: 479 },
     products: -1,
     ordersPerMonth: -1,
     categories: -1,
@@ -354,20 +347,28 @@ export const PLAN_CONFIGS: Record<PlanKey, PlanConfig> = {
   },
 };
 
-/** Whole-dinar savings of yearly vs. 12 monthly payments. */
-export function yearlySavingIQD(plan: PlanKey): number {
+/** % off the list price for a cycle (0 when none), e.g. 35 for yearly, 48 for lifetime. */
+export function discountPercent(plan: PlanKey, cycle: BillingCycle): number {
+  const c = PLAN_CONFIGS[plan];
+  const list = c.listPrices[cycle];
+  return list > c.prices[cycle] ? Math.round((1 - c.prices[cycle] / list) * 100) : 0;
+}
+
+/** The headline discount for a cycle across paid plans (for tabs and badges). */
+export function cycleDiscountPercent(cycle: BillingCycle): number {
+  return Math.max(discountPercent('PRO', cycle), discountPercent('ENTERPRISE', cycle));
+}
+
+/** USD saved by paying yearly instead of 12 monthly payments. */
+export function yearlySaving(plan: PlanKey): number {
   const p = PLAN_CONFIGS[plan].prices;
   return Math.max(0, p.MONTHLY * 12 - p.YEARLY);
 }
 
-/**
- * Price per day for the pricing page: monthly → an upper bound rounded up to 50 IQD
- * ("less than 750 a day"), yearly → rounded to the nearest 10 IQD ("about 520 a day").
- */
-export function perDayIQD(plan: PlanKey, cycle: 'MONTHLY' | 'YEARLY'): number {
+/** Price per day in USD, to the cent ("$0.50 a day"). */
+export function perDay(plan: PlanKey, cycle: 'MONTHLY' | 'YEARLY'): number {
   const p = PLAN_CONFIGS[plan].prices;
-  if (cycle === 'MONTHLY') return Math.ceil((p.MONTHLY / 30 + 1) / 50) * 50;
-  return Math.round(p.YEARLY / 365 / 10) * 10;
+  return Math.round((cycle === 'MONTHLY' ? p.MONTHLY / 30 : p.YEARLY / 365) * 100) / 100;
 }
 
 export const PLAN_COMPARISON: PlanComparisonRow[] = [

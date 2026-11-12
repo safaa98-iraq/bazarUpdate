@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Check, X, ArrowLeft, Zap, Globe, MessageCircle, Shield, Star, TrendingUp, Crown } from 'lucide-react';
-import { PLAN_CONFIGS } from '@storebuilder/types';
+import { PLAN_CONFIGS, formatUSD } from '@storebuilder/types';
 import { PlanPrice } from '@/components/pricing/PlanPrice';
 
 export const metadata = { title: 'بازار مقابل شوبيفاي — قارن بنفسك', description: 'لماذا يختار التجار العرب بازار بدلاً من شوبيفاي؟ مقارنة شاملة بالأسعار والميزات.' };
@@ -19,9 +19,9 @@ interface CompRow {
 }
 
 const rows: CompRow[] = [
-  { label: 'السعر الشهري', bazar: `مجاناً، ثم من ${PLAN_CONFIGS.PRO.prices.MONTHLY.toLocaleString('en')} د.ع شهرياً`, shopify: 'من $39 / شهر (Basic)' },
-  { label: 'السعر السنوي', bazar: `من ${PLAN_CONFIGS.PRO.prices.YEARLY.toLocaleString('en')} د.ع سنوياً`, shopify: '$29 / شهر بالدفع السنوي' },
-  { label: 'دفعة واحدة مدى الحياة', bazar: `من ${PLAN_CONFIGS.PRO.prices.LIFETIME.toLocaleString('en')} د.ع (أول 100 تاجر)`, shopify: false },
+  { label: 'السعر الشهري', bazar: `مجاناً، ثم من ${formatUSD(PLAN_CONFIGS.PRO.prices.MONTHLY)} شهرياً`, shopify: 'من $39 / شهر (Basic)' },
+  { label: 'السعر السنوي', bazar: `من ${formatUSD(PLAN_CONFIGS.PRO.prices.YEARLY)} سنوياً`, shopify: '$29 / شهر بالدفع السنوي' },
+  { label: 'دفعة واحدة مدى الحياة', bazar: `من ${formatUSD(PLAN_CONFIGS.PRO.prices.LIFETIME)} (أول 100 تاجر)`, shopify: false },
   { label: 'عمولة على كل بيعة', bazar: 'صفر % ✓', shopify: '0.5% — 2% ×' },
   { label: 'واجهة عربية كاملة', bazar: true, shopify: false },
   { label: 'دعم الدينار العراقي', bazar: true, shopify: false },

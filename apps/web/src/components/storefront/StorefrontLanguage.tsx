@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Globe } from 'lucide-react';
-import { translate, storageKey, STORE_LANG_LABELS, type StoreLang } from '@/lib/storefront-i18n';
+import { translate, storageKey, storeDir, STORE_LANG_LABELS, type StoreLang } from '@/lib/storefront-i18n';
 
 const ATTRS = ['placeholder', 'title', 'aria-label'];
 
@@ -41,7 +41,8 @@ export function StorefrontLanguage({ slug, languages }: { slug: string; language
   }, [slug, languages]);
 
   useEffect(() => {
-    document.documentElement.lang = lang === 'ckb' ? 'ckb' : 'ar';
+    document.documentElement.lang = lang;
+    document.documentElement.dir = storeDir(lang);
     if (lang === 'ar') return;
     translateTree(document.body, lang);
     document.title = translate(document.title, lang);

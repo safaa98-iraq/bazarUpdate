@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { detectLocale, isLocale, LOCALE_COOKIE } from '@/lib/i18n/locales';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
@@ -19,6 +20,36 @@ async function resolveCustomDomain(host: string): Promise<string | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Website language: ?lang=en|ar|ckb wins, then the saved cookie, then the visitor's location /
+ * browser language (first visit). The choice is saved in a cookie for a year.
+ */
+function withLocale(request: NextRequest, response: NextResponse): NextResponse {
+  const { pathname, searchParams } = request.nextUrl;
+  if (pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname.includes('.')) return response;
+  const fromQuery = searchParams.get('lang');
+  const saved = request.cookies.get(LOCALE_COOKIE)?.value;
+  const next = isLocale(fromQuery) ? fromQuery : isLocale(saved) ? null : detectLocale(request.headers);
+  if (next) {
+    response.cookies.set(LOCALE_COOKIE, next, { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+  }
+  return response;
+}
+
+/** Make the detected language visible to this very request's server render (cookie set on the request too). */
+function localeAwareNext(request: NextRequest): NextResponse {
+  const { searchParams } = request.nextUrl;
+  const fromQuery = searchParams.get('lang');
+  const saved = request.cookies.get(LOCALE_COOKIE)?.value;
+  if (isLocale(fromQuery) || !isLocale(saved)) {
+    const locale = isLocale(fromQuery) ? fromQuery : detectLocale(request.headers);
+    request.cookies.set(LOCALE_COOKIE, locale);
+    const res = NextResponse.next({ request: { headers: request.headers } });
+    return withLocale(request, res);
+  }
+  return NextResponse.next();
 }
 
 export async function middleware(request: NextRequest) {
@@ -58,7 +89,7 @@ export async function middleware(request: NextRequest) {
     } catch { /* ignore malformed token */ }
   }
 
-  return NextResponse.next();
+  return localeAwareNext(request);
 }
 
 export const config = {

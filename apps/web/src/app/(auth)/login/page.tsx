@@ -1,4 +1,6 @@
 'use client';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useT, useLocale, dirOf } from '@/lib/i18n';
 import { ClayIcon } from '@/components/ui/ClayIcon';
 
 import { useState } from 'react';
@@ -34,7 +36,9 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
-  useDocumentTitle('تسجيل الدخول');
+  const t = useT();
+  const locale = useLocale();
+  useDocumentTitle(t("تسجيل الدخول"));
   const router = useRouter();
   const login  = useAuthStore(s => s.login);
   const [loading, setLoading] = useState(false);
@@ -53,14 +57,15 @@ export default function LoginPage() {
       else if (res.data.user.role === 'MERCHANT') router.push('/dashboard');
       else router.push('/');
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'فشل تسجيل الدخول');
+      toast.error(err instanceof Error ? err.message : t("فشل تسجيل الدخول"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', fontFamily: 'var(--font-tajawal)', position: 'relative', overflow: 'hidden' }}>
+    <div dir={dirOf(locale)} lang={locale} style={{ minHeight: '100vh', background: C.bg, display: 'flex', fontFamily: 'var(--font-tajawal)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 16, insetInlineEnd: 20, zIndex: 5 }}><LanguageSwitcher /></div>
 
       {/* Left decorative panel (desktop) */}
       <div style={{ display: 'none', flex: '0 0 42%', background: C.p, position: 'relative', overflow: 'hidden' }} className="login-left-panel">
@@ -74,9 +79,10 @@ export default function LoginPage() {
             <ClayIcon name="credit-card" size={60} className="absolute -right-4 bottom-0 rotate-6" />
             <ClayIcon name="gift" size={52} className="absolute -left-4 bottom-2 -rotate-6" />
           </div>
-          <h2 style={{ position: 'relative', fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 32, color: '#fff', marginBottom: 16, lineHeight: 1.3 }}>مرحباً بعودتك</h2>
+          <h2 style={{ position: 'relative', fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 32, color: '#fff', marginBottom: 16, lineHeight: 1.3 }}>{t("مرحباً بعودتك")}</h2>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,.55)', lineHeight: 1.8, maxWidth: 280 }}>
-            سجّل الدخول لإدارة متجرك ومتابعة طلباتك وعملائك
+            
+            {t("سجّل الدخول لإدارة متجرك ومتابعة طلباتك وعملائك")}
           </p>
         </div>
       </div>
@@ -91,7 +97,7 @@ export default function LoginPage() {
               <div style={{ width: 40, height: 40, background: C.p, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <ShoppingBag size={20} color="#fff" />
               </div>
-              <span style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 26, color: C.p }}>بازار</span>
+              <span style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 26, color: C.p }}>{t("بازار")}</span>
             </Link>
           </div>
 
@@ -99,32 +105,33 @@ export default function LoginPage() {
           <div style={{ background: '#FFFFFF', border: `1px solid ${C.border}`, borderRadius: 10, padding: '44px 40px', boxShadow: '0 8px 40px rgba(67,46,84,.08)' }}>
 
             <div style={{ textAlign: 'center', marginBottom: 36 }}>
-              <h1 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 26, color: C.text, marginBottom: 8 }}>أهلاً بعودتك</h1>
-              <p style={{ fontSize: 14, color: C.muted }}>سجّل الدخول لإدارة متجرك</p>
+              <h1 style={{ fontFamily: 'var(--font-cairo)', fontWeight: 800, fontSize: 26, color: C.text, marginBottom: 8 }}>{t("أهلاً بعودتك")}</h1>
+              <p style={{ fontSize: 14, color: C.muted }}>{t("سجّل الدخول لإدارة متجرك")}</p>
             </div>
 
             {/* Owner / staff switch */}
             <div className="bz-segmented" style={{ display: 'flex', marginBottom: 20 }}>
-              <button type="button" data-active={!asStaff} onClick={() => setAsStaff(false)} style={{ flex: 1 }}>صاحب المتجر</button>
-              <button type="button" data-active={asStaff} onClick={() => setAsStaff(true)} style={{ flex: 1 }}>موظف في متجر</button>
+              <button type="button" data-active={!asStaff} onClick={() => setAsStaff(false)} style={{ flex: 1 }}>{t("صاحب المتجر")}</button>
+              <button type="button" data-active={asStaff} onClick={() => setAsStaff(true)} style={{ flex: 1 }}>{t("موظف في متجر")}</button>
             </div>
 
             {!asStaff && (<>
             {/* Google Sign-In */}
             <div style={{ marginBottom: 8 }}>
-              <GoogleSignInButton label="تسجيل الدخول بـ Google" />
+              <GoogleSignInButton label={t("تسجيل الدخول بـ Google")} />
             </div>
 
             {/* Divider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0 16px' }}>
               <div style={{ flex: 1, height: 1, background: C.border }} />
-              <span style={{ fontSize: 12, color: '#7A8A99', whiteSpace: 'nowrap' }}>أو بالبريد الإلكتروني</span>
+              <span style={{ fontSize: 12, color: '#7A8A99', whiteSpace: 'nowrap' }}>{t("أو بالبريد الإلكتروني")}</span>
               <div style={{ flex: 1, height: 1, background: C.border }} />
             </div>
             </>)}
             {asStaff && (
               <p style={{ fontSize: 13, color: C.muted, background: '#F1FAFF', border: '1px solid #D6EEFC', borderRadius: 12, padding: '10px 14px', marginBottom: 16 }}>
-                استخدم البريد وكلمة المرور التي أعطاك إياها صاحب المتجر.
+                
+                {t("استخدم البريد وكلمة المرور التي أعطاك إياها صاحب المتجر.")}
               </p>
             )}
 
@@ -132,7 +139,7 @@ export default function LoginPage() {
 
               {/* Email */}
               <div>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 8 }}>البريد الإلكتروني</label>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 8 }}>{t("البريد الإلكتروني")}</label>
                 <div style={{ position: 'relative' }}>
                   <input
                     {...register('email')}
@@ -145,12 +152,12 @@ export default function LoginPage() {
                   />
                   <Mail size={16} color={C.muted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 </div>
-                {errors.email && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{errors.email.message}</p>}
+                {errors.email && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{t(errors.email.message ?? '')}</p>}
               </div>
 
               {/* Password */}
               <div>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 8 }}>كلمة المرور</label>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: C.p, marginBottom: 8 }}>{t("كلمة المرور")}</label>
                 <div style={{ position: 'relative' }}>
                   <input
                     {...register('password')}
@@ -165,7 +172,7 @@ export default function LoginPage() {
                     {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                {errors.password && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{errors.password.message}</p>}
+                {errors.password && <p style={{ color: '#F04F4F', fontSize: 12, marginTop: 6 }}>{t(errors.password.message ?? '')}</p>}
               </div>
 
               {/* Remember Me */}
@@ -188,7 +195,8 @@ export default function LoginPage() {
                   onClick={() => setRemember(r => !r)}
                   style={{ fontSize: 13, color: C.muted, fontWeight: 500 }}
                 >
-                  ابقني مسجلاً
+                  
+                  {t("ابقني مسجلاً")}
                 </span>
               </label>
 
@@ -199,21 +207,23 @@ export default function LoginPage() {
                 style={{ width: '100%', padding: '14px 0', background: loading ? 'rgba(74,138,199,.5)' : C.blue, color: '#fff', fontWeight: 700, fontSize: 15, border: 'none', borderRadius: 10, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit', marginTop: 4, transition: 'background .2s' }}
                 onMouseEnter={e => { if (!loading) e.currentTarget.style.background = C.blueHover; }}
                 onMouseLeave={e => { if (!loading) e.currentTarget.style.background = C.blue; }}>
-                {loading ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> جارٍ التحقق...</> : 'تسجيل الدخول'}
+                {loading ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> {' '}{t("جارٍ التحقق...")}</> : t("تسجيل الدخول")}
               </button>
             </form>
 
             <p style={{ textAlign: 'center', fontSize: 13, color: C.muted, marginTop: 28 }}>
-              ليس لديك حساب؟{' '}
-              <Link href="/register" style={{ color: C.a, fontWeight: 700, textDecoration: 'none' }}>أنشئ متجرك مجاناً</Link>
+              
+              {t("ليس لديك حساب؟")}{' '}
+              <Link href="/register" style={{ color: C.a, fontWeight: 700, textDecoration: 'none' }}>{t("أنشئ متجرك مجاناً")}</Link>
             </p>
           </div>
 
           <p style={{ textAlign: 'center', fontSize: 12, color: C.muted, marginTop: 24, opacity: .6 }}>
-            بالدخول، أنت توافق على{' '}
-            <a href="#" style={{ color: C.p, textDecoration: 'none' }}>شروط الاستخدام</a>
-            {' '}و{' '}
-            <a href="#" style={{ color: C.p, textDecoration: 'none' }}>سياسة الخصوصية</a>
+            
+            {t("بالدخول، أنت توافق على")}{' '}
+            <a href="#" style={{ color: C.p, textDecoration: 'none' }}>{t("شروط الاستخدام")}</a>
+            {' '}{t("و")}{' '}
+            <a href="#" style={{ color: C.p, textDecoration: 'none' }}>{t("سياسة الخصوصية")}</a>
           </p>
         </div>
       </div>

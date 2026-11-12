@@ -11,6 +11,7 @@ import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 const OPTIONS = [
   { key: 'ar', label: 'العربية', sample: 'أضف إلى السلة', locked: true },
+  { key: 'en', label: 'الإنكليزية (English)', sample: 'Add to cart', locked: false },
   { key: 'ckb', label: 'الكردية (سۆرانی)', sample: 'زیادکردن بۆ سەبەتە', locked: false },
 ];
 
@@ -34,7 +35,7 @@ export default function LanguagesPage() {
   return (
     <div className="px-4 sm:px-6 lg:px-8 pt-6 pb-12 max-w-3xl">
       <h1 className="bz-large-title">لغات المتجر</h1>
-      <p className="text-sm text-bz-muted mt-1 mb-6">فعّل الكردية ليظهر لزبائنك زر تبديل اللغة في متجرك. تُترجم واجهة المتجر (الأزرار، السلة، الدفع، التتبع)، أما أسماء منتجاتك ووصفها فتبقى كما كتبتها.</p>
+      <p className="text-sm text-bz-muted mt-1 mb-6">فعّل الإنكليزية أو الكردية ليظهر لزبائنك زر تبديل اللغة في متجرك. تُترجم واجهة المتجر (الأزرار، السلة، الدفع، التتبع)، أما أسماء منتجاتك ووصفها فتبقى كما كتبتها.</p>
       {!allowed && <UpgradeNotice feature="languages" />}
       {allowed && (
         <div className="space-y-3">
@@ -47,9 +48,14 @@ export default function LanguagesPage() {
               </div>
             </label>
           ))}
-          {slug && langs.includes('ckb') && (
-            <a href={`/store/${slug}?lang=ckb`} target="_blank" className="bz-btn bz-btn-outline mt-2"><ExternalLink className="h-4 w-4" /> معاينة المتجر بالكردية</a>
-          )}
+          <div className="flex flex-wrap gap-2">
+            {slug && langs.includes('en') && (
+              <a href={`/store/${slug}?lang=en`} target="_blank" className="bz-btn bz-btn-outline mt-2"><ExternalLink className="h-4 w-4" /> معاينة المتجر بالإنكليزية</a>
+            )}
+            {slug && langs.includes('ckb') && (
+              <a href={`/store/${slug}?lang=ckb`} target="_blank" className="bz-btn bz-btn-outline mt-2"><ExternalLink className="h-4 w-4" /> معاينة المتجر بالكردية</a>
+            )}
+          </div>
           <p className="text-xs text-bz-muted mt-4">💡 الترجمة الكردية أولية — راجعها مع متحدث كردي، وأرسل لنا أي تعديل.</p>
         </div>
       )}

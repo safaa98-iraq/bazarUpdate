@@ -2,7 +2,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export interface PublicStoreMeta {
   name: string; description: string | null; logo: string | null; theme: string;
-  languages: ('ar' | 'ckb')[];
+  languages: ('ar' | 'en' | 'ckb')[];
 }
 
 /** Store data needed by the layout (server side, cached briefly). */
@@ -13,7 +13,7 @@ export async function fetchStoreMeta(slug: string): Promise<PublicStoreMeta | nu
     if (!res.ok) return null;
     const { data } = await res.json() as { data?: PublicStoreMeta };
     if (!data) return null;
-    return { ...data, languages: (data.languages ?? ['ar']).filter((l): l is 'ar' | 'ckb' => l === 'ar' || l === 'ckb') };
+    return { ...data, languages: (data.languages ?? ['ar']).filter((l): l is 'ar' | 'en' | 'ckb' => l === 'ar' || l === 'en' || l === 'ckb') };
   } catch {
     return null;
   }

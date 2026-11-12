@@ -1,5 +1,7 @@
+'use client';
 /* eslint-disable @next/next/no-img-element */
 import { Check } from 'lucide-react';
+import { useT } from '@/lib/i18n';
 import { BRAND_LOGOS, HERO_LOGO_COUNT, HERO_BADGE_TEXT, PLATFORM_STATS } from '@/lib/landing-content';
 
 /**
@@ -8,6 +10,7 @@ import { BRAND_LOGOS, HERO_LOGO_COUNT, HERO_BADGE_TEXT, PLATFORM_STATS } from '@
  * slightly under the logos so the two read as one unit.
  */
 export function HeroLogos() {
+  const t = useT();
   const logos = BRAND_LOGOS.slice(0, HERO_LOGO_COUNT);
   return (
     <div className="inline-grid justify-items-stretch mb-7 max-w-full">
@@ -31,7 +34,7 @@ export function HeroLogos() {
           <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={3} />
         </span>
         <span className="text-[13px] sm:text-lg font-bold text-bz-ink whitespace-nowrap">
-          <bdi className="tabular-nums">{PLATFORM_STATS[0]?.value}</bdi> {HERO_BADGE_TEXT}
+          <bdi className="tabular-nums">{PLATFORM_STATS[0]?.value}</bdi> {t(HERO_BADGE_TEXT)}
         </span>
       </div>
     </div>

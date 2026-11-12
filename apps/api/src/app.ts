@@ -139,6 +139,8 @@ export function createApp() {
   // ── Body parsing ─────────────────────────────────────────────────────
   // Stripe webhook needs raw body — mount before json()
   app.use('/api/checkout/webhook', express.raw({ type: 'application/json' }));
+  // Payment-gateway callbacks need the raw body for signature checks
+  app.use('/api/billing/gateway/webhook', express.raw({ type: () => true, limit: '1mb' }));
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true, limit: '2mb' }));
   app.use(compression());

@@ -1,9 +1,11 @@
 'use client';
 
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useT, useLocale, dirOf } from '@/lib/i18n';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { PLAN_CONFIGS, PLAN_COMPARISON, type PlanComparisonRow, type ArticlePublic } from '@storebuilder/types';
+import { formatUSD, PLAN_CONFIGS, PLAN_COMPARISON, type PlanComparisonRow, type ArticlePublic } from '@storebuilder/types';
 import { PricingPlans } from '@/components/pricing/PricingPlans';
 import { STORE_TYPES } from '@/lib/store-types';
 import { api } from '@/lib/api';
@@ -84,6 +86,8 @@ function BrowserFrame({ children, accentBg = C.blue, bodyBg = C.dark, style = {}
 
 /* ─── Reusable end-of-section CTA ─── */
 function SectionCTA({ text = 'ابدأ الآن — أنشئ متجرك مجاناً' }: { text?: string }) {
+  const tr = useT();
+  text = tr(text);
   return (
     <div style={{ textAlign: 'center', marginTop: 36 }}>
       <Link href="/register">
@@ -99,22 +103,24 @@ function SectionCTA({ text = 'ابدأ الآن — أنشئ متجرك مجان
 
 /* ─── Header ─── */
 function LPHeader() {
+  const t = useT();
   const [mobileOpen, setMobileOpen] = useState(false);
   const go = (id: string) => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMobileOpen(false); };
 
   const links = [
-    { label: 'المزايا', id: 'features' },
-    { label: 'التسويق', id: 'marketing' },
-    { label: 'قصص تجار', id: 'stories' },
-    { label: 'الأسئلة', id: 'faq' },
-    { label: 'الأسعار', id: 'pricing' },
+    { label: t("المزايا"), id: 'features' },
+    { label: t("التسويق"), id: 'marketing' },
+    { label: t("قصص تجار"), id: 'stories' },
+    { label: t("الأسئلة"), id: 'faq' },
+    { label: t("الأسعار"), id: 'pricing' },
   ];
 
   return (
     <>
       <header style={{ maxWidth: 1200, margin: '0 auto', padding: '22px 28px', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-arabic), sans-serif' }}>
-        <span style={{ ...HEADING, fontWeight: 800, fontSize: 30, color: C.dark, cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>بازار</span>
+        <span style={{ ...HEADING, fontWeight: 800, fontSize: 30, color: C.dark, cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>{t("بازار")}</span>
         <span style={{ flex: 1 }} />
+        <LanguageSwitcher compact className="text-[#0B3550] me-1" />
         <nav className="lp-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           {links.map(l => (
             <button key={l.id} onClick={() => go(l.id)}
@@ -124,13 +130,14 @@ function LPHeader() {
               {l.label}
             </button>
           ))}
-          <Link href="/login" style={{ fontWeight: 600, fontSize: 15, color: C.dark, padding: '10px 18px', borderRadius: 12, border: `1.5px solid ${C.dark}`, marginInlineStart: 8 }}>تسجيل دخول</Link>
+          <Link href="/login" style={{ fontWeight: 600, fontSize: 15, color: C.dark, padding: '10px 18px', borderRadius: 12, border: `1.5px solid ${C.dark}`, marginInlineStart: 8 }}>{t("تسجيل دخول")}</Link>
         </nav>
         <Link href="/register" className="lp-nav-cta">
           <button style={{ fontWeight: 700, fontSize: 15, background: C.dark, color: '#fff', padding: '12px 22px', borderRadius: 12, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
             onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
             onMouseLeave={e => (e.currentTarget.style.background = C.dark)}>
-            أنشئ متجرك مجاناً
+            
+            {t("أنشئ متجرك مجاناً")}
           </button>
         </Link>
         <button className="lp-mobile-toggle" onClick={() => setMobileOpen(!mobileOpen)}
@@ -142,13 +149,13 @@ function LPHeader() {
         <div style={{ padding: '0 28px 20px', display: 'flex', flexDirection: 'column', gap: 4 }}>
           {links.map(l => (
             <button key={l.id} onClick={() => go(l.id)}
-              style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 400, fontSize: 15, color: C.dark, padding: '10px 4px', background: 'none', border: 'none', textAlign: 'right', cursor: 'pointer' }}>
+              style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 400, fontSize: 15, color: C.dark, padding: '10px 4px', background: 'none', border: 'none', textAlign: 'start', cursor: 'pointer' }}>
               {l.label}
             </button>
           ))}
-          <Link href="/login" style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 15, color: C.dark, padding: '10px 4px' }}>دخول</Link>
+          <Link href="/login" style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 15, color: C.dark, padding: '10px 4px' }}>{t("دخول")}</Link>
           <Link href="/register">
-            <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 15, background: C.blue, color: '#fff', padding: 12, borderRadius: 10, border: 'none', width: '100%', marginTop: 8 }}>ابدأ مجاناً</button>
+            <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 15, background: C.blue, color: '#fff', padding: 12, borderRadius: 10, border: 'none', width: '100%', marginTop: 8 }}>{t("ابدأ مجاناً")}</button>
           </Link>
         </div>
       )}
@@ -159,6 +166,7 @@ function LPHeader() {
 /* ─── Hero ─── */
 /* Main hero visual: the dashboard mockup, with the 3D icons floating around it (not scattered across the whole hero) */
 function HeroVisual() {
+  const t = useT();
   const orbiters: { src: string; top: string; left?: string; right?: string; size: number; dur: number; delay: number; rotate: number }[] = [
     { src: '/icons/clay/cart.webp', top: '-10%', left: '-12%', size: 96, dur: 7, delay: 0, rotate: -8 },
     { src: '/icons/clay/credit-card.webp', top: '68%', left: '-14%', size: 120, dur: 8.5, delay: 1.2, rotate: 6 },
@@ -179,7 +187,7 @@ function HeroVisual() {
           position: 'absolute', inset: 0, borderRadius: 18, overflow: 'hidden',
           border: '5px solid #fff', boxShadow: '0 30px 60px rgba(11,53,80,0.18)',
         }}>
-          <Image src="/images/dashboard-preview.webp" alt="لوحة تحكم بازار" fill sizes="900px" style={{ objectFit: 'cover', objectPosition: 'right top' }} priority />
+          <Image src="/images/dashboard-preview.webp" alt={t("لوحة تحكم بازار")} fill sizes="900px" style={{ objectFit: 'cover', objectPosition: 'right top' }} priority />
         </div>
 
         {/* Orbiting icons */}
@@ -204,10 +212,11 @@ function HeroVisual() {
 }
 
 function LPHero() {
+  const t = useT();
   const trust: { Icon: LucideIcon; t: string }[] = [
-    { Icon: Zap, t: 'متجرك جاهز خلال 5 دقائق' },
-    { Icon: Lock, t: 'بياناتك ومدفوعاتك آمنة' },
-    { Icon: BadgeCheck, t: 'دعم عربي مباشر' },
+    { Icon: Zap, t: t("متجرك جاهز خلال 5 دقائق") },
+    { Icon: Lock, t: t("بياناتك ومدفوعاتك آمنة") },
+    { Icon: BadgeCheck, t: t("دعم عربي مباشر") },
   ];
 
   return (
@@ -218,29 +227,34 @@ function LPHero() {
             <HeroLogos />
 
             <h1 style={{ ...HEADING, fontWeight: 800, fontSize: 'clamp(32px, 4.5vw, 58px)', lineHeight: 1.22, margin: 0, color: C.dark }}>
-              بازار.. تجارتك
+              
+              {t("بازار.. تجارتك")}
               <br />
-              أسهل وأسرع.
+              
+              {t("أسهل وأسرع.")}
             </h1>
             <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 400, fontSize: 17, lineHeight: 1.95, margin: '18px 0 0', maxWidth: '46ch', color: C.text2 }}>
-              أنشئ متجرك الإلكتروني بنفسك في دقائق: منتجاتك، طلباتك، والدفع عند الاستلام بالدينار — بلوحة واحدة بالعربي.{' '}
-              <strong style={{ fontWeight: 700, color: C.blue }}>لا عمولة. لا برمجة. لا انتظار.</strong>
+              
+              {t("أنشئ متجرك الإلكتروني بنفسك في دقائق: منتجاتك، طلباتك، والدفع عند الاستلام بالدينار — بلوحة واحدة بالعربي.")}{' '}
+              <strong style={{ fontWeight: 700, color: C.blue }}>{t("لا عمولة. لا برمجة. لا انتظار.")}</strong>
             </p>
             <div className="lp-hero-btns" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 30 }}>
               <Link href="/register">
                 <button style={{ fontWeight: 700, fontSize: 17, background: C.dark, color: '#fff', padding: '16px 30px', borderRadius: 12, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
                   onMouseLeave={e => (e.currentTarget.style.background = C.dark)}>
-                  أنشئ متجرك مجاناً
+                  
+                  {t("أنشئ متجرك مجاناً")}
                 </button>
               </Link>
               <button onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
                 style={{ fontWeight: 700, fontSize: 17, color: C.dark, background: 'rgba(255,255,255,0.6)', border: `1.5px solid ${C.dark}`, padding: '14.5px 28px', borderRadius: 12, cursor: 'pointer' }}>
-                جرّب المنصة
+                
+                {t("جرّب المنصة")}
               </button>
             </div>
 
-            <p style={{ margin: '22px 0 0', fontSize: 18, fontWeight: 500, color: C.dark }}>مصمّمة للتجّار في العراق</p>
+            <p style={{ margin: '22px 0 0', fontSize: 18, fontWeight: 500, color: C.dark }}>{t("مصمّمة للتجّار في العراق")}</p>
             <div className="lp-hero-trust" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 22px', marginTop: 18 }}>
               {trust.map((t, i) => (
                 <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 13.5, color: C.text2 }}>
@@ -260,10 +274,11 @@ function LPHero() {
 
 /* ─── Value props (3 cards) ─── */
 function LPValueProps() {
+  const t = useT();
   const cards = [
-    { bg: C.lavender, img: '/images/dashboard-preview.webp', h: 'متجر جاهز بشكلك', p: 'اختر قالبك، بدّل الألوان، والشعار، وانشر. بلا سطر برمجة واحد.', frame: true },
-    { bg: C.palePink, img: '/icons/clay/credit-card.webp', h: 'دفع نقدي بالدينار', p: 'الدفع عند الاستلام بالدينار — بلا حساب خارجي ولا بطاقة ائتمانية.', frame: false },
-    { bg: C.cyan, img: '/icons/clay/documents.webp', h: 'طلبات وشحن مرتبة', p: 'كل طلب بحالته، معلوماته مرتبة، جاهز للتسليم داخل العراق.', frame: false },
+    { bg: C.lavender, img: '/images/dashboard-preview.webp', h: t("متجر جاهز بشكلك"), p: t("اختر قالبك، بدّل الألوان، والشعار، وانشر. بلا سطر برمجة واحد."), frame: true },
+    { bg: C.palePink, img: '/icons/clay/credit-card.webp', h: t("دفع نقدي بالدينار"), p: t("الدفع عند الاستلام بالدينار — بلا حساب خارجي ولا بطاقة ائتمانية."), frame: false },
+    { bg: C.cyan, img: '/icons/clay/documents.webp', h: t("طلبات وشحن مرتبة"), p: t("كل طلب بحالته، معلوماته مرتبة، جاهز للتسليم داخل العراق."), frame: false },
   ];
   return (
     <section style={{ ...SEC, paddingTop: 24 }}>
@@ -293,20 +308,21 @@ function LPValueProps() {
 /* ─── Work ("see it work") ─── */
 /* Rich builder-preview mockup: element order panel + theme swatches + template gallery cards */
 function BuilderMockup() {
+  const t = useT();
   return (
     <div style={{ position: 'relative', width: '100%' }}>
       {/* Base browser frame — real product screenshot */}
       <BrowserFrame accentBg={C.accent} bodyBg={C.white}>
         <div style={{ position: 'relative', width: '100%', height: 240, borderRadius: 8, overflow: 'hidden' }}>
-          <Image src="/images/dashboard-preview.webp" alt="لوحة بناء متجر بازار" fill sizes="(max-width: 768px) 100vw, 700px" style={{ objectFit: 'cover', objectPosition: 'right top' }} />
+          <Image src="/images/dashboard-preview.webp" alt={t("لوحة بناء متجر بازار")} fill sizes="(max-width: 768px) 100vw, 700px" style={{ objectFit: 'cover', objectPosition: 'right top' }} />
         </div>
       </BrowserFrame>
 
       {/* Floating: page-elements order panel (top-right) */}
       <div style={{ position: 'absolute', top: -18, right: '4%', width: '46%', background: '#fff', borderRadius: 10, padding: '12px 14px', boxShadow: '0 14px 30px rgba(11,53,80,0.16)' }}>
-        <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 11.5, color: C.dark }}>ترتيب الصفحة الرئيسية</span>
+        <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 11.5, color: C.dark }}>{t("ترتيب الصفحة الرئيسية")}</span>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
-          {['بانر عريض', 'منتجات مميزة', 'مميزات المتجر'].map((l, i) => (
+          {[t("بانر عريض"), t("منتجات مميزة"), t("مميزات المتجر")].map((l, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.bg, borderRadius: 8, padding: '6px 10px' }}>
               <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 10.5, color: C.text2 }}>{l}</span>
               <span style={{ width: 10, height: 10, borderRadius: 3, background: C.border }} />
@@ -328,7 +344,7 @@ function BuilderMockup() {
       <div style={{ position: 'absolute', bottom: -20, left: '2%', width: '38%', background: '#fff', borderRadius: 10, padding: 8, boxShadow: '0 14px 30px rgba(11,53,80,0.16)' }}>
         <div style={{ height: 46, borderRadius: 8, background: C.soft, marginBottom: 6 }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 600, fontSize: 9.5, color: C.dark }}>القالب الحالي</span>
+          <span style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 600, fontSize: 9.5, color: C.dark }}>{t("القالب الحالي")}</span>
           <Check size={11} color={C.green} strokeWidth={3} />
         </div>
       </div>
@@ -337,10 +353,11 @@ function BuilderMockup() {
 }
 
 function LPWork() {
+  const t = useT();
   const bullets: { Icon: LucideIcon; bg: string; color: string; t: string; p: string }[] = [
-    { Icon: LayoutTemplate, bg: C.blueLight, color: C.blueHover, t: 'قوالب جاهزة', p: 'ملابس، عطور، إلكترونيات — اختر وابدأ.' },
-    { Icon: Palette, bg: C.soft, color: C.accentDark, t: 'ألوان وخطوط بضغطة', p: 'لوحة ألوان وخطوط عربية جاهزة.' },
-    { Icon: MonitorSmartphone, bg: C.greenLight, color: C.greenDark, t: 'معاينة ثم نشر', p: 'شوف الشكل على الهاتف والحاسبة قبل النشر.' },
+    { Icon: LayoutTemplate, bg: C.blueLight, color: C.blueHover, t: t("قوالب جاهزة"), p: t("ملابس، عطور، إلكترونيات — اختر وابدأ.") },
+    { Icon: Palette, bg: C.soft, color: C.accentDark, t: t("ألوان وخطوط بضغطة"), p: t("لوحة ألوان وخطوط عربية جاهزة.") },
+    { Icon: MonitorSmartphone, bg: C.greenLight, color: C.greenDark, t: t("معاينة ثم نشر"), p: t("شوف الشكل على الهاتف والحاسبة قبل النشر.") },
   ];
 
   return (
@@ -351,10 +368,11 @@ function LPWork() {
           <div>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 13, color: C.greenDark, background: C.greenLight, padding: '7px 14px', borderRadius: 99, marginBottom: 16 }}>
               <LayoutTemplate size={14} strokeWidth={2} />
-              لوحة البناء
+              
+              {t("لوحة البناء")}
             </span>
-            <h2 style={{ ...TITLE, fontSize: 'clamp(24px, 3vw, 36px)', maxWidth: '18ch' }}>شوف بازار وهو يعمل — قبل ما تسجّل.</h2>
-            <p style={{ ...SUBP, maxWidth: '38ch' }}>هذي لوحة التاجر الحقيقية: تختار قالبك، تبدّل الألوان، وتشوف متجرك يتغيّر أمامك مباشرة. بلا أكواد، بلا انتظار وبرمجة.</p>
+            <h2 style={{ ...TITLE, fontSize: 'clamp(24px, 3vw, 36px)', maxWidth: '18ch' }}>{t("شوف بازار وهو يعمل — قبل ما تسجّل.")}</h2>
+            <p style={{ ...SUBP, maxWidth: '38ch' }}>{t("هذي لوحة التاجر الحقيقية: تختار قالبك، تبدّل الألوان، وتشوف متجرك يتغيّر أمامك مباشرة. بلا أكواد، بلا انتظار وبرمجة.")}</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 24 }}>
               {bullets.map((b, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -372,7 +390,8 @@ function LPWork() {
                 <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 15, background: C.dark, color: '#fff', padding: '13px 26px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
                   onMouseLeave={e => (e.currentTarget.style.background = C.dark)}>
-                  ابدأ بناء متجرك الآن ←
+                  
+                  {t("ابدأ بناء متجرك الآن ←")}
                 </button>
               </Link>
             </div>
@@ -385,20 +404,21 @@ function LPWork() {
 
 /* ─── Features: "problems solved" ─── */
 function LPFeatures() {
+  const t = useT();
   const [ref, visible] = useScrollReveal(0.1);
   const items: { img: string; color: string; micro: string; h: string; p: string; detail: string }[] = [
-    { img: '/icons/clay/settings.webp', color: C.blue, micro: 'كل تعديل صغير يحتاج برمجة.', h: 'تعديل كل شيء بنفسك', p: 'الأسعار، الصور، الأسماء، الشكل — تتغيّر بضغطة وتنشر فوراً.', detail: 'لوحة تحكم عربية بسيطة، بدون الحاجة لمبرمج في أي تعديل.' },
-    { img: '/icons/clay/credit-card.webp', color: C.gold, micro: 'المنصات الأجنبية تحسب بالدولار.', h: 'بالدينار، وبلا عمولة', p: 'أسعارك بالدينار العراقي، ولا نأخذ نسبة من أي بيعة تبيعها.', detail: 'ما تدفع إلا اشتراك الخطة — أرباح كل بيعة كاملة لك.' },
-    { img: '/images/dashboard-preview.webp', color: C.greenDark, micro: 'الموقع يتأخر أسابيع.', h: 'متجرك يفتح اليوم', p: 'تسجّل، تختار قالبك، تضيف منتجاتك، وتنشر — بجلسة واحدة.', detail: 'قالب جاهز لكل نوع متجر، جاهز للنشر بنفس اليوم.' },
-    { img: '/icons/clay/wallet.webp', color: C.blue, micro: 'الدفع الإلكتروني معقّد على الزبون.', h: 'الدفع عند الاستلام', p: 'عميلك يطلب ويدفع كاش عند التسليم — الطريقة اللي يثق بها معظمهم.', detail: 'تقدر تفعّل الدفع الإلكتروني لاحقاً إذا حبيت، اختياري بالكامل.' },
-    { img: '/icons/clay/growth.webp', color: C.blue, micro: 'لا تعرف شو يحدث في متجرك.', h: 'تقارير بالعربي', p: 'طلبات اليوم، أكثر منتج مبيعاً، ومن أين يأتي زوارك — بصفحة واحدة.', detail: 'أرقام واضحة تساعدك تقرر شنو تسوّق له أكثر.' },
-    { img: '/icons/clay/pencil.webp', color: C.greenDark, micro: 'كتابة وصف كل منتج ممله.', h: 'وصف جاهز بالعربي', p: 'اكتب اسم المنتج، وبازار يقترح وصفاً عربياً تعدّله كيفما تريد.', detail: 'يوفّر عليك وقت كتابة الوصف لكل منتج جديد.' },
+    { img: '/icons/clay/settings.webp', color: C.blue, micro: t("كل تعديل صغير يحتاج برمجة."), h: t("تعديل كل شيء بنفسك"), p: t("الأسعار، الصور، الأسماء، الشكل — تتغيّر بضغطة وتنشر فوراً."), detail: t("لوحة تحكم عربية بسيطة، بدون الحاجة لمبرمج في أي تعديل.") },
+    { img: '/icons/clay/credit-card.webp', color: C.gold, micro: t("المنصات الأجنبية تأخذ نسبة من كل بيعة."), h: t("زبائنك يدفعون بالدينار، وبلا عمولة"), p: t("أسعارك بالدينار العراقي، ولا نأخذ نسبة من أي بيعة تبيعها."), detail: t("ما تدفع إلا اشتراك الخطة — أرباح كل بيعة كاملة لك.") },
+    { img: '/images/dashboard-preview.webp', color: C.greenDark, micro: t("الموقع يتأخر أسابيع."), h: t("متجرك يفتح اليوم"), p: t("تسجّل، تختار قالبك، تضيف منتجاتك، وتنشر — بجلسة واحدة."), detail: t("قالب جاهز لكل نوع متجر، جاهز للنشر بنفس اليوم.") },
+    { img: '/icons/clay/wallet.webp', color: C.blue, micro: t("الدفع الإلكتروني معقّد على الزبون."), h: t("الدفع عند الاستلام"), p: t("عميلك يطلب ويدفع كاش عند التسليم — الطريقة اللي يثق بها معظمهم."), detail: t("تقدر تفعّل الدفع الإلكتروني لاحقاً إذا حبيت، اختياري بالكامل.") },
+    { img: '/icons/clay/growth.webp', color: C.blue, micro: t("لا تعرف شو يحدث في متجرك."), h: t("تقارير بالعربي"), p: t("طلبات اليوم، أكثر منتج مبيعاً، ومن أين يأتي زوارك — بصفحة واحدة."), detail: t("أرقام واضحة تساعدك تقرر شنو تسوّق له أكثر.") },
+    { img: '/icons/clay/pencil.webp', color: C.greenDark, micro: t("كتابة وصف كل منتج ممله."), h: t("وصف جاهز بالعربي"), p: t("اكتب اسم المنتج، وبازار يقترح وصفاً عربياً تعدّله كيفما تريد."), detail: t("يوفّر عليك وقت كتابة الوصف لكل منتج جديد.") },
   ];
 
   return (
     <section id="features" ref={ref as React.RefObject<HTMLElement>} style={SEC}>
       <div style={INNER}>
-        <h2 style={{ ...TITLE, maxWidth: '24ch' }}>مشاكل التاجر العراقي — محلولة في بازار.</h2>
+        <h2 style={{ ...TITLE, maxWidth: '24ch' }}>{t("مشاكل التاجر العراقي — محلولة في بازار.")}</h2>
         <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28, marginTop: 34 }}>
           {items.map((it, i) => (
             <div key={i} style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all .4s', transitionDelay: `${i * 70}ms` }}>
@@ -415,7 +435,7 @@ function LPFeatures() {
             </div>
           ))}
         </div>
-        <SectionCTA text="ابدأ الآن وجرّب بنفسك" />
+        <SectionCTA text={t("ابدأ الآن وجرّب بنفسك")} />
       </div>
     </section>
   );
@@ -425,20 +445,21 @@ function LPFeatures() {
 
 /* ─── Marketing tools ─── */
 function LPMarketing() {
+  const t = useT();
   const [ref, visible] = useScrollReveal(0.1);
   const items: { img: string; color: string; h: string; p: string; detail: string }[] = [
-    { img: '/icons/clay/coupon.webp', color: C.blue, h: 'كوبونات وأكواد خصم', p: 'أنشئ كوبوناً بنسبة أو مبلغ، أو ضع حداً أدنى للطلب، أو حصره على منتج معيّن.', detail: 'مثال: خصم 20% لأول طلب، أو توصيل مجاني فوق مبلغ معيّن.' },
-    { img: '/icons/clay/chat.webp', color: C.greenDark, h: 'رسائل SMS للزبائن', p: 'تنبيه الشحنة، شكر بعد الاستلام، عروض المناسبات — تصل مباشرة إلى جوالاتهم.', detail: 'رسالة تلقائية فور تغيّر حالة الطلب، بلا أي إعداد يدوي.' },
-    { img: '/icons/clay/share.webp', color: C.blue, h: 'شارك على السوشيال', p: 'رابط منتج بضغطة إلى إنستغرام وفيسبوك وتيك توك — بصورة وسعر جاهزين.', detail: 'مشاركة جاهزة بدون تصميم يدوي أو أخذ سكرين شوت.' },
-    { img: '/icons/clay/gift.webp', color: C.accent, h: 'برنامج إحالات', p: 'زبونك يجلب زبوناً جديداً، يربح خصماً — ومتجرك يكبر بنفسه.', detail: 'رابط إحالة خاص لكل زبون، تتبعه من لوحتك مباشرة.' },
-    { img: '/icons/clay/search.webp', color: C.greenDark, h: 'تحسين ظهور جوجل', p: 'عناوين ووصف تلقائي بالعربي — يظهر متجرك حين يبحث زبون عن منتجك.', detail: 'بدون أي إعداد تقني أو خبرة SEO مسبقة.' },
+    { img: '/icons/clay/coupon.webp', color: C.blue, h: t("كوبونات وأكواد خصم"), p: t("أنشئ كوبوناً بنسبة أو مبلغ، أو ضع حداً أدنى للطلب، أو حصره على منتج معيّن."), detail: t("مثال: خصم 20% لأول طلب، أو توصيل مجاني فوق مبلغ معيّن.") },
+    { img: '/icons/clay/chat.webp', color: C.greenDark, h: t("رسائل SMS للزبائن"), p: t("تنبيه الشحنة، شكر بعد الاستلام، عروض المناسبات — تصل مباشرة إلى جوالاتهم."), detail: t("رسالة تلقائية فور تغيّر حالة الطلب، بلا أي إعداد يدوي.") },
+    { img: '/icons/clay/share.webp', color: C.blue, h: t("شارك على السوشيال"), p: t("رابط منتج بضغطة إلى إنستغرام وفيسبوك وتيك توك — بصورة وسعر جاهزين."), detail: t("مشاركة جاهزة بدون تصميم يدوي أو أخذ سكرين شوت.") },
+    { img: '/icons/clay/gift.webp', color: C.accent, h: t("برنامج إحالات"), p: t("زبونك يجلب زبوناً جديداً، يربح خصماً — ومتجرك يكبر بنفسه."), detail: t("رابط إحالة خاص لكل زبون، تتبعه من لوحتك مباشرة.") },
+    { img: '/icons/clay/search.webp', color: C.greenDark, h: t("تحسين ظهور جوجل"), p: t("عناوين ووصف تلقائي بالعربي — يظهر متجرك حين يبحث زبون عن منتجك."), detail: t("بدون أي إعداد تقني أو خبرة SEO مسبقة.") },
   ];
 
   return (
     <section id="marketing" ref={ref as React.RefObject<HTMLElement>} style={SEC}>
       <div style={INNER}>
-        <h2 style={TITLE}>أدوات تسويقية جاهزة داخل المتجر</h2>
-        <p style={SUBP}>تكسب زبائن جدد وترجّع الهاربين — بلا اشتراكات إضافية ولا برامج طرف ثالث.</p>
+        <h2 style={TITLE}>{t("أدوات تسويقية جاهزة داخل المتجر")}</h2>
+        <p style={SUBP}>{t("تكسب زبائن جدد وترجّع الهاربين — بلا اشتراكات إضافية ولا برامج طرف ثالث.")}</p>
         <div className="marketing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 32 }}>
           {items.map((it, i) => (
             <div key={i} style={{ background: C.white, borderRadius: 10, padding: '22px 24px 24px', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all .4s', transitionDelay: `${i * 70}ms` }}>
@@ -454,7 +475,7 @@ function LPMarketing() {
             </div>
           ))}
         </div>
-        <SectionCTA text="فعّل أدوات التسويق الآن" />
+        <SectionCTA text={t("فعّل أدوات التسويق الآن")} />
       </div>
     </section>
   );
@@ -462,19 +483,20 @@ function LPMarketing() {
 
 /* ─── What's new ─── */
 function LPWhatsNew() {
+  const t = useT();
   const [ref, visible] = useScrollReveal(0.1);
   const items: { img?: string; Icon?: LucideIcon; iconBg?: string; color: string; h: string; p: string }[] = [
-    { img: '/icons/clay/documents.webp', color: C.blue, h: 'طلبات يدوية', p: 'سجّل طلباً وصلك عبر الهاتف أو انستغرام مباشرة من لوحتك.' },
-    { img: '/icons/clay/basket.webp', color: C.accent, h: 'تنبيه السلال المتروكة', p: 'اعرف زبائن تركوا سلتهم قبل الدفع وتواصل معهم بضغطة.' },
-    { img: '/icons/clay/printer.webp', color: C.greenDark, h: 'طباعة فاتورة وبوليصة شحن', p: 'اطبع فاتورة الطلب أو بوليصة الشحن جاهزة من صفحة الطلبات.' },
-    { img: '/icons/clay/apps.webp', color: C.blue, h: 'فلاتر تصفح أقوى', p: 'زبونك يفلتر حسب السعر والتقييم ليصل لمنتجه بسرعة.' },
-    { img: '/icons/clay/tag.webp', color: C.gold, h: 'دليل المقاسات', p: 'أضف جدول مقاسات لكل منتج أو للمتجر كله دفعة واحدة.' },
-    { img: '/icons/clay/calendar.webp', color: C.accent, h: 'عدّاد تنازلي للعروض', p: 'حدّد نهاية العرض ويظهر عدّاد تنازلي في صفحة المنتج.' },
-    { img: '/icons/clay/refresh.webp', color: C.greenDark, h: 'شوهد مؤخراً', p: 'يعرض لزبونك آخر المنتجات التي تصفحها ليرجع لها بسهولة.' },
-    { img: '/icons/clay/badge-check.webp', color: C.blue, h: 'شارات تلقائية', p: '"الأكثر مبيعاً" و"وصل حديثاً" تظهر تلقائياً بلا أي إعداد.' },
-    { img: '/icons/clay/star.webp', color: C.gold, h: 'نقاط ولاء للزبائن', p: 'زبونك يجمع نقاطاً مع كل عملية شراء ويستبدلها بخصومات.' },
-    { img: '/icons/clay/pie-chart.webp', color: C.greenDark, h: 'مقارنة أداء المتاجر', p: 'للوحة السوبر أدمن: قارن الإيرادات والنمو بين كل المتاجر.' },
-    { img: '/icons/clay/bell.webp', color: C.accent, h: 'إشعار فوري بالرسائل', p: 'تنبيه لحظي لك وللزبون عند وصول رسالة جديدة في المحادثة.' },
+    { img: '/icons/clay/documents.webp', color: C.blue, h: t("طلبات يدوية"), p: t("سجّل طلباً وصلك عبر الهاتف أو انستغرام مباشرة من لوحتك.") },
+    { img: '/icons/clay/basket.webp', color: C.accent, h: t("تنبيه السلال المتروكة"), p: t("اعرف زبائن تركوا سلتهم قبل الدفع وتواصل معهم بضغطة.") },
+    { img: '/icons/clay/printer.webp', color: C.greenDark, h: t("طباعة فاتورة وبوليصة شحن"), p: t("اطبع فاتورة الطلب أو بوليصة الشحن جاهزة من صفحة الطلبات.") },
+    { img: '/icons/clay/apps.webp', color: C.blue, h: t("فلاتر تصفح أقوى"), p: t("زبونك يفلتر حسب السعر والتقييم ليصل لمنتجه بسرعة.") },
+    { img: '/icons/clay/tag.webp', color: C.gold, h: t("دليل المقاسات"), p: t("أضف جدول مقاسات لكل منتج أو للمتجر كله دفعة واحدة.") },
+    { img: '/icons/clay/calendar.webp', color: C.accent, h: t("عدّاد تنازلي للعروض"), p: t("حدّد نهاية العرض ويظهر عدّاد تنازلي في صفحة المنتج.") },
+    { img: '/icons/clay/refresh.webp', color: C.greenDark, h: t("شوهد مؤخراً"), p: t("يعرض لزبونك آخر المنتجات التي تصفحها ليرجع لها بسهولة.") },
+    { img: '/icons/clay/badge-check.webp', color: C.blue, h: t("شارات تلقائية"), p: t("\"الأكثر مبيعاً\" و\"وصل حديثاً\" تظهر تلقائياً بلا أي إعداد.") },
+    { img: '/icons/clay/star.webp', color: C.gold, h: t("نقاط ولاء للزبائن"), p: t("زبونك يجمع نقاطاً مع كل عملية شراء ويستبدلها بخصومات.") },
+    { img: '/icons/clay/pie-chart.webp', color: C.greenDark, h: t("مقارنة أداء المتاجر"), p: t("للوحة السوبر أدمن: قارن الإيرادات والنمو بين كل المتاجر.") },
+    { img: '/icons/clay/bell.webp', color: C.accent, h: t("إشعار فوري بالرسائل"), p: t("تنبيه لحظي لك وللزبون عند وصول رسالة جديدة في المحادثة.") },
   ];
 
   return (
@@ -482,10 +504,11 @@ function LPWhatsNew() {
       <div style={INNER}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 13, color: C.accentDark, background: C.soft, padding: '7px 14px', borderRadius: 99, marginBottom: 16 }}>
           <Sparkles size={14} strokeWidth={2} />
-          جديد في بازار
+          
+          {t("جديد في بازار")}
         </span>
-        <h2 style={{ ...TITLE, maxWidth: '26ch' }}>مزايا أضفناها لك مؤخراً</h2>
-        <p style={SUBP}>إلى جانب بطاقات الهدايا، الخصومات المتدرجة، ومتغيرات المنتج (لون/مقاس بمخزون منفصل)، واستيراد وتصدير المنتجات عبر Excel.</p>
+        <h2 style={{ ...TITLE, maxWidth: '26ch' }}>{t("مزايا أضفناها لك مؤخراً")}</h2>
+        <p style={SUBP}>{t("إلى جانب بطاقات الهدايا، الخصومات المتدرجة، ومتغيرات المنتج (لون/مقاس بمخزون منفصل)، واستيراد وتصدير المنتجات عبر Excel.")}</p>
         <div className="whatsnew-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginTop: 32 }}>
           {items.map((it, i) => (
             <div key={i} style={{ background: C.white, borderRadius: 10, padding: '18px 18px 20px', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all .4s', transitionDelay: `${i * 50}ms` }}>
@@ -503,7 +526,7 @@ function LPWhatsNew() {
             </div>
           ))}
         </div>
-        <SectionCTA text="جرّب المزايا الجديدة الآن" />
+        <SectionCTA text={t("جرّب المزايا الجديدة الآن")} />
       </div>
     </section>
   );
@@ -513,29 +536,30 @@ function LPWhatsNew() {
 const ARABIC_INDIC = ['١', '٢', '٣', '٤', '٥'];
 
 function LPSteps() {
+  const t = useT();
   const steps: { title: string; desc: string }[] = [
-    { title: 'سجّل بدقيقة', desc: 'رقم هاتف واسم متجر. بلا بطاقة دفع.' },
-    { title: 'اختر قالبك', desc: 'قوالب جاهزة للملابس والعطور والإلكترونيات.' },
-    { title: 'أضف منتجاتك', desc: 'صورة وسعر بالدينار — والوصف نقترحه لك.' },
-    { title: 'فعّل الدفع والتوصيل', desc: 'دفع عند الاستلام ومناطق توصيل داخل العراق.' },
-    { title: 'انشر وابدأ البيع', desc: 'رابط متجرك جاهز للنشر على إنستغرام وفيسبوك.' },
+    { title: t("سجّل بدقيقة"), desc: t("رقم هاتف واسم متجر. بلا بطاقة دفع.") },
+    { title: t("اختر قالبك"), desc: t("قوالب جاهزة للملابس والعطور والإلكترونيات.") },
+    { title: t("أضف منتجاتك"), desc: t("صورة وسعر بالدينار — والوصف نقترحه لك.") },
+    { title: t("فعّل الدفع والتوصيل"), desc: t("دفع عند الاستلام ومناطق توصيل داخل العراق.") },
+    { title: t("انشر وابدأ البيع"), desc: t("رابط متجرك جاهز للنشر على إنستغرام وفيسبوك.") },
   ];
 
   return (
     <section id="steps" style={SEC}>
       <div style={INNER}>
         <div style={{ background: C.greenLight, borderRadius: 10, padding: '48px 44px' }}>
-          <h2 style={{ ...TITLE, maxWidth: '20ch' }}>من التسجيل إلى أول طلب — خمس خطوات.</h2>
+          <h2 style={{ ...TITLE, maxWidth: '20ch' }}>{t("من التسجيل إلى أول طلب — خمس خطوات.")}</h2>
           <div className="steps-grid-h" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 24, marginTop: 34 }}>
             {steps.map((s, i) => (
               <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <span style={{ ...HEADING, fontWeight: 800, fontSize: 52, lineHeight: 1, color: C.green }}>{ARABIC_INDIC[i]}</span>
+                <span style={{ ...HEADING, fontWeight: 800, fontSize: 52, lineHeight: 1, color: C.green }}>{t(ARABIC_INDIC[i])}</span>
                 <h3 style={{ ...HEADING, fontWeight: 700, fontSize: 21, lineHeight: 1.45, margin: 0, color: C.dark }}>{s.title}</h3>
                 <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14.5, lineHeight: 1.85, margin: 0, color: C.text2 }}>{s.desc}</p>
               </div>
             ))}
           </div>
-          <SectionCTA text="سجّل الآن وابدأ خطوتك الأولى" />
+          <SectionCTA text={t("سجّل الآن وابدأ خطوتك الأولى")} />
         </div>
       </div>
     </section>
@@ -544,18 +568,19 @@ function LPSteps() {
 
 /* ─── Stories / testimonials ─── */
 function LPStories() {
+  const t = useT();
   const stories = [
-    { quote: 'أنشأت متجري في يوم واحد. أول طلب وصل ثاني يوم — دفع عند الاستلام مثل ما تعوّد الزبون.', name: 'عمر الحلي', sub: 'عطور عمر — بغداد', letter: 'ع', from: C.blueLight, to: C.blueMid },
-    { quote: 'كنت أحسب أحتاج مبرمج لمتجري. اكتشفت أن اللوحة عربية وسهلة أكثر من إنستغرام.', name: 'ريام الجبوري', sub: 'أزياء ريام — البصرة', letter: 'ر', from: C.greenLight, to: C.green },
-    { quote: 'صار عندي لوحة طلبات تخبرني كل شيء بالعربي. الفرق واضح من أول شهر.', name: 'أحمد كريم', sub: 'إلكترونيات الجزيرة — أربيل', letter: 'أ', from: C.soft, to: C.accent },
+    { quote: t("أنشأت متجري في يوم واحد. أول طلب وصل ثاني يوم — دفع عند الاستلام مثل ما تعوّد الزبون."), name: t("عمر الحلي"), sub: t("عطور عمر — بغداد"), letter: t("ع"), from: C.blueLight, to: C.blueMid },
+    { quote: t("كنت أحسب أحتاج مبرمج لمتجري. اكتشفت أن اللوحة عربية وسهلة أكثر من إنستغرام."), name: t("ريام الجبوري"), sub: t("أزياء ريام — البصرة"), letter: t("ر"), from: C.greenLight, to: C.green },
+    { quote: t("صار عندي لوحة طلبات تخبرني كل شيء بالعربي. الفرق واضح من أول شهر."), name: t("أحمد كريم"), sub: t("إلكترونيات الجزيرة — أربيل"), letter: t("أ"), from: C.soft, to: C.accent },
   ];
 
   return (
     <section id="stories" style={SEC}>
       <div style={INNER}>
         <div style={{ maxWidth: 640 }}>
-          <h2 style={TITLE}>تجار يبيعون على بازار اليوم</h2>
-          <p style={SUBP}>قصص حقيقية من متاجر عراقية فتحت أبوابها خلال أسابيع.</p>
+          <h2 style={TITLE}>{t("تجار يبيعون على بازار اليوم")}</h2>
+          <p style={SUBP}>{t("قصص حقيقية من متاجر عراقية فتحت أبوابها خلال أسابيع.")}</p>
         </div>
         <div className="stories-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 32 }}>
           {stories.map((s, i) => (
@@ -578,6 +603,7 @@ function LPStories() {
 
 /* ─── Comparison vs. Shopify ─── */
 function ComparisonIllustration() {
+  const t = useT();
   return (
     <svg viewBox="0 0 340 240" width="100%" height="100%" fill="none">
       <rect x="20" y="60" width="140" height="150" rx="10" fill={C.blueLight} />
@@ -586,7 +612,7 @@ function ComparisonIllustration() {
       <rect x="46" y="140" width="88" height="10" rx="10" fill={C.blueMid} />
       <rect x="46" y="156" width="60" height="8" rx="10" fill={C.blueMid} opacity="0.5" />
       <rect x="46" y="170" width="88" height="26" rx="10" fill={C.blue} />
-      <text x="90" y="188" textAnchor="middle" fontFamily="var(--font-arabic), sans-serif" fontSize="12" fontWeight="700" fill="#fff">د.ع</text>
+      <text x="90" y="188" textAnchor="middle" fontFamily="var(--font-arabic), sans-serif" fontSize="12" fontWeight="700" fill="#fff">{t("د.ع")}</text>
       <rect x="180" y="60" width="140" height="150" rx="10" fill={C.butter} />
       <path d="M180 76 L250 30 L320 76" fill="#C2CDD8" />
       <rect x="206" y="106" width="88" height="24" rx="10" fill="#fff" />
@@ -621,24 +647,25 @@ function ShopifyCompareCell({ value }: { value: CompareCellVal }) {
 }
 
 function LPComparison() {
+  const t = useT();
   const [ref, visible] = useScrollReveal(0.1);
   const rows: { label: string; bazar: CompareCellVal; shopify: CompareCellVal }[] = [
-    { label: 'السعر الشهري', bazar: `مجاناً، ثم من ${PLAN_CONFIGS.PRO.prices.MONTHLY.toLocaleString('en')} د.ع`, shopify: 'من $39 / شهر' },
-    { label: 'عمولة على كل بيعة', bazar: 'صفر %', shopify: '0.5% — 2%' },
-    { label: 'واجهة ولوحة تاجر بالعربي بالكامل', bazar: true, shopify: false },
-    { label: 'عملة الاشتراك', bazar: 'دينار عراقي', shopify: 'دولار أمريكي' },
-    { label: 'طريقة دفع الاشتراك', bazar: 'زين كاش أو تحويل بنكي محلي', shopify: 'بطاقة ائتمان دولية' },
-    { label: 'لا حاجة لبطاقة ائتمان للبدء', bazar: true, shopify: false },
-    { label: 'الدفع عند الاستلام (كاش)', bazar: 'جاهز من أول يوم', shopify: 'يحتاج تطبيقات إضافية' },
-    { label: 'دفع عبر QR / تحويل بنكي محلي', bazar: true, shopify: false },
-    { label: 'إعداد المتجر ونشره', bazar: 'خلال دقائق', shopify: 'يحتاج خبرة تقنية' },
-    { label: 'التوصيل داخل العراق', bazar: 'مناطق ومحافظات جاهزة', shopify: 'تُضبط يدوياً' },
-    { label: 'الدعم الفني', bazar: 'بالعربي وبتوقيت بغداد', shopify: 'بالإنجليزية وبتوقيت مختلف' },
-    { label: 'كوبونات الخصم', bazar: true, shopify: true },
-    { label: 'تحليلات المبيعات', bazar: true, shopify: true },
-    { label: 'تطبيقات وإضافات خارجية', bazar: 'مدمجة ضمن الباقة', shopify: 'مدفوعة في معظمها' },
-    { label: 'رسوم خفية', bazar: 'بدون', shopify: 'قد تُضاف رسوم معاملات' },
-    { label: 'مناسب للسوق العراقي والخليجي', bazar: true, shopify: false },
+    { label: t("السعر الشهري"), bazar: t("مجاناً، ثم من {0} شهرياً", [formatUSD(PLAN_CONFIGS.PRO.prices.MONTHLY)]), shopify: t("من $39 / شهر") },
+    { label: t("عمولة على كل بيعة"), bazar: t("صفر %"), shopify: '0.5% — 2%' },
+    { label: t("واجهة ولوحة تاجر بالعربي بالكامل"), bazar: true, shopify: false },
+    { label: t("عملة البيع لزبائنك"), bazar: t("دينار عراقي"), shopify: t("دولار أمريكي غالباً") },
+    { label: t("طريقة دفع الاشتراك"), bazar: t("دفع إلكتروني أو تحويل محلي أو ZainCash"), shopify: t("بطاقة ائتمان دولية") },
+    { label: t("لا حاجة لبطاقة ائتمان للبدء"), bazar: true, shopify: false },
+    { label: t("الدفع عند الاستلام (كاش)"), bazar: t("جاهز من أول يوم"), shopify: t("يحتاج تطبيقات إضافية") },
+    { label: t("دفع الاشتراك بالتحويل المحلي أو ZainCash"), bazar: true, shopify: false },
+    { label: t("إعداد المتجر ونشره"), bazar: t("خلال دقائق"), shopify: t("يحتاج خبرة تقنية") },
+    { label: t("التوصيل داخل العراق"), bazar: t("مناطق ومحافظات جاهزة"), shopify: t("تُضبط يدوياً") },
+    { label: t("الدعم الفني"), bazar: t("بالعربي وبتوقيت بغداد"), shopify: t("بالإنجليزية وبتوقيت مختلف") },
+    { label: t("كوبونات الخصم"), bazar: true, shopify: true },
+    { label: t("تحليلات المبيعات"), bazar: true, shopify: true },
+    { label: t("تطبيقات وإضافات خارجية"), bazar: t("مدمجة ضمن الباقة"), shopify: t("مدفوعة في معظمها") },
+    { label: t("رسوم خفية"), bazar: t("بدون"), shopify: t("قد تُضاف رسوم معاملات") },
+    { label: t("مناسب للسوق العراقي والخليجي"), bazar: true, shopify: false },
   ];
 
   return (
@@ -647,8 +674,8 @@ function LPComparison() {
         <div className="compare-grid" style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 36, alignItems: 'center' }}>
           <div style={{ height: 260 }}><ComparisonIllustration /></div>
           <div>
-            <h2 style={{ ...TITLE, fontSize: 'clamp(26px, 3.4vw, 40px)', maxWidth: '22ch' }}>بازار أو Shopify، الفرق واضح، لا شعارات.</h2>
-            <p style={{ ...SUBP, maxWidth: '52ch' }}>Shopify منصة ممتازة بُنيت لتاجر أمريكي يستلم دفعاً ببطاقة. بازار بُني لتاجر يبيع في بغداد ويستلم كاش عند الباب — مقارنة تفصيلية بكل الفروقات.</p>
+            <h2 style={{ ...TITLE, fontSize: 'clamp(26px, 3.4vw, 40px)', maxWidth: '22ch' }}>{t("بازار أو Shopify، الفرق واضح، لا شعارات.")}</h2>
+            <p style={{ ...SUBP, maxWidth: '52ch' }}>{t("Shopify منصة ممتازة بُنيت لتاجر أمريكي يستلم دفعاً ببطاقة. بازار بُني لتاجر يبيع في بغداد ويستلم كاش عند الباب — مقارنة تفصيلية بكل الفروقات.")}</p>
           </div>
         </div>
 
@@ -657,7 +684,7 @@ function LPComparison() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 160px 160px', borderBottom: `1px solid ${C.border}` }}>
               <div style={{ padding: '18px 20px' }} />
               <div style={{ padding: '16px 8px', textAlign: 'center', background: `${C.green}0f` }}>
-                <span style={{ ...HEADING, fontWeight: 800, fontSize: 17, color: C.green }}>بازار</span>
+                <span style={{ ...HEADING, fontWeight: 800, fontSize: 17, color: C.green }}>{t("بازار")}</span>
               </div>
               <div style={{ padding: '16px 8px', textAlign: 'center' }}>
                 <span style={{ ...HEADING, fontWeight: 800, fontSize: 17, color: C.text2 }}>Shopify</span>
@@ -676,7 +703,8 @@ function LPComparison() {
             ))}
           </div>
           <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 13.5, lineHeight: 1.85, margin: '18px 0 0', color: C.text2 }}>
-            المقارنة مبنية على الخطط الأساسية المعلنة لكل منصة وقت كتابة هذه الصفحة. Shopify علامة تجارية مسجلة لأصحابها.
+            
+            {t("المقارنة مبنية على الخطط الأساسية المعلنة لكل منصة وقت كتابة هذه الصفحة. Shopify علامة تجارية مسجلة لأصحابها.")}
           </p>
         </div>
       </div>
@@ -701,12 +729,13 @@ function SnapchatGlyph({ size = 24, color = '#000' }: { size?: number; color?: s
 }
 
 function LPIntegrations() {
+  const t = useT();
   const [ref, visible] = useScrollReveal(0.1);
   const apps: { label: string; bg: string; render: () => React.ReactNode }[] = [
-    { label: 'إنستغرام', bg: 'linear-gradient(135deg, #833AB4, #20A9F4, #F5A623)', render: () => <Instagram size={24} color="#fff" strokeWidth={1.8} /> },
-    { label: 'فيسبوك', bg: '#1877F2', render: () => <Facebook size={22} color="#fff" strokeWidth={2} /> },
-    { label: 'سناب شات', bg: '#FFFC00', render: () => <SnapchatGlyph size={24} /> },
-    { label: 'تيك توك', bg: '#000000', render: () => <TikTokGlyph size={24} /> },
+    { label: t("إنستغرام"), bg: 'linear-gradient(135deg, #833AB4, #20A9F4, #F5A623)', render: () => <Instagram size={24} color="#fff" strokeWidth={1.8} /> },
+    { label: t("فيسبوك"), bg: '#1877F2', render: () => <Facebook size={22} color="#fff" strokeWidth={2} /> },
+    { label: t("سناب شات"), bg: '#FFFC00', render: () => <SnapchatGlyph size={24} /> },
+    { label: t("تيك توك"), bg: '#000000', render: () => <TikTokGlyph size={24} /> },
   ];
 
   return (
@@ -715,12 +744,13 @@ function LPIntegrations() {
         <div style={{ background: C.butter, borderRadius: 10, padding: '44px 40px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, flexWrap: 'wrap' }}>
             <div style={{ minWidth: 0, maxWidth: 520 }}>
-              <h2 style={{ ...TITLE, fontSize: 'clamp(24px, 3vw, 36px)' }}>تتصل بالأدوات التي تستخدمها كل يوم</h2>
-              <p style={SUBP}>اربط بازار بإنستغرام، فيسبوك، تيك توك، وسناب شات — بضغطة واحدة، بلا أكواد.</p>
+              <h2 style={{ ...TITLE, fontSize: 'clamp(24px, 3vw, 36px)' }}>{t("تتصل بالأدوات التي تستخدمها كل يوم")}</h2>
+              <p style={SUBP}>{t("اربط بازار بإنستغرام، فيسبوك، تيك توك، وسناب شات — بضغطة واحدة، بلا أكواد.")}</p>
             </div>
             <span style={{ flex: 1 }} />
             <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 15, color: C.blue, padding: '12px 22px', border: `1px solid ${C.border}`, borderRadius: 10, background: 'transparent', cursor: 'pointer' }}>
-              اطّلع على كل التطبيقات
+              
+              {t("اطّلع على كل التطبيقات")}
             </button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginTop: 28 }} className="integrations-grid">
@@ -742,6 +772,7 @@ function LPIntegrations() {
 
 /* ─── Latest from the blog ─── */
 function LPBlog() {
+  const t = useT();
   const [ref, visible] = useScrollReveal(0.1);
   const [articles, setArticles] = useState<ArticlePublic[]>([]);
 
@@ -758,11 +789,12 @@ function LPBlog() {
       <div style={INNER}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h2 style={TITLE}>من مدونة بازار</h2>
-            <p style={SUBP}>نصائح ودلائل للتجارة الإلكترونية في العراق.</p>
+            <h2 style={TITLE}>{t("من مدونة بازار")}</h2>
+            <p style={SUBP}>{t("نصائح ودلائل للتجارة الإلكترونية في العراق.")}</p>
           </div>
           <Link href="/blog" style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 14, color: C.blue, whiteSpace: 'nowrap' }}>
-            كل المقالات ←
+            
+            {t("كل المقالات ←")}
           </Link>
         </div>
         <div className="blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginTop: 30 }}>
@@ -794,27 +826,28 @@ function LPBlog() {
 
 /* ─── FAQ ─── */
 function LPFaq() {
+  const t = useT();
   const [open, setOpen] = useState(0);
   const faqs = [
-    { q: 'هل المجاني محدود بمدة؟', a: 'لا. تبقى على الخطة المجانية ما شئت، وتترقّى فقط عندما يكبر متجرك ويتجاوز حدودها.' },
-    { q: 'هل تأخذون نسبة من مبيعاتي؟', a: 'لا عمولة على البيع. تدفع اشتراكاً شهرياً ثابتاً فقط، وكل ما يدفعه الزبون يصلك إليك.' },
-    { q: 'أحتاج خبرة تقنية؟', a: 'إذا تعرف تنشر منشوراً على إنستغرام، تعرف تدير متجرك على بازار. لا أكواد ولا إعدادات معقّدة.' },
-    { q: 'كيف يدفع زبوني؟', a: 'الدفع عند الاستلام بالدينار — الطريقة الأكثر ثقة لدى المشتري العراقي، ومتاحة من أول يوم.' },
-    { q: 'أستطيع استخدام نطاقي الخاص؟', a: 'نعم، تربط نطاقك في الخطط المدفوعة، أو تبدأ برابط على نطاق بازار مجاناً.' },
-    { q: 'وإذا قررت التوقف؟', a: 'تلغي الاشتراك متى شئت، بلا عقد ولا رسوم إلغاء. بياناتك ومنتجاتك تبقى محفوظة.' },
+    { q: t("هل المجاني محدود بمدة؟"), a: t("لا. تبقى على الخطة المجانية ما شئت، وتترقّى فقط عندما يكبر متجرك ويتجاوز حدودها.") },
+    { q: t("هل تأخذون نسبة من مبيعاتي؟"), a: t("لا عمولة على البيع. تدفع اشتراكاً شهرياً ثابتاً فقط، وكل ما يدفعه الزبون يصلك إليك.") },
+    { q: t("أحتاج خبرة تقنية؟"), a: t("إذا تعرف تنشر منشوراً على إنستغرام، تعرف تدير متجرك على بازار. لا أكواد ولا إعدادات معقّدة.") },
+    { q: t("كيف يدفع زبوني؟"), a: t("الدفع عند الاستلام بالدينار — الطريقة الأكثر ثقة لدى المشتري العراقي، ومتاحة من أول يوم.") },
+    { q: t("أستطيع استخدام نطاقي الخاص؟"), a: t("نعم، تربط نطاقك في الخطط المدفوعة، أو تبدأ برابط على نطاق بازار مجاناً.") },
+    { q: t("وإذا قررت التوقف؟"), a: t("تلغي الاشتراك متى شئت، بلا عقد ولا رسوم إلغاء. بياناتك ومنتجاتك تبقى محفوظة.") },
   ];
 
   return (
     <section id="faq" style={SEC}>
       <div style={INNER}>
-        <h2 style={TITLE}>أسئلة قبل ما تدفع</h2>
+        <h2 style={TITLE}>{t("أسئلة قبل ما تدفع")}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 28, maxWidth: 900 }}>
           {faqs.map((f, i) => {
             const isOpen = open === i;
             return (
               <div key={i} style={{ background: C.white, borderRadius: 10, overflow: 'hidden' }}>
                 <button type="button" onClick={() => setOpen(isOpen ? -1 : i)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 16, width: '100%', textAlign: 'right', background: 'transparent', border: 0, cursor: 'pointer', padding: '22px 26px' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 16, width: '100%', textAlign: 'start', background: 'transparent', border: 0, cursor: 'pointer', padding: '22px 26px' }}>
                   <span style={{ ...HEADING, fontWeight: 700, fontSize: 21, lineHeight: 1.45, color: C.dark }}>{f.q}</span>
                   <span style={{ flex: 1 }} />
                   <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, flexShrink: 0, fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 22, lineHeight: 1, borderRadius: 10, background: isOpen ? C.blue : C.butter, color: isOpen ? '#fff' : C.blue }}>
@@ -835,11 +868,12 @@ function LPFaq() {
 
 /* ─── Pricing ─── */
 function LPPricing() {
+  const t = useT();
   return (
     <section id="pricing" style={SEC}>
       <div style={INNER}>
-        <h2 style={TITLE}>متجر متكامل بدون مبرمج — بسعر يناسب السوق العراقي</h2>
-        <p style={SUBP}>ابدأ مجاناً، وانتقل للباقة المناسبة عندما تزداد طلباتك. الدفع بالتحويل المصرفي أو ZainCash، والأسعار بالدينار وثابتة طوال مدة اشتراكك. لا عمولة على مبيعاتك.</p>
+        <h2 style={TITLE}>{t("متجر متكامل بدون مبرمج — بسعر يناسب السوق العراقي")}</h2>
+        <p style={SUBP}>{t("ابدأ مجاناً، وانتقل للباقة المناسبة عندما تزداد طلباتك. الأسعار بالدولار وثابتة طوال مدة اشتراكك، وتدفع إلكترونياً أو بالتحويل المحلي. لا عمولة على مبيعاتك.")}</p>
         <div style={{ marginTop: 28 }}>
           <PricingPlans />
         </div>
@@ -865,19 +899,20 @@ function CompareCell({ value, colColor }: { value: CompareCellValue; colColor: s
 }
 
 function LPPlanComparison() {
+  const t = useT();
   const [ref, visible] = useScrollReveal(0.1);
   const rows: PlanComparisonRow[] = PLAN_COMPARISON;
   const cols: { key: 'FREE' | 'PRO' | 'ENTERPRISE'; label: string; color: string }[] = [
-    { key: 'FREE', label: PLAN_CONFIGS.FREE.nameAr, color: C.text2 },
-    { key: 'PRO', label: PLAN_CONFIGS.PRO.nameAr, color: C.blue },
-    { key: 'ENTERPRISE', label: PLAN_CONFIGS.ENTERPRISE.nameAr, color: C.accent },
+    { key: 'FREE', label: t(PLAN_CONFIGS.FREE.nameAr), color: C.text2 },
+    { key: 'PRO', label: t(PLAN_CONFIGS.PRO.nameAr), color: C.blue },
+    { key: 'ENTERPRISE', label: t(PLAN_CONFIGS.ENTERPRISE.nameAr), color: C.accent },
   ];
 
   return (
     <section ref={ref as React.RefObject<HTMLElement>} style={SEC}>
       <div style={INNER}>
-        <h2 style={TITLE}>قارن الباقات ميزة بميزة</h2>
-        <p style={SUBP}>شوف بالضبط شنو يميّز كل باقة قبل ما تقرر.</p>
+        <h2 style={TITLE}>{t("قارن الباقات ميزة بميزة")}</h2>
+        <p style={SUBP}>{t("شوف بالضبط شنو يميّز كل باقة قبل ما تقرر.")}</p>
         <div className="compare-table-wrap" style={{ marginTop: 30, opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(20px)', transition: 'all .5s', overflowX: 'auto' }}>
           <div style={{ minWidth: 560, background: C.white, borderRadius: 10, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 110px', borderBottom: `1px solid ${C.border}` }}>
@@ -891,12 +926,12 @@ function LPPlanComparison() {
             {rows.map((row, i) => (
               <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 110px', borderBottom: i < rows.length - 1 ? `1px solid ${C.border}` : 'none', background: row.highlight ? `${C.dark}04` : 'transparent' }}>
                 <div style={{ padding: '12px 20px' }}>
-                  <div style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 13, fontWeight: 500, color: C.dark }}>{row.label}</div>
-                  {row.sub && <div style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 11, color: C.text2, marginTop: 1 }}>{row.sub}</div>}
+                  <div style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 13, fontWeight: 500, color: C.dark }}>{t(row.label)}</div>
+                  {row.sub && <div style={{ fontFamily: 'var(--font-arabic), sans-serif', fontSize: 11, color: C.text2, marginTop: 1 }}>{t(row.sub)}</div>}
                 </div>
                 {cols.map(col => (
                   <div key={col.key} style={{ padding: '12px 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CompareCell value={row[col.key]} colColor={col.color} />
+                    <CompareCell value={typeof row[col.key] === 'string' ? t(row[col.key] as string) : row[col.key]} colColor={col.color} />
                   </div>
                 ))}
               </div>
@@ -930,30 +965,34 @@ function FinalCtaIllustration() {
 }
 
 function LPFinalCTA() {
+  const t = useT();
   return (
     <section style={SEC}>
       <div style={INNER}>
         <div style={{ background: C.dark, borderRadius: 10, padding: '52px 48px', display: 'grid', gridTemplateColumns: '7fr 4fr', gap: 28, alignItems: 'center' }} className="final-cta-grid">
           <div>
-            <h2 style={{ ...HEADING, fontWeight: 800, fontSize: 'clamp(28px, 3.4vw, 46px)', lineHeight: 1.28, margin: 0, color: '#fff', maxWidth: '20ch' }}>متجرك ينتظر منتجه الأول.</h2>
+            <h2 style={{ ...HEADING, fontWeight: 800, fontSize: 'clamp(28px, 3.4vw, 46px)', lineHeight: 1.28, margin: 0, color: '#fff', maxWidth: '20ch' }}>{t("متجرك ينتظر منتجه الأول.")}</h2>
             <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 18, lineHeight: 1.9, margin: '14px 0 0', maxWidth: '44ch', color: '#C7C4D7' }}>
-              افتتح اليوم مجاناً، وشوف شكله قبل ما تدفع فلساً واحداً.
+              
+              {t("افتتح اليوم مجاناً، وشوف شكله قبل ما تدفع فلساً واحداً.")}
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 28 }}>
               <Link href="/register">
                 <button style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 700, fontSize: 17, background: C.blue, color: '#fff', padding: '16px 30px', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'background .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = C.blueHover)}
                   onMouseLeave={e => (e.currentTarget.style.background = C.blue)}>
-                  ابدأ مجاناً
+                  
+                  {t("ابدأ مجاناً")}
                 </button>
               </Link>
               <button onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
                 style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 500, fontSize: 17, color: '#fff', background: 'transparent', border: `2px solid ${C.text2}`, padding: '14px 28px', borderRadius: 10, cursor: 'pointer' }}>
-                شوف بازار وهو يعمل
+                
+                {t("شوف بازار وهو يعمل")}
               </button>
             </div>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginTop: 28 }}>
-              {([[Lock, 'آمن 100%'], [Zap, 'إعداد في 5 دقائق'], [BadgeCheck, 'دعم بالعربي']] as [LucideIcon, string][]).map(([Icon, label], i) => (
+              {([[Lock, t("آمن 100%")], [Zap, t("إعداد في 5 دقائق")], [BadgeCheck, t("دعم بالعربي")]] as [LucideIcon, string][]).map(([Icon, label], i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.8)', fontSize: 14, fontWeight: 500, fontFamily: 'var(--font-arabic), sans-serif' }}>
                   <Icon size={16} strokeWidth={2} />{label}
                 </div>
@@ -969,11 +1008,12 @@ function LPFinalCTA() {
 
 /* ─── Footer ─── */
 function LPFooter() {
+  const t = useT();
   const cols: { h: string; links: { l: string; id: string | null; href?: string }[] }[] = [
-    { h: 'المنتج', links: [{ l: 'المزايا', id: 'features' }, { l: 'قوالب المتاجر', id: null, href: '/#templates' }, { l: 'الأسعار', id: 'pricing' }, { l: 'مقابل Shopify', id: null, href: '/compare' }] },
-    { h: 'المنصة', links: [{ l: 'لوحة التاجر', id: 'work' }, { l: 'المدونة', id: null, href: '/blog' }, { l: 'الأسئلة الشائعة', id: 'faq' }] },
-    { h: 'الدعم', links: [{ l: 'تواصل معنا', id: null }, { l: 'دليل البدء', id: 'work' }, { l: 'الدخول للوحة التاجر', id: null, href: '/login' }] },
-    { h: 'قانوني', links: [{ l: 'شروط الاستخدام', id: null }, { l: 'سياسة الخصوصية', id: null }] },
+    { h: t("المنتج"), links: [{ l: t("المزايا"), id: 'features' }, { l: t("قوالب المتاجر"), id: null, href: '/#templates' }, { l: t("الأسعار"), id: 'pricing' }, { l: t("مقابل Shopify"), id: null, href: '/compare' }] },
+    { h: t("المنصة"), links: [{ l: t("لوحة التاجر"), id: 'work' }, { l: t("المدونة"), id: null, href: '/blog' }, { l: t("الأسئلة الشائعة"), id: 'faq' }] },
+    { h: t("الدعم"), links: [{ l: t("تواصل معنا"), id: null }, { l: t("دليل البدء"), id: 'work' }, { l: t("الدخول للوحة التاجر"), id: null, href: '/login' }] },
+    { h: t("قانوني"), links: [{ l: t("شروط الاستخدام"), id: null }, { l: t("سياسة الخصوصية"), id: null }] },
   ];
   const go = (id: string | null) => { if (id) document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); };
 
@@ -985,10 +1025,11 @@ function LPFooter() {
             <div style={{ width: 34, height: 34, borderRadius: 10, background: C.dark, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Store size={17} color="#fff" strokeWidth={2} />
             </div>
-            <span style={{ ...HEADING, fontWeight: 800, fontSize: 24, color: C.dark }}>بازار</span>
+            <span style={{ ...HEADING, fontWeight: 800, fontSize: 24, color: C.dark }}>{t("بازار")}</span>
           </div>
           <p style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14.5, lineHeight: 1.9, margin: '12px 0 0', maxWidth: '32ch', color: C.text2 }}>
-            منصة عراقية لبناء متجر إلكتروني يبيع فعلاً — بالعربي وبالدينار، بلا عمولة وبلا برمجة.
+            
+            {t("منصة عراقية لبناء متجر إلكتروني يبيع فعلاً — بالعربي وبالدينار، بلا عمولة وبلا برمجة.")}
           </p>
         </div>
         {cols.map((col, i) => (
@@ -997,14 +1038,14 @@ function LPFooter() {
             {col.links.map((l, j) => (
               l.href ? (
                 <Link key={j} href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14, color: C.text2, textAlign: 'right', transition: 'color .2s' }}
+                  style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14, color: C.text2, textAlign: 'start', transition: 'color .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = C.blue)}
                   onMouseLeave={e => (e.currentTarget.style.color = C.text2)}>
                   {l.l}
                 </Link>
               ) : (
                 <button key={j} onClick={() => go(l.id)}
-                  style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14, color: C.text2, background: 'none', border: 'none', cursor: l.id ? 'pointer' : 'default', textAlign: 'right', padding: 0, transition: 'color .2s' }}
+                  style={{ fontFamily: 'var(--font-arabic), sans-serif', fontWeight: 300, fontSize: 14, color: C.text2, background: 'none', border: 'none', cursor: l.id ? 'pointer' : 'default', textAlign: 'start', padding: 0, transition: 'color .2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = C.blue)}
                   onMouseLeave={e => (e.currentTarget.style.color = C.text2)}>
                   {l.l}
@@ -1018,11 +1059,13 @@ function LPFooter() {
         <div style={{ height: 1, background: C.border, margin: '0 0 20px' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
           <span style={{ fontSize: 13, color: C.text2, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-            © 2026 بازار — صُنع بحب
+            
+            {t("© 2026 بازار — صُنع بحب")}
             <Heart size={12} fill={C.accent} color={C.accent} />
-            من العراق
+            
+            {t("من العراق")}
           </span>
-          <span style={{ fontSize: 13, color: C.text2 }}>منصة عراقية 100% — بلا عمولة على مبيعاتك</span>
+          <span style={{ fontSize: 13, color: C.text2 }}>{t("منصة عراقية 100% — بلا عمولة على مبيعاتك")}</span>
         </div>
       </div>
     </footer>
@@ -1031,8 +1074,9 @@ function LPFooter() {
 
 /* ─── Page ─── */
 export default function LandingPage() {
+  const locale = useLocale();
   return (
-    <div style={{ fontFamily: 'var(--font-arabic), sans-serif', background: C.bg }}>
+    <div dir={dirOf(locale)} lang={locale} style={{ fontFamily: 'var(--font-arabic), sans-serif', background: C.bg }}>
       <div style={{ background: 'linear-gradient(180deg, #D3EFFE 0%, #E6F6FF 70%, #F6F8FA 100%)', overflowX: 'clip' }}>
         <LPHeader />
         <LPHero />

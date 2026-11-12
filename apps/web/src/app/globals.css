@@ -112,6 +112,7 @@
   h1, h2, h3 { color: inherit; }
 
   [dir="rtl"] { text-align: right; }
+  [dir="ltr"] { text-align: left; }
 
   ::selection { background: rgba(32,169,244,.22); }
 

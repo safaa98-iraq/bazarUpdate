@@ -9,7 +9,7 @@
 import prisma from '@storebuilder/database';
 import {
   PLAN_CONFIGS, BILLING_CYCLE_DAYS, TRIAL_DAYS, LIFETIME_SEATS, LIFETIME_INSTALLMENTS,
-  LEGACY_LIFETIME_DISCOUNT_PERCENT, type PlanKey,
+  LEGACY_LIFETIME_DISCOUNT_PERCENT, USD_TO_IQD, formatUSD, type PlanKey,
 } from '@storebuilder/types';
 import { AppError } from '../middleware/errorHandler';
 import { notifyUser } from './notify';
@@ -24,7 +24,9 @@ const YEARLY_CREDIT_AFTER_PAY_DAYS = 60;
 /** …or when the yearly period ends within N days. */
 const YEARLY_CREDIT_BEFORE_RENEWAL_DAYS = 30;
 
-const fmt = (n: number) => n.toLocaleString('en-US');
+const fmt = (n: number) => formatUSD(n);
+/** Installment size: whole dollars, rounded up. */
+const installmentOf = (total: number) => Math.ceil(total / LIFETIME_INSTALLMENTS);
 
 type BillingUser = {
   id: string; plan: PlanKey | string; billingCycle: string | null; planExpiresAt: Date | null;
@@ -53,15 +55,16 @@ async function yearlyCredit(u: BillingUser): Promise<{ amount: number; note: str
   const last = await prisma.paymentRequest.findFirst({
     where: { userId: u.id, status: 'APPROVED', cycle: 'YEARLY' },
     orderBy: { reviewedAt: 'desc' },
-    select: { amount: true, reviewedAt: true },
+    select: { amount: true, currency: true, reviewedAt: true },
   });
   if (!last?.reviewedAt) return null;
   const now = Date.now();
   const recent = now - last.reviewedAt.getTime() <= YEARLY_CREDIT_AFTER_PAY_DAYS * DAY;
   const nearRenewal = !!u.planExpiresAt && u.planExpiresAt.getTime() - now <= YEARLY_CREDIT_BEFORE_RENEWAL_DAYS * DAY && u.planExpiresAt.getTime() > now;
   if (!recent && !nearRenewal) return null;
-  const amount = Number(last.amount);
-  return { amount, note: `خُصم ${fmt(amount)} د.ع دفعتها للسنوي هذا العام` };
+  // Payments made before the switch to dollars were in IQD.
+  const amount = last.currency === 'IQD' ? Math.round(Number(last.amount) / USD_TO_IQD) : Number(last.amount);
+  return { amount, note: `خُصم ${fmt(amount)} دفعتها للسنوي هذا العام` };
 }
 
 export interface Quote {
@@ -95,7 +98,7 @@ export async function quote(userId: string, plan: PlanKey, cycle: 'MONTHLY' | 'Y
   if (u.lifetimeInstallmentsPaid > 0 && u.lifetimeTarget) {
     const total = u.lifetimeTotal ?? PLAN_CONFIGS[u.lifetimeTarget as PaidPlan].prices.LIFETIME;
     const n = u.lifetimeInstallmentsPaid + 1;
-    const each = Math.ceil(total / LIFETIME_INSTALLMENTS / 1000) * 1000;
+    const each = installmentOf(total);
     const amount = n === LIFETIME_INSTALLMENTS ? total - each * (LIFETIME_INSTALLMENTS - 1) : each;
     return { plan: u.lifetimeTarget as PaidPlan, cycle: 'LIFETIME_INSTALLMENT', amount, installment: n, installmentsTotal: LIFETIME_INSTALLMENTS, note: `الدفعة ${n} من ${LIFETIME_INSTALLMENTS} للأبدي` };
   }
@@ -107,15 +110,15 @@ export async function quote(userId: string, plan: PlanKey, cycle: 'MONTHLY' | 'Y
   let total = prices.LIFETIME;
   const notes: string[] = [];
   if (u.legacyPricing) {
-    total = Math.round((total * (100 - LEGACY_LIFETIME_DISCOUNT_PERCENT)) / 100 / 1000) * 1000;
+    total = Math.round((total * (100 - LEGACY_LIFETIME_DISCOUNT_PERCENT)) / 100);
     notes.push(`خصم ${LEGACY_LIFETIME_DISCOUNT_PERCENT}% للمشتركين القدامى`);
   }
   const credit = await yearlyCredit(u);
   if (credit) { total = Math.max(0, total - credit.amount); notes.push(credit.note); }
 
   if (installments === LIFETIME_INSTALLMENTS) {
-    const each = Math.ceil(total / LIFETIME_INSTALLMENTS / 1000) * 1000;
-    notes.push(`الدفعة 1 من ${LIFETIME_INSTALLMENTS} — المجموع ${fmt(total)} د.ع`);
+    const each = installmentOf(total);
+    notes.push(`الدفعة 1 من ${LIFETIME_INSTALLMENTS} — المجموع ${fmt(total)}`);
     return { plan, cycle: 'LIFETIME_INSTALLMENT', amount: each, installment: 1, installmentsTotal: LIFETIME_INSTALLMENTS, note: notes.join(' · ') };
   }
   return { plan, cycle: 'LIFETIME', amount: total, note: notes.join(' · ') || undefined };
@@ -123,9 +126,9 @@ export async function quote(userId: string, plan: PlanKey, cycle: 'MONTHLY' | 'Y
 
 /** Total lifetime price stored when the first installment is approved (recomputed the same way). */
 function installmentTotalFromFirst(amountOfFirst: number, planTarget: PaidPlan): number {
-  // first = ceil(total/3/1000)*1000 → total ∈ (3*(first-1000), 3*first]; the list price wins when it fits.
+  // first = ceil(total/3) → the list price wins when it produces the same first installment.
   const list = PLAN_CONFIGS[planTarget].prices.LIFETIME;
-  if (Math.ceil(list / LIFETIME_INSTALLMENTS / 1000) * 1000 === amountOfFirst) return list;
+  if (installmentOf(list) === amountOfFirst) return list;
   return amountOfFirst * LIFETIME_INSTALLMENTS;
 }
 
@@ -168,7 +171,7 @@ export async function applyApprovedPayment(req: { userId: string; planTarget: st
       }
       if (n === 1) {
         // Until all installments are in, the subscription runs as yearly.
-        const totalFromNote = Number(/المجموع ([\d,]+)/.exec(req.priceNote ?? '')?.[1]?.replace(/,/g, '') ?? NaN);
+        const totalFromNote = Number(/المجموع \$?([\d,.]+)/.exec(req.priceNote ?? '')?.[1]?.replace(/,/g, '') ?? NaN);
         const total = Number.isFinite(totalFromNote) ? totalFromNote : installmentTotalFromFirst(Number(req.amount), plan);
         await prisma.user.update({
           where: { id: u.id },
@@ -183,6 +186,52 @@ export async function applyApprovedPayment(req: { userId: string; planTarget: st
       return;
     }
   }
+}
+
+/**
+ * Approve or reject a pending payment request (admin review or payment-gateway callback):
+ * activates the plan, notifies the merchant and grants the referral reward. Idempotent.
+ */
+export async function settlePaymentRequest(
+  id: string, approve: boolean,
+  opts: { reviewedBy?: string | null; adminNote?: string | null; providerRef?: string | null } = {},
+): Promise<boolean> {
+  const claimed = await prisma.paymentRequest.updateMany({
+    where: { id, status: 'PENDING' },
+    data: {
+      status: approve ? 'APPROVED' : 'REJECTED', adminNote: opts.adminNote ?? null, reviewedBy: opts.reviewedBy ?? null,
+      reviewedAt: new Date(), ...(opts.providerRef ? { txRef: opts.providerRef.slice(0, 255) } : {}),
+    },
+  });
+  if (!claimed.count) return false; // already settled
+  const payReq = await prisma.paymentRequest.findUnique({ where: { id } });
+  if (!payReq) return false;
+  const planAr = PLAN_CONFIGS[payReq.planTarget as PlanKey]?.nameAr ?? payReq.planTarget;
+
+  if (!approve) {
+    await notifyUser(payReq.userId, 'PLAN_REJECTED', 'لم يتم تأكيد الدفع',
+      opts.adminNote ?? 'لم نتمكن من التحقق من عملية الدفع. يرجى التواصل مع الدعم أو المحاولة مجدداً.',
+      { plan: payReq.planTarget, adminNote: opts.adminNote });
+    return true;
+  }
+
+  await applyApprovedPayment(payReq);
+  await notifyUser(payReq.userId, 'PLAN_APPROVED', 'تمت الموافقة على خطتك!',
+    `تم تفعيل خطة ${planAr} بنجاح — استمتع بالمزايا الجديدة`,
+    { plan: payReq.planTarget, planAr, features: PLAN_CONFIGS[payReq.planTarget as PlanKey]?.features ?? [] });
+
+  // Referral reward: after a referred merchant's 2nd approved payment, their referrer gets one free month.
+  const referred = await prisma.user.findUnique({ where: { id: payReq.userId }, select: { referredById: true, referralRewardGiven: true } });
+  if (referred?.referredById && !referred.referralRewardGiven) {
+    const approvedCount = await prisma.paymentRequest.count({ where: { userId: payReq.userId, status: 'APPROVED' } });
+    if (approvedCount >= 2) {
+      await prisma.user.update({ where: { id: payReq.userId }, data: { referralRewardGiven: true } });
+      await prisma.user.update({ where: { id: referred.referredById }, data: { freeMonthsCredit: { increment: 1 } } });
+      await notifyUser(referred.referredById, 'REFERRAL_REWARD', 'ربحت شهراً مجانياً!',
+        'أحد التجار الذين دعوتهم جدّد اشتراكه للمرة الثانية — أضفنا لك شهراً مجانياً إلى رصيدك.', { freeMonthsCredit: 1 });
+    }
+  }
+  return true;
 }
 
 /** Give a brand-new merchant the Business trial. */

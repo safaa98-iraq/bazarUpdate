@@ -5,6 +5,9 @@ import { Alexandria, Noto_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { FreePlanTextNormalizer } from '@/components/FreePlanTextNormalizer';
+import { cookies } from 'next/headers';
+import { LocaleProvider } from '@/lib/i18n';
+import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale } from '@/lib/i18n/locales';
 
 // One family for the whole UI (headings + body). globals.css maps the legacy
 // --font-tajawal / --font-cairo variables onto --font-arabic.
@@ -148,13 +151,18 @@ const cleanupScript = `
 `;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Website language (set by middleware from the visitor's location, or by the language switcher).
+  // The dashboard and storefronts keep their own Arabic / store-language layout; public pages wrap
+  // themselves in <LocaleRoot> to switch direction.
+  const saved = cookies().get(LOCALE_COOKIE)?.value;
+  const locale = isLocale(saved) ? saved : DEFAULT_LOCALE;
   return (
     <html lang="ar" dir="rtl">
       <body className={`${arabic.variable} ${kurdishFallback.variable} font-[family-name:var(--font-tajawal)]`}>
         <Script id="remove-retired-feature-copy" strategy="beforeInteractive">
           {cleanupScript}
         </Script>
-        {children}
+        <LocaleProvider locale={locale}>{children}</LocaleProvider>
         <FreePlanTextNormalizer />
         <Toaster position="top-center" richColors toastOptions={{ style: { borderRadius: 14, fontFamily: 'var(--font-arabic)' } }} />
       </body>

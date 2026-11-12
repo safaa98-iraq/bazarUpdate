@@ -11,7 +11,7 @@ import { publicShippingSettings, readShippingSettings } from '../lib/shipments';
 
 const router = Router();
 const merchant = [verifyToken, requireRole('MERCHANT')];
-const LANGS = ['ar', 'ckb'];
+const LANGS = ['ar', 'en', 'ckb'];
 
 const str = (v: unknown, max = 500) => (typeof v === 'string' ? v.trim().slice(0, max) : undefined);
 
